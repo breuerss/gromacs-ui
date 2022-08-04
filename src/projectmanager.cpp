@@ -25,3 +25,10 @@ const std::shared_ptr<Project> ProjectManager::getCurrentProject() const
 {
     return currentProject;
 }
+
+void ProjectManager::createNewProject()
+{
+    // TODO get name from input mask
+    currentProject.reset(new Project("test"));
+    emit currentProjectChanged(currentProject);
+}

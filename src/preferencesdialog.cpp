@@ -8,7 +8,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->buttonBrowseProjectDirectory, &QPushButton::clicked, this, &PreferencesDialog::openSelectProjectDirectory);
-    connect(ui->buttonBrowseGmx, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdb2gmx);
+    connect(ui->buttonBrowseGmx, &QPushButton::clicked, this, &PreferencesDialog::openSelectGmx);
+    connect(ui->buttonBrowsePdbwc, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdbwc);
+    connect(ui->buttonBrowsePdbchain, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdbchain);
     connect(this, &QDialog::accepted, this, &PreferencesDialog::saveSettings);
 }
 
@@ -30,16 +32,42 @@ void PreferencesDialog::openSelectProjectDirectory()
     }
 }
 
-void PreferencesDialog::openSelectPdb2gmx()
+void PreferencesDialog::openSelectGmx()
 {
     const QString newGmxPath = QFileDialog::getOpenFileName(
                 this,
-                tr("Select Path to pdb2gmx"),
+                tr("Select Path to gmx"),
                 QDir::homePath());
 
     if (!newGmxPath.isEmpty())
     {
         setGmx(newGmxPath);
+    }
+}
+
+void PreferencesDialog::openSelectPdbwc()
+{
+    const QString newPdbwcPath = QFileDialog::getOpenFileName(
+                this,
+                tr("Select Path to pdb_wc"),
+                QDir::homePath());
+
+    if (!newPdbwcPath.isEmpty())
+    {
+        setPdbwc(newPdbwcPath);
+    }
+}
+
+void PreferencesDialog::openSelectPdbchain()
+{
+    const QString newPdbchainPath = QFileDialog::getOpenFileName(
+                this,
+                tr("Select Path to pdb_chain"),
+                QDir::homePath());
+
+    if (!newPdbchainPath.isEmpty())
+    {
+        setPdbchain(newPdbchainPath);
     }
 }
 
@@ -51,14 +79,18 @@ void PreferencesDialog::showEvent(QShowEvent *ev)
 
 void PreferencesDialog::saveSettings()
 {
-    settings.setValue(PROJECT_DIRECTORY, projectDirectory);
-    settings.setValue(GMX_PATH, gmx);
+    settings.setValue(Settings::PROJECTS_DIRECTORY, projectDirectory);
+    settings.setValue(Settings::GMX_PATH, gmx);
+    settings.setValue(Settings::PDB_WC, pdbwc);
+    settings.setValue(Settings::PDB_CHAIN, pdbchain);
 }
 
 void PreferencesDialog::loadSettings()
 {
-    setProjectDirectory(settings.value(PROJECT_DIRECTORY).toString());
-    setGmx(settings.value(GMX_PATH).toString());
+    setProjectDirectory(settings.value(Settings::PROJECTS_DIRECTORY).toString());
+    setGmx(settings.value(Settings::GMX_PATH).toString());
+    setPdbwc(settings.value(Settings::PDB_WC).toString());
+    setPdbchain(settings.value(Settings::PDB_CHAIN).toString());
 }
 
 void PreferencesDialog::setProjectDirectory(const QString &newProjectDirectory)
@@ -71,4 +103,16 @@ void PreferencesDialog::setGmx(const QString &newGmxPath)
 {
     gmx = newGmxPath;
     ui->gmx->setText(gmx);
+}
+
+void PreferencesDialog::setPdbwc(const QString &newPdbwc)
+{
+    pdbwc = newPdbwc;
+    ui->pdbwc->setText(pdbwc);
+}
+
+void PreferencesDialog::setPdbchain(const QString &newPdbchain)
+{
+    pdbchain = newPdbchain;
+    ui->pdbchain->setText(pdbchain);
 }

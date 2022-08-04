@@ -9,21 +9,36 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/fileserver.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/pdbconverter.cpp \
+    src/pdbdownloader.cpp \
+    src/pdbinfoextractor.cpp \
     src/preferencesdialog.cpp \
     src/project.cpp \
     src/projectmanager.cpp \
-    src/step.cpp
+    src/settings.cpp \
+    src/step.cpp \
+    src/systemsetup.cpp \
+    src/systemsetupform.cpp
 
 HEADERS += \
+    src/fileserver.h \
     src/mainwindow.h \
+    src/pdbconverter.h \
+    src/pdbdownloader.h \
+    src/pdbinfoextractor.h \
     src/preferencesdialog.h \
     src/project.h \
     src/projectmanager.h \
-    src/step.h
+    src/settings.h \
+    src/step.h \
+    src/systemsetup.h \
+    src/systemsetupform.h
 
 FORMS += \
+    ui/systemsetupform.ui \
     ui/mainwindow.ui \
     ui/preferencesdialog.ui
 
@@ -31,3 +46,6 @@ TRANSLATIONS += \
     share/Gromacs-UI_en_US.ts
 CONFIG += lrelease
 CONFIG += embed_translations
+
+DISTFILES += \
+    share/gromacs.png

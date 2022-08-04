@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QSettings>
+#include "settings.h"
 
 namespace Ui {
 class PreferencesDialog;
@@ -15,27 +16,32 @@ class PreferencesDialog : public QDialog
 public:
     explicit PreferencesDialog(QWidget *parent = nullptr);
     ~PreferencesDialog();
-    const QString PROJECT_DIRECTORY = "General/projectDirectory";
-    const QString GMX_PATH = "Gromacs/gmx";
+
 
 protected:
       void showEvent(QShowEvent *ev);
 
 private slots:
     void openSelectProjectDirectory();
-    void openSelectPdb2gmx();
+    void openSelectGmx();
+    void openSelectPdbwc();
+    void openSelectPdbchain();
     void saveSettings();
 
 private:
     Ui::PreferencesDialog* ui;
-    QSettings settings;
-
-    QString projectDirectory;
-    QString gmx;
+    Settings settings;
 
     void loadSettings();
     void setProjectDirectory(const QString& newProjectDirectory);
     void setGmx(const QString& newGmxPath);
+    void setPdbwc(const QString& newPdbwc);
+    void setPdbchain(const QString& newPdbchain);
+
+    QString projectDirectory;
+    QString gmx;
+    QString pdbwc;
+    QString pdbchain;
 };
 
 #endif // PREFERENCESDIALOG_H

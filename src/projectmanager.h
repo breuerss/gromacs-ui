@@ -1,9 +1,10 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
+#include "project.h"
+
 #include <QObject>
 #include <memory>
-#include "project.h"
 
 class ProjectManager : public QObject
 {
@@ -11,9 +12,10 @@ class ProjectManager : public QObject
 public:
     static ProjectManager* getInstance();
     const std::shared_ptr<Project> getCurrentProject() const;
+    void createNewProject();
 
 signals:
-    void currentProjectChanged(const Project& currentProject);
+    void currentProjectChanged(std::shared_ptr<Project> currentProject);
 
 public slots:
     void addStep();

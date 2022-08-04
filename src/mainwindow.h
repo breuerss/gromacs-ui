@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include "settings.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
     class MainWindow;
@@ -19,6 +21,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    void closeEvent(QCloseEvent* event);
+
 private slots:
     void openPreferencesDialog();
 
@@ -26,5 +31,7 @@ private:
     Ui::MainWindow* ui;
     PreferencesDialog* preferencesDialog;
     void setupUIForProject();
+    Settings settings;
+    void setMoleculeFile(const QString& file = "");
 };
 #endif // MAINWINDOW_H

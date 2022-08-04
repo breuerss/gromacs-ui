@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>GROMACS UI</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../Downloads/gromacs.png</normaloff>../../../../Downloads/gromacs.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -32,10 +36,16 @@
     </item>
     <item>
      <widget class="QTabWidget" name="stepconfigurator">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="currentIndex">
        <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>System Setup</string>
        </attribute>
@@ -57,7 +67,7 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionNew_Project"/>
+    <addaction name="actionNewProject"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -71,14 +81,20 @@
    <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionNew_Project">
+  <action name="actionNewProject">
    <property name="text">
-    <string>New Project...</string>
+    <string>New Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="actionAddStep">
