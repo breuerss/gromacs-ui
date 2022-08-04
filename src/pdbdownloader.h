@@ -9,7 +9,7 @@ class PdbDownloader : public QNetworkAccessManager
 public:
     explicit PdbDownloader(QObject *parent = nullptr);
 
-    void download(const QString& pdbCode);
+    void download(const QString& pdbCode, const QString& fileName);
 
 signals:
     void downloaded(const QString& pdbCode, const QString& content);

@@ -1,22 +1,28 @@
 #include "pdbdownloader.h"
 #include <QNetworkReply>
 #include <QDebug>
+#include <QFile>
+
 PdbDownloader::PdbDownloader(QObject *parent)
     : QNetworkAccessManager{parent}
 {
 
 }
 
-void PdbDownloader::download(const QString &pdbCode)
+void PdbDownloader::download(const QString& pdbCode, const QString& fileName)
 {
     qDebug() << "pdb code" << pdbCode;
     QNetworkRequest request(createUrlFor(pdbCode));
     auto* reply = get(request);
-    connect(reply, &QNetworkReply::finished, [this, pdbCode, reply] () {
+    connect(reply, &QNetworkReply::finished, [this, pdbCode, reply, fileName] () {
         // TODO error handling
         qDebug() << "pdbCode" << pdbCode;
         QString content = reply->readAll();
-        emit downloaded(pdbCode, content);
+        QFile file(fileName);
+        file.open(QFile::WriteOnly);
+        file.write(content.toUtf8());
+        file.close();
+        emit downloaded(pdbCode, fileName);
         reply->deleteLater();
     });
 }

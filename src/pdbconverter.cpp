@@ -7,7 +7,7 @@
 QString PdbConverter::convert(const QString &fileName, const QStringList &chains)
 {
     QString outputFileName = fileName;
-    outputFileName.replace(".pdb", "_processed.pdb");
+    outputFileName.replace(".pdb", "_filtered.pdb");
 
     Settings settings;
     QString command = settings.value(Settings::PDB_CHAIN).toString();

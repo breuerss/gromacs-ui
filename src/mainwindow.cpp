@@ -9,6 +9,7 @@
 #include <QWebEngineProfile>
 #include "fileserver.h"
 #include "systemsetupform.h"
+#include "statusmessagesetter.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -19,6 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
     connect(ui->actionNewProject, &QAction::triggered, [] () {
        ProjectManager::getInstance()->createNewProject();
+    });
+    connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
+        [this] (const QString& message) {
+        ui->statusbar->showMessage(message, 10000);
     });
     setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
     setupUIForProject();
@@ -58,12 +63,14 @@ void MainWindow::setupUIForProject()
         connect(project->getSystemSetup().get(), &SystemSetup::sourceStructureFileChanged,
                 this, &MainWindow::setMoleculeFile);
 
-        connect(project->getSystemSetup().get(), &SystemSetup::processedStructureFileChanged,
+        connect(project->getSystemSetup().get(), &SystemSetup::filteredStructureFileChanged,
+                this, &MainWindow::setMoleculeFile);
+
+        connect(project->getSystemSetup().get(), &SystemSetup::solvatedStructureFileChanged,
                 this, &MainWindow::setMoleculeFile);
 
         auto* settings = ui->molpreview->page()->settings();
         settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
-        //settings->setAttribute(QWebEngineSettings::LocalContentCanAccessFileUrls, true);
     }
 
     setMoleculeFile();
@@ -71,9 +78,11 @@ void MainWindow::setupUIForProject()
 
 void MainWindow::setMoleculeFile(const QString& file)
 {
+    qDebug() << "molecule file" << file << sender() << senderSignalIndex();
     // TODO shared path
     QString currentDir = QDir::currentPath();
     QUrl url = QUrl::fromLocalFile(currentDir + "/../embedded.html");
+
 
     if (!file.isEmpty())
     {

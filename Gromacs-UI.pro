@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     src/fileserver.cpp \
+    src/gromacstoolexecutor.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/pdbconverter.cpp \
@@ -19,12 +20,14 @@ SOURCES += \
     src/project.cpp \
     src/projectmanager.cpp \
     src/settings.cpp \
+    src/statusmessagesetter.cpp \
     src/step.cpp \
     src/systemsetup.cpp \
     src/systemsetupform.cpp
 
 HEADERS += \
     src/fileserver.h \
+    src/gromacstoolexecutor.h \
     src/mainwindow.h \
     src/pdbconverter.h \
     src/pdbdownloader.h \
@@ -33,6 +36,7 @@ HEADERS += \
     src/project.h \
     src/projectmanager.h \
     src/settings.h \
+    src/statusmessagesetter.h \
     src/step.h \
     src/systemsetup.h \
     src/systemsetupform.h

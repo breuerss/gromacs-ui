@@ -2,8 +2,11 @@
 #include "ui_systemsetupform.h"
 #include "pdbdownloader.h"
 #include "pdbinfoextractor.h"
+#include "project.h"
+#include "gromacstoolexecutor.h"
 #include <QDir>
 #include <QCheckBox>
+#include <QTimer>
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QWidget *parent)
     : QWidget(parent)
@@ -16,34 +19,61 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     prepareForceFieldOptions();
     prepareBoxOptions();
 
-    connect(ui->pdbEntry, &QLineEdit::textChanged, [this] (const QString& text) {
-        if (text.length() == 4)
+    connect(systemSetup.get(), &SystemSetup::configReady, [this] () {
+        qDebug() << "config ready";
+        GromacsToolExecutor::execPdb2gmx(systemSetup);
+        GromacsToolExecutor::execEditConf(systemSetup);
+        GromacsToolExecutor::execSolvate(systemSetup);
+    });
+
+    connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int index) {
+       systemSetup->setBoxType(ui->boxType->currentData().toString());
+    });
+    systemSetup->setBoxType(ui->boxType->currentData().toString());
+
+    connect(ui->waterModel, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
+       systemSetup->setWaterModel(ui->waterModel->currentData().toString());
+    });
+    systemSetup->setWaterModel(ui->waterModel->currentData().toString());
+
+    connect(ui->distanceToEdge, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this] (double distance) {
+        systemSetup->setDistance(distance);
+    });
+    systemSetup->setDistance(ui->distanceToEdge->value());
+
+    connect(ui->forceField, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
+       systemSetup->setForceField(ui->forceField->currentData().toString());
+    });
+    systemSetup->setForceField(ui->forceField->currentData().toString());
+
+    connect(ui->pdbEntry, &QLineEdit::textChanged, [this] (const QString& pdbCode) {
+        if (pdbCode.length() == 4)
         {
-            qDebug() << "Starting PDB download for" << text;
+            qDebug() << "Starting PDB download for" << pdbCode;
             auto* pdbDownloader = new PdbDownloader();
             connect(pdbDownloader, &PdbDownloader::downloaded,
-                    [pdbDownloader, this] (const QString& pdbCode, const QString& content) {
-                // TODO make that reusable
-                QDir dir(systemSetup->getProject()->getProjectPath());
-
-                if (dir.mkpath("input"))
-                {
-                    dir.cd("input");
-                }
-                QFile file(dir.absolutePath() + "/" + pdbCode + ".pdb");
-                file.open(QFile::WriteOnly);
-                file.write(content.toUtf8());
-                file.close();
-                QFileInfo fileInfo(file);
-                systemSetup->setSourceStructureFile(fileInfo.absoluteFilePath());
+                    [pdbDownloader, this] (const QString& /*pdbCode*/, const QString& file) {
+                qDebug() << "donwloaded" << file;
+                systemSetup->setSourceStructureFile(file);
                 pdbDownloader->deleteLater();
             });
-            pdbDownloader->download(text);
+
+            // TODO does that belong here? Isn't that part of the project setup?
+            QDir dir(systemSetup->getProject()->getProjectPath());
+            if (dir.mkpath("input"))
+            {
+                dir.cd("input");
+            }
+            QFile file(dir.absolutePath() + "/" + pdbCode + ".pdb");
+            QFileInfo fileInfo(file);
+            pdbDownloader->download(pdbCode, fileInfo.absoluteFilePath());
         }
     });
 
     connect(systemSetup.get(), &SystemSetup::sourceStructureFileChanged,
         [this] (const QString& sourceStructureFile) {
+        QTimer::singleShot(100, [this, sourceStructureFile] {
+
             if (!sourceStructureFile.isEmpty())
             {
                 ui->filterGroup->setEnabled(true);
@@ -61,10 +91,10 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
                     delete item;
                 }
 
+                systemSetup->setChains(chains);
                 for (const auto& chain: chains)
                 {
                     QCheckBox* checkBox = new QCheckBox(chain);
-                    systemSetup->useChain(chain);
                     checkBox->setCheckState(Qt::Checked);
                     connect(checkBox, &QCheckBox::stateChanged, [this, chain] (int state) {
                          systemSetup->useChain(chain, state == Qt::Checked);
@@ -72,6 +102,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
                     ui->chainsGroupLayout->addWidget(checkBox);
                 }
             }
+            });
     });
 }
 
@@ -92,6 +123,7 @@ void SystemSetupForm::prepareWaterOptions()
     {
         ui->waterModel->addItem(label, map.value(label));
     }
+    ui->waterModel->setCurrentIndex(1);
 }
 
 void SystemSetupForm::prepareForceFieldOptions()
@@ -105,6 +137,7 @@ void SystemSetupForm::prepareForceFieldOptions()
     {
         ui->forceField->addItem(label, map.value(label));
     }
+    ui->forceField->setCurrentIndex(0);
 }
 
 void SystemSetupForm::prepareBoxOptions()
@@ -119,4 +152,5 @@ void SystemSetupForm::prepareBoxOptions()
     {
         ui->boxType->addItem(label, map.value(label));
     }
+    ui->boxType->setCurrentIndex(2);
 }
