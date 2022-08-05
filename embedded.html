@@ -39,11 +39,10 @@
                 var params = Object.fromEntries(urlSearchParams.entries());
                 var url = params.file || '';
                 if (url.endsWith('pdb')) {
-                    viewer.loadStructureFromUrl(url, format='pdb', false, {
-                                    representationPreset: 'illustrative'
-                                })
+                    viewer.loadStructureFromUrl(url, format='pdb');
+                } else if (url.endsWith('gro')) {
+                    viewer.loadStructureFromUrl(url, format='gro');
                 }
-                console.log(viewer);
             });
         </script>
     </body>
