@@ -9,6 +9,7 @@
 #include <QWebEngineProfile>
 #include "fileserver.h"
 #include "systemsetupform.h"
+#include "simulationsetupform.h"
 #include "statusmessagesetter.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -57,7 +58,7 @@ void MainWindow::setupUIForProject()
         ui->stepconfigurator->addTab(new SystemSetupForm(project->getSystemSetup()), tr("System Setup"));
         for (auto& step: project->getSteps())
         {
-            (void) step;
+            ui->stepconfigurator->addTab(new SimulationSetupForm(step), tr("Simulation Step"));
         }
 
         connect(project->getSystemSetup().get(), &SystemSetup::sourceStructureFileChanged,

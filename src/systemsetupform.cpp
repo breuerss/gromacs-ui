@@ -24,9 +24,10 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
         GromacsToolExecutor::execPdb2gmx(systemSetup);
         GromacsToolExecutor::execEditConf(systemSetup);
         GromacsToolExecutor::execSolvate(systemSetup);
+        // TODO genion
     });
 
-    connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int index) {
+    connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
        systemSetup->setBoxType(ui->boxType->currentData().toString());
     });
     systemSetup->setBoxType(ui->boxType->currentData().toString());

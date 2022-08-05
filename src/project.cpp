@@ -6,7 +6,7 @@ Project::Project(const QString& newName)
     : systemSetup(new SystemSetup(this))
     , name(newName)
 {
-
+    addStep();
 }
 
 void Project::addStep()

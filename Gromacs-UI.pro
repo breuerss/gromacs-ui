@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     src/fileserver.cpp \
+    src/gromacsconfigfilegenerator.cpp \
     src/gromacstoolexecutor.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     src/project.cpp \
     src/projectmanager.cpp \
     src/settings.cpp \
+    src/simulationsetupform.cpp \
     src/statusmessagesetter.cpp \
     src/step.cpp \
     src/systemsetup.cpp \
@@ -27,6 +29,7 @@ SOURCES += \
 
 HEADERS += \
     src/fileserver.h \
+    src/gromacsconfigfilegenerator.h \
     src/gromacstoolexecutor.h \
     src/mainwindow.h \
     src/pdbconverter.h \
@@ -36,12 +39,16 @@ HEADERS += \
     src/project.h \
     src/projectmanager.h \
     src/settings.h \
+    src/simulationsetupform.h \
+    src/simulationtype.h \
     src/statusmessagesetter.h \
     src/step.h \
     src/systemsetup.h \
-    src/systemsetupform.h
+    src/systemsetupform.h \
+    src/uiconnectionhelper.h
 
 FORMS += \
+    ui/simulationsetupform.ui \
     ui/systemsetupform.ui \
     ui/mainwindow.ui \
     ui/preferencesdialog.ui
