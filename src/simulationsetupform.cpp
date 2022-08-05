@@ -56,20 +56,6 @@ SimulationSetupForm::~SimulationSetupForm()
     delete ui;
 }
 
-void SimulationSetupForm::setOptions(
-        QComboBox* comboBox,
-        const QList<QPair<QString, QVariant>>& options,
-        int defaultIndex
-        )
-{
-    for (const auto& entry: options)
-    {
-        comboBox->addItem(entry.first, entry.second);
-    }
-
-    comboBox->setCurrentIndex(defaultIndex);
-}
-
 void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
 {
     hideSettings();

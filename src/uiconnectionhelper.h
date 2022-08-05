@@ -54,4 +54,11 @@ void connectToUi(
 
 }
 
+void setOptions(
+        QComboBox* comboBox,
+        const QList<QPair<QString, QVariant>>& options,
+        int defaultIndex = 0
+        );
+
+
 #endif // UICONNECTIONHELPER_H

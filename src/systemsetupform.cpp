@@ -7,6 +7,7 @@
 #include <QDir>
 #include <QCheckBox>
 #include <QTimer>
+#include "uiconnectionhelper.h"
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QWidget *parent)
     : QWidget(parent)
@@ -119,44 +120,26 @@ SystemSetupForm::~SystemSetupForm()
 
 void SystemSetupForm::prepareWaterOptions()
 {
-    static const QVariantMap map({
+    setOptions(ui->waterModel, {
         { "SPC", "spc" },
         { "TIP3P", "tip3p" },
         { "TIP4P", "tip4p" }
-    });
-
-    for (const auto& label: map.keys())
-    {
-        ui->waterModel->addItem(label, map.value(label));
-    }
-    ui->waterModel->setCurrentIndex(1);
+    }, 1);
 }
 
 void SystemSetupForm::prepareForceFieldOptions()
 {
-    static const QVariantMap map({
+    setOptions(ui->forceField, {
         { "CHARMM27", "charmm27" },
         { "OPLS-AA/L", "oplsaa" }
-    });
-
-    for (const auto& label: map.keys())
-    {
-        ui->forceField->addItem(label, map.value(label));
-    }
-    ui->forceField->setCurrentIndex(0);
+    }, 0);
 }
 
 void SystemSetupForm::prepareBoxOptions()
 {
-    static const QVariantMap map({
+    setOptions(ui->boxType, {
         { "Cubic", "cubic" },
         { "Octahedron", "octahedron" },
         { "Dodecahedron", "dodecahedron" }
-    });
-
-    for (const auto& label: map.keys())
-    {
-        ui->boxType->addItem(label, map.value(label));
-    }
-    ui->boxType->setCurrentIndex(2);
+    }, 2);
 }

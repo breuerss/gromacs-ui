@@ -27,8 +27,6 @@ private:
     void setAlgorithmsForType(SimulationType::Type type);
     void hideSettings();
     void enableAllSettings();
-
-    void setOptions(QComboBox* comboBox, const QList<QPair<QString, QVariant>>& options, int defaultIndex = 0);
 };
 
 #endif // SIMULATIONSETUPFORM_H
