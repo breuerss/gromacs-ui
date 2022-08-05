@@ -96,19 +96,15 @@ void MainWindow::setupUIForProject()
 
 void MainWindow::setMoleculeFile(const QString& file)
 {
-    qDebug() << "molecule file" << file << sender() << senderSignalIndex();
-    // TODO shared path
+    // TODO shared path from install target
     QString currentDir = QDir::currentPath();
     QUrl url = QUrl::fromLocalFile(currentDir + "/../embedded.html");
-
 
     if (!file.isEmpty())
     {
         QString modelUrl = FileServer::getInstance()->getUrlForFile(file);
-        qDebug() << modelUrl;
         url.setQuery(QUrlQuery({{ "file", modelUrl }}));
     }
 
-    qDebug() << url;
     ui->molpreview->setUrl(url);
 }
