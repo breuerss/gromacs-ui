@@ -28,20 +28,36 @@
                 layoutShowLog: false,
                 layoutShowLeftPanel: true,
 
-                viewportShowExpand: true,
+                viewportShowExpand: false,
                 viewportShowSelectionMode: false,
                 viewportShowAnimation: false,
 
                 pdbProvider: 'rcsb',
                 emdbProvider: 'rcsb',
-            }).then(viewer => {
+            }).then(async (viewer) => {
                 var urlSearchParams = new URLSearchParams(window.location.search);
                 var params = Object.fromEntries(urlSearchParams.entries());
                 var url = params.file || '';
-                if (url.endsWith('pdb')) {
-                    viewer.loadStructureFromUrl(url, format='pdb');
-                } else if (url.endsWith('gro')) {
-                    viewer.loadStructureFromUrl(url, format='gro');
+                if (url.endsWith('pdb') || url.endsWith('gro')) {
+                    const type = url.split('.').pop();
+                    await viewer.loadStructureFromUrl(url, format=type);
+                }
+                const { structures } = viewer.plugin.managers.structure.hierarchy.selection;
+                const preset = viewer.plugin.builders.structure.representation.providerMap.get("preset-structure-representation-illustrative");
+                await viewer.plugin.managers.structure.component.applyPreset(structures, preset);
+                if (viewer.plugin.canvas3d) {
+                    viewer.plugin.canvas3d.setProps({
+                        postprocessing: {
+                            outline: {
+                                name: 'on',
+                                params: { scale: 1, color: "#000000", threshold: 0.25 }
+                            },
+                            occlusion: {
+                                name: 'on',
+                                params: { bias: 0.8, blurKernelSize: 15, radius: 5, samples: 32, resolutionScale: 1 }
+                            },
+                        }
+                    });
                 }
             });
         </script>
