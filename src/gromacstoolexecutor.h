@@ -2,7 +2,7 @@
 #define GROMACSTOOLEXECUTOR_H
 
 #include <memory>
-#include "systemsetup.h"
+#include "model/systemsetup.h"
 
 class GromacsToolExecutor
 {

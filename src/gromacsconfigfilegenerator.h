@@ -4,7 +4,7 @@
 #include <memory>
 #include <QString>
 #include <QTextStream>
-#include "step.h"
+#include "model/step.h"
 
 class GromacsConfigFileGenerator
 {

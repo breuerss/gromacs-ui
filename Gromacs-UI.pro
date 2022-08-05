@@ -14,17 +14,17 @@ SOURCES += \
     src/gromacstoolexecutor.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/model/systemsetup.cpp \
     src/pdbconverter.cpp \
     src/pdbdownloader.cpp \
     src/pdbinfoextractor.cpp \
     src/preferencesdialog.cpp \
-    src/project.cpp \
+    src/model/project.cpp \
     src/projectmanager.cpp \
     src/settings.cpp \
     src/simulationsetupform.cpp \
     src/statusmessagesetter.cpp \
-    src/step.cpp \
-    src/systemsetup.cpp \
+    src/model/step.cpp \
     src/systemsetupform.cpp \
     src/uiconnectionhelper.cpp
 
@@ -37,14 +37,14 @@ HEADERS += \
     src/pdbdownloader.h \
     src/pdbinfoextractor.h \
     src/preferencesdialog.h \
-    src/project.h \
+    src/model/project.h \
     src/projectmanager.h \
     src/settings.h \
     src/simulationsetupform.h \
-    src/simulationtype.h \
+    src/model/simulationtype.h \
     src/statusmessagesetter.h \
-    src/step.h \
-    src/systemsetup.h \
+    src/model/step.h \
+    src/model/systemsetup.h \
     src/systemsetupform.h \
     src/uiconnectionhelper.h
 

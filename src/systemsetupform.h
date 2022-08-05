@@ -2,7 +2,7 @@
 #define SYSTEMSETUPFORM_H
 
 #include <QWidget>
-#include "systemsetup.h"
+#include "model/systemsetup.h"
 
 namespace Ui {
 class SystemSetupForm;

@@ -1,8 +1,9 @@
 #include "gromacsconfigfilegenerator.h"
 
+#include "model/simulationtype.h"
+
 #include <QFile>
 #include <QTextStream>
-#include "simulationtype.h"
 
 void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QString& fileName)
 {

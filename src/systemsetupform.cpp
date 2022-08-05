@@ -2,7 +2,7 @@
 #include "ui_systemsetupform.h"
 #include "pdbdownloader.h"
 #include "pdbinfoextractor.h"
-#include "project.h"
+#include "model/project.h"
 #include "gromacstoolexecutor.h"
 #include <QDir>
 #include <QCheckBox>

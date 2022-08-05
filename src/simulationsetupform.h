@@ -1,11 +1,12 @@
 #ifndef SIMULATIONSETUPFORM_H
 #define SIMULATIONSETUPFORM_H
 
-#include "simulationtype.h"
+#include "model/simulationtype.h"
+#include "model/step.h"
+
 #include <QWidget>
 #include <QComboBox>
 #include <memory>
-#include "step.h"
 
 namespace Ui {
 class SimulationSetupForm;

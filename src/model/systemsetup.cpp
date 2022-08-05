@@ -1,6 +1,6 @@
 #include "systemsetup.h"
 #include "project.h"
-#include "pdbconverter.h"
+#include "../pdbconverter.h"
 
 #include <QDebug>
 

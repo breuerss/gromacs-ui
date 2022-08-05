@@ -1,6 +1,6 @@
 #include "project.h"
 #include "systemsetup.h"
-#include "settings.h"
+#include "../settings.h"
 #include <QDebug>
 
 Project::Project(const QString& newName)

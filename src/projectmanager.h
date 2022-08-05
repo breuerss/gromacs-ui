@@ -1,7 +1,7 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
-#include "project.h"
+#include "model/project.h"
 
 #include <QObject>
 #include <memory>

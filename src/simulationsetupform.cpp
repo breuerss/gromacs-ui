@@ -1,6 +1,6 @@
 #include "simulationsetupform.h"
 #include "ui_simulationsetupform.h"
-#include "simulationtype.h"
+#include "model/simulationtype.h"
 #include "gromacsconfigfilegenerator.h"
 #include "uiconnectionhelper.h"
 
