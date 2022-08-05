@@ -10,7 +10,8 @@ public:
     static const QString GMX_PATH;
     static const QString APP_GEOMETRY;
     static const QString PDB_WC;
-    static const QString PDB_CHAIN;
+    static const QString PDB_SELCHAIN;
+    static const QString PDB_DELHETATM;
 
     Settings() = default;
 };

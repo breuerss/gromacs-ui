@@ -25,7 +25,8 @@ SOURCES += \
     src/statusmessagesetter.cpp \
     src/step.cpp \
     src/systemsetup.cpp \
-    src/systemsetupform.cpp
+    src/systemsetupform.cpp \
+    src/uiconnectionhelper.cpp
 
 HEADERS += \
     src/fileserver.h \

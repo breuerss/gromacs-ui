@@ -24,6 +24,7 @@ public:
     void setWaterModel(const QString& newWaterModel);
     void setBoxType(const QString& newBoxType);
     void setDistance(double distance);
+    void setRemoveHeteroAtoms(bool newRemoveHeteroAtoms);
 
     const QStringList& getChains() const;
     const QString& getForceField() const;
@@ -34,6 +35,7 @@ public:
     const QString& getBoxedStructureFile() const;
     const QString& getSolvatedStructureFile() const;
     double getDistance() const;
+    bool getRemoveHeteroAtoms() const;
 
 signals:
     void sourceStructureFileChanged(const QString& sourceStructureFile);
@@ -55,7 +57,8 @@ private:
     QString waterModel;
     QString boxType;
     QString forceField;
-    double distance;
+    double distance = 1.0;
+    bool removeHeteroAtoms = true;
 
     void evaluateConfigReady();
     void filterSourceStructure();

@@ -99,7 +99,7 @@ void SystemSetup::useChain(const QString& chain, bool use)
 void SystemSetup::filterSourceStructure()
 {
     PdbConverter converter;
-    filteredStructureFile = converter.convert(sourceStructureFile, chains);
+    filteredStructureFile = converter.convert(sourceStructureFile, chains, removeHeteroAtoms);
     emit filteredStructureFileChanged(filteredStructureFile);
     evaluateConfigReady();
 }
@@ -130,6 +130,12 @@ void SystemSetup::setDistance(double newDistance)
     distance = newDistance;
 }
 
+void SystemSetup::setRemoveHeteroAtoms(bool newRemoveHeteroAtoms)
+{
+    removeHeteroAtoms = newRemoveHeteroAtoms;
+    filterSourceStructure();
+}
+
 const QString& SystemSetup::getForceField() const
 {
     return forceField;
@@ -148,6 +154,11 @@ const QString& SystemSetup::getBoxType() const
 double SystemSetup::getDistance() const
 {
     return distance;
+}
+
+bool SystemSetup::getRemoveHeteroAtoms() const
+{
+    return removeHeteroAtoms;
 }
 
 const QString& SystemSetup::getFilteredStructureFile() const
@@ -193,7 +204,8 @@ QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
         << systemSetup.getProcessedStructureFile()
         << systemSetup.getBoxedStructureFile()
         << systemSetup.getSolvatedStructureFile()
-        << systemSetup.getDistance();
+        << systemSetup.getDistance()
+        << systemSetup.getRemoveHeteroAtoms();
 
     return out;
 }
@@ -235,6 +247,10 @@ QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
     double distance;
     in >> distance;
     systemSetup.setDistance(distance);
+
+    bool removeHeteroAtoms;
+    in >> removeHeteroAtoms;
+    systemSetup.setRemoveHeteroAtoms(removeHeteroAtoms);
 
     return in;
 }

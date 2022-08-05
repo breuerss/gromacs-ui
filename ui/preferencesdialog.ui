@@ -115,7 +115,7 @@
         <attribute name="title">
          <string>Tools</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_8">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <item>
@@ -157,6 +157,31 @@
              </item>
              <item>
               <widget class="QPushButton" name="buttonBrowsePdbchain">
+               <property name="text">
+                <string>Browse...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QLabel" name="pdbdelhetatmLabel">
+             <property name="text">
+              <string>Path to pdb_delhetatm</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <widget class="QLineEdit" name="pdbdelhetatm"/>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonBrowsePdbdelhetatm">
                <property name="text">
                 <string>Browse...</string>
                </property>

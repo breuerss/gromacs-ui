@@ -11,6 +11,8 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(ui->buttonBrowseGmx, &QPushButton::clicked, this, &PreferencesDialog::openSelectGmx);
     connect(ui->buttonBrowsePdbwc, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdbwc);
     connect(ui->buttonBrowsePdbchain, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdbchain);
+    connect(ui->buttonBrowsePdbdelhetatm, &QPushButton::clicked, this, &PreferencesDialog::openSelectPdbdelhetatm);
+    // TODO react to changes in text fields in preferences dialog
     connect(this, &QDialog::accepted, this, &PreferencesDialog::saveSettings);
 }
 
@@ -71,6 +73,19 @@ void PreferencesDialog::openSelectPdbchain()
     }
 }
 
+void PreferencesDialog::openSelectPdbdelhetatm()
+{
+    const QString newPdbdelhetatmPath = QFileDialog::getOpenFileName(
+                this,
+                tr("Select Path to pdb_delhetatm"),
+                QDir::homePath());
+
+    if (!newPdbdelhetatmPath.isEmpty())
+    {
+        setPdbdelhetatm(newPdbdelhetatmPath);
+    }
+}
+
 void PreferencesDialog::showEvent(QShowEvent *ev)
 {
     QDialog::showEvent(ev);
@@ -82,7 +97,8 @@ void PreferencesDialog::saveSettings()
     settings.setValue(Settings::PROJECTS_DIRECTORY, projectDirectory);
     settings.setValue(Settings::GMX_PATH, gmx);
     settings.setValue(Settings::PDB_WC, pdbwc);
-    settings.setValue(Settings::PDB_CHAIN, pdbchain);
+    settings.setValue(Settings::PDB_SELCHAIN, pdbchain);
+    settings.setValue(Settings::PDB_DELHETATM, pdbdelhetatm);
 }
 
 void PreferencesDialog::loadSettings()
@@ -90,7 +106,8 @@ void PreferencesDialog::loadSettings()
     setProjectDirectory(settings.value(Settings::PROJECTS_DIRECTORY).toString());
     setGmx(settings.value(Settings::GMX_PATH).toString());
     setPdbwc(settings.value(Settings::PDB_WC).toString());
-    setPdbchain(settings.value(Settings::PDB_CHAIN).toString());
+    setPdbchain(settings.value(Settings::PDB_SELCHAIN).toString());
+    setPdbdelhetatm(settings.value(Settings::PDB_DELHETATM).toString());
 }
 
 void PreferencesDialog::setProjectDirectory(const QString &newProjectDirectory)
@@ -115,4 +132,10 @@ void PreferencesDialog::setPdbchain(const QString &newPdbchain)
 {
     pdbchain = newPdbchain;
     ui->pdbchain->setText(pdbchain);
+}
+
+void PreferencesDialog::setPdbdelhetatm(const QString &newPdbdelhetatm)
+{
+    pdbdelhetatm = newPdbdelhetatm;
+    ui->pdbdelhetatm->setText(pdbdelhetatm);
 }

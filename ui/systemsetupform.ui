@@ -141,11 +141,18 @@
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="hetatmGroup">
-        <property name="title">
-         <string>Hetero Atoms</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <item alignment="Qt::AlignTop">
+         <widget class="QCheckBox" name="removeHeteroAtoms">
+          <property name="text">
+           <string>Remove Hetero Atoms</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

@@ -47,6 +47,11 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     });
     systemSetup->setForceField(ui->forceField->currentData().toString());
 
+    ui->removeHeteroAtoms->setChecked(systemSetup->getRemoveHeteroAtoms());
+    connect(ui->removeHeteroAtoms, &QCheckBox::stateChanged, [this] (int state) {
+        systemSetup->setRemoveHeteroAtoms(state == Qt::Checked);
+    });
+
     connect(ui->pdbEntry, &QLineEdit::textChanged, [this] (const QString& pdbCode) {
         if (pdbCode.length() == 4)
         {

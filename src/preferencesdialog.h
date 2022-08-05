@@ -17,7 +17,6 @@ public:
     explicit PreferencesDialog(QWidget *parent = nullptr);
     ~PreferencesDialog();
 
-
 protected:
       void showEvent(QShowEvent *ev);
 
@@ -26,6 +25,7 @@ private slots:
     void openSelectGmx();
     void openSelectPdbwc();
     void openSelectPdbchain();
+    void openSelectPdbdelhetatm();
     void saveSettings();
 
 private:
@@ -37,11 +37,13 @@ private:
     void setGmx(const QString& newGmxPath);
     void setPdbwc(const QString& newPdbwc);
     void setPdbchain(const QString& newPdbchain);
+    void setPdbdelhetatm(const QString& newPdbdelhetatm);
 
     QString projectDirectory;
     QString gmx;
     QString pdbwc;
     QString pdbchain;
+    QString pdbdelhetatm;
 };
 
 #endif // PREFERENCESDIALOG_H
