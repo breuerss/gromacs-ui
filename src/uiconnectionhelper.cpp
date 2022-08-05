@@ -13,4 +13,3 @@ void setOptions(
 
     comboBox->setCurrentIndex(defaultIndex);
 }
-

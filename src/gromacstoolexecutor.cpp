@@ -1,11 +1,12 @@
 #include "gromacstoolexecutor.h"
 
 #include "settings.h"
+#include "statusmessagesetter.h"
+
 #include <QProcess>
 #include <QFileInfo>
 #include <QDir>
 #include <QDebug>
-#include "statusmessagesetter.h"
 
 void GromacsToolExecutor::execPdb2gmx(const std::shared_ptr<SystemSetup> systemSetup)
 {
@@ -27,7 +28,6 @@ void GromacsToolExecutor::execPdb2gmx(const std::shared_ptr<SystemSetup> systemS
     inputDir.cdUp();
     inputDir.mkdir("system");
     inputDir.cd("system");
-    qDebug() << command;
     process.setWorkingDirectory(inputDir.absolutePath());
     process.start(command);
     process.waitForFinished();
@@ -39,6 +39,7 @@ void GromacsToolExecutor::execPdb2gmx(const std::shared_ptr<SystemSetup> systemS
         systemSetup->setProcessedStructureFile(inputDir.absolutePath() + "/" + outputFileName);
     }
 
+    qDebug() << message;
     StatusMessageSetter::getInstance()->setMessage(message);
 }
 
