@@ -38,6 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
     setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
     setupUIForProject();
     connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged, this, &MainWindow::setupUIForProject);
+    connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
+            [this] (int index) {
+        ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
+        ui->stepconfigurator->removeTab(index);
+    });
 }
 
 MainWindow::~MainWindow()
@@ -65,6 +70,9 @@ void MainWindow::setupUIForProject()
         ui->stepconfigurator->setEnabled(true);
         ui->stepconfigurator->clear();
         ui->stepconfigurator->addTab(new SystemSetupForm(project->getSystemSetup()), tr("System Setup"));
+        auto* tabBar = ui->stepconfigurator->tabBar();
+        tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
+        tabBar->setTabButton(0, QTabBar::RightSide, 0);
         for (auto& step: project->getSteps())
         {
             ui->stepconfigurator->addTab(new SimulationSetupForm(step), tr("Simulation Step"));
