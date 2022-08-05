@@ -31,6 +31,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
        systemSetup->setBoxType(ui->boxType->currentData().toString());
     });
+    // TODO set values of UI based on model and not the other way around
     systemSetup->setBoxType(ui->boxType->currentData().toString());
 
     connect(ui->waterModel, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
@@ -79,6 +80,8 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
 
     connect(systemSetup.get(), &SystemSetup::sourceStructureFileChanged,
         [this] (const QString& sourceStructureFile) {
+        // Workaround since this callback is executed before the
+        // callback that should update the molecule preview.
         QTimer::singleShot(100, [this, sourceStructureFile] {
 
             if (!sourceStructureFile.isEmpty())
