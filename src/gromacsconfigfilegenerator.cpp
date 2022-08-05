@@ -25,6 +25,7 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
     {
         writeLine(writer, "nsteps", (*step)["numberOfSteps"].toString());
 
+        // output control
         writeLine(writer, "nstenergy", (*step)["energyOutputFrequency"].toString());
         writeLine(writer, "nstxout", (*step)["positionOutputFrequency"].toString());
         writeLine(writer, "nstvout", (*step)["velocityOutputFrequency"].toString());
@@ -32,6 +33,7 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
         // TODO make logging freq configurable
         writeLine(writer, "nstlog", QString::number(1000));
 
+        // electrostatics and VdW
         writeLine(writer, "coulombtype", (*step)["electrostaticAlgorithm"].toString());
         writeLine(writer, "fourierSpacing", (*step)["fourierSpacing"].toString());
 
