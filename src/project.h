@@ -6,6 +6,7 @@
 class SystemSetup;
 
 #include <QString>
+#include <QDataStream>
 #include <vector>
 #include <memory>
 
@@ -15,9 +16,12 @@ public:
     Project(const QString& name);
 
     void addStep();
+    void removeStep(int index);
     const std::vector<std::shared_ptr<Step>>& getSteps() const;
-    std::shared_ptr<SystemSetup> getSystemSetup();
-    const QString& getName();
+    std::shared_ptr<SystemSetup> getSystemSetup() const;
+
+    const QString& getName() const;
+    void setName(const QString& newName);
     QString getProjectPath();
 
 private:
@@ -25,5 +29,8 @@ private:
     std::shared_ptr<SystemSetup> systemSetup;
     QString name;
 };
+
+QDataStream &operator<<(QDataStream &out, const Project &project);
+QDataStream &operator>>(QDataStream &in, Project &project);
 
 #endif // PROJECT_H

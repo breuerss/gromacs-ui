@@ -68,6 +68,9 @@
      <string>File</string>
     </property>
     <addaction name="actionNewProject"/>
+    <addaction name="actionOpen_Project"/>
+    <addaction name="actionSave_Project_As"/>
+    <addaction name="actionSave"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -100,6 +103,33 @@
   <action name="actionAddStep">
    <property name="text">
     <string>Add Step</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionOpen_Project">
+   <property name="text">
+    <string>Open Project...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionSave_Project_As">
+   <property name="text">
+    <string>Save Project As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>

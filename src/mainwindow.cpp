@@ -19,9 +19,18 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
-    connect(ui->actionNewProject, &QAction::triggered, [] () {
-       ProjectManager::getInstance()->createNewProject();
+    connect(ui->actionNewProject, &QAction::triggered,
+       ProjectManager::getInstance(), &ProjectManager::createNewProject);
+    connect(ui->actionAddStep, &QAction::triggered,
+       ProjectManager::getInstance(), &ProjectManager::addStep);
+
+    connect(ui->actionSave, &QAction::triggered,
+            ProjectManager::getInstance(), &ProjectManager::save);
+    connect(ui->actionSave_Project_As, &QAction::triggered, [] () {
+            ProjectManager::getInstance()->saveAs();
     });
+    connect(ui->actionOpen_Project, &QAction::triggered,
+            ProjectManager::getInstance(), &ProjectManager::open);
     connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
         [this] (const QString& message) {
         ui->statusbar->showMessage(message, 10000);

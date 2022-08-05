@@ -13,9 +13,10 @@ public:
     SystemSetup(Project* project);
     Project* getProject();
     void useChain(const QString& chain, bool use = true);
-    void setChains(const QStringList& chains);
 
+    void setChains(const QStringList& chains);
     void setSourceStructureFile(const QString& newSourceStructureFile);
+    void setFilteredStructureFile(const QString& newFilteredStructureFile);
     void setProcessedStructureFile(const QString& newProcessedStructureFile);
     void setBoxedStructureFile(const QString& newBoxedStructureFile);
     void setSolvatedStructureFile(const QString& newSolvatedStructureFile);
@@ -24,6 +25,7 @@ public:
     void setBoxType(const QString& newBoxType);
     void setDistance(double distance);
 
+    const QStringList& getChains() const;
     const QString& getForceField() const;
     const QString& getWaterModel() const;
     const QString& getBoxType() const;
@@ -58,5 +60,9 @@ private:
     void evaluateConfigReady();
     void filterSourceStructure();
 };
+
+QDataStream &operator<<(QDataStream &out, const SystemSetup &project);
+QDataStream &operator>>(QDataStream &in, SystemSetup &project);
+
 
 #endif // SYSTEMSETUP_H

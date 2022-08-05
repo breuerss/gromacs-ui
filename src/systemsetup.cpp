@@ -25,6 +25,16 @@ void SystemSetup::setSourceStructureFile(const QString &newSourceStructureFile)
     }
 }
 
+void SystemSetup::setFilteredStructureFile(const QString &newFilteredStructureFile)
+{
+    const bool changed = filteredStructureFile != newFilteredStructureFile;
+    filteredStructureFile = newFilteredStructureFile;
+    if (changed)
+    {
+        emit filteredStructureFileChanged(filteredStructureFile);
+    }
+}
+
 void SystemSetup::setProcessedStructureFile(const QString &newProcessedStructureFile)
 {
     const bool changed = processedStructureFile != newProcessedStructureFile;
@@ -60,6 +70,11 @@ void SystemSetup::setChains(const QStringList &newChains)
 {
     chains = newChains;
     filterSourceStructure();
+}
+
+const QStringList& SystemSetup::getChains() const
+{
+    return chains;
 }
 
 void SystemSetup::useChain(const QString& chain, bool use)
@@ -167,3 +182,60 @@ void SystemSetup::evaluateConfigReady()
         emit configReady();
     }
 }
+
+QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
+{
+    out << systemSetup.getChains()
+        << systemSetup.getForceField()
+        << systemSetup.getWaterModel()
+        << systemSetup.getBoxType()
+        << systemSetup.getFilteredStructureFile()
+        << systemSetup.getProcessedStructureFile()
+        << systemSetup.getBoxedStructureFile()
+        << systemSetup.getSolvatedStructureFile()
+        << systemSetup.getDistance();
+
+    return out;
+}
+
+QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
+{
+    QStringList chains;
+    in >> chains;
+    systemSetup.setChains(chains);
+
+    QString forceField;
+    in >> forceField;
+    systemSetup.setForceField(forceField);
+
+    QString waterModel;
+    in >> waterModel;
+    systemSetup.setWaterModel(waterModel);
+
+    QString boxType;
+    in >> boxType;
+    systemSetup.setBoxType(boxType);
+
+    QString filteredStructureFile;
+    in >> filteredStructureFile;
+    systemSetup.setFilteredStructureFile(filteredStructureFile);
+
+    QString processedStructureFile;
+    in >> processedStructureFile;
+    systemSetup.setProcessedStructureFile(processedStructureFile);
+
+    QString boxedStructureFile;
+    in >> boxedStructureFile;
+    systemSetup.setBoxedStructureFile(boxedStructureFile);
+
+    QString solvatedStructureFile;
+    in >> solvatedStructureFile;
+    systemSetup.setSolvatedStructureFile(solvatedStructureFile);
+
+    double distance;
+    in >> distance;
+    systemSetup.setDistance(distance);
+
+    return in;
+}
+
