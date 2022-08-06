@@ -45,7 +45,7 @@ signals:
     void processedStructureFileChanged(const QString& processedStructureFile);
     void boxedStructureFileChanged(const QString& boxedStructureFile);
     void solvatedStructureFileChanged(const QString& solvatedStructureFile);
-    void configReady();
+    void configReadyChanged(bool ready);
 
 private:
     Project* project;
@@ -62,6 +62,7 @@ private:
     QString forceField;
     double distance = 1.0;
     bool removeHeteroAtoms = true;
+    bool configReady = false;
 
     void evaluateConfigReady();
     void filterSourceStructure();

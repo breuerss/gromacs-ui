@@ -194,13 +194,16 @@ const QString& SystemSetup::getSolvatedStructureFile() const
 void SystemSetup::evaluateConfigReady()
 {
     qDebug() << "evaluateConfigReady"  << boxType << waterModel << forceField << filteredStructureFile;
-    if (
-            !boxType.isEmpty() &&
-            !waterModel.isEmpty() &&
-            !forceField.isEmpty() &&
-            !filteredStructureFile.isEmpty())
+    const bool newConfigReady = !boxType.isEmpty() &&
+        !waterModel.isEmpty() &&
+        !forceField.isEmpty() &&
+        !filteredStructureFile.isEmpty();
+
+    const bool changed = newConfigReady != configReady;
+    configReady = newConfigReady;
+    if (changed)
     {
-        emit configReady();
+        emit configReadyChanged(configReady);
     }
 }
 

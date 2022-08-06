@@ -56,5 +56,6 @@ QString PdbConverter::getTemporaryFileName()
     // is deleted before QFile::copy writes to it.
     QTemporaryFile tmp;
     tmp.open();
-    return tmp.fileName();
+    QString fileName = tmp.fileName();
+    return fileName;
 }

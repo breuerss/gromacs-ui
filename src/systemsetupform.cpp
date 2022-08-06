@@ -24,15 +24,18 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     prepareBoxOptions();
 
     auto queue = std::make_shared<Command::Queue>();
-    connect(systemSetup.get(), &SystemSetup::configReady, [this, queue] () {
+    connect(systemSetup.get(), &SystemSetup::configReadyChanged, [this, queue] (bool ready) {
         qDebug() << "config ready";
-        queue
-            ->clear()
-            ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
-            ->enqueue(std::make_shared<Command::CreateBox>(systemSetup))
-            ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
-            ->start();
-        // TODO genion
+        if (ready)
+        {
+            queue
+                ->clear()
+                ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
+                ->enqueue(std::make_shared<Command::CreateBox>(systemSetup))
+                ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
+                ->start();
+            // TODO genion
+        }
     });
 
     connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
