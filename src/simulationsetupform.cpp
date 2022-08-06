@@ -14,7 +14,7 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
         { "None", SimulationType::None },
         { "Minimisation", SimulationType::Minimisation },
 //        { "Microcanonical (NVE)", SimulationType::NVE },
-//        { "Canonical (NVT)", SimulationType::NVT },
+        { "Canonical (NVT)", SimulationType::NVT },
 //        { "Gibbs/Isobaric-isothermal (NPT)", SimulationType::NPT },
     });
 
@@ -68,6 +68,12 @@ void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
         ui->velocityOutputFrequency->setEnabled(false);
         ui->forceOutputFrequency->setEnabled(false);
         break;
+    case SimulationType::NVT:
+        ui->electroStaticsGroup->setVisible(true);
+        ui->vanDerWaalsGroup->setVisible(true);
+        ui->generalGroup->setVisible(true);
+        ui->outputSettingsGroup->setVisible(true);
+        break;
     case SimulationType::None:
     default:
         break;
@@ -108,14 +114,15 @@ void SimulationSetupForm::setAlgorithmsForType(SimulationType::Type type)
         });
         defaultIndex = 1;
         break;
+    case SimulationType::NVT:
+        map = QList<QPair<QString, QVariant>>({
+            { "None", "" },
+            { "Leap Frog", "md" },
+        });
+        defaultIndex = 1;
     default:
         break;
     }
 
-    for (const auto& entry: map)
-    {
-        ui->algorithm->addItem(entry.first, entry.second);
-    }
-    ui->algorithm->setCurrentIndex(defaultIndex);
-
+    setOptions(ui->algorithm, map, defaultIndex);
 }

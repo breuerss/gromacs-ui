@@ -34,6 +34,21 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOpenProject, &QAction::triggered,
         ProjectManager::getInstance(), &ProjectManager::open);
 
+    connect(ui->actionRunSimulation, &QAction::triggered, [this] () {
+        std::shared_ptr<Project> project = ProjectManager::getInstance()->getCurrentProject();
+        const auto& steps = project->getSteps();
+        int noOfSteps = steps.size();
+        QString projectPath = project->getProjectPath();
+        for (int stepIndex = 0; stepIndex < noOfSteps; ++stepIndex)
+        {
+            GromacsToolExecutor::execMdrun(project, stepIndex);
+            QString stepType = steps[stepIndex]->getDirectory();
+            QString basePath = projectPath + "/" + stepType + "/" + stepType;
+
+            setMoleculeFile(basePath + ".gro");
+        }
+    });
+
     connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
         [this] (const QString& message) {
         ui->statusbar->showMessage(message, 10000);

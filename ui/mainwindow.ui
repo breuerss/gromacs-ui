@@ -87,7 +87,7 @@
     <property name="title">
      <string>Simulation</string>
     </property>
-    <addaction name="actionRun"/>
+    <addaction name="actionRunSimulation"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -142,9 +142,9 @@
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionRun">
+  <action name="actionRunSimulation">
    <property name="text">
-    <string>Run</string>
+    <string>Run Simulation</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>

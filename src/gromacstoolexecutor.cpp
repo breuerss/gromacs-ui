@@ -2,6 +2,8 @@
 
 #include "settings.h"
 #include "statusmessagesetter.h"
+#include "gromacsconfigfilegenerator.h"
+#include "model/project.h"
 
 #include <QProcess>
 #include <QFileInfo>
@@ -88,6 +90,7 @@ void GromacsToolExecutor::execSolvate(const std::shared_ptr<SystemSetup> systemS
     QString inputDirectory = fileInfo.absolutePath();
     qDebug() << command;
     process.setWorkingDirectory(inputDirectory);
+    StatusMessageSetter::getInstance()->setMessage("Running command " + command);
     process.start(command);
     process.waitForFinished();
 
@@ -99,6 +102,63 @@ void GromacsToolExecutor::execSolvate(const std::shared_ptr<SystemSetup> systemS
     }
 
     StatusMessageSetter::getInstance()->setMessage(message);
+}
+
+void GromacsToolExecutor::execMdrun(const std::shared_ptr<Project> project, int stepIndex)
+{
+    QDir dir(project->getProjectPath());
+    const auto& steps = project->getSteps();
+    std::shared_ptr<Step> step = steps[stepIndex];
+
+    QString stepType = step->getDirectory();
+    dir.mkdir(stepType);
+    dir.cd(stepType);
+    QString mdpFile = dir.absolutePath() + "/" + stepType + ".mdp";
+    GromacsConfigFileGenerator::generate(step, mdpFile);
+    qDebug() << mdpFile;
+
+    QProcess process;
+    process.setWorkingDirectory(dir.absolutePath());
+
+
+    QString inputStructure = project->getSystemSetup()->getSolvatedStructureFile();
+    QFileInfo systemPath(inputStructure);
+    if (stepIndex > 0)
+    {
+        QString prevStepType = steps[stepIndex - 1]->getDirectory();
+        inputStructure = dir.absolutePath() + "/../" + prevStepType + "/" + prevStepType + ".gro";
+    }
+    QString command = "gmx grompp";
+    command += " -f " + mdpFile;
+    command += " -c " + inputStructure;
+    command += " -p " + systemPath.absolutePath() + "/topol.top";
+    command += " -maxwarn 2 ";
+    command += " -o " + stepType + ".tpr";
+
+    qDebug() << "executing" << command;
+    process.start(command);
+    process.waitForFinished(900000);
+
+    if (process.exitCode() != 0)
+    {
+        StatusMessageSetter::getInstance()->setMessage("Could not execute " + command);
+        return;
+    }
+
+    command = "gmx mdrun -v -deffnm " + stepType;
+    qDebug() << "executing" << command;
+    QObject::connect(&process, &QProcess::readyReadStandardOutput, [&process] () {
+            qDebug() << "readRead";
+        QString message = process.readLine();
+        while (!message.isEmpty())
+        {
+            qDebug() << message;
+            StatusMessageSetter::getInstance()->setMessage(message);
+            message = process.readLine();
+        }
+    });
+    process.start(command);
+    process.waitForFinished(900000);
 }
 
 QString GromacsToolExecutor::getWaterBoxFor(const QString &solvent)
