@@ -28,10 +28,10 @@ MainWindow::MainWindow(QWidget *parent)
     });
     connect(ui->actionSave, &QAction::triggered,
         ProjectManager::getInstance(), &ProjectManager::save);
-    connect(ui->actionSave_Project_As, &QAction::triggered, [] () {
+    connect(ui->actionSaveProjectAs, &QAction::triggered, [] () {
         ProjectManager::getInstance()->saveAs();
     });
-    connect(ui->actionOpen_Project, &QAction::triggered,
+    connect(ui->actionOpenProject, &QAction::triggered,
         ProjectManager::getInstance(), &ProjectManager::open);
 
     connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
