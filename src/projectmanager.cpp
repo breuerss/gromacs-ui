@@ -46,12 +46,18 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
     QString writeToFileName = saveAsFileName;
     if (writeToFileName.isEmpty())
     {
+        QString suffix(".groproj");
         writeToFileName = QFileDialog::getSaveFileName(
                     nullptr,
                     tr("Save Gromacs Project File"),
                     QDir::homePath(),
-                    "*.groproj"
+                    "*" + suffix
                     );
+
+        if (!writeToFileName.endsWith(suffix))
+        {
+          writeToFileName += suffix;
+        }
     }
 
     if (!writeToFileName.isEmpty())
