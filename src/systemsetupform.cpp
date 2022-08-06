@@ -23,10 +23,9 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     prepareForceFieldOptions();
     prepareBoxOptions();
 
-    connect(systemSetup.get(), &SystemSetup::configReady, [this] () {
+    auto queue = std::make_shared<Command::Queue>();
+    connect(systemSetup.get(), &SystemSetup::configReady, [this, queue] () {
         qDebug() << "config ready";
-
-        auto* queue = Command::Queue::getInstance();
         queue
             ->clear()
             ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))

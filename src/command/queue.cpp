@@ -5,15 +5,10 @@
 
 namespace Command {
 
-Queue* Queue::getInstance()
+Queue::Queue(QObject *parent)
+    : QObject{parent}
+    , failed(false)
 {
-    static std::unique_ptr<Queue> instance;
-    if (!instance)
-    {
-        instance.reset(new Queue);
-    }
-
-    return instance.get();
 }
 
 Queue* Queue::clear()
@@ -75,13 +70,6 @@ void Queue::execNext()
     {
         emit finished(!failed);
     }
-}
-
-Queue::Queue(QObject *parent)
-    : QObject{parent}
-    , failed(false)
-{
-
 }
 
 }

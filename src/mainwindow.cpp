@@ -36,28 +36,25 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOpenProject, &QAction::triggered,
         ProjectManager::getInstance(), &ProjectManager::open);
 
-    connect(ui->actionRunSimulation, &QAction::triggered, [this] () {
-        std::shared_ptr<Project> project = ProjectManager::getInstance()->getCurrentProject();
-        auto* queue = Command::Queue::getInstance();
-
-        disconnect(queue, &Command::Queue::stepFinished, 0, 0);
-        connect(queue, &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
-            if (success)
+    auto queue = std::make_shared<Command::Queue>();
+    auto project = ProjectManager::getInstance()->getCurrentProject();
+    connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
+        if (success)
+        {
+            QString projectPath = project->getProjectPath();
+            QString stepType = project->getSteps()[stepIndex]->getDirectory();
+            QString basePath = projectPath + "/" + stepType + "/" + stepType;
+            QString trajectory = basePath + ".xtc";
+            if (!QFile(trajectory).exists())
             {
-                QString projectPath = project->getProjectPath();
-                QString stepType = project->getSteps()[stepIndex]->getDirectory();
-                QString basePath = projectPath + "/" + stepType + "/" + stepType;
-                QString trajectory = basePath + ".xtc";
-                if (!QFile(trajectory).exists())
-                {
-                    trajectory = "";
-                }
-
-                qDebug() << "molecule files" << basePath + ".gro" << trajectory;
-                setMoleculeFile(basePath + ".gro", trajectory);
+                trajectory = "";
             }
-        });
 
+            qDebug() << "molecule files" << basePath + ".gro" << trajectory;
+            setMoleculeFile(basePath + ".gro", trajectory);
+        }
+    });
+    connect(ui->actionRunSimulation, &QAction::triggered, [this, queue, project] () {
         queue->clear();
         int noOfSteps = project->getSteps().size();
         for (int stepIndex = 0; stepIndex < noOfSteps; ++stepIndex)

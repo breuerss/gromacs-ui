@@ -14,7 +14,8 @@ class Queue : public QObject
 {
     Q_OBJECT
 public:
-    static Queue* getInstance();
+    explicit Queue(QObject *parent = nullptr);
+
     Queue* clear();
     Queue* enqueue(std::shared_ptr<Executor> executor, bool needsPrevious = true);
     void start();
@@ -25,7 +26,6 @@ signals:
     void stepFinished(int stepIndex, bool success);
 
 private:
-    explicit Queue(QObject *parent = nullptr);
     void execNext();
     bool failed;
     int numberOfSteps;
