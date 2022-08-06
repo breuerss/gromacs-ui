@@ -9,9 +9,14 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/command/createbox.cpp \
+    src/command/creategromacsmodel.cpp \
+    src/command/executor.cpp \
+    src/command/queue.cpp \
+    src/command/runsimulation.cpp \
+    src/command/solvate.cpp \
     src/fileserver.cpp \
     src/gromacsconfigfilegenerator.cpp \
-    src/gromacstoolexecutor.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/model/systemsetup.cpp \
@@ -29,9 +34,14 @@ SOURCES += \
     src/uiconnectionhelper.cpp
 
 HEADERS += \
+    src/command/createbox.h \
+    src/command/creategromacsmodel.h \
+    src/command/executor.h \
+    src/command/queue.h \
+    src/command/runsimulation.h \
+    src/command/solvate.h \
     src/fileserver.h \
     src/gromacsconfigfilegenerator.h \
-    src/gromacstoolexecutor.h \
     src/mainwindow.h \
     src/pdbconverter.h \
     src/pdbdownloader.h \

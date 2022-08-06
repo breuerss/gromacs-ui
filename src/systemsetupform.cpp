@@ -3,11 +3,14 @@
 #include "pdbdownloader.h"
 #include "pdbinfoextractor.h"
 #include "model/project.h"
-#include "gromacstoolexecutor.h"
 #include <QDir>
 #include <QCheckBox>
 #include <QTimer>
 #include "uiconnectionhelper.h"
+#include "command/queue.h"
+#include "command/creategromacsmodel.h"
+#include "command/createbox.h"
+#include "command/solvate.h"
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QWidget *parent)
     : QWidget(parent)
@@ -22,9 +25,14 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
 
     connect(systemSetup.get(), &SystemSetup::configReady, [this] () {
         qDebug() << "config ready";
-        GromacsToolExecutor::execPdb2gmx(systemSetup);
-        GromacsToolExecutor::execEditConf(systemSetup);
-        GromacsToolExecutor::execSolvate(systemSetup);
+
+        auto* queue = Command::Queue::getInstance();
+        queue
+            ->clear()
+            ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
+            ->enqueue(std::make_shared<Command::CreateBox>(systemSetup))
+            ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
+            ->start();
         // TODO genion
     });
 

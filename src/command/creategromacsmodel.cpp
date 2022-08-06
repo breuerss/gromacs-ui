@@ -1,0 +1,46 @@
+#include "creategromacsmodel.h"
+
+#include "../settings.h"
+#include "../statusmessagesetter.h"
+
+#include <QFileInfo>
+
+namespace Command {
+
+CreateGromacsModel::CreateGromacsModel(std::shared_ptr<SystemSetup> newSystemSetup, QObject *parent)
+    : Executor(parent)
+    , systemSetup(newSystemSetup)
+{
+
+}
+
+void CreateGromacsModel::exec()
+{
+    Settings settings;
+    QString command = settings.value(Settings::GMX_PATH).toString();
+    if (command.isEmpty())
+    {
+        QString message("Path to 'gmx' command is not set.");
+        StatusMessageSetter::getInstance()->setMessage(message);
+        return;
+    }
+
+    command += " pdb2gmx";
+    QString inputFile = systemSetup->getFilteredStructureFile();
+    QFileInfo fileInfo(inputFile);
+
+    QString outputFileName = fileInfo.baseName().replace("_filtered", "_processed") + ".gro";
+    command += " -f " + inputFile;
+    command += " -o " + outputFileName;
+    command += " -water " + systemSetup->getWaterModel();
+    command += " -ff " + systemSetup->getForceField();
+
+    QString inputDirectory = fileInfo.absolutePath();
+    process.setWorkingDirectory(inputDirectory);
+    process.start(command);
+
+    QString absPathOutputFileName = inputDirectory + "/" + outputFileName;
+    systemSetup->setProcessedStructureFile(absPathOutputFileName);
+}
+
+}

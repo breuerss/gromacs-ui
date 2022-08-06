@@ -11,7 +11,8 @@
 #include "systemsetupform.h"
 #include "simulationsetupform.h"
 #include "statusmessagesetter.h"
-#include "gromacstoolexecutor.h"
+#include "command/queue.h"
+#include "command/runsimulation.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,22 +38,34 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionRunSimulation, &QAction::triggered, [this] () {
         std::shared_ptr<Project> project = ProjectManager::getInstance()->getCurrentProject();
-        const auto& steps = project->getSteps();
-        int noOfSteps = steps.size();
-        QString projectPath = project->getProjectPath();
+        auto* queue = Command::Queue::getInstance();
+
+        disconnect(queue, &Command::Queue::stepFinished, 0, 0);
+        connect(queue, &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
+            if (success)
+            {
+                QString projectPath = project->getProjectPath();
+                QString stepType = project->getSteps()[stepIndex]->getDirectory();
+                QString basePath = projectPath + "/" + stepType + "/" + stepType;
+                QString trajectory = basePath + ".xtc";
+                if (!QFile(trajectory).exists())
+                {
+                    trajectory = "";
+                }
+
+                qDebug() << "molecule files" << basePath + ".gro" << trajectory;
+                setMoleculeFile(basePath + ".gro", trajectory);
+            }
+        });
+
+        queue->clear();
+        int noOfSteps = project->getSteps().size();
         for (int stepIndex = 0; stepIndex < noOfSteps; ++stepIndex)
         {
-            GromacsToolExecutor::execMdrun(project, stepIndex);
-            QString stepType = steps[stepIndex]->getDirectory();
-            QString basePath = projectPath + "/" + stepType + "/" + stepType;
-            QString trajectory = basePath + ".xtc";
-            if (!QFile(trajectory).exists())
-            {
-                trajectory = "";
-            }
-
-            setMoleculeFile(basePath + ".gro", trajectory);
+            queue
+                ->enqueue(std::make_shared<Command::RunSimulation>(project, stepIndex));
         }
+        queue->start();
     });
 
     connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
