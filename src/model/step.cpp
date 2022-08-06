@@ -20,3 +20,17 @@ Step::Step()
     (*this)["fourierSpacing"] = 0.125;
     (*this)["vdwCutoffRadius"] = 1.0;
 }
+
+QString Step::getName() const
+{
+  // TODO update on simulationType change
+  // TODO translation
+  QString name("None");
+  if ((*this)["simulationType"].value<SimulationType::Type>() == SimulationType::Minimisation)
+  {
+    name = "Minimisation";
+  }
+
+  return name;
+}
+

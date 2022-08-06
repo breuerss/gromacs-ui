@@ -11,12 +11,16 @@ Project::Project(const QString& newName)
 
 void Project::addStep()
 {
-    steps.push_back(std::make_shared<Step>());
+    auto step = std::make_shared<Step>();
+    steps.push_back(step);
+    emit stepAdded(step, steps.size());
 }
 
-void Project::removeStep(int index)
+void Project::removeStep(int at)
 {
-    steps.erase(steps.begin() + index);
+    auto step = steps[at];
+    steps.erase(steps.begin() + at);
+    emit stepRemoved(step, at);
 }
 
 const std::vector<std::shared_ptr<Step>>& Project::getSteps() const

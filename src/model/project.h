@@ -7,11 +7,13 @@ class SystemSetup;
 
 #include <QString>
 #include <QDataStream>
+#include <QObject>
 #include <vector>
 #include <memory>
 
-class Project
+class Project : public QObject
 {
+    Q_OBJECT
 public:
     Project(const QString& name);
 
@@ -23,6 +25,10 @@ public:
     const QString& getName() const;
     void setName(const QString& newName);
     QString getProjectPath();
+
+signals:
+    void stepAdded(std::shared_ptr<Step> step, int at);
+    void stepRemoved(std::shared_ptr<Step> step, int at);
 
 private:
     std::vector<std::shared_ptr<Step>> steps;

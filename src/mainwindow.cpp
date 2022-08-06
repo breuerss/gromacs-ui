@@ -18,26 +18,35 @@ MainWindow::MainWindow(QWidget *parent)
     , preferencesDialog(new PreferencesDialog(this))
 {
     ui->setupUi(this);
+    setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
+
     connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
     connect(ui->actionNewProject, &QAction::triggered,
-       ProjectManager::getInstance(), &ProjectManager::createNewProject);
-    connect(ui->actionAddStep, &QAction::triggered,
-       ProjectManager::getInstance(), &ProjectManager::addStep);
-
+        ProjectManager::getInstance(), &ProjectManager::createNewProject);
+    connect(ui->actionAddStep, &QAction::triggered, [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addStep();
+    });
     connect(ui->actionSave, &QAction::triggered,
-            ProjectManager::getInstance(), &ProjectManager::save);
+        ProjectManager::getInstance(), &ProjectManager::save);
     connect(ui->actionSave_Project_As, &QAction::triggered, [] () {
-            ProjectManager::getInstance()->saveAs();
+        ProjectManager::getInstance()->saveAs();
     });
     connect(ui->actionOpen_Project, &QAction::triggered,
-            ProjectManager::getInstance(), &ProjectManager::open);
+        ProjectManager::getInstance(), &ProjectManager::open);
+
     connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
         [this] (const QString& message) {
         ui->statusbar->showMessage(message, 10000);
     });
-    setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
     setupUIForProject();
-    connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged, this, &MainWindow::setupUIForProject);
+    connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged, [this] () {
+        connect(ProjectManager::getInstance()->getCurrentProject().get(), &Project::stepAdded,
+            this, &MainWindow::addTabForStep);
+        setupUIForProject();
+    });
+    connect(ProjectManager::getInstance()->getCurrentProject().get(), &Project::stepAdded,
+        this, &MainWindow::addTabForStep);
+
     connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
             [this] (int index) {
         ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
@@ -73,9 +82,9 @@ void MainWindow::setupUIForProject()
         auto* tabBar = ui->stepconfigurator->tabBar();
         tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
         tabBar->setTabButton(0, QTabBar::RightSide, 0);
-        for (auto& step: project->getSteps())
+        for (auto step: project->getSteps())
         {
-            ui->stepconfigurator->addTab(new SimulationSetupForm(step), tr("Simulation Step"));
+            addTabForStep(step);
         }
 
         connect(project->getSystemSetup().get(), &SystemSetup::sourceStructureFileChanged,
@@ -92,6 +101,15 @@ void MainWindow::setupUIForProject()
     }
 
     setMoleculeFile();
+}
+
+void MainWindow::addTabForStep(std::shared_ptr<Step> step, int at)
+{
+    if (at == -1)
+    {
+        at = ui->stepconfigurator->count();
+    }
+    ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());
 }
 
 void MainWindow::setMoleculeFile(const QString& file)

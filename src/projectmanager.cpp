@@ -17,18 +17,6 @@ ProjectManager* ProjectManager::getInstance()
     return instance.get();
 }
 
-void ProjectManager::addStep()
-{
-    qDebug() << "ProjectManager::addStep";
-    if (currentProject)
-    {
-        currentProject->addStep();
-        // TODO adding a step should result in UI update instead
-        //of emitting that the whole project changed
-        emit currentProjectChanged(currentProject);
-    }
-}
-
 const std::shared_ptr<Project> ProjectManager::getCurrentProject() const
 {
     return currentProject;

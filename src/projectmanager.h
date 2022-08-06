@@ -18,7 +18,6 @@ signals:
     void currentProjectChanged(std::shared_ptr<Project> currentProject);
 
 public slots:
-    void addStep();
     void save();
     void open();
     void saveAs(const QString& fileName = "");
