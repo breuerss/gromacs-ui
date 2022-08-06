@@ -19,7 +19,7 @@ RunSimulation::RunSimulation(std::shared_ptr<Project> project, int stepIndex, QO
 
 void RunSimulation::exec()
 {
-    qDebug() << "Create model";
+    qDebug() << "Exec simulation";
     QString gmx = getGmx();
     if (gmx.isEmpty())
     {

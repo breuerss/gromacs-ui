@@ -72,9 +72,9 @@ private:
     double ionConcentration = 0.15;
     QStringList chains;
 
-    QString waterModel;
-    QString boxType;
-    QString forceField;
+    QString waterModel = "tip3p";
+    QString boxType = "dodecahedron";
+    QString forceField = "oplsaa";
     double distance = 1.0;
     bool removeHeteroAtoms = true;
     bool configReady = false;
