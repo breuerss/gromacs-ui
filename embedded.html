@@ -30,17 +30,27 @@
 
                 viewportShowExpand: false,
                 viewportShowSelectionMode: false,
-                viewportShowAnimation: false,
+                viewportShowAnimation: true,
 
                 pdbProvider: 'rcsb',
                 emdbProvider: 'rcsb',
             }).then(async (viewer) => {
                 var urlSearchParams = new URLSearchParams(window.location.search);
                 var params = Object.fromEntries(urlSearchParams.entries());
-                var url = params.file || '';
+                var url = params.structure || '';
                 if (url.endsWith('pdb') || url.endsWith('gro')) {
                     const type = url.split('.').pop();
-                    await viewer.loadStructureFromUrl(url, format=type);
+                    const trajectory = params.trajectory || '';
+                    if (trajectory && trajectory.endsWith('xtc')) {
+                        await viewer.loadTrajectory({
+                            model: { kind: 'model-url', url: url, format: type },
+                            coordinates: { kind: 'coordinates-url', url: trajectory, format: 'xtc', isBinary: true },
+                            preset: 'default'
+                        });
+                    } else {
+                        await viewer.loadStructureFromUrl(url, format=type);
+                    }
+
                 }
                 const { structures } = viewer.plugin.managers.structure.hierarchy.selection;
                 const preset = viewer.plugin.builders.structure.representation.providerMap.get("preset-structure-representation-illustrative");

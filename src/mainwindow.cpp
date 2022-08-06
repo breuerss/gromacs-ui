@@ -11,6 +11,7 @@
 #include "systemsetupform.h"
 #include "simulationsetupform.h"
 #include "statusmessagesetter.h"
+#include "gromacstoolexecutor.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -44,8 +45,13 @@ MainWindow::MainWindow(QWidget *parent)
             GromacsToolExecutor::execMdrun(project, stepIndex);
             QString stepType = steps[stepIndex]->getDirectory();
             QString basePath = projectPath + "/" + stepType + "/" + stepType;
+            QString trajectory = basePath + ".xtc";
+            if (!QFile(trajectory).exists())
+            {
+                trajectory = "";
+            }
 
-            setMoleculeFile(basePath + ".gro");
+            setMoleculeFile(basePath + ".gro", trajectory);
         }
     });
 
@@ -103,13 +109,19 @@ void MainWindow::setupUIForProject()
         }
 
         connect(project->getSystemSetup().get(), &SystemSetup::sourceStructureFileChanged,
-                this, &MainWindow::setMoleculeFile);
+                [this] (const QString& fileName) {
+            setMoleculeFile(fileName);
+        });
 
         connect(project->getSystemSetup().get(), &SystemSetup::filteredStructureFileChanged,
-                this, &MainWindow::setMoleculeFile);
+                [this] (const QString& fileName) {
+            setMoleculeFile(fileName);
+        });
 
         connect(project->getSystemSetup().get(), &SystemSetup::solvatedStructureFileChanged,
-                this, &MainWindow::setMoleculeFile);
+                [this] (const QString& fileName) {
+            setMoleculeFile(fileName);
+        });
 
         auto* settings = ui->molpreview->page()->settings();
         settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
@@ -127,7 +139,7 @@ void MainWindow::addTabForStep(std::shared_ptr<Step> step, int at)
     ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());
 }
 
-void MainWindow::setMoleculeFile(const QString& file)
+void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 {
     // TODO shared path from install target
     QString currentDir = QDir::currentPath();
@@ -136,7 +148,15 @@ void MainWindow::setMoleculeFile(const QString& file)
     if (!file.isEmpty())
     {
         QString modelUrl = FileServer::getInstance()->getUrlForFile(file);
-        url.setQuery(QUrlQuery({{ "file", modelUrl }}));
+        QString trajectoryUrl = trajectory;
+        if (!trajectory.isEmpty())
+        {
+            trajectoryUrl = FileServer::getInstance()->getUrlForFile(trajectory);
+        }
+        url.setQuery(QUrlQuery({
+                                   { "structure", modelUrl },
+                                   { "trajectory", trajectoryUrl }
+                               }));
     }
 
     ui->molpreview->setUrl(url);

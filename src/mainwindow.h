@@ -35,6 +35,6 @@ private:
     PreferencesDialog* preferencesDialog;
     void setupUIForProject();
     Settings settings;
-    void setMoleculeFile(const QString& file = "");
+    void setMoleculeFile(const QString& file = "", const QString& traj = "");
 };
 #endif // MAINWINDOW_H

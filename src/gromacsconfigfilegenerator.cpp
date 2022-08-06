@@ -28,6 +28,8 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
         // output control
         writeLine(writer, "nstenergy", (*step)["energyOutputFrequency"].toString());
         writeLine(writer, "nstxout", (*step)["positionOutputFrequency"].toString());
+        writeLine(writer, "nstxout-compressed", (*step)["positionOutputFrequency"].toString());
+
         writeLine(writer, "nstvout", (*step)["velocityOutputFrequency"].toString());
         writeLine(writer, "nstfout", (*step)["forceOutputFrequency"].toString());
         // TODO make logging freq configurable
