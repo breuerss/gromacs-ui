@@ -2,8 +2,9 @@
 #include "../gromacsconfigfilegenerator.h"
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
-#include <QDebug>
+#include "../settings.h"
 
+#include <QDebug>
 #include <QDir>
 
 namespace Command {
@@ -18,6 +19,8 @@ RunSimulation::RunSimulation(std::shared_ptr<Project> project, int stepIndex, QO
 
 void RunSimulation::exec()
 {
+    qDebug() << "Create model";
+
     QDir dir(project->getProjectPath());
     const auto& steps = project->getSteps();
     std::shared_ptr<Step> step = steps[stepIndex];

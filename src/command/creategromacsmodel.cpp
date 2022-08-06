@@ -4,6 +4,7 @@
 #include "../statusmessagesetter.h"
 
 #include <QFileInfo>
+#include <QDebug>
 
 namespace Command {
 
@@ -16,6 +17,7 @@ CreateGromacsModel::CreateGromacsModel(std::shared_ptr<SystemSetup> newSystemSet
 
 void CreateGromacsModel::exec()
 {
+    qDebug() << "Create model";
     Settings settings;
     QString command = settings.value(Settings::GMX_PATH).toString();
     if (command.isEmpty())

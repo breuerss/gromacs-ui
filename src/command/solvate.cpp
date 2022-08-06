@@ -3,6 +3,7 @@
 #include "../settings.h"
 #include "../statusmessagesetter.h"
 #include <QFileInfo>
+#include <QDebug>
 
 namespace Command {
 
@@ -15,6 +16,7 @@ Solvate::Solvate(std::shared_ptr<SystemSetup> newSystemSetup, QObject *parent)
 
 void Solvate::exec()
 {
+    qDebug() << "Solvate";
     Settings settings;
     QString command = settings.value(Settings::GMX_PATH).toString();
     if (command.isEmpty())

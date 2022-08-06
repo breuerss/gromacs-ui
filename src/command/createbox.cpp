@@ -3,6 +3,7 @@
 #include "../settings.h"
 #include "../statusmessagesetter.h"
 #include <QFileInfo>
+#include <QDebug>
 
 namespace Command {
 
@@ -15,6 +16,7 @@ CreateBox::CreateBox(std::shared_ptr<SystemSetup> newSystemSetup, QObject *paren
 
 void CreateBox::exec()
 {
+    qDebug() << "Create Box";
     Settings settings;
     QString command = settings.value(Settings::GMX_PATH).toString();
     if (command.isEmpty())
