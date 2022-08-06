@@ -64,7 +64,7 @@ QString FileServer::getUrlForFile(const QString& absFilePath)
     QString url;
     if (absFilePath.startsWith(projectsDir))
     {
-        qDebug() << "is in shared directory";
+        qDebug() << absFilePath << "is in served directory.";
 
         QString filePathInSharedDir = absFilePath;
         filePathInSharedDir.remove(0, projectsDir.length());
