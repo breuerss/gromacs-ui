@@ -62,7 +62,6 @@ QString Step::getDirectory() const
 
 QVariant& Step::operator[](const QString& key)
 {
-    qDebug() << "in operator []";
     if (key == "simulationType")
     {
         emit directoryChanged();
