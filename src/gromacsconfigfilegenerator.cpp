@@ -12,17 +12,9 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
     QTextStream writer(&file);
 
     SimulationType::Type simulationType = (*step)["simulationType"].value<SimulationType::Type>();
-    if (simulationType == SimulationType::Minimisation)
-    {
-
-        writeLine(writer, "title", "Minimisation");
-        writeLine(writer, "integrator", (*step)["algorithm"].toString());
-        writeLine(writer, "emtol", (*step)["minimisationMaximumForce"].toString());
-        writeLine(writer, "emstep", (*step)["minimisationStepSize"].toString());
-    }
-
     if (simulationType != SimulationType::None)
     {
+        writeLine(writer, "integrator", (*step)["algorithm"].toString());
         writeLine(writer, "nsteps", (*step)["numberOfSteps"].toString());
 
         // output control
@@ -41,6 +33,12 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
 
         writeLine(writer, "rcoulomb", (*step)["electrostaticCutoffRadius"].toString());
         writeLine(writer, "rvdw", (*step)["vdwCutoffRadius"].toString());
+    }
+
+    if (simulationType == SimulationType::Minimisation)
+    {
+        writeLine(writer, "emtol", (*step)["minimisationMaximumForce"].toString());
+        writeLine(writer, "emstep", (*step)["minimisationStepSize"].toString());
     }
 
     file.close();

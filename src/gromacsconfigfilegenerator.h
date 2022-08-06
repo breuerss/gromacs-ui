@@ -10,6 +10,8 @@ class GromacsConfigFileGenerator
 {
 public:
     static void generate(std::shared_ptr<Step> step, const QString& fileName);
+
+private:
     static void writeLine(QTextStream& writer, const QString& key, const QString& value);
 };
 
