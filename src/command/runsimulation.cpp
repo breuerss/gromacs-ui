@@ -39,7 +39,7 @@ void RunSimulation::exec()
     GromacsConfigFileGenerator::generate(step, mdpFile);
     qDebug() << mdpFile;
 
-    QString inputStructure = project->getSystemSetup()->getSolvatedStructureFile();
+    QString inputStructure = project->getSystemSetup()->getNeutralisedStructureFile();
     QFileInfo systemPath(inputStructure);
     if (stepIndex > 0)
     {
@@ -60,6 +60,7 @@ void RunSimulation::exec()
 
     const QString command = gmx + " mdrun -v -deffnm " + stepType;
     qDebug() << "executing" << command;
+    StatusMessageSetter::getInstance()->setMessage("Executing " + command);
     process.setWorkingDirectory(dir.absolutePath());
     process.start(command);
 }

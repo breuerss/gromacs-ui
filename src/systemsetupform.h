@@ -23,6 +23,11 @@ private:
     void prepareWaterOptions();
     void prepareForceFieldOptions();
     void prepareBoxOptions();
+
+    void setIonFromModel();
+    void connectIonSelectors();
+
+    void setGroupsEnabled(bool enabled);
 };
 
 #endif // SYSTEMSETUPFORM_H

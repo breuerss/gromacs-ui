@@ -12,6 +12,7 @@ SOURCES += \
     src/command/createbox.cpp \
     src/command/creategromacsmodel.cpp \
     src/command/executor.cpp \
+    src/command/neutralise.cpp \
     src/command/queue.cpp \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
@@ -37,6 +38,7 @@ HEADERS += \
     src/command/createbox.h \
     src/command/creategromacsmodel.h \
     src/command/executor.h \
+    src/command/neutralise.h \
     src/command/queue.h \
     src/command/runsimulation.h \
     src/command/solvate.h \

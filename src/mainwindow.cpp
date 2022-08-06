@@ -133,6 +133,11 @@ void MainWindow::setupUIForProject()
             setMoleculeFile(fileName);
         });
 
+        connect(project->getSystemSetup().get(), &SystemSetup::neutralisedStructureFileChanged,
+                [this] (const QString& fileName) {
+            setMoleculeFile(fileName);
+        });
+
         auto* settings = ui->molpreview->page()->settings();
         settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
     }

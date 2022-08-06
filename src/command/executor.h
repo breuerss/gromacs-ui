@@ -12,6 +12,7 @@ class Executor : public QObject
 public:
     explicit Executor(QObject *parent = nullptr);
     virtual void exec() = 0;
+    void stop();
 
     bool hasRun() const;
     bool wasSuccessful() const;

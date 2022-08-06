@@ -11,6 +11,7 @@
 #include "command/creategromacsmodel.h"
 #include "command/createbox.h"
 #include "command/solvate.h"
+#include "command/neutralise.h"
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QWidget *parent)
     : QWidget(parent)
@@ -22,6 +23,11 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     prepareWaterOptions();
     prepareForceFieldOptions();
     prepareBoxOptions();
+    setIonFromModel();
+    connectIonSelectors();
+    ui->ionConcentration->setValue(systemSetup->getIonContration());
+    connect(ui->ionConcentration, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+       systemSetup.get(), &SystemSetup::setIonContration);
 
     auto queue = std::make_shared<Command::Queue>();
     connect(systemSetup.get(), &SystemSetup::configReadyChanged, [this, queue] (bool ready) {
@@ -33,6 +39,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
                 ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
                 ->enqueue(std::make_shared<Command::CreateBox>(systemSetup))
                 ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
+                ->enqueue(std::make_shared<Command::Neutralise>(systemSetup))
                 ->start();
             // TODO genion
         }
@@ -87,6 +94,10 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
             QFileInfo fileInfo(file);
             pdbDownloader->download(pdbCode, fileInfo.absoluteFilePath());
         }
+        else
+        {
+            setGroupsEnabled(false);
+        }
     });
     ui->pdbEntry->setText(systemSetup->getPdbCode());
 
@@ -98,8 +109,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
 
             if (!sourceStructureFile.isEmpty())
             {
-                ui->filterGroup->setEnabled(true);
-                ui->systemSetupGroup->setEnabled(true);
+                setGroupsEnabled(true);
                 PdbInfoExtractor extractor;
                 QStringList chains = extractor.getChains(sourceStructureFile);
 
@@ -157,4 +167,83 @@ void SystemSetupForm::prepareBoxOptions()
         { "Octahedron", "octahedron" },
         { "Dodecahedron", "dodecahedron" }
     }, 2);
+}
+
+void SystemSetupForm::setIonFromModel()
+{
+    QString positiveIon = systemSetup->getPositiveIon();
+    QString negativeIon = systemSetup->getNegativeIon();
+    QMap<QString, QRadioButton*> map = {
+        { "MG", ui->mgIon },
+        { "CA", ui->caIon },
+        { "LI", ui->liIon },
+        { "NA", ui->naIon },
+        { "K", ui->kIon },
+        { "RB", ui->rbIon },
+        { "CS", ui->csIon },
+        { "F", ui->fIon },
+        { "CL", ui->clIon },
+        { "BR", ui->brIon },
+        { "I", ui->iIon },
+    };
+
+    for (const auto& element : map.keys())
+    {
+        if (positiveIon == element || negativeIon == element)
+        {
+            map[element]->setChecked(true);
+        }
+    }
+
+}
+
+void SystemSetupForm::connectIonSelectors()
+{
+    QMap<QRadioButton*, QString> positiveIonMap = {
+        { ui->mgIon, "MG" },
+        { ui->caIon, "CA" },
+        { ui->liIon, "LI" },
+        { ui->naIon, "NA" },
+        { ui->kIon, "K" },
+        { ui->rbIon, "RB" },
+        { ui->csIon, "CS" },
+    };
+    for (auto* button: positiveIonMap.keys())
+    {
+        QString ion = positiveIonMap[button];
+        connect(button, &QRadioButton::toggled,
+            [this, ion] (bool checked)
+        {
+            if (checked)
+            {
+                systemSetup->setPositiveIon(ion);
+            }
+        });
+    }
+
+    QMap<QRadioButton*, QString> negativeIonMap = {
+        { ui->fIon, "F" },
+        { ui->clIon, "CL" },
+        { ui->brIon, "BR" },
+        { ui->iIon, "I" },
+    };
+    for (auto* button: negativeIonMap.keys())
+    {
+        QString ion = negativeIonMap[button];
+        connect(button, &QRadioButton::toggled,
+            [this, ion] (bool checked)
+        {
+            if (checked)
+            {
+                systemSetup->setNegativeIon(ion);
+            }
+        });
+    }
+}
+
+void SystemSetupForm::setGroupsEnabled(bool enabled)
+{
+    ui->filterGroup->setEnabled(enabled);
+    ui->systemSetupGroup->setEnabled(enabled);
+    ui->neutraliseGroup->setEnabled(enabled);
 }

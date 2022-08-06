@@ -17,6 +17,7 @@ Queue* Queue::clear()
     if (current)
     {
         disconnect(current.get(), 0, 0, 0);
+        current->stop();
         current.reset();
     }
     return this;

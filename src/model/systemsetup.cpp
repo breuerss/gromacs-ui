@@ -77,6 +77,52 @@ const QStringList& SystemSetup::getChains() const
     return chains;
 }
 
+void SystemSetup::setIonContration(double newConcentration)
+{
+    ionConcentration = newConcentration;
+    evaluateConfigReady();
+}
+
+double SystemSetup::getIonContration() const
+{
+    return ionConcentration;
+}
+
+void SystemSetup::setPositiveIon(const QString& newPositiveIon)
+{
+    positiveIon = newPositiveIon;
+    evaluateConfigReady();
+}
+
+const QString& SystemSetup::getPositiveIon() const
+{
+    return positiveIon;
+}
+
+void SystemSetup::setNegativeIon(const QString& newNegativeIon)
+{
+    negativeIon = newNegativeIon;
+    evaluateConfigReady();
+}
+
+const QString& SystemSetup::getNegativeIon() const
+{
+    return negativeIon;
+}
+
+const QString& SystemSetup::getNeutralisedStructureFile() const
+{
+    return neutralisedStructureFile;
+}
+
+void SystemSetup::setNeutralisedStructureFile(const QString& newNeutralisedStructureFile)
+{
+    const bool changed = neutralisedStructureFile != newNeutralisedStructureFile;
+    neutralisedStructureFile = newNeutralisedStructureFile;
+
+    emit neutralisedStructureFileChanged(neutralisedStructureFile);
+}
+
 void SystemSetup::useChain(const QString& chain, bool use)
 {
     qDebug() << chain << use;
@@ -199,7 +245,7 @@ void SystemSetup::evaluateConfigReady()
         !forceField.isEmpty() &&
         !filteredStructureFile.isEmpty();
 
-    const bool changed = newConfigReady != configReady;
+    const bool changed = true;//newConfigReady != configReady;
     configReady = newConfigReady;
     if (changed)
     {

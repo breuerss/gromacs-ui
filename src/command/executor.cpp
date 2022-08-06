@@ -1,5 +1,6 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
+#include <QDebug>
 
 namespace Command {
 
@@ -20,6 +21,13 @@ Executor::Executor(QObject *parent)
         StatusMessageSetter::getInstance()->setMessage(message);
         emit finished();
     });
+}
+
+void Executor::stop()
+{
+  qDebug() << "stopping";
+  process.terminate();
+  process.waitForFinished();
 }
 
 bool Executor::hasRun() const

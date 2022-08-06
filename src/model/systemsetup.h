@@ -21,11 +21,16 @@ public:
     void setProcessedStructureFile(const QString& newProcessedStructureFile);
     void setBoxedStructureFile(const QString& newBoxedStructureFile);
     void setSolvatedStructureFile(const QString& newSolvatedStructureFile);
+    void setNeutralisedStructureFile(const QString& neutralisedStructureFile);
     void setForceField(const QString& newForceField);
     void setWaterModel(const QString& newWaterModel);
     void setBoxType(const QString& newBoxType);
     void setDistance(double distance);
     void setRemoveHeteroAtoms(bool newRemoveHeteroAtoms);
+
+    void setIonContration(double newConcentation);
+    void setPositiveIon(const QString&);
+    void setNegativeIon(const QString&);
 
     const QString& getPdbCode() const;
     const QStringList& getChains() const;
@@ -36,8 +41,13 @@ public:
     const QString& getProcessedStructureFile() const;
     const QString& getBoxedStructureFile() const;
     const QString& getSolvatedStructureFile() const;
+    const QString& getNeutralisedStructureFile() const;
     double getDistance() const;
     bool getRemoveHeteroAtoms() const;
+
+    double getIonContration() const;
+    const QString& getPositiveIon() const;
+    const QString& getNegativeIon() const;
 
 signals:
     void sourceStructureFileChanged(const QString& sourceStructureFile);
@@ -45,6 +55,7 @@ signals:
     void processedStructureFileChanged(const QString& processedStructureFile);
     void boxedStructureFileChanged(const QString& boxedStructureFile);
     void solvatedStructureFileChanged(const QString& solvatedStructureFile);
+    void neutralisedStructureFileChanged(const QString& solvatedStructureFile);
     void configReadyChanged(bool ready);
 
 private:
@@ -55,6 +66,10 @@ private:
     QString processedStructureFile;
     QString boxedStructureFile;
     QString solvatedStructureFile;
+    QString neutralisedStructureFile;
+    QString positiveIon = "NA";
+    QString negativeIon = "CL";
+    double ionConcentration = 0.15;
     QStringList chains;
 
     QString waterModel;
