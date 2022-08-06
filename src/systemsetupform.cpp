@@ -62,6 +62,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     });
 
     connect(ui->pdbEntry, &QLineEdit::textChanged, [this] (const QString& pdbCode) {
+        systemSetup->setPdbCode(pdbCode);
         if (pdbCode.length() == 4)
         {
             qDebug() << "Starting PDB download for" << pdbCode;
@@ -84,6 +85,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
             pdbDownloader->download(pdbCode, fileInfo.absoluteFilePath());
         }
     });
+    ui->pdbEntry->setText(systemSetup->getPdbCode());
 
     connect(systemSetup.get(), &SystemSetup::sourceStructureFileChanged,
         [this] (const QString& sourceStructureFile) {

@@ -136,6 +136,16 @@ void SystemSetup::setRemoveHeteroAtoms(bool newRemoveHeteroAtoms)
     filterSourceStructure();
 }
 
+void SystemSetup::setPdbCode(const QString& newPdbCode)
+{
+    pdbCode = newPdbCode;
+}
+
+const QString& SystemSetup::getPdbCode() const
+{
+    return pdbCode;
+}
+
 const QString& SystemSetup::getForceField() const
 {
     return forceField;
@@ -196,7 +206,8 @@ void SystemSetup::evaluateConfigReady()
 
 QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
 {
-    out << systemSetup.getChains()
+    out << systemSetup.getPdbCode()
+        << systemSetup.getChains()
         << systemSetup.getForceField()
         << systemSetup.getWaterModel()
         << systemSetup.getBoxType()
@@ -212,6 +223,10 @@ QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
 
 QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
 {
+    QString pdbCode;
+    in >> pdbCode;
+    systemSetup.setPdbCode(pdbCode);
+
     QStringList chains;
     in >> chains;
     systemSetup.setChains(chains);

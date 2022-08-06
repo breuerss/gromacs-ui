@@ -14,6 +14,7 @@ public:
     Project* getProject();
     void useChain(const QString& chain, bool use = true);
 
+    void setPdbCode(const QString& pdbCode);
     void setChains(const QStringList& chains);
     void setSourceStructureFile(const QString& newSourceStructureFile);
     void setFilteredStructureFile(const QString& newFilteredStructureFile);
@@ -26,6 +27,7 @@ public:
     void setDistance(double distance);
     void setRemoveHeteroAtoms(bool newRemoveHeteroAtoms);
 
+    const QString& getPdbCode() const;
     const QStringList& getChains() const;
     const QString& getForceField() const;
     const QString& getWaterModel() const;
@@ -47,6 +49,7 @@ signals:
 
 private:
     Project* project;
+    QString pdbCode;
     QString sourceStructureFile;
     QString filteredStructureFile;
     QString processedStructureFile;
