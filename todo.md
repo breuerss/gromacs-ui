@@ -9,7 +9,6 @@
 1. logger instead of QDebug
 1. consistent connection to userinterface
 1. project name configuration
-1. neutralize with genion
 1. detect if system was already run
 1. disable configuration during run
 1. loading of files without webserver?
