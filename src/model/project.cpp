@@ -77,7 +77,11 @@ QDataStream &operator>>(QDataStream &in, Project &project)
     int numberOfSteps;
     in >> numberOfSteps;
 
-    qDebug() << numberOfSteps;
+    while (project.getSteps().size())
+    {
+      project.removeStep(project.getSteps().size() - 1);
+    }
+
     for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
     {
        project.addStep();
