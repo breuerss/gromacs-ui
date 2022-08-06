@@ -24,11 +24,7 @@ void GromacsToolExecutor::execPdb2gmx(const std::shared_ptr<SystemSetup> systemS
     command += " -ff " + systemSetup->getForceField();
 
     QString inputDirectory = fileInfo.absolutePath();
-    QDir inputDir(inputDirectory);
-    inputDir.cdUp();
-    inputDir.mkdir("system");
-    inputDir.cd("system");
-    process.setWorkingDirectory(inputDir.absolutePath());
+    process.setWorkingDirectory(inputDirectory);
     process.start(command);
     process.waitForFinished();
 
@@ -36,7 +32,7 @@ void GromacsToolExecutor::execPdb2gmx(const std::shared_ptr<SystemSetup> systemS
     if (process.exitCode() == 0)
     {
         message = "Sucessfully executed " + command;
-        systemSetup->setProcessedStructureFile(inputDir.absolutePath() + "/" + outputFileName);
+        systemSetup->setProcessedStructureFile(inputDirectory + "/" + outputFileName);
     }
 
     qDebug() << message;
@@ -59,9 +55,8 @@ void GromacsToolExecutor::execEditConf(const std::shared_ptr<SystemSetup> system
     command += " -bt " + systemSetup->getBoxType();
 
     QString inputDirectory = fileInfo.absolutePath();
-    QDir inputDir(inputDirectory);
     qDebug() << command;
-    process.setWorkingDirectory(inputDir.absolutePath());
+    process.setWorkingDirectory(inputDirectory);
     process.start(command);
     process.waitForFinished();
 
@@ -69,7 +64,7 @@ void GromacsToolExecutor::execEditConf(const std::shared_ptr<SystemSetup> system
     if (process.exitCode() == 0)
     {
         message = "Sucessfully executed " + command;
-        systemSetup->setBoxedStructureFile(inputDir.absolutePath() + "/" + outputFile);
+        systemSetup->setBoxedStructureFile(inputDirectory + "/" + outputFile);
     }
 
     StatusMessageSetter::getInstance()->setMessage(message);
