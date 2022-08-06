@@ -20,6 +20,13 @@ RunSimulation::RunSimulation(std::shared_ptr<Project> project, int stepIndex, QO
 void RunSimulation::exec()
 {
     qDebug() << "Create model";
+    QString gmx = getGmx();
+    if (gmx.isEmpty())
+    {
+        QString message("Path to 'gmx' command is not set.");
+        StatusMessageSetter::getInstance()->setMessage(message);
+        return;
+    }
 
     QDir dir(project->getProjectPath());
     const auto& steps = project->getSteps();
@@ -51,10 +58,16 @@ void RunSimulation::exec()
         return;
     }
 
-    const QString command = "gmx mdrun -v -deffnm " + stepType;
+    const QString command = gmx + " mdrun -v -deffnm " + stepType;
     qDebug() << "executing" << command;
     process.setWorkingDirectory(dir.absolutePath());
     process.start(command);
+}
+
+QString RunSimulation::getGmx() const
+{
+    Settings settings;
+    return settings.value(Settings::GMX_PATH).toString();
 }
 
 bool RunSimulation::execGrompp(
@@ -65,7 +78,7 @@ bool RunSimulation::execGrompp(
         const QString& workingDirectory
         )
 {
-    QString command = "gmx grompp";
+    QString command = getGmx() + " grompp";
     command += " -f " + mdpFile;
     command += " -c " + inputStructure;
     command += " -p " + topology;
