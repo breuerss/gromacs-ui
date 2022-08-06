@@ -262,7 +262,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QGroupBox" name="electroStaticsGroup">
+         <widget class="QGroupBox" name="electrostaticsGroup">
           <property name="title">
            <string>Electrostatic Potential</string>
           </property>
@@ -277,7 +277,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="electroStaticAlgorithm"/>
+              <widget class="QComboBox" name="electrostaticAlgorithm"/>
              </item>
             </layout>
            </item>

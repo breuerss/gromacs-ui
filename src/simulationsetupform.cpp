@@ -37,10 +37,11 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
     connectToUi<QSpinBox, int>(container, step, "velocityOutputFrequency");
     connectToUi<QSpinBox, int>(container, step, "forceOutputFrequency");
 
-    setOptions(ui->electroStaticAlgorithm, {
+    setOptions(ui->electrostaticAlgorithm, {
+                   {"None", "no"},
                    {"PME", "PME"},
-               });
-    connectToUi<QString>(container, step, "electroStaticAlgorithm");
+               }, 1);
+    connectToUi<QString>(container, step, "electrostaticAlgorithm");
     connectToUi<QDoubleSpinBox, double>(container, step, "electrostaticCutoffRadius");
     connectToUi<QDoubleSpinBox, double>(container, step, "fourierSpacing");
     connectToUi<QDoubleSpinBox, double>(container, step, "vdwCutoffRadius");
@@ -59,7 +60,7 @@ void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
     switch(type)
     {
     case SimulationType::Minimisation:
-        ui->electroStaticsGroup->setVisible(true);
+        ui->electrostaticsGroup->setVisible(true);
         ui->vanDerWaalsGroup->setVisible(true);
         ui->generalGroup->setVisible(true);
         ui->outputSettingsGroup->setVisible(true);
@@ -69,7 +70,7 @@ void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
         ui->forceOutputFrequency->setEnabled(false);
         break;
     case SimulationType::NVT:
-        ui->electroStaticsGroup->setVisible(true);
+        ui->electrostaticsGroup->setVisible(true);
         ui->vanDerWaalsGroup->setVisible(true);
         ui->generalGroup->setVisible(true);
         ui->outputSettingsGroup->setVisible(true);
@@ -82,7 +83,7 @@ void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
 
 void SimulationSetupForm::hideSettings()
 {
-    ui->electroStaticsGroup->setVisible(false);
+    ui->electrostaticsGroup->setVisible(false);
     ui->vanDerWaalsGroup->setVisible(false);
     ui->generalGroup->setVisible(false);
     ui->outputSettingsGroup->setVisible(false);
