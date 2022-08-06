@@ -44,11 +44,6 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
     connectToUi<QDoubleSpinBox, double>(container, step, "electrostaticCutoffRadius");
     connectToUi<QDoubleSpinBox, double>(container, step, "fourierSpacing");
     connectToUi<QDoubleSpinBox, double>(container, step, "vdwCutoffRadius");
-
-    connect(ui->createConfig, &QPushButton::clicked, [this] () {
-        GromacsConfigFileGenerator::generate(step, "/tmp/out.mdp");
-    });
-
 }
 
 SimulationSetupForm::~SimulationSetupForm()

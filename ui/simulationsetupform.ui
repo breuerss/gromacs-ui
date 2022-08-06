@@ -387,13 +387,6 @@
      </property>
     </spacer>
    </item>
-   <item>
-    <widget class="QPushButton" name="createConfig">
-     <property name="text">
-      <string>Create Config</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources/>
