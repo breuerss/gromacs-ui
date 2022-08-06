@@ -14,7 +14,11 @@ Queue::Queue(QObject *parent)
 Queue* Queue::clear()
 {
     queue.clear();
-    current.reset();
+    if (current)
+    {
+        disconnect(current.get(), 0, 0, 0);
+        current.reset();
+    }
     return this;
 }
 
