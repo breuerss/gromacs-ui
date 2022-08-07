@@ -185,6 +185,9 @@ void MainWindow::addTabForStep(std::shared_ptr<Step> step, int at)
     {
         at = ui->stepconfigurator->count();
     }
+    connect(step.get(), &Step::simulationTypeChanged, [this, step, at] () {
+        ui->stepconfigurator->setTabText(at, step->getName());
+    });
     ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());
 }
 
