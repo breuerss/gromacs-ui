@@ -11,18 +11,18 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
 {
     ui->setupUi(this);
     setOptions(ui->simulationType, {
-        { "None", SimulationType::None },
-        { "Minimisation", SimulationType::Minimisation },
+        { "None", QVariant::fromValue(SimulationType::None) },
+        { "Minimisation", QVariant::fromValue(SimulationType::Minimisation) },
 //        { "Microcanonical (NVE)", SimulationType::NVE },
-        { "Canonical (NVT)", SimulationType::NVT },
+        { "Canonical (NVT)", QVariant::fromValue(SimulationType::NVT) },
 //        { "Gibbs/Isobaric-isothermal (NPT)", SimulationType::NPT },
     });
 
-    connectToUi<SimulationType::Type>(
+    connectToUi<SimulationType>(
                 ui->simulationType,
                 step,
                 "simulationType",
-                [this] (SimulationType::Type type) {
+                [this] (SimulationType type) {
         updateUiForSimulationType(type);
     });
 
@@ -52,7 +52,7 @@ SimulationSetupForm::~SimulationSetupForm()
     delete ui;
 }
 
-void SimulationSetupForm::updateUiForSimulationType(SimulationType::Type type)
+void SimulationSetupForm::updateUiForSimulationType(SimulationType type)
 {
     hideSettings();
     setAlgorithmsForType(type);
@@ -100,7 +100,7 @@ void SimulationSetupForm::enableAllSettings()
     }
 }
 
-void SimulationSetupForm::setAlgorithmsForType(SimulationType::Type type)
+void SimulationSetupForm::setAlgorithmsForType(SimulationType type)
 {
     QList<QPair<QString, QVariant>> map;
     int defaultIndex = 0;

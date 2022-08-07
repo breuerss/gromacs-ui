@@ -24,8 +24,8 @@ private:
     std::shared_ptr<Step> step;
     Ui::SimulationSetupForm *ui;
 
-    void updateUiForSimulationType(SimulationType::Type type = SimulationType::None);
-    void setAlgorithmsForType(SimulationType::Type type);
+    void updateUiForSimulationType(SimulationType type = SimulationType::None);
+    void setAlgorithmsForType(SimulationType type);
     void hideSettings();
     void enableAllSettings();
 };

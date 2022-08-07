@@ -11,34 +11,34 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
     file.open(QFile::WriteOnly);
     QTextStream writer(&file);
 
-    SimulationType::Type simulationType = (*step)["simulationType"].value<SimulationType::Type>();
+    SimulationType simulationType = step->property("simulationType").value<SimulationType>();
     if (simulationType != SimulationType::None)
     {
-        writeLine(writer, "integrator", (*step)["algorithm"].toString());
-        writeLine(writer, "nsteps", (*step)["numberOfSteps"].toString());
+        writeLine(writer, "integrator", step->property("algorithm").toString());
+        writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
 
         // output control
-        writeLine(writer, "nstenergy", (*step)["energyOutputFrequency"].toString());
-        writeLine(writer, "nstxout", (*step)["positionOutputFrequency"].toString());
-        writeLine(writer, "nstxout-compressed", (*step)["positionOutputFrequency"].toString());
+        writeLine(writer, "nstenergy", step->property("energyOutputFrequency").toString());
+        writeLine(writer, "nstxout", step->property("positionOutputFrequency").toString());
+        writeLine(writer, "nstxout-compressed", step->property("positionOutputFrequency").toString());
 
-        writeLine(writer, "nstvout", (*step)["velocityOutputFrequency"].toString());
-        writeLine(writer, "nstfout", (*step)["forceOutputFrequency"].toString());
+        writeLine(writer, "nstvout", step->property("velocityOutputFrequency").toString());
+        writeLine(writer, "nstfout", step->property("forceOutputFrequency").toString());
         // TODO make logging freq configurable
         writeLine(writer, "nstlog", QString::number(1000));
 
         // electrostatics and VdW
-        writeLine(writer, "coulombtype", (*step)["electrostaticAlgorithm"].toString());
-        writeLine(writer, "fourierSpacing", (*step)["fourierSpacing"].toString());
+        writeLine(writer, "coulombtype", step->property("electrostaticAlgorithm").toString());
+        writeLine(writer, "fourierSpacing", step->property("fourierSpacing").toString());
 
-        writeLine(writer, "rcoulomb", (*step)["electrostaticCutoffRadius"].toString());
-        writeLine(writer, "rvdw", (*step)["vdwCutoffRadius"].toString());
+        writeLine(writer, "rcoulomb", step->property("electrostaticCutoffRadius").toString());
+        writeLine(writer, "rvdw", step->property("vdwCutoffRadius").toString());
     }
 
     if (simulationType == SimulationType::Minimisation)
     {
-        writeLine(writer, "emtol", (*step)["minimisationMaximumForce"].toString());
-        writeLine(writer, "emstep", (*step)["minimisationStepSize"].toString());
+        writeLine(writer, "emtol", step->property("minimisationMaximumForce").toString());
+        writeLine(writer, "emstep", step->property("minimisationStepSize").toString());
     }
 
     file.close();

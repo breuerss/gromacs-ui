@@ -1,38 +1,31 @@
 #include "step.h"
 #include "simulationtype.h"
 #include <QDebug>
+#include <QMetaProperty>
+#include <cstring>
 
 Step::Step()
 {
-    (*this)["simulationType"] = SimulationType::None;
-    (*this)["algorithm"] = "";
-
-    (*this)["numberOfSteps"] = -1;
-    (*this)["minimisationMaximumForce"] = 1000.0;
-    (*this)["minimisationStepSize"] = 0.01;
-
-    (*this)["energyOutputFrequency"] = 500;
-    (*this)["positionOutputFrequency"] = 1000;
-    (*this)["velocityOutputFrequency"] = 0;
-    (*this)["forceOutputFrequency"] = 0;
-
-    (*this)["electrostaticAlgorithm"] = "PME";
-    (*this)["electrostaticCutoffRadius"] = 1.0;
-    (*this)["fourierSpacing"] = 0.125;
-    (*this)["vdwCutoffRadius"] = 1.0;
+    // Ugly hack to make SimulationType serializable as an integer
+    // in QVariant
+    static bool registered = false;
+    if (!registered)
+    {
+      qRegisterMetaType<SimulationType>("SimulationType");
+      qRegisterMetaTypeStreamOperators<int>("SimulationType");
+      registered = true;
+    }
 }
 
 QString Step::getName() const
 {
-  // TODO update on simulationType change
   // TODO translation
   QString name("None");
-  const SimulationType::Type type = (*this)["simulationType"].value<SimulationType::Type>();
-  if (type == SimulationType::Minimisation)
+  if (simulationType == SimulationType::Minimisation)
   {
     name = "Minimisation";
   }
-  else if (type == SimulationType::NVT)
+  else if (simulationType == SimulationType::NVT)
   {
       name = "NVT";
   }
@@ -46,12 +39,11 @@ QString Step::getDirectory() const
   // TODO update on simulationType change
   // TODO translation
   QString directory("None");
-  const SimulationType::Type type = (*this)["simulationType"].value<SimulationType::Type>();
-  if (type == SimulationType::Minimisation)
+  if (simulationType == SimulationType::Minimisation)
   {
     directory = "min";
   }
-  else if (type == SimulationType::NVT)
+  else if (simulationType == SimulationType::NVT)
   {
       directory = "nvt";
   }
@@ -60,18 +52,36 @@ QString Step::getDirectory() const
   return directory;
 }
 
-QVariant& Step::operator[](const QString& key)
+QDataStream &operator<<(QDataStream &out, const Step& step)
 {
-    if (key == "simulationType")
-    {
-        emit directoryChanged();
-        emit nameChanged();
+    const QMetaObject *metaobject = step.metaObject();
+    int count = metaobject->propertyCount();
+    qDebug() << "Writing" << count << "properties from step";
+    for (int i = 0; i < count; ++i) {
+        QMetaProperty metaproperty = metaobject->property(i);
+        const char *name = metaproperty.name();
+        QVariant value = step.property(name);
+
+        out << value;
     }
 
-    return QVariantMap::operator[](key);
+    return out;
 }
 
-QVariant Step::operator[](const QString& key) const
+QDataStream &operator>>(QDataStream &in, Step& step)
 {
-    return QVariantMap::operator[](key);
+    const QMetaObject *metaobject = step.metaObject();
+    int count = metaobject->propertyCount();
+
+    qDebug() << "Reading" << count << "properties to step";
+    for (int i = 0; i < count; ++i) {
+        QMetaProperty metaproperty = metaobject->property(i);
+        const char *name = metaproperty.name();
+
+        QVariant value;
+        in >> value;
+        step.setProperty(name, value);
+    }
+
+    return in;
 }

@@ -6,15 +6,15 @@
 #include <functional>
 
 template<typename ElementType, typename ValueType>
-void connectToUi(QWidget* container, std::shared_ptr<QVariantMap> model, const QString& elementName)
+void connectToUi(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
 {
     ElementType* widget = container->findChild<ElementType*>(elementName);
-    widget->setValue((*model)[elementName].value<ValueType>());
+    widget->setValue(model->property(elementName.toStdString().c_str()).value<ValueType>());
     QObject::connect(
         widget,
         QOverload<ValueType>::of(&ElementType::valueChanged),
             [model, elementName] (ValueType value) {
-        (*model)[elementName] = value;
+        model->setProperty(elementName.toStdString().c_str(), value);
     });
 
 }
@@ -22,7 +22,7 @@ void connectToUi(QWidget* container, std::shared_ptr<QVariantMap> model, const Q
 template<typename ValueType>
 void connectToUi(
         QWidget* container,
-        std::shared_ptr<QVariantMap> model,
+        std::shared_ptr<QObject> model,
         const QString& elementName,
         std::function<void(ValueType)>&& callback = nullptr
         )
@@ -32,14 +32,14 @@ void connectToUi(
     {
         widget = dynamic_cast<QComboBox*>(container);
     }
-    int index = widget->findData((*model)[elementName]);
+    int index = widget->findData(model->property(elementName.toStdString().c_str()));
     widget->setCurrentIndex(index);
     QObject::connect(
         widget,
         QOverload<int>::of(&QComboBox::currentIndexChanged),
             [model, elementName, widget, callback] (int) {
         ValueType value = widget->currentData().value<ValueType>();
-        (*model)[elementName] = value;
+        model->setProperty(elementName.toStdString().c_str(), QVariant::fromValue(value));
         if (callback != nullptr)
         {
             callback(value);
