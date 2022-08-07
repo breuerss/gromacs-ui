@@ -61,7 +61,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
             auto* pdbDownloader = new PdbDownloader();
             connect(pdbDownloader, &PdbDownloader::downloaded,
                     [pdbDownloader, this] (const QString& /*pdbCode*/, const QString& file) {
-                qDebug() << "donwloaded" << file;
+                qDebug() << "downloaded" << file;
                 systemSetup->setSourceStructureFile(file);
                 pdbDownloader->deleteLater();
             });
