@@ -41,10 +41,10 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
                    {"None", "no"},
                    {"PME", "PME"},
                }, 1);
-    connectToUi<QString>(container, step, "electrostaticAlgorithm");
-    connectToUi<QDoubleSpinBox, double>(container, step, "electrostaticCutoffRadius");
-    connectToUi<QDoubleSpinBox, double>(container, step, "fourierSpacing");
-    connectToUi<QDoubleSpinBox, double>(container, step, "vdwCutoffRadius");
+    connectToUi<QString>(ui->electrostaticAlgorithm, step, "electrostaticAlgorithm");
+    connectToUi<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
+    connectToUi<QDoubleSpinBox, double>(ui->fourierSpacing, step, "fourierSpacing");
+    connectToUi<QDoubleSpinBox, double>(ui->vdwCutoffRadius, step, "vdwCutoffRadius");
 }
 
 SimulationSetupForm::~SimulationSetupForm()
