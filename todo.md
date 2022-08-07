@@ -19,6 +19,3 @@
 1. default settings for different force fields
 1. system setup needs to be read from file
 1. installation handling
-1. configure logging frequency
-1. configure compressed trajectory frequency
-
