@@ -92,7 +92,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->actionCreateDefaultSimulationSetup, &QAction::triggered,
             [] () {
-        auto project = ProjectManager::getInstance()->getCurrentProject();
+
+        auto* manager = ProjectManager::getInstance();
+        auto project = manager->getCurrentProject();
         project->clearSteps();
         project->addStep();
         project->addStep();
@@ -100,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
         auto steps = project->getSteps();
         steps[0]->setProperty("simulationType", QVariant::fromValue(SimulationType::Minimisation));
         steps[1]->setProperty("simulationType", QVariant::fromValue(SimulationType::NVT));
+        manager->currentProjectChanged(project);
     });
 }
 
