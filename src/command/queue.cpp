@@ -59,7 +59,10 @@ void Queue::execNext()
             qDebug() << "can run";
             current = nextCommand.first;
             connect(current.get(), &Executor::finished, [this] () {
-                disconnect(current.get(), 0, 0, 0);
+                if (current)
+                {
+                    disconnect(current.get(), 0, 0, 0);
+                }
                 emit stepFinished(numberOfSteps - queue.size() - 1, current->wasSuccessful());
                 execNext();
             });
