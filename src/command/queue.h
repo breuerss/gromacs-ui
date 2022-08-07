@@ -1,14 +1,15 @@
 #ifndef QUEUE_H
 #define QUEUE_H
 
-#include "executor.h"
-
 #include <QObject>
 #include <deque>
 #include <memory>
 #include <utility>
 
+
 namespace Command {
+
+class Executor;
 
 class Queue : public QObject
 {

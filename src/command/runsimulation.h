@@ -2,15 +2,18 @@
 #define RUNSIMULATION_H
 
 #include "executor.h"
-#include "../model/project.h"
 #include <memory>
+
+namespace Model {
+class Project;
+}
 
 namespace Command {
 
 class RunSimulation : public Executor
 {
 public:
-    explicit RunSimulation(std::shared_ptr<Project> project, int stepIndex, QObject *parent = nullptr);
+    explicit RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent = nullptr);
     void exec() override;
 
 private:
@@ -23,7 +26,7 @@ private:
         );
     QString getGmx() const;
 
-    std::shared_ptr<Project> project;
+    std::shared_ptr<Model::Project> project;
     int stepIndex;
 };
 

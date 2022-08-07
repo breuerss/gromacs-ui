@@ -1,28 +1,29 @@
 #include "simulationsetupform.h"
 #include "ui_simulationsetupform.h"
 #include "model/simulationtype.h"
+#include "model/step.h"
 #include "gromacsconfigfilegenerator.h"
 #include "uiconnectionhelper.h"
 
-SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget *parent) :
+SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Model::Step> newStep, QWidget *parent) :
     QWidget(parent)
   , step(newStep)
   , ui(new Ui::SimulationSetupForm)
 {
     ui->setupUi(this);
     setOptions(ui->simulationType, {
-        { "None", QVariant::fromValue(SimulationType::None) },
-        { "Minimisation", QVariant::fromValue(SimulationType::Minimisation) },
+        { "None", QVariant::fromValue(Model::SimulationType::None) },
+        { "Minimisation", QVariant::fromValue(Model::SimulationType::Minimisation) },
 //        { "Microcanonical (NVE)", SimulationType::NVE },
-        { "Canonical (NVT)", QVariant::fromValue(SimulationType::NVT) },
+        { "Canonical (NVT)", QVariant::fromValue(Model::SimulationType::NVT) },
 //        { "Gibbs/Isobaric-isothermal (NPT)", SimulationType::NPT },
     });
 
-    connectToComboBox<SimulationType>(
+    connectToComboBox<Model::SimulationType>(
                 ui->simulationType,
                 step,
                 "simulationType",
-                [this] (SimulationType type) {
+                [this] (Model::SimulationType type) {
         updateUiForSimulationType(type);
     });
 
@@ -54,14 +55,14 @@ SimulationSetupForm::~SimulationSetupForm()
     delete ui;
 }
 
-void SimulationSetupForm::updateUiForSimulationType(SimulationType type)
+void SimulationSetupForm::updateUiForSimulationType(Model::SimulationType type)
 {
     hideSettings();
     setAlgorithmsForType(type);
     enableAllSettings();
     switch(type)
     {
-    case SimulationType::Minimisation:
+      case Model::SimulationType::Minimisation:
         ui->electrostaticsGroup->setVisible(true);
         ui->vanDerWaalsGroup->setVisible(true);
         ui->generalGroup->setVisible(true);
@@ -71,13 +72,13 @@ void SimulationSetupForm::updateUiForSimulationType(SimulationType type)
         ui->velocityOutputFrequency->setEnabled(false);
         ui->forceOutputFrequency->setEnabled(false);
         break;
-    case SimulationType::NVT:
+      case Model::SimulationType::NVT:
         ui->electrostaticsGroup->setVisible(true);
         ui->vanDerWaalsGroup->setVisible(true);
         ui->generalGroup->setVisible(true);
         ui->outputSettingsGroup->setVisible(true);
         break;
-    case SimulationType::None:
+      case Model::SimulationType::None:
     default:
         break;
     }
@@ -102,14 +103,14 @@ void SimulationSetupForm::enableAllSettings()
     }
 }
 
-void SimulationSetupForm::setAlgorithmsForType(SimulationType type)
+void SimulationSetupForm::setAlgorithmsForType(Model::SimulationType type)
 {
     QList<QPair<QString, QVariant>> map;
     int defaultIndex = 0;
 
     switch(type)
     {
-    case SimulationType::Minimisation:
+      case Model::SimulationType::Minimisation:
         map = QList<QPair<QString, QVariant>>({
             { "None", "" },
             { "Steepest Descent", "steep" },
@@ -117,7 +118,7 @@ void SimulationSetupForm::setAlgorithmsForType(SimulationType type)
         });
         defaultIndex = 1;
         break;
-    case SimulationType::NVT:
+      case Model::SimulationType::NVT:
         map = QList<QPair<QString, QVariant>>({
             { "None", "" },
             { "Leap Frog", "md" },

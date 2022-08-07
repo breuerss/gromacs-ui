@@ -2,6 +2,8 @@
 #include "../gromacsconfigfilegenerator.h"
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
+#include "../model/project.h"
+#include "../model/step.h"
 #include "../settings.h"
 #include "../logforwarder.h"
 
@@ -10,12 +12,11 @@
 
 namespace Command {
 
-RunSimulation::RunSimulation(std::shared_ptr<Project> project, int stepIndex, QObject *parent)
+RunSimulation::RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent)
     : Executor(parent)
     , project(project)
     , stepIndex(stepIndex)
 {
-
 }
 
 void RunSimulation::exec()
@@ -31,7 +32,7 @@ void RunSimulation::exec()
 
     QDir dir(project->getProjectPath());
     const auto& steps = project->getSteps();
-    std::shared_ptr<Step> step = steps[stepIndex];
+    std::shared_ptr<Model::Step> step = steps[stepIndex];
 
     QString stepType = step->getDirectory();
     dir.mkdir(stepType);

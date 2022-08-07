@@ -4,28 +4,8 @@
 #include <QObject>
 #include <QDataStream>
 
-//namespace SimulationType
-//{
-//    enum Type : int {
-//        None = 0,
-//        Minimisation,
-//        NVE,
-//        NVT,
-//        NPT
-//    };
-//};
-//
-//Q_DECLARE_METATYPE(SimulationType)
-
-//    enum SimulationTypeType : int {
-//        SimulationTypeNone = 0,
-//        SimulationTypeMinimisation,
-//        SimulationTypeNVE,
-//        SimulationTypeNVT,
-//        SimulationTypeNPT
-//    };
-//
-//Q_DECLARE_METATYPE(SimulationTypeType)
+namespace Model {
+  Q_NAMESPACE
 
 enum class SimulationType : int {
     None = 0,
@@ -35,6 +15,8 @@ enum class SimulationType : int {
     NPT
 };
 
-Q_DECLARE_METATYPE(SimulationType)
+}
+
+Q_DECLARE_METATYPE(Model::SimulationType)
 
 #endif // SIMULATIONTYPE_H

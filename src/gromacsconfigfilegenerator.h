@@ -4,12 +4,15 @@
 #include <memory>
 #include <QString>
 #include <QTextStream>
-#include "model/step.h"
+
+namespace Model {
+class Step;
+}
 
 class GromacsConfigFileGenerator
 {
 public:
-    static void generate(std::shared_ptr<Step> step, const QString& fileName);
+    static void generate(std::shared_ptr<Model::Step> step, const QString& fileName);
 
 private:
     static void writeLine(QTextStream& writer, const QString& key, const QString& value);

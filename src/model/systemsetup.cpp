@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QMetaProperty>
 
+namespace Model {
+
 SystemSetup::SystemSetup(Project* parent)
     : project(parent)
 {
@@ -205,3 +207,4 @@ QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
     return in;
 }
 
+}

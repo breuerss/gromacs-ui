@@ -1,4 +1,5 @@
 #include "projectmanager.h"
+#include "model/project.h"
 
 #include <memory>
 #include <exception>
@@ -17,7 +18,7 @@ ProjectManager* ProjectManager::getInstance()
     return instance.get();
 }
 
-const std::shared_ptr<Project> ProjectManager::getCurrentProject() const
+const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 {
     return currentProject;
 }
@@ -25,7 +26,7 @@ const std::shared_ptr<Project> ProjectManager::getCurrentProject() const
 void ProjectManager::createNewProject()
 {
     // TODO get name from input mask
-    currentProject.reset(new Project("test"));
+    currentProject.reset(new Model::Project("test"));
     emit currentProjectChanged(currentProject);
 }
 

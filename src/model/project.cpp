@@ -4,6 +4,8 @@
 #include "../settings.h"
 #include <QDebug>
 
+namespace Model {
+
 Project::Project(const QString& newName)
     : systemSetup(new SystemSetup(this))
     , name(newName)
@@ -104,4 +106,6 @@ QDataStream &operator>>(QDataStream &in, Project &project)
     }
 
     return in;
+}
+
 }

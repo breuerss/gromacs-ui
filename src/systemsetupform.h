@@ -2,10 +2,13 @@
 #define SYSTEMSETUPFORM_H
 
 #include <QWidget>
-#include "model/systemsetup.h"
 
 namespace Ui {
 class SystemSetupForm;
+}
+
+namespace Model {
+class SystemSetup;
 }
 
 class SystemSetupForm : public QWidget
@@ -13,12 +16,12 @@ class SystemSetupForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit SystemSetupForm(std::shared_ptr<SystemSetup> systemSetup, QWidget *parent = nullptr);
+    explicit SystemSetupForm(std::shared_ptr<Model::SystemSetup> systemSetup, QWidget *parent = nullptr);
     ~SystemSetupForm();
 
 private:
     Ui::SystemSetupForm *ui;
-    std::shared_ptr<SystemSetup> systemSetup;
+    std::shared_ptr<Model::SystemSetup> systemSetup;
 
     void prepareWaterOptions();
     void prepareForceFieldOptions();

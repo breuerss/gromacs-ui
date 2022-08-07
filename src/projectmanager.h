@@ -1,21 +1,23 @@
 #ifndef PROJECTMANAGER_H
 #define PROJECTMANAGER_H
 
-#include "model/project.h"
-
 #include <QObject>
 #include <memory>
+
+namespace Model {
+class Project;
+}
 
 class ProjectManager : public QObject
 {
     Q_OBJECT
 public:
     static ProjectManager* getInstance();
-    const std::shared_ptr<Project> getCurrentProject() const;
+    const std::shared_ptr<Model::Project> getCurrentProject() const;
     void createNewProject();
 
 signals:
-    void currentProjectChanged(std::shared_ptr<Project> currentProject);
+    void currentProjectChanged(std::shared_ptr<Model::Project> currentProject);
 
 public slots:
     void save();
@@ -24,7 +26,7 @@ public slots:
 
 private:
     ProjectManager() = default;
-    std::shared_ptr<Project> currentProject;
+    std::shared_ptr<Model::Project> currentProject;
     QString fileName;
 };
 

@@ -2,18 +2,22 @@
 #include "ui_mainwindow.h"
 #include "preferencesdialog.h"
 #include "projectmanager.h"
-#include <QDir>
-#include <QDebug>
-#include <QWebEngineSettings>
-#include <QUrlQuery>
-#include <QWebEngineProfile>
 #include "fileserver.h"
 #include "systemsetupform.h"
 #include "simulationsetupform.h"
 #include "statusmessagesetter.h"
+#include "logforwarder.h"
+
 #include "command/queue.h"
 #include "command/runsimulation.h"
-#include "logforwarder.h"
+
+#include "model/project.h"
+#include "model/step.h"
+#include "model/systemsetup.h"
+
+#include <QDebug>
+#include <QWebEngineSettings>
+#include <QUrlQuery>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -39,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto queue = std::make_shared<Command::Queue>();
     auto project = ProjectManager::getInstance()->getCurrentProject();
-    connect (project.get(), &Project::stepRemoved,
-        [this] (std::shared_ptr<Step>, int at) {
+    connect (project.get(), &Model::Project::stepRemoved,
+        [this] (std::shared_ptr<Model::Step>, int at) {
         removeTabAt(at + 1);
     });
     connect(LogForwarder::getInstance(), &LogForwarder::addMessage, ui->logOutput,
@@ -78,11 +82,11 @@ MainWindow::MainWindow(QWidget *parent)
     });
     setupUIForProject();
     connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged, [this] () {
-        connect(ProjectManager::getInstance()->getCurrentProject().get(), &Project::stepAdded,
-            this, &MainWindow::addTabForStep);
+        connect(ProjectManager::getInstance()->getCurrentProject().get(),
+            &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
         setupUIForProject();
     });
-    connect(ProjectManager::getInstance()->getCurrentProject().get(), &Project::stepAdded,
+    connect(ProjectManager::getInstance()->getCurrentProject().get(), &Model::Project::stepAdded,
         this, &MainWindow::addTabForStep);
 
     connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
@@ -97,9 +101,9 @@ MainWindow::MainWindow(QWidget *parent)
         auto project = manager->getCurrentProject();
         project->clearSteps();
         auto step = project->addStep();
-        step->setProperty("simulationType", QVariant::fromValue(SimulationType::Minimisation));
+        step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::Minimisation));
         step = project->addStep();
-        step->setProperty("simulationType", QVariant::fromValue(SimulationType::NVT));
+        step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::NVT));
 
         manager->currentProjectChanged(project);
     });
@@ -142,10 +146,10 @@ void MainWindow::setupUIForProject()
             addTabForStep(step);
         }
 
-        SystemSetup* systemSetup = project->getSystemSetup().get();
-        connect(systemSetup, &SystemSetup::structureReadyChanged,
+        Model::SystemSetup* systemSetup = project->getSystemSetup().get();
+        connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
             ui->actionRunSimulation, &QAction::setEnabled);
-        connect(systemSetup, &SystemSetup::structureReadyChanged,
+        connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
             [this] (bool ready) {
                 int tabIndex = 0;
                 if (!ready)
@@ -157,40 +161,40 @@ void MainWindow::setupUIForProject()
             });
         ui->actionRunSimulation->setEnabled(project->getSystemSetup()->getStructureReady());
 
-        connect(systemSetup, &SystemSetup::sourceStructureFileChanged,
+        connect(systemSetup, &Model::SystemSetup::sourceStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(systemSetup, &SystemSetup::filteredStructureFileChanged,
+        connect(systemSetup, &Model::SystemSetup::filteredStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(systemSetup, &SystemSetup::solvatedStructureFileChanged,
+        connect(systemSetup, &Model::SystemSetup::solvatedStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(systemSetup, &SystemSetup::neutralisedStructureFileChanged,
+        connect(systemSetup, &Model::SystemSetup::neutralisedStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        auto* settings = ui->molpreview->page()->settings();
+        QWebEngineSettings* settings = ui->molpreview->page()->settings();
         settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
     }
 
     setMoleculeFile();
 }
 
-void MainWindow::addTabForStep(std::shared_ptr<Step> step, int at)
+void MainWindow::addTabForStep(std::shared_ptr<Model::Step> step, int at)
 {
     if (at == -1)
     {
         at = ui->stepconfigurator->count();
     }
-    connect(step.get(), &Step::simulationTypeChanged, [this, step, at] () {
+    connect(step.get(), &Model::Step::simulationTypeChanged, [this, step, at] () {
         ui->stepconfigurator->setTabText(at, step->getName());
     });
     ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());

@@ -2,12 +2,13 @@
 
 #include "../settings.h"
 #include "../statusmessagesetter.h"
+#include "../model/systemsetup.h"
 #include <QFileInfo>
 #include <QDebug>
 
 namespace Command {
 
-CreateBox::CreateBox(std::shared_ptr<SystemSetup> newSystemSetup, QObject *parent)
+CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
     : Executor{parent}
     , systemSetup(newSystemSetup)
 {

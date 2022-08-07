@@ -3,9 +3,7 @@
 #include "pdbdownloader.h"
 #include "pdbinfoextractor.h"
 #include "model/project.h"
-#include <QDir>
-#include <QCheckBox>
-#include <QTimer>
+#include "model/systemsetup.h"
 #include "uiconnectionhelper.h"
 #include "command/queue.h"
 #include "command/creategromacsmodel.h"
@@ -13,7 +11,11 @@
 #include "command/solvate.h"
 #include "command/neutralise.h"
 
-SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QWidget *parent)
+#include <QDir>
+#include <QCheckBox>
+#include <QTimer>
+
+SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::SystemSetup> newSystemSetup, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::SystemSetupForm)
     , systemSetup(newSystemSetup)
@@ -31,7 +33,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
         systemSetup->setStructureReady(success);
     });
-    connect(systemSetup.get(), &SystemSetup::configReadyChanged, [this, queue] (bool ready) {
+    connect(systemSetup.get(), &Model::SystemSetup::configReadyChanged, [this, queue] (bool ready) {
         if (ready)
         {
             systemSetup->setStructureReady(false);
@@ -81,7 +83,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
         }
     });
 
-    connect(systemSetup.get(), &SystemSetup::sourceStructureFileChanged,
+    connect(systemSetup.get(), &Model::SystemSetup::sourceStructureFileChanged,
         [this] (const QString& sourceStructureFile) {
         // Workaround since this callback is executed before the
         // callback that should update the molecule preview.

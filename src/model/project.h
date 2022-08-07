@@ -1,14 +1,17 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-class SystemSetup;
-class Step;
 
 #include <QString>
 #include <QDataStream>
 #include <QObject>
 #include <vector>
 #include <memory>
+
+namespace Model {
+
+class SystemSetup;
+class Step;
 
 class Project : public QObject
 {
@@ -38,5 +41,7 @@ private:
 
 QDataStream &operator<<(QDataStream &out, const Project &project);
 QDataStream &operator>>(QDataStream &in, Project &project);
+
+}
 
 #endif // PROJECT_H

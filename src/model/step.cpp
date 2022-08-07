@@ -4,6 +4,8 @@
 #include <QMetaProperty>
 #include <cstring>
 
+namespace Model {
+
 Step::Step()
 {
     // Ugly hack to make SimulationType serializable as an integer
@@ -11,8 +13,8 @@ Step::Step()
     static bool registered = false;
     if (!registered)
     {
-      qRegisterMetaType<SimulationType>("SimulationType");
-      qRegisterMetaTypeStreamOperators<int>("SimulationType");
+      qRegisterMetaType<SimulationType>("Model::SimulationType");
+      qRegisterMetaTypeStreamOperators<int>("Model::SimulationType");
       registered = true;
     }
 }
@@ -84,4 +86,6 @@ QDataStream &operator>>(QDataStream &in, Step& step)
     }
 
     return in;
+}
+
 }

@@ -6,6 +6,8 @@
 
 #include "simulationtype.h"
 
+namespace Model {
+
 class Step : public QObject
 {
     Q_OBJECT
@@ -14,7 +16,7 @@ public:
     QString getName() const;
     QString getDirectory() const;
 
-    Q_PROPERTY(SimulationType simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
+    Q_PROPERTY(Model::SimulationType simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
     Q_PROPERTY(QString algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
     Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
@@ -78,5 +80,7 @@ private:
 
 QDataStream &operator<<(QDataStream &out, const Step& step);
 QDataStream &operator>>(QDataStream &in, Step& step);
+
+}
 
 #endif // STEP_H

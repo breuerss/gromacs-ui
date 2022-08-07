@@ -3,6 +3,7 @@
 #include <memory>
 #include <QDebug>
 #include "../logforwarder.h"
+#include "executor.h"
 
 namespace Command {
 

@@ -4,6 +4,8 @@
 #include <QString>
 #include <QObject>
 
+namespace Model {
+
 class Project;
 
 class SystemSetup : public QObject
@@ -94,6 +96,8 @@ private:
 
 QDataStream &operator<<(QDataStream &out, const SystemSetup &project);
 QDataStream &operator>>(QDataStream &in, SystemSetup &project);
+
+}
 
 
 #endif // SYSTEMSETUP_H

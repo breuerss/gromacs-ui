@@ -3,13 +3,14 @@
 #include "../settings.h"
 #include "../statusmessagesetter.h"
 #include "../logforwarder.h"
+#include "../model/systemsetup.h"
 
 #include <QDebug>
 #include <QFileInfo>
 
 namespace Command {
 
-Neutralise::Neutralise(std::shared_ptr<SystemSetup> newSystemSetup, QObject *parent)
+Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
     : Executor{parent}
     , systemSetup(newSystemSetup)
 {

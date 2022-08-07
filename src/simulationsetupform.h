@@ -2,11 +2,14 @@
 #define SIMULATIONSETUPFORM_H
 
 #include "model/simulationtype.h"
-#include "model/step.h"
 
 #include <QWidget>
 #include <QComboBox>
 #include <memory>
+
+namespace Model {
+class Step;
+}
 
 namespace Ui {
 class SimulationSetupForm;
@@ -17,15 +20,15 @@ class SimulationSetupForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget *parent = nullptr);
+    explicit SimulationSetupForm(std::shared_ptr<Model::Step> newStep, QWidget *parent = nullptr);
     ~SimulationSetupForm();
 
 private:
-    std::shared_ptr<Step> step;
+    std::shared_ptr<Model::Step> step;
     Ui::SimulationSetupForm *ui;
 
-    void updateUiForSimulationType(SimulationType type = SimulationType::None);
-    void setAlgorithmsForType(SimulationType type);
+    void updateUiForSimulationType(Model::SimulationType type = Model::SimulationType::None);
+    void setAlgorithmsForType(Model::SimulationType type);
     void hideSettings();
     void enableAllSettings();
 };

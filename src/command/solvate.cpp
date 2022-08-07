@@ -2,12 +2,14 @@
 
 #include "../settings.h"
 #include "../statusmessagesetter.h"
+#include "../model/systemsetup.h"
+
 #include <QFileInfo>
 #include <QDebug>
 
 namespace Command {
 
-Solvate::Solvate(std::shared_ptr<SystemSetup> newSystemSetup, QObject *parent)
+Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
     : Executor{parent}
     , systemSetup(newSystemSetup)
 {

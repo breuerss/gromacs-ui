@@ -2,14 +2,16 @@
 #define MAINWINDOW_H
 
 #include "settings.h"
-#include "model/step.h"
 
 #include <QMainWindow>
 #include <memory>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
+}
+namespace Model {
+class Step;
 }
 QT_END_NAMESPACE
 
@@ -28,7 +30,7 @@ protected:
 
 private slots:
     void openPreferencesDialog();
-    void addTabForStep(std::shared_ptr<Step> step, int at = -1);
+    void addTabForStep(std::shared_ptr<Model::Step> step, int at = -1);
 
 private:
     Ui::MainWindow* ui;
