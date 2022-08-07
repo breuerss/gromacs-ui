@@ -11,6 +11,11 @@ QString PdbConverter::convert(const QString &fileName,
                               const QStringList &chains,
                               bool removeHeteroAtoms)
 {
+    if (fileName.isEmpty())
+    {
+      return QString();
+    }
+
     QString outputFileName = fileName;
     outputFileName.replace(".pdb", "_filtered.pdb");
 
