@@ -59,8 +59,6 @@ void SystemSetup::setBoxedStructureFile(const QString &newBoxedStructureFile)
 
 void SystemSetup::setSolvatedStructureFile(const QString& newSolvatedStructureFile)
 {
-    const bool changed = solvatedStructureFile != newSolvatedStructureFile;
-    qDebug() << "Setting solvated structure file to" << newSolvatedStructureFile << solvatedStructureFile << changed;
     solvatedStructureFile = newSolvatedStructureFile;
 
     emit solvatedStructureFileChanged(solvatedStructureFile);
@@ -132,7 +130,6 @@ const QString& SystemSetup::getNeutralisedStructureFile() const
 
 void SystemSetup::setNeutralisedStructureFile(const QString& newNeutralisedStructureFile)
 {
-    const bool changed = neutralisedStructureFile != newNeutralisedStructureFile;
     neutralisedStructureFile = newNeutralisedStructureFile;
 
     emit neutralisedStructureFileChanged(neutralisedStructureFile);
@@ -260,12 +257,8 @@ void SystemSetup::evaluateConfigReady()
         !forceField.isEmpty() &&
         !filteredStructureFile.isEmpty();
 
-    const bool changed = true;//newConfigReady != configReady;
     configReady = newConfigReady;
-    if (changed)
-    {
-        emit configReadyChanged(configReady);
-    }
+    emit configReadyChanged(configReady);
 }
 
 QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
