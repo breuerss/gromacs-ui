@@ -14,7 +14,8 @@ public:
     Project* getProject();
     void useChain(const QString& chain, bool use = true);
 
-    void setPdbCode(const QString& pdbCode);
+    void setStructureReady(bool);
+
     void setChains(const QStringList& chains);
     void setSourceStructureFile(const QString& newSourceStructureFile);
     void setFilteredStructureFile(const QString& newFilteredStructureFile);
@@ -22,38 +23,39 @@ public:
     void setBoxedStructureFile(const QString& newBoxedStructureFile);
     void setSolvatedStructureFile(const QString& newSolvatedStructureFile);
     void setNeutralisedStructureFile(const QString& neutralisedStructureFile);
-    void setForceField(const QString& newForceField);
-    void setWaterModel(const QString& newWaterModel);
-    void setBoxType(const QString& newBoxType);
-    void setDistance(double distance);
-    void setRemoveHeteroAtoms(bool newRemoveHeteroAtoms);
 
-    void setIonContration(double newConcentation);
-    void setPositiveIon(const QString&);
-    void setNegativeIon(const QString&);
-
-    void setStructureReady(bool);
-
-    const QString& getPdbCode() const;
     const QStringList& getChains() const;
-    const QString& getForceField() const;
-    const QString& getWaterModel() const;
-    const QString& getBoxType() const;
     const QString& getFilteredStructureFile() const;
     const QString& getProcessedStructureFile() const;
     const QString& getBoxedStructureFile() const;
     const QString& getSolvatedStructureFile() const;
     const QString& getNeutralisedStructureFile() const;
-    double getDistance() const;
-    bool getRemoveHeteroAtoms() const;
-
-    double getIonContration() const;
-    const QString& getPositiveIon() const;
-    const QString& getNegativeIon() const;
 
     bool getStructureReady() const;
 
+    Q_PROPERTY(QString pdbCode MEMBER pdbCode NOTIFY pdbCodeChanged)
+    Q_PROPERTY(double ionConcentration MEMBER ionConcentration NOTIFY ionConcentrationChanged)
+    Q_PROPERTY(QString negativeIon MEMBER negativeIon NOTIFY negativeIonChanged)
+    Q_PROPERTY(QString positiveIon MEMBER positiveIon NOTIFY positiveIonChanged)
+    Q_PROPERTY(QString boxType MEMBER boxType NOTIFY boxTypeChanged)
+    Q_PROPERTY(QString waterModel MEMBER waterModel NOTIFY waterModelChanged)
+    Q_PROPERTY(QString forceField MEMBER forceField NOTIFY forceFieldChanged)
+    Q_PROPERTY(double distance MEMBER distance NOTIFY distanceChanged)
+    Q_PROPERTY(bool removeHeteroAtoms MEMBER removeHeteroAtoms NOTIFY removeHeteroAtomsChanged)
+
 signals:
+    void pdbCodeChanged(const QString&);
+    void boxTypeChanged(const QString&);
+    void waterModelChanged(const QString&);
+    void forceFieldChanged(const QString&);
+    void negativeIonChanged(const QString&);
+    void positiveIonChanged(const QString&);
+
+    void ionConcentrationChanged(double);
+    void distanceChanged(double);
+
+    void removeHeteroAtomsChanged(bool);
+
     void sourceStructureFileChanged(const QString& sourceStructureFile);
     void filteredStructureFileChanged(const QString& filteredStructureFile);
     void processedStructureFileChanged(const QString& processedStructureFile);
@@ -66,6 +68,7 @@ signals:
 private:
     Project* project;
     QString pdbCode;
+
     QString sourceStructureFile;
     QString filteredStructureFile;
     QString processedStructureFile;

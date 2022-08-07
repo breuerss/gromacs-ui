@@ -33,8 +33,8 @@ void CreateBox::exec()
     QString outputFile = fileInfo.baseName().replace("_processed", "_boxed") + ".gro";
     command += " -f " + inputFile;
     command += " -o " + outputFile;
-    command += " -d " + QString::number(systemSetup->getDistance());
-    command += " -bt " + systemSetup->getBoxType();
+    command += " -d " + systemSetup->property("distance").value<QString>();
+    command += " -bt " + systemSetup->property("boxType").value<QString>();
 
     QString inputDirectory = fileInfo.absolutePath();
     StatusMessageSetter::getInstance()->setMessage("Executing " + command);

@@ -3,10 +3,20 @@
 #include "../pdbconverter.h"
 
 #include <QDebug>
+#include <QMetaProperty>
 
 SystemSetup::SystemSetup(Project* parent)
     : project(parent)
 {
+    connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::boxTypeChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::distanceChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::negativeIonChanged, this, &SystemSetup::evaluateConfigReady);
+    connect(this, &SystemSetup::positiveIonChanged, this, &SystemSetup::evaluateConfigReady);
+
+    connect(this, &SystemSetup::removeHeteroAtomsChanged, this, &SystemSetup::filterSourceStructure);
 
 }
 
@@ -90,39 +100,6 @@ void SystemSetup::setStructureReady(bool newStructureReady)
   }
 }
 
-void SystemSetup::setIonContration(double newConcentration)
-{
-    ionConcentration = newConcentration;
-    evaluateConfigReady();
-}
-
-double SystemSetup::getIonContration() const
-{
-    return ionConcentration;
-}
-
-void SystemSetup::setPositiveIon(const QString& newPositiveIon)
-{
-    positiveIon = newPositiveIon;
-    evaluateConfigReady();
-}
-
-const QString& SystemSetup::getPositiveIon() const
-{
-    return positiveIon;
-}
-
-void SystemSetup::setNegativeIon(const QString& newNegativeIon)
-{
-    negativeIon = newNegativeIon;
-    evaluateConfigReady();
-}
-
-const QString& SystemSetup::getNegativeIon() const
-{
-    return negativeIon;
-}
-
 const QString& SystemSetup::getNeutralisedStructureFile() const
 {
     return neutralisedStructureFile;
@@ -162,73 +139,6 @@ void SystemSetup::filterSourceStructure()
     evaluateConfigReady();
 }
 
-void SystemSetup::setForceField(const QString& newForceField)
-{
-    qDebug() << "Setting force field to" << newForceField;
-    forceField = newForceField;
-    evaluateConfigReady();
-}
-
-void SystemSetup::setWaterModel(const QString& newWaterModel)
-{
-    qDebug() << "Setting water model to" << newWaterModel;
-    waterModel = newWaterModel;
-    evaluateConfigReady();
-}
-
-void SystemSetup::setBoxType(const QString& newBoxType)
-{
-    qDebug() << "Setting box type to" << newBoxType;
-    boxType = newBoxType;
-    evaluateConfigReady();
-}
-
-void SystemSetup::setDistance(double newDistance)
-{
-    distance = newDistance;
-}
-
-void SystemSetup::setRemoveHeteroAtoms(bool newRemoveHeteroAtoms)
-{
-    removeHeteroAtoms = newRemoveHeteroAtoms;
-    filterSourceStructure();
-}
-
-void SystemSetup::setPdbCode(const QString& newPdbCode)
-{
-    pdbCode = newPdbCode;
-}
-
-const QString& SystemSetup::getPdbCode() const
-{
-    return pdbCode;
-}
-
-const QString& SystemSetup::getForceField() const
-{
-    return forceField;
-}
-
-const QString& SystemSetup::getWaterModel() const
-{
-    return waterModel;
-}
-
-const QString& SystemSetup::getBoxType() const
-{
-    return boxType;
-}
-
-double SystemSetup::getDistance() const
-{
-    return distance;
-}
-
-bool SystemSetup::getRemoveHeteroAtoms() const
-{
-    return removeHeteroAtoms;
-}
-
 const QString& SystemSetup::getFilteredStructureFile() const
 {
     return filteredStructureFile;
@@ -263,66 +173,34 @@ void SystemSetup::evaluateConfigReady()
 
 QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
 {
-    out << systemSetup.getPdbCode()
-        << systemSetup.getChains()
-        << systemSetup.getForceField()
-        << systemSetup.getWaterModel()
-        << systemSetup.getBoxType()
-        << systemSetup.getFilteredStructureFile()
-        << systemSetup.getProcessedStructureFile()
-        << systemSetup.getBoxedStructureFile()
-        << systemSetup.getSolvatedStructureFile()
-        << systemSetup.getDistance()
-        << systemSetup.getRemoveHeteroAtoms();
+    const QMetaObject *metaobject = systemSetup.metaObject();
+    int count = metaobject->propertyCount();
+    for (int i = 0; i < count; ++i) {
+        QMetaProperty metaproperty = metaobject->property(i);
+        const char *name = metaproperty.name();
+        QVariant value = systemSetup.property(name);
+
+        out << value;
+    }
+
 
     return out;
 }
 
 QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
 {
-    QString pdbCode;
-    in >> pdbCode;
-    systemSetup.setPdbCode(pdbCode);
+    const QMetaObject *metaobject = systemSetup.metaObject();
+    int count = metaobject->propertyCount();
 
-    QStringList chains;
-    in >> chains;
-    systemSetup.setChains(chains);
+    for (int i = 0; i < count; ++i) {
+        QMetaProperty metaproperty = metaobject->property(i);
+        const char *name = metaproperty.name();
 
-    QString forceField;
-    in >> forceField;
-    systemSetup.setForceField(forceField);
+        QVariant value;
+        in >> value;
+        systemSetup.setProperty(name, value);
+    }
 
-    QString waterModel;
-    in >> waterModel;
-    systemSetup.setWaterModel(waterModel);
-
-    QString boxType;
-    in >> boxType;
-    systemSetup.setBoxType(boxType);
-
-    QString filteredStructureFile;
-    in >> filteredStructureFile;
-    systemSetup.setFilteredStructureFile(filteredStructureFile);
-
-    QString processedStructureFile;
-    in >> processedStructureFile;
-    systemSetup.setProcessedStructureFile(processedStructureFile);
-
-    QString boxedStructureFile;
-    in >> boxedStructureFile;
-    systemSetup.setBoxedStructureFile(boxedStructureFile);
-
-    QString solvatedStructureFile;
-    in >> solvatedStructureFile;
-    systemSetup.setSolvatedStructureFile(solvatedStructureFile);
-
-    double distance;
-    in >> distance;
-    systemSetup.setDistance(distance);
-
-    bool removeHeteroAtoms;
-    in >> removeHeteroAtoms;
-    systemSetup.setRemoveHeteroAtoms(removeHeteroAtoms);
 
     return in;
 }

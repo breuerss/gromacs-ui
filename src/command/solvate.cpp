@@ -33,7 +33,7 @@ void Solvate::exec()
     QString outputFile = fileInfo.baseName().replace("_boxed", "_solvated") + ".gro";
     command += " -cp " + inputFile;
     command += " -o " + outputFile;
-    command += " -cs " + getWaterBoxFor(systemSetup->getWaterModel());
+    command += " -cs " + getWaterBoxFor(systemSetup->property("waterModel").value<QString>());
     command += " -p topol.top";
 
     QString inputDirectory = fileInfo.absolutePath();

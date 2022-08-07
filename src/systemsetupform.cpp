@@ -25,9 +25,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
     prepareBoxOptions();
     setIonFromModel();
     connectIonSelectors();
-    ui->ionConcentration->setValue(systemSetup->getIonContration());
-    connect(ui->ionConcentration, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-       systemSetup.get(), &SystemSetup::setIonContration);
+
 
     auto queue = std::make_shared<Command::Queue>();
     connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
@@ -47,34 +45,16 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
         }
     });
 
-    connect(ui->boxType, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
-       systemSetup->setBoxType(ui->boxType->currentData().toString());
-    });
-    // TODO set values of UI based on model and not the other way around
-    systemSetup->setBoxType(ui->boxType->currentData().toString());
+    connectToUi<QString>(ui->boxType, systemSetup, "boxType");
+    connectToUi<QString>(ui->waterModel, systemSetup, "waterModel");
+    connectToUi<QString>(ui->forceField, systemSetup, "forceField");
 
-    connect(ui->waterModel, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
-       systemSetup->setWaterModel(ui->waterModel->currentData().toString());
-    });
-    systemSetup->setWaterModel(ui->waterModel->currentData().toString());
+    connectToUi<QDoubleSpinBox, double>(ui->distanceToEdge, systemSetup, "distance");
+    connectToUi<QDoubleSpinBox, double>(ui->ionConcentration, systemSetup, "ionConcentration");
 
-    connect(ui->distanceToEdge, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this] (double distance) {
-        systemSetup->setDistance(distance);
-    });
-    systemSetup->setDistance(ui->distanceToEdge->value());
+    connectToUi(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
-    connect(ui->forceField, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] (int) {
-       systemSetup->setForceField(ui->forceField->currentData().toString());
-    });
-    systemSetup->setForceField(ui->forceField->currentData().toString());
-
-    ui->removeHeteroAtoms->setChecked(systemSetup->getRemoveHeteroAtoms());
-    connect(ui->removeHeteroAtoms, &QCheckBox::stateChanged, [this] (int state) {
-        systemSetup->setRemoveHeteroAtoms(state == Qt::Checked);
-    });
-
-    connect(ui->pdbEntry, &QLineEdit::textChanged, [this] (const QString& pdbCode) {
-        systemSetup->setPdbCode(pdbCode);
+    connectToUi(ui->pdbEntry, systemSetup, "pdbCode", [this] (const QString& pdbCode) {
         if (pdbCode.length() == 4)
         {
             qDebug() << "Starting PDB download for" << pdbCode;
@@ -92,16 +72,14 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
             {
                 dir.cd("input");
             }
-            QFile file(dir.absolutePath() + "/" + pdbCode + ".pdb");
-            QFileInfo fileInfo(file);
-            pdbDownloader->download(pdbCode, fileInfo.absoluteFilePath());
+            QString absFilePath = dir.absolutePath() + "/" + pdbCode + ".pdb";
+            pdbDownloader->download(pdbCode, absFilePath);
         }
         else
         {
             setGroupsEnabled(false);
         }
     });
-    ui->pdbEntry->setText(systemSetup->getPdbCode());
 
     connect(systemSetup.get(), &SystemSetup::sourceStructureFileChanged,
         [this] (const QString& sourceStructureFile) {
@@ -174,8 +152,8 @@ void SystemSetupForm::prepareBoxOptions()
 
 void SystemSetupForm::setIonFromModel()
 {
-    QString positiveIon = systemSetup->getPositiveIon();
-    QString negativeIon = systemSetup->getNegativeIon();
+    QString positiveIon = systemSetup->property("positiveIon").value<QString>();
+    QString negativeIon = systemSetup->property("negativeIon").value<QString>();
     QMap<QString, QRadioButton*> map = {
         { "MG", ui->mgIon },
         { "CA", ui->caIon },
@@ -219,7 +197,7 @@ void SystemSetupForm::connectIonSelectors()
         {
             if (checked)
             {
-                systemSetup->setPositiveIon(ion);
+                systemSetup->setProperty("positiveIon", ion);
             }
         });
     }
@@ -238,7 +216,7 @@ void SystemSetupForm::connectIonSelectors()
         {
             if (checked)
             {
-                systemSetup->setNegativeIon(ion);
+                systemSetup->setProperty("negativeIon", ion);
             }
         });
     }

@@ -2,14 +2,20 @@
 #define UICONNECTIONHELPER_H
 
 #include <QComboBox>
+#include <QLineEdit>
+#include <QCheckBox>
 #include <memory>
 #include <functional>
+#include <QDebug>
 
 template<typename ElementType, typename ValueType>
 void connectToUi(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
 {
     ElementType* widget = container->findChild<ElementType*>(elementName);
-    widget->setValue(model->property(elementName.toStdString().c_str()).value<ValueType>());
+    if (!widget)
+    {
+        widget = dynamic_cast<ElementType*>(container);
+    }
     QObject::connect(
         widget,
         QOverload<ValueType>::of(&ElementType::valueChanged),
@@ -17,6 +23,8 @@ void connectToUi(QWidget* container, std::shared_ptr<QObject> model, const QStri
         model->setProperty(elementName.toStdString().c_str(), value);
     });
 
+    ValueType value = model->property(elementName.toStdString().c_str()).value<ValueType>();
+    widget->setValue(value);
 }
 
 template<typename ValueType>
@@ -32,8 +40,9 @@ void connectToUi(
     {
         widget = dynamic_cast<QComboBox*>(container);
     }
-    int index = widget->findData(model->property(elementName.toStdString().c_str()));
-    widget->setCurrentIndex(index);
+
+    QVariant currentValue = model->property(elementName.toStdString().c_str());
+    int index = widget->findData(currentValue);
     QObject::connect(
         widget,
         QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -46,13 +55,22 @@ void connectToUi(
         }
     });
 
-    if (callback != nullptr)
-    {
-        ValueType value = widget->currentData().value<ValueType>();
-        callback(value);
-    }
-
+    widget->setCurrentIndex(index);
 }
+
+void connectToUi(
+        QLineEdit* widget,
+        std::shared_ptr<QObject> model,
+        const QString& elementName,
+        std::function<void(const QString&)>&& callback = nullptr
+        );
+
+void connectToUi(
+        QCheckBox* widget,
+        std::shared_ptr<QObject> model,
+        const QString& elementName,
+        std::function<void(bool)>&& callback = nullptr
+        );
 
 void setOptions(
         QComboBox* comboBox,

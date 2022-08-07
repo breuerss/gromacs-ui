@@ -34,8 +34,8 @@ void CreateGromacsModel::exec()
     QString outputFileName = fileInfo.baseName().replace("_filtered", "_processed") + ".gro";
     command += " -f " + inputFile;
     command += " -o " + outputFileName;
-    command += " -water " + systemSetup->getWaterModel();
-    command += " -ff " + systemSetup->getForceField();
+    command += " -water " + systemSetup->property("waterModel").value<QString>();
+    command += " -ff " + systemSetup->property("forceField").value<QString>();
 
     QString inputDirectory = fileInfo.absolutePath();
     process.setWorkingDirectory(inputDirectory);

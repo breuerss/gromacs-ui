@@ -65,10 +65,10 @@ void Neutralise::exec()
     QString outputFile = fileInfo.baseName().replace("_solvated", "_neutralised") + ".gro";
     command += " -s " + ionsTprPath;
     command += " -o " + outputFile;
-    command += " -conc " + QString::number(systemSetup->getIonContration());
+    command += " -conc " + QString::number(systemSetup->property("ionConcentration").value<double>());
     command += " -p topol.top";
 
-    const QString& positiveIon = systemSetup->getPositiveIon();
+    const QString& positiveIon = systemSetup->property("positiveIon").value<QString>();
     command += " -pname " + positiveIon;
     static const QMap<QString, int> positiveIonCharge = {
         { "MG", 2 },
@@ -80,7 +80,7 @@ void Neutralise::exec()
         { "CS", 1 },
     };
     command += " -pq " + QString::number(positiveIonCharge[positiveIon]);
-    command += " -nname " + systemSetup->getNegativeIon();
+    command += " -nname " + systemSetup->property("negativeIon").value<QString>();
     command += " -nq -1";
     command += " -neutral";
 
