@@ -179,7 +179,7 @@ void MainWindow::addTabForStep(std::shared_ptr<Step> step, int at)
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 {
     // TODO shared path from install target
-    QString currentDir = QDir::currentPath();
+    QString currentDir = QCoreApplication::applicationDirPath();
     QUrl url = QUrl::fromLocalFile(currentDir + "/../embedded.html");
 
     if (!file.isEmpty())
