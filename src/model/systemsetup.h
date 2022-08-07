@@ -32,6 +32,8 @@ public:
     void setPositiveIon(const QString&);
     void setNegativeIon(const QString&);
 
+    void setStructureReady(bool);
+
     const QString& getPdbCode() const;
     const QStringList& getChains() const;
     const QString& getForceField() const;
@@ -49,6 +51,8 @@ public:
     const QString& getPositiveIon() const;
     const QString& getNegativeIon() const;
 
+    bool getStructureReady() const;
+
 signals:
     void sourceStructureFileChanged(const QString& sourceStructureFile);
     void filteredStructureFileChanged(const QString& filteredStructureFile);
@@ -57,6 +61,7 @@ signals:
     void solvatedStructureFileChanged(const QString& solvatedStructureFile);
     void neutralisedStructureFileChanged(const QString& solvatedStructureFile);
     void configReadyChanged(bool ready);
+    void structureReadyChanged(bool);
 
 private:
     Project* project;
@@ -78,6 +83,7 @@ private:
     double distance = 1.0;
     bool removeHeteroAtoms = true;
     bool configReady = false;
+    bool structureReady = false;
 
     void evaluateConfigReady();
     void filterSourceStructure();

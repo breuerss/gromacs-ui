@@ -121,22 +121,37 @@ void MainWindow::setupUIForProject()
             addTabForStep(step);
         }
 
-        connect(project->getSystemSetup().get(), &SystemSetup::sourceStructureFileChanged,
+        SystemSetup* systemSetup = project->getSystemSetup().get();
+        connect(systemSetup, &SystemSetup::structureReadyChanged,
+            ui->actionRunSimulation, &QAction::setEnabled);
+        connect(systemSetup, &SystemSetup::structureReadyChanged,
+            [this] (bool ready) {
+                int tabIndex = 0;
+                if (!ready)
+                {
+                    tabIndex = 1;
+                    ui->logOutput->setPlainText("");
+                }
+                ui->tabWidget->setCurrentIndex(tabIndex);
+            });
+        ui->actionRunSimulation->setEnabled(project->getSystemSetup()->getStructureReady());
+
+        connect(systemSetup, &SystemSetup::sourceStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(project->getSystemSetup().get(), &SystemSetup::filteredStructureFileChanged,
+        connect(systemSetup, &SystemSetup::filteredStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(project->getSystemSetup().get(), &SystemSetup::solvatedStructureFileChanged,
+        connect(systemSetup, &SystemSetup::solvatedStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });
 
-        connect(project->getSystemSetup().get(), &SystemSetup::neutralisedStructureFileChanged,
+        connect(systemSetup, &SystemSetup::neutralisedStructureFileChanged,
                 [this] (const QString& fileName) {
             setMoleculeFile(fileName);
         });

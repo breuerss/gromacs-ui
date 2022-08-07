@@ -77,6 +77,21 @@ const QStringList& SystemSetup::getChains() const
     return chains;
 }
 
+bool SystemSetup::getStructureReady() const
+{
+  return structureReady;
+}
+
+void SystemSetup::setStructureReady(bool newStructureReady)
+{
+  const bool changed = structureReady != newStructureReady;
+  structureReady = newStructureReady;
+  if (changed)
+  {
+    emit structureReadyChanged(structureReady);
+  }
+}
+
 void SystemSetup::setIonContration(double newConcentration)
 {
     ionConcentration = newConcentration;

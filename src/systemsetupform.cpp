@@ -30,10 +30,13 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
        systemSetup.get(), &SystemSetup::setIonContration);
 
     auto queue = std::make_shared<Command::Queue>();
+    connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
+        systemSetup->setStructureReady(success);
+    });
     connect(systemSetup.get(), &SystemSetup::configReadyChanged, [this, queue] (bool ready) {
-        qDebug() << "config ready";
         if (ready)
         {
+            systemSetup->setStructureReady(false);
             queue
                 ->clear()
                 ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
