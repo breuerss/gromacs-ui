@@ -90,6 +90,18 @@ MainWindow::MainWindow(QWidget *parent)
         ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
         ui->stepconfigurator->removeTab(index);
     });
+
+    connect(ui->actionCreateDefaultSimulationSetup, &QAction::triggered,
+            [] () {
+        auto project = ProjectManager::getInstance()->getCurrentProject();
+        project->clearSteps();
+        project->addStep();
+        project->addStep();
+
+        auto steps = project->getSteps();
+        steps[0]->setProperty("simulationType", QVariant::fromValue(SimulationType::Minimisation));
+        steps[1]->setProperty("simulationType", QVariant::fromValue(SimulationType::NVT));
+    });
 }
 
 MainWindow::~MainWindow()

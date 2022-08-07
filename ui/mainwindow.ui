@@ -111,6 +111,7 @@
      <string>Edit</string>
     </property>
     <addaction name="actionAddStep"/>
+    <addaction name="actionCreateDefaultSimulationSetup"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -145,7 +146,8 @@
   </widget>
   <action name="actionNewProject">
    <property name="icon">
-    <iconset theme="folder-new"/>
+    <iconset theme="folder-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>New Project</string>
@@ -164,7 +166,8 @@
   </action>
   <action name="actionAddStep">
    <property name="icon">
-    <iconset theme="document-new"/>
+    <iconset theme="document-new">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Add Step</string>
@@ -183,7 +186,8 @@
   </action>
   <action name="actionSaveProjectAs">
    <property name="icon">
-    <iconset theme="document-save-as"/>
+    <iconset theme="document-save-as">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save Project As...</string>
@@ -194,7 +198,8 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset theme="document-save"/>
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -205,13 +210,19 @@
   </action>
   <action name="actionRunSimulation">
    <property name="icon">
-    <iconset theme="media-playback-start"/>
+    <iconset theme="media-playback-start">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Run Simulation</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionCreateDefaultSimulationSetup">
+   <property name="text">
+    <string>Create Default Simulation Setup</string>
    </property>
   </action>
  </widget>
