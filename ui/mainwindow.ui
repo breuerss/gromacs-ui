@@ -125,7 +125,28 @@
    <addaction name="menuSimulation"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNewProject"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionSaveProjectAs"/>
+   <addaction name="separator"/>
+   <addaction name="actionAddStep"/>
+   <addaction name="separator"/>
+   <addaction name="actionRunSimulation"/>
+  </widget>
   <action name="actionNewProject">
+   <property name="icon">
+    <iconset theme="folder-new"/>
+   </property>
    <property name="text">
     <string>New Project</string>
    </property>
@@ -142,6 +163,9 @@
    </property>
   </action>
   <action name="actionAddStep">
+   <property name="icon">
+    <iconset theme="document-new"/>
+   </property>
    <property name="text">
     <string>Add Step</string>
    </property>
@@ -158,6 +182,9 @@
    </property>
   </action>
   <action name="actionSaveProjectAs">
+   <property name="icon">
+    <iconset theme="document-save-as"/>
+   </property>
    <property name="text">
     <string>Save Project As...</string>
    </property>
@@ -166,6 +193,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="icon">
+    <iconset theme="document-save"/>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
@@ -174,6 +204,9 @@
    </property>
   </action>
   <action name="actionRunSimulation">
+   <property name="icon">
+    <iconset theme="media-playback-start"/>
+   </property>
    <property name="text">
     <string>Run Simulation</string>
    </property>
