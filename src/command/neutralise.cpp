@@ -37,7 +37,10 @@ void Neutralise::exec()
     ionsMdp.open(QFile::WriteOnly);
     ionsMdp.close();
 
+    QString inputDirectory = fileInfo.absolutePath();
+
     QProcess prepCommand;
+    prepCommand.setWorkingDirectory(inputDirectory);
     LogForwarder::getInstance()->listenTo(&prepCommand);
     QString ionsTprPath = ionsBasePath + ".tpr";
     QString createIonsTprs = command + " grompp";
@@ -81,7 +84,6 @@ void Neutralise::exec()
     command += " -nq -1";
     command += " -neutral";
 
-    QString inputDirectory = fileInfo.absolutePath();
     process.setWorkingDirectory(inputDirectory);
     StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
     process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
