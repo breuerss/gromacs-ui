@@ -41,7 +41,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
                 ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
                 ->enqueue(std::make_shared<Command::Neutralise>(systemSetup))
                 ->start();
-            // TODO genion
         }
     });
 
