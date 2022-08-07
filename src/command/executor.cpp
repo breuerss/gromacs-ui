@@ -1,6 +1,7 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
 #include <QDebug>
+#include "../logforwarder.h"
 
 namespace Command {
 
@@ -21,6 +22,12 @@ Executor::Executor(QObject *parent)
         StatusMessageSetter::getInstance()->setMessage(message);
         emit finished();
     });
+    LogForwarder::getInstance()->listenTo(&process);
+}
+
+Executor::~Executor()
+{
+    LogForwarder::getInstance()->detach(&process);
 }
 
 void Executor::stop()

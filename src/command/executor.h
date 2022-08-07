@@ -11,6 +11,7 @@ class Executor : public QObject
     Q_OBJECT
 public:
     explicit Executor(QObject *parent = nullptr);
+    ~Executor();
     virtual void exec() = 0;
     void stop();
 

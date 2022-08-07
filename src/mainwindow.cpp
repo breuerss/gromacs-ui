@@ -13,6 +13,7 @@
 #include "statusmessagesetter.h"
 #include "command/queue.h"
 #include "command/runsimulation.h"
+#include "logforwarder.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -38,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto queue = std::make_shared<Command::Queue>();
     auto project = ProjectManager::getInstance()->getCurrentProject();
+    connect(LogForwarder::getInstance(), &LogForwarder::addMessage, ui->logOutput,
+            &QPlainTextEdit::appendPlainText);
     connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
         if (success)
         {

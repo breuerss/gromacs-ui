@@ -3,6 +3,7 @@
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
 #include "../settings.h"
+#include "../logforwarder.h"
 
 #include <QDebug>
 #include <QDir>
@@ -88,6 +89,7 @@ bool RunSimulation::execGrompp(
 
     qDebug() << "executing grompp" << command;
     QProcess grompp;
+    LogForwarder::getInstance()->listenTo(&grompp);
     grompp.setWorkingDirectory(workingDirectory);
 
     grompp.start(command);
@@ -100,6 +102,7 @@ bool RunSimulation::execGrompp(
         StatusMessageSetter::getInstance()->setMessage("Could not execute " + command);
     }
 
+    LogForwarder::getInstance()->detach(&grompp);
     return successful;
 }
 

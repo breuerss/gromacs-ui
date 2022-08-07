@@ -18,6 +18,7 @@ SOURCES += \
     src/command/solvate.cpp \
     src/fileserver.cpp \
     src/gromacsconfigfilegenerator.cpp \
+    src/logforwarder.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/model/systemsetup.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     src/command/solvate.h \
     src/fileserver.h \
     src/gromacsconfigfilegenerator.h \
+    src/logforwarder.h \
     src/mainwindow.h \
     src/pdbconverter.h \
     src/pdbdownloader.h \

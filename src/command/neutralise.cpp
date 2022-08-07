@@ -2,6 +2,7 @@
 
 #include "../settings.h"
 #include "../statusmessagesetter.h"
+#include "../logforwarder.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -37,6 +38,7 @@ void Neutralise::exec()
     ionsMdp.close();
 
     QProcess prepCommand;
+    LogForwarder::getInstance()->listenTo(&prepCommand);
     QString ionsTprPath = ionsBasePath + ".tpr";
     QString createIonsTprs = command + " grompp";
     createIonsTprs += " -f " + ionsMdpPath;
@@ -53,6 +55,7 @@ void Neutralise::exec()
         qDebug() << prepCommand.exitCode();
         StatusMessageSetter::getInstance()->setMessage("Failed executing " + createIonsTprs);
     }
+    LogForwarder::getInstance()->detach(&prepCommand);
 
     command += " genion";
 
