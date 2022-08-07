@@ -1,9 +1,8 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include "step.h"
-
 class SystemSetup;
+class Step;
 
 #include <QString>
 #include <QDataStream>
@@ -17,7 +16,7 @@ class Project : public QObject
 public:
     Project(const QString& name);
 
-    void addStep();
+    std::shared_ptr<Step> addStep();
     void clearSteps();
     void removeStep(int index);
     const std::vector<std::shared_ptr<Step>>& getSteps() const;

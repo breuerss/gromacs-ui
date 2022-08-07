@@ -1,5 +1,6 @@
 #include "project.h"
 #include "systemsetup.h"
+#include "step.h"
 #include "../settings.h"
 #include <QDebug>
 
@@ -9,11 +10,12 @@ Project::Project(const QString& newName)
 {
 }
 
-void Project::addStep()
+std::shared_ptr<Step> Project::addStep()
 {
     auto step = std::make_shared<Step>();
     steps.push_back(step);
     emit stepAdded(step, steps.size());
+    return step;
 }
 
 void Project::removeStep(int at)
