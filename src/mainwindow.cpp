@@ -39,6 +39,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     auto queue = std::make_shared<Command::Queue>();
     auto project = ProjectManager::getInstance()->getCurrentProject();
+    connect (project.get(), &Project::stepRemoved,
+        [this] (std::shared_ptr<Step>, int at) {
+        ui->stepconfigurator->removeTab(at + 1);
+    });
     connect(LogForwarder::getInstance(), &LogForwarder::addMessage, ui->logOutput,
             &QPlainTextEdit::appendPlainText);
     connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {

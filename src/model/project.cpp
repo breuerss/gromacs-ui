@@ -23,6 +23,14 @@ void Project::removeStep(int at)
     emit stepRemoved(step, at);
 }
 
+void Project::clearSteps()
+{
+    while (steps.size())
+    {
+        removeStep(0);
+    }
+}
+
 const std::vector<std::shared_ptr<Step>>& Project::getSteps() const
 {
     return steps;

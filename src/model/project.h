@@ -18,6 +18,7 @@ public:
     Project(const QString& name);
 
     void addStep();
+    void clearSteps();
     void removeStep(int index);
     const std::vector<std::shared_ptr<Step>>& getSteps() const;
     std::shared_ptr<SystemSetup> getSystemSetup() const;
