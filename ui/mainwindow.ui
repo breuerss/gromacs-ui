@@ -173,7 +173,7 @@
     <string>Add Step</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
   <action name="actionOpenProject">
@@ -223,6 +223,9 @@
   <action name="actionCreateDefaultSimulationSetup">
    <property name="text">
     <string>Create Default Simulation Setup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>
