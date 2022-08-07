@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
             setMoleculeFile(basePath + ".gro", trajectory);
         }
     });
-    connect(ui->actionRunSimulation, &QAction::triggered, [this, queue, project] () {
+    connect(ui->actionRunSimulation, &QAction::triggered, [queue, project] () {
         queue->clear();
         int noOfSteps = project->getSteps().size();
         for (int stepIndex = 0; stepIndex < noOfSteps; ++stepIndex)
@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
         this, &MainWindow::addTabForStep);
 
     connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
-            [this] (int index) {
+            [] (int index) {
         ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
     });
 
