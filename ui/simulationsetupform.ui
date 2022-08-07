@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>1042</width>
-    <height>656</height>
+    <height>785</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_19">
+  <layout class="QVBoxLayout" name="verticalLayout_21">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
@@ -112,7 +112,7 @@
         <item>
          <widget class="QGroupBox" name="outputSettingsGroup">
           <property name="title">
-           <string>Output</string>
+           <string>Output Frequencies</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
@@ -120,7 +120,7 @@
              <item>
               <widget class="QLabel" name="energyOutputFrequencyLabel">
                <property name="text">
-                <string>Energy Output Frequency</string>
+                <string>Energies</string>
                </property>
               </widget>
              </item>
@@ -137,18 +137,18 @@
             </layout>
            </item>
            <item row="0" column="1">
-            <layout class="QVBoxLayout" name="verticalLayout_6">
+            <layout class="QVBoxLayout" name="verticalLayout_20">
              <item>
-              <widget class="QLabel" name="positionOutputFrequencyLabel">
+              <widget class="QLabel" name="compressedPositionOutputFrequencyLabel">
                <property name="text">
-                <string>Position Output Frequency</string>
+                <string>Positions (Compressed)</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="positionOutputFrequency">
+              <widget class="QSpinBox" name="compressedPositionOutputFrequency">
                <property name="maximum">
-                <number>99999999</number>
+                <number>999999999</number>
                </property>
                <property name="value">
                 <number>1000</number>
@@ -158,11 +158,32 @@
             </layout>
            </item>
            <item row="1" column="0">
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <widget class="QLabel" name="positionOutputFrequencyLabel">
+               <property name="text">
+                <string>Positions</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="positionOutputFrequency">
+               <property name="maximum">
+                <number>99999999</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="1">
             <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
               <widget class="QLabel" name="velocityOutputFrequencyLabel">
                <property name="text">
-                <string>Velocity Output Frequency</string>
+                <string>Velocities</string>
                </property>
               </widget>
              </item>
@@ -171,17 +192,38 @@
              </item>
             </layout>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <item>
               <widget class="QLabel" name="forceOutputFrequencyLabel">
                <property name="text">
-                <string>Force Output Frequency</string>
+                <string>Forces</string>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QSpinBox" name="forceOutputFrequency"/>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="1">
+            <layout class="QVBoxLayout" name="verticalLayout_19">
+             <item>
+              <widget class="QLabel" name="logOutputFrequencyLabel">
+               <property name="text">
+                <string>Logs</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSpinBox" name="logOutputFrequency">
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
+               <property name="value">
+                <number>500</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -259,120 +301,120 @@
         </item>
        </layout>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QGroupBox" name="electrostaticsGroup">
-          <property name="title">
-           <string>Electrostatic Potential</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_15">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_12">
-             <item>
-              <widget class="QLabel" name="electrostaticAlgorithmLabel">
-               <property name="text">
-                <string>Long Range Electrostatics</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="electrostaticAlgorithm"/>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_13">
-             <item>
-              <widget class="QLabel" name="electrostaticCutoffRadiusLabel">
-               <property name="text">
-                <string>Cutoff Radius (nm)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="electrostaticCutoffRadius">
-               <property name="maximum">
-                <double>99999999.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_14">
-             <item>
-              <widget class="QLabel" name="fourierSpacingLabel">
-               <property name="text">
-                <string>Fourier Spacing (nm)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="fourierSpacing">
-               <property name="decimals">
-                <number>3</number>
-               </property>
-               <property name="value">
-                <double>0.125000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="vanDerWaalsGroup">
-          <property name="title">
-           <string>Van der Waals Interaction</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_17">
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_16">
-             <item>
-              <widget class="QLabel" name="vdwCutoffRadiusLabel">
-               <property name="text">
-                <string>Cutoff Radius (nm)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
-               <property name="maximum">
-                <double>99999999.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QGroupBox" name="electrostaticsGroup">
+       <property name="title">
+        <string>Electrostatic Potential</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_12">
+          <item>
+           <widget class="QLabel" name="electrostaticAlgorithmLabel">
+            <property name="text">
+             <string>Long Range Electrostatics</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="electrostaticAlgorithm"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_13">
+          <item>
+           <widget class="QLabel" name="electrostaticCutoffRadiusLabel">
+            <property name="text">
+             <string>Cutoff Radius (nm)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="electrostaticCutoffRadius">
+            <property name="maximum">
+             <double>99999999.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <widget class="QLabel" name="fourierSpacingLabel">
+            <property name="text">
+             <string>Fourier Spacing (nm)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="fourierSpacing">
+            <property name="decimals">
+             <number>3</number>
+            </property>
+            <property name="value">
+             <double>0.125000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="vanDerWaalsGroup">
+       <property name="title">
+        <string>Van der Waals Interaction</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_16">
+          <item>
+           <widget class="QLabel" name="vdwCutoffRadiusLabel">
+            <property name="text">
+             <string>Cutoff Radius (nm)</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
+            <property name="maximum">
+             <double>99999999.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <spacer name="verticalSpacer">

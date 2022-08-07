@@ -18,14 +18,13 @@ void GromacsConfigFileGenerator::generate(std::shared_ptr<Step> step, const QStr
         writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
 
         // output control
-        writeLine(writer, "nstenergy", step->property("energyOutputFrequency").toString());
-        writeLine(writer, "nstxout", step->property("positionOutputFrequency").toString());
-        writeLine(writer, "nstxout-compressed", step->property("positionOutputFrequency").toString());
+        writeLine(writer, "nstenergy", QString::number(step->property("energyOutputFrequency").value<int>()));
+        writeLine(writer, "nstxout", QString::number(step->property("positionOutputFrequency").value<int>()));
+        writeLine(writer, "nstxout-compressed", QString::number(step->property("compressedPositionOutputFrequency").value<int>()));
 
-        writeLine(writer, "nstvout", step->property("velocityOutputFrequency").toString());
-        writeLine(writer, "nstfout", step->property("forceOutputFrequency").toString());
-        // TODO make logging freq configurable
-        writeLine(writer, "nstlog", QString::number(1000));
+        writeLine(writer, "nstvout", QString::number(step->property("velocityOutputFrequency").value<int>()));
+        writeLine(writer, "nstfout", QString::number(step->property("forceOutputFrequency").value<int>()));
+        writeLine(writer, "nstlog", QString::number(step->property("logOutputFrequency").value<int>()));
 
         // electrostatics and VdW
         writeLine(writer, "coulombtype", step->property("electrostaticAlgorithm").toString());

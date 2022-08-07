@@ -36,6 +36,8 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
     connectToUi<QSpinBox, int>(container, step, "positionOutputFrequency");
     connectToUi<QSpinBox, int>(container, step, "velocityOutputFrequency");
     connectToUi<QSpinBox, int>(container, step, "forceOutputFrequency");
+    connectToUi<QSpinBox, int>(ui->compressedPositionOutputFrequency, step, "compressedPositionOutputFrequency");
+    connectToUi<QSpinBox, int>(ui->logOutputFrequency, step, "logOutputFrequency");
 
     setOptions(ui->electrostaticAlgorithm, {
                    {"None", "no"},

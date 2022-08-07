@@ -22,8 +22,10 @@ public:
     Q_PROPERTY(double minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
     Q_PROPERTY(int energyOutputFrequency MEMBER energyOutputFrequency NOTIFY energyOutputFrequencyChanged);
     Q_PROPERTY(int positionOutputFrequency MEMBER positionOutputFrequency NOTIFY positionOutputFrequencyChanged);
+    Q_PROPERTY(int compressedPositionOutputFrequency MEMBER compressedPositionOutputFrequency NOTIFY compressedPositionOutputFrequencyChanged);
     Q_PROPERTY(int velocityOutputFrequency MEMBER velocityOutputFrequency NOTIFY velocityOutputFrequencyChanged);
     Q_PROPERTY(int forceOutputFrequency MEMBER forceOutputFrequency NOTIFY forceOutputFrequencyChanged);
+    Q_PROPERTY(int logOutputFrequency MEMBER logOutputFrequency NOTIFY logOutputFrequencyChanged);
     Q_PROPERTY(QString electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
     Q_PROPERTY(double electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
     Q_PROPERTY(double fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
@@ -42,6 +44,8 @@ signals:
 
     void energyOutputFrequencyChanged(int);
     void positionOutputFrequencyChanged(int);
+    void compressedPositionOutputFrequencyChanged(int);
+    void logOutputFrequencyChanged(int);
     void velocityOutputFrequencyChanged(int);
     void forceOutputFrequencyChanged(int);
 
@@ -59,7 +63,9 @@ private:
     double minimisationStepSize = 0.01;
 
     int energyOutputFrequency = 500;
-    int positionOutputFrequency = 1000;
+    int positionOutputFrequency = 0;
+    int compressedPositionOutputFrequency = 1000;
+    int logOutputFrequency = 1000;
     int velocityOutputFrequency = 0;
     int forceOutputFrequency = 0;
 
