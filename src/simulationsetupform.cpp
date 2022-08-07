@@ -18,7 +18,7 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
 //        { "Gibbs/Isobaric-isothermal (NPT)", SimulationType::NPT },
     });
 
-    connectToUi<SimulationType>(
+    connectToComboBox<SimulationType>(
                 ui->simulationType,
                 step,
                 "simulationType",
@@ -27,26 +27,26 @@ SimulationSetupForm::SimulationSetupForm(std::shared_ptr<Step> newStep, QWidget 
     });
 
     QWidget* container = ui->settingsWidget;
-    connectToUi<QString>(container, step, "algorithm");
+    connectToComboBox<QString>(container, step, "algorithm");
 
-    connectToUi<QSpinBox, int>(container, step, "numberOfSteps");
-    connectToUi<QDoubleSpinBox, double>(container, step, "minimisationStepSize");
-    connectToUi<QDoubleSpinBox, double>(container, step, "minimisationMaximumForce");
-    connectToUi<QSpinBox, int>(container, step, "energyOutputFrequency");
-    connectToUi<QSpinBox, int>(container, step, "positionOutputFrequency");
-    connectToUi<QSpinBox, int>(container, step, "velocityOutputFrequency");
-    connectToUi<QSpinBox, int>(container, step, "forceOutputFrequency");
-    connectToUi<QSpinBox, int>(ui->compressedPositionOutputFrequency, step, "compressedPositionOutputFrequency");
-    connectToUi<QSpinBox, int>(ui->logOutputFrequency, step, "logOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(container, step, "numberOfSteps");
+    connectToSpinBox<QDoubleSpinBox, double>(container, step, "minimisationStepSize");
+    connectToSpinBox<QDoubleSpinBox, double>(container, step, "minimisationMaximumForce");
+    connectToSpinBox<QSpinBox, int>(container, step, "energyOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(container, step, "positionOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(container, step, "velocityOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(container, step, "forceOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, step, "compressedPositionOutputFrequency");
+    connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, step, "logOutputFrequency");
 
     setOptions(ui->electrostaticAlgorithm, {
                    {"None", "no"},
                    {"PME", "PME"},
                }, 1);
-    connectToUi<QString>(ui->electrostaticAlgorithm, step, "electrostaticAlgorithm");
-    connectToUi<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
-    connectToUi<QDoubleSpinBox, double>(ui->fourierSpacing, step, "fourierSpacing");
-    connectToUi<QDoubleSpinBox, double>(ui->vdwCutoffRadius, step, "vdwCutoffRadius");
+    connectToComboBox<QString>(ui->electrostaticAlgorithm, step, "electrostaticAlgorithm");
+    connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
+    connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, step, "fourierSpacing");
+    connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, step, "vdwCutoffRadius");
 }
 
 SimulationSetupForm::~SimulationSetupForm()

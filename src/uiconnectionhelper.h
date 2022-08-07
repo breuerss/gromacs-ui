@@ -9,7 +9,7 @@
 #include <QDebug>
 
 template<typename ElementType, typename ValueType>
-void connectToUi(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
+void connectToSpinBox(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
 {
     ElementType* widget = container->findChild<ElementType*>(elementName);
     if (!widget)
@@ -28,7 +28,7 @@ void connectToUi(QWidget* container, std::shared_ptr<QObject> model, const QStri
 }
 
 template<typename ValueType>
-void connectToUi(
+void connectToComboBox(
         QWidget* container,
         std::shared_ptr<QObject> model,
         const QString& elementName,
@@ -58,14 +58,14 @@ void connectToUi(
     widget->setCurrentIndex(index);
 }
 
-void connectToUi(
+void connectToLineEdit(
         QLineEdit* widget,
         std::shared_ptr<QObject> model,
         const QString& elementName,
         std::function<void(const QString&)>&& callback = nullptr
         );
 
-void connectToUi(
+void connectToCheckbox(
         QCheckBox* widget,
         std::shared_ptr<QObject> model,
         const QString& elementName,

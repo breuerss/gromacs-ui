@@ -45,16 +45,16 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
         }
     });
 
-    connectToUi<QString>(ui->boxType, systemSetup, "boxType");
-    connectToUi<QString>(ui->waterModel, systemSetup, "waterModel");
-    connectToUi<QString>(ui->forceField, systemSetup, "forceField");
+    connectToComboBox<QString>(ui->boxType, systemSetup, "boxType");
+    connectToComboBox<QString>(ui->waterModel, systemSetup, "waterModel");
+    connectToComboBox<QString>(ui->forceField, systemSetup, "forceField");
 
-    connectToUi<QDoubleSpinBox, double>(ui->distanceToEdge, systemSetup, "distance");
-    connectToUi<QDoubleSpinBox, double>(ui->ionConcentration, systemSetup, "ionConcentration");
+    connectToSpinBox<QDoubleSpinBox, double>(ui->distanceToEdge, systemSetup, "distance");
+    connectToSpinBox<QDoubleSpinBox, double>(ui->ionConcentration, systemSetup, "ionConcentration");
 
-    connectToUi(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
+    connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
-    connectToUi(ui->pdbEntry, systemSetup, "pdbCode", [this] (const QString& pdbCode) {
+    connectToLineEdit(ui->pdbEntry, systemSetup, "pdbCode", [this] (const QString& pdbCode) {
         if (pdbCode.length() == 4)
         {
             qDebug() << "Starting PDB download for" << pdbCode;

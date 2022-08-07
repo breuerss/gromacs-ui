@@ -14,7 +14,7 @@ void setOptions(
     comboBox->setCurrentIndex(defaultIndex);
 }
 
-void connectToUi(
+void connectToLineEdit(
         QLineEdit* widget,
         std::shared_ptr<QObject> model,
         const QString& elementName,
@@ -36,7 +36,7 @@ void connectToUi(
     widget->setText(value);
 }
 
-void connectToUi(
+void connectToCheckbox(
         QCheckBox* widget,
         std::shared_ptr<QObject> model,
         const QString& elementName,
