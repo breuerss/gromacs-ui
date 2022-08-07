@@ -142,6 +142,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<SystemSetup> newSystemSetup, QW
 
 SystemSetupForm::~SystemSetupForm()
 {
+    disconnect(systemSetup.get(), 0, 0, 0);
     delete ui;
 }
 

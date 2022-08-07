@@ -36,5 +36,6 @@ private:
     void setupUIForProject();
     Settings settings;
     void setMoleculeFile(const QString& file = "", const QString& traj = "");
+    void removeTabAt(int index);
 };
 #endif // MAINWINDOW_H

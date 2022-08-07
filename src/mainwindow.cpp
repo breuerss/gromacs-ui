@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto project = ProjectManager::getInstance()->getCurrentProject();
     connect (project.get(), &Project::stepRemoved,
         [this] (std::shared_ptr<Step>, int at) {
-        ui->stepconfigurator->removeTab(at + 1);
+        removeTabAt(at + 1);
     });
     connect(LogForwarder::getInstance(), &LogForwarder::addMessage, ui->logOutput,
             &QPlainTextEdit::appendPlainText);
@@ -88,7 +88,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
             [this] (int index) {
         ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
-        ui->stepconfigurator->removeTab(index);
     });
 
     connect(ui->actionCreateDefaultSimulationSetup, &QAction::triggered,
@@ -127,7 +126,11 @@ void MainWindow::setupUIForProject()
     if (project)
     {
         ui->stepconfigurator->setEnabled(true);
-        ui->stepconfigurator->clear();
+
+        while (ui->stepconfigurator->count())
+        {
+            removeTabAt(0);
+        }
         ui->stepconfigurator->addTab(new SystemSetupForm(project->getSystemSetup()), tr("System Setup"));
         auto* tabBar = ui->stepconfigurator->tabBar();
         tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
@@ -212,4 +215,11 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
     }
 
     ui->molpreview->setUrl(url);
+}
+
+void MainWindow::removeTabAt(int index)
+{
+    QWidget* widget = ui->stepconfigurator->widget(index);
+    ui->stepconfigurator->removeTab(index);
+    delete widget;
 }
