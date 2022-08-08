@@ -1,6 +1,5 @@
 # Open issues
 
-1. save as overwrites without prompting if the file is entered without suffix
 1. Missing status information about running simulation
 1. detect if system was already run
 1. disable configuration during run
