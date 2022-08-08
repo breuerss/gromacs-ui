@@ -34,6 +34,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   projectConn = connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
     ui->systemCoordinatesGroup->setEnabled(!projectName.isEmpty());
   });
+  ui->systemCoordinatesGroup->setEnabled(!project->property("name").toString().isEmpty());
 
   QRegExpValidator* projectNameValidator = new QRegExpValidator(QRegExp("[a-zA-Z0-9_]+"));
   ui->projectName->setValidator(projectNameValidator);
