@@ -12,8 +12,7 @@ class SystemSetup : public QObject
 {
     Q_OBJECT
 public:
-    SystemSetup(Project* project);
-    Project* getProject();
+    SystemSetup();
     void useChain(const QString& chain, bool use = true);
 
     void setStructureReady(bool);
@@ -68,7 +67,6 @@ signals:
     void structureReadyChanged(bool);
 
 private:
-    Project* project;
     QString pdbCode;
 
     QString sourceStructureFile;

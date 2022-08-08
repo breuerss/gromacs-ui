@@ -140,7 +140,7 @@ void MainWindow::setupUIForProject()
         {
             removeTabAt(0);
         }
-        ui->stepconfigurator->addTab(new SystemSetupForm(project->getSystemSetup()), tr("System Setup"));
+        ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
         auto* tabBar = ui->stepconfigurator->tabBar();
         tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
         tabBar->setTabButton(0, QTabBar::RightSide, 0);

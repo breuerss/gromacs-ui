@@ -9,6 +9,7 @@ class SystemSetupForm;
 
 namespace Model {
 class SystemSetup;
+class Project;
 }
 
 class SystemSetupForm : public QWidget
@@ -16,11 +17,12 @@ class SystemSetupForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit SystemSetupForm(std::shared_ptr<Model::SystemSetup> systemSetup, QWidget *parent = nullptr);
+    explicit SystemSetupForm(std::shared_ptr<Model::Project> project, QWidget *parent = nullptr);
     ~SystemSetupForm();
 
 private:
     Ui::SystemSetupForm *ui;
+    std::shared_ptr<Model::Project> project;
     std::shared_ptr<Model::SystemSetup> systemSetup;
 
     void prepareWaterOptions();

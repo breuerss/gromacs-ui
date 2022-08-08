@@ -16,10 +16,11 @@
 #include <QCheckBox>
 #include <QTimer>
 
-SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::SystemSetup> newSystemSetup, QWidget *parent)
+SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::SystemSetupForm)
-    , systemSetup(newSystemSetup)
+    , project(newProject)
+    , systemSetup(project->getSystemSetup())
 {
     ui->setupUi(this);
 
@@ -62,7 +63,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::SystemSetup> newSystemSe
         if (pdbCode.length() == 4)
         {
             // TODO does that belong here? Isn't that part of the project setup?
-            QDir dir(systemSetup->getProject()->getProjectPath());
+            QDir dir(project->getProjectPath());
             if (dir.mkpath("input"))
             {
                 dir.cd("input");

@@ -7,7 +7,7 @@
 namespace Model {
 
 Project::Project(const QString& newName)
-    : systemSetup(new SystemSetup(this))
+    : systemSetup(new SystemSetup())
     , name(newName)
 {
 }

@@ -7,8 +7,7 @@
 
 namespace Model {
 
-SystemSetup::SystemSetup(Project* parent)
-    : project(parent)
+SystemSetup::SystemSetup()
 {
     connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
     connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
@@ -20,11 +19,6 @@ SystemSetup::SystemSetup(Project* parent)
 
     connect(this, &SystemSetup::removeHeteroAtomsChanged, this, &SystemSetup::filterSourceStructure);
 
-}
-
-Project* SystemSetup::getProject()
-{
-    return project;
 }
 
 void SystemSetup::setSourceStructureFile(const QString &newSourceStructureFile)
