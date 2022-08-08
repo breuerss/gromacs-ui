@@ -15,29 +15,29 @@ class Step;
 
 class Project : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    Project(const QString& name);
+  Project(const QString& name);
 
-    std::shared_ptr<Step> addStep();
-    void clearSteps();
-    void removeStep(int index);
-    const std::vector<std::shared_ptr<Step>>& getSteps() const;
-    std::shared_ptr<SystemSetup> getSystemSetup() const;
+  std::shared_ptr<Step> addStep();
+  void clearSteps();
+  void removeStep(int index);
+  const std::vector<std::shared_ptr<Step>>& getSteps() const;
+  std::shared_ptr<SystemSetup> getSystemSetup() const;
 
-    QString getProjectPath();
+  QString getProjectPath();
 
-    Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
+  Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
 signals:
-    void stepAdded(std::shared_ptr<Step> step, int at);
-    void stepRemoved(std::shared_ptr<Step> step, int at);
-    void nameChanged(const QString&);
+  void stepAdded(std::shared_ptr<Step> step, int at);
+  void stepRemoved(std::shared_ptr<Step> step, int at);
+  void nameChanged(const QString&);
 
 private:
-    std::vector<std::shared_ptr<Step>> steps;
-    std::shared_ptr<SystemSetup> systemSetup;
-    QString name;
+  std::vector<std::shared_ptr<Step>> steps;
+  std::shared_ptr<SystemSetup> systemSetup;
+  QString name;
 };
 
 QDataStream &operator<<(QDataStream &out, const Project &project);

@@ -10,24 +10,24 @@ class Project;
 
 class ProjectManager : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    static ProjectManager* getInstance();
-    const std::shared_ptr<Model::Project> getCurrentProject() const;
-    void createNewProject();
+  static ProjectManager* getInstance();
+  const std::shared_ptr<Model::Project> getCurrentProject() const;
+  void createNewProject();
 
 signals:
-    void currentProjectChanged(std::shared_ptr<Model::Project> currentProject);
+  void currentProjectChanged(std::shared_ptr<Model::Project> currentProject);
 
-public slots:
-    void save();
-    void open();
-    void saveAs(const QString& fileName = "");
+  public slots:
+  void save();
+  void open();
+  void saveAs(const QString& fileName = "");
 
 private:
-    ProjectManager() = default;
-    std::shared_ptr<Model::Project> currentProject;
-    QString fileName;
+  ProjectManager() = default;
+  std::shared_ptr<Model::Project> currentProject;
+  QString fileName;
 };
 
 #endif // PROJECTMANAGER_H

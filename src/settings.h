@@ -6,14 +6,14 @@
 class Settings : public QSettings
 {
 public:
-    static const QString PROJECTS_DIRECTORY;
-    static const QString GMX_PATH;
-    static const QString APP_GEOMETRY;
-    static const QString PDB_WC;
-    static const QString PDB_SELCHAIN;
-    static const QString PDB_DELHETATM;
+  static const QString PROJECTS_DIRECTORY;
+  static const QString GMX_PATH;
+  static const QString APP_GEOMETRY;
+  static const QString PDB_WC;
+  static const QString PDB_SELCHAIN;
+  static const QString PDB_DELHETATM;
 
-    Settings() = default;
+  Settings() = default;
 };
 
 #endif // SETTINGS_H

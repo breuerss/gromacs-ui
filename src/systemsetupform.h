@@ -14,27 +14,27 @@ class Project;
 
 class SystemSetupForm : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit SystemSetupForm(std::shared_ptr<Model::Project> project, QWidget *parent = nullptr);
-    ~SystemSetupForm();
+  explicit SystemSetupForm(std::shared_ptr<Model::Project> project, QWidget *parent = nullptr);
+  ~SystemSetupForm();
 
 private:
-    Ui::SystemSetupForm *ui;
-    std::shared_ptr<Model::Project> project;
-    std::shared_ptr<Model::SystemSetup> systemSetup;
+  Ui::SystemSetupForm *ui;
+  std::shared_ptr<Model::Project> project;
+  std::shared_ptr<Model::SystemSetup> systemSetup;
 
-    void prepareWaterOptions();
-    void prepareForceFieldOptions();
-    void prepareBoxOptions();
+  void prepareWaterOptions();
+  void prepareForceFieldOptions();
+  void prepareBoxOptions();
 
-    void setIonFromModel();
-    void connectIonSelectors();
+  void setIonFromModel();
+  void connectIonSelectors();
 
-    void setGroupsEnabled(bool enabled);
+  void setGroupsEnabled(bool enabled);
 
-    void handlePdbDownload(const QString& pdbCode, const QString& filePath);
+  void handlePdbDownload(const QString& pdbCode, const QString& filePath);
 };
 
 #endif // SYSTEMSETUPFORM_H

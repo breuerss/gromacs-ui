@@ -8,15 +8,15 @@ namespace Model {
 
 Step::Step()
 {
-    // Ugly hack to make SimulationType serializable as an integer
-    // in QVariant
-    static bool registered = false;
-    if (!registered)
-    {
-      qRegisterMetaType<SimulationType>("Model::SimulationType");
-      qRegisterMetaTypeStreamOperators<int>("Model::SimulationType");
-      registered = true;
-    }
+  // Ugly hack to make SimulationType serializable as an integer
+  // in QVariant
+  static bool registered = false;
+  if (!registered)
+  {
+    qRegisterMetaType<SimulationType>("Model::SimulationType");
+    qRegisterMetaTypeStreamOperators<int>("Model::SimulationType");
+    registered = true;
+  }
 }
 
 QString Step::getName() const
@@ -29,7 +29,7 @@ QString Step::getName() const
   }
   else if (simulationType == SimulationType::NVT)
   {
-      name = "NVT";
+    name = "NVT";
   }
 
 
@@ -47,7 +47,7 @@ QString Step::getDirectory() const
   }
   else if (simulationType == SimulationType::NVT)
   {
-      directory = "nvt";
+    directory = "nvt";
   }
 
 
@@ -56,36 +56,36 @@ QString Step::getDirectory() const
 
 QDataStream &operator<<(QDataStream &out, const Step& step)
 {
-    const QMetaObject *metaobject = step.metaObject();
-    int count = metaobject->propertyCount();
-    qDebug() << "Writing" << count << "properties from step";
-    for (int i = 0; i < count; ++i) {
-        QMetaProperty metaproperty = metaobject->property(i);
-        const char *name = metaproperty.name();
-        QVariant value = step.property(name);
+  const QMetaObject *metaobject = step.metaObject();
+  int count = metaobject->propertyCount();
+  qDebug() << "Writing" << count << "properties from step";
+  for (int i = 0; i < count; ++i) {
+    QMetaProperty metaproperty = metaobject->property(i);
+    const char *name = metaproperty.name();
+    QVariant value = step.property(name);
 
-        out << value;
-    }
+    out << value;
+  }
 
-    return out;
+  return out;
 }
 
 QDataStream &operator>>(QDataStream &in, Step& step)
 {
-    const QMetaObject *metaobject = step.metaObject();
-    int count = metaobject->propertyCount();
+  const QMetaObject *metaobject = step.metaObject();
+  int count = metaobject->propertyCount();
 
-    qDebug() << "Reading" << count << "properties to step";
-    for (int i = 0; i < count; ++i) {
-        QMetaProperty metaproperty = metaobject->property(i);
-        const char *name = metaproperty.name();
+  qDebug() << "Reading" << count << "properties to step";
+  for (int i = 0; i < count; ++i) {
+    QMetaProperty metaproperty = metaobject->property(i);
+    const char *name = metaproperty.name();
 
-        QVariant value;
-        in >> value;
-        step.setProperty(name, value);
-    }
+    QVariant value;
+    in >> value;
+    step.setProperty(name, value);
+  }
 
-    return in;
+  return in;
 }
 
 }

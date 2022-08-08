@@ -8,78 +8,78 @@
 namespace Command {
 
 Queue::Queue(QObject *parent)
-    : QObject{parent}
+  : QObject(parent)
     , failed(false)
 {
 }
 
 Queue* Queue::clear()
 {
-    queue.clear();
-    if (current)
-    {
-        disconnect(current.get(), 0, 0, 0);
-        current->stop();
-        current.reset();
-    }
-    return this;
+  queue.clear();
+  if (current)
+  {
+    disconnect(current.get(), 0, 0, 0);
+    current->stop();
+    current.reset();
+  }
+  return this;
 }
 
 Queue* Queue::enqueue(std::shared_ptr<Executor> executor, bool needsPrevious)
 {
-    queue.push_back({executor, needsPrevious});
+  queue.push_back({executor, needsPrevious});
 
-    return this;
+  return this;
 }
 
 void Queue::start()
 {
-    qDebug() << __PRETTY_FUNCTION__;
-    numberOfSteps = queue.size();
-    execNext();
+  qDebug() << __PRETTY_FUNCTION__;
+  numberOfSteps = queue.size();
+  execNext();
 }
 
 bool Queue::wasSuccessful()
 {
-    return !failed;
+  return !failed;
 }
 
 void Queue::execNext()
 {
-    qDebug() << __PRETTY_FUNCTION__;
-    if (queue.size() > 0)
-    {
-        qDebug() << "queue has elements" << queue.size();
-        auto nextCommand = queue.front();
-        bool needsPrevious = nextCommand.second;
+  qDebug() << __PRETTY_FUNCTION__;
+  if (queue.size() > 0)
+  {
+    qDebug() << "queue has elements" << queue.size();
+    auto nextCommand = queue.front();
+    bool needsPrevious = nextCommand.second;
 
-        if (
-                !needsPrevious ||
-                (needsPrevious && (!current || (current && current->wasSuccessful()))))
+    if (
+      !needsPrevious ||
+      (needsPrevious && (!current || (current && current->wasSuccessful()))))
+    {
+      qDebug() << "can run";
+      current = nextCommand.first;
+      connect(current.get(), &Executor::finished, [this] () {
+        if (current)
         {
-            qDebug() << "can run";
-            current = nextCommand.first;
-            connect(current.get(), &Executor::finished, [this] () {
-                if (current)
-                {
-                    disconnect(current.get(), 0, 0, 0);
-                }
-                emit stepFinished(numberOfSteps - queue.size() - 1, current->wasSuccessful());
-                execNext();
-            });
-            queue.pop_front();
-            current->exec();
+          disconnect(current.get(), 0, 0, 0);
         }
-        else
-        {
-            failed = true;
-            emit finished(!failed);
-        }
+        emit stepFinished(numberOfSteps - queue.size() - 1, current->wasSuccessful());
+        execNext();
+      });
+      queue.pop_front();
+      current->exec();
     }
     else
     {
-        emit finished(!failed);
+      failed = true;
+      emit finished(!failed);
     }
+  }
+  else
+  {
+    emit finished(!failed);
+  }
 }
 
 }

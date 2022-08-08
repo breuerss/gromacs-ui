@@ -13,21 +13,21 @@ namespace Command {
 class RunSimulation : public Executor
 {
 public:
-    explicit RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent = nullptr);
-    void exec() override;
+  explicit RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent = nullptr);
+  void exec() override;
 
 private:
-    bool execGrompp(
-        const QString& mdpFile,
-        const QString& inputStructure,
-        const QString& topology,
-        const QString& output,
-        const QString& workingDirectory
-        );
-    QString getGmx() const;
+  bool execGrompp(
+    const QString& mdpFile,
+    const QString& inputStructure,
+    const QString& topology,
+    const QString& output,
+    const QString& workingDirectory
+    );
+  QString getGmx() const;
 
-    std::shared_ptr<Model::Project> project;
-    int stepIndex;
+  std::shared_ptr<Model::Project> project;
+  int stepIndex;
 };
 
 }

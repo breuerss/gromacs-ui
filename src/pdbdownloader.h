@@ -5,20 +5,20 @@
 
 class PdbDownloader : public QNetworkAccessManager
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit PdbDownloader(QObject *parent = nullptr);
+  explicit PdbDownloader(QObject *parent = nullptr);
 
-    void download(const QString& pdbCode, const QString& fileName);
+  void download(const QString& pdbCode, const QString& fileName);
 
 signals:
-    void downloaded(const QString& pdbCode, const QString& content);
-    void error();
-    void notFound();
+  void downloaded(const QString& pdbCode, const QString& content);
+  void error();
+  void notFound();
 
 private:
-    QString baseUrl = "https://files.rcsb.org/download/";
-    QString createUrlFor(const QString& pdbCode);
+  QString baseUrl = "https://files.rcsb.org/download/";
+  QString createUrlFor(const QString& pdbCode);
 };
 
 #endif // PDBDOWNLOADER_H

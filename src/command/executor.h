@@ -8,24 +8,24 @@ namespace Command {
 
 class Executor : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Executor(QObject *parent = nullptr);
-    ~Executor();
-    virtual void exec() = 0;
-    void stop();
+  explicit Executor(QObject *parent = nullptr);
+  ~Executor();
+  virtual void exec() = 0;
+  void stop();
 
-    bool hasRun() const;
-    bool wasSuccessful() const;
+  bool hasRun() const;
+  bool wasSuccessful() const;
 
 signals:
-    void finished();
+  void finished();
 
 protected:
-    QProcess process;
+  QProcess process;
 
 private:
-    bool mHasRun;
+  bool mHasRun;
 
 };
 

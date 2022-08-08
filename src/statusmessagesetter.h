@@ -5,16 +5,16 @@
 
 class StatusMessageSetter : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    static StatusMessageSetter* getInstance();
-    void setMessage(const QString& message);
+  static StatusMessageSetter* getInstance();
+  void setMessage(const QString& message);
 
 signals:
-    void messageChanged(const QString& message);
+  void messageChanged(const QString& message);
 
 private:
-    explicit StatusMessageSetter(QObject *parent = nullptr);
+  explicit StatusMessageSetter(QObject *parent = nullptr);
 
 };
 

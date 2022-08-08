@@ -6,8 +6,8 @@
 class PdbInfoExtractor
 {
 public:
-    static QStringList getChains(const QString& pdbFile);
-    static QStringList getHetatms(const QString& pdbFile);
+  static QStringList getChains(const QString& pdbFile);
+  static QStringList getHetatms(const QString& pdbFile);
 };
 
 #endif // PDBINFOEXTRACTOR_H

@@ -13,11 +13,11 @@ namespace Command {
 class CreateBox : public Executor
 {
 public:
-    explicit CreateBox(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
-    void exec() override;
+  explicit CreateBox(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
+  void exec() override;
 
 private:
-    const std::shared_ptr<Model::SystemSetup> systemSetup;
+  const std::shared_ptr<Model::SystemSetup> systemSetup;
 };
 
 }

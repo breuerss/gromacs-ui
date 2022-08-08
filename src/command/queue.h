@@ -13,26 +13,26 @@ class Executor;
 
 class Queue : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    explicit Queue(QObject *parent = nullptr);
+  explicit Queue(QObject *parent = nullptr);
 
-    Queue* clear();
-    Queue* enqueue(std::shared_ptr<Executor> executor, bool needsPrevious = true);
-    void start();
-    bool wasSuccessful();
+  Queue* clear();
+  Queue* enqueue(std::shared_ptr<Executor> executor, bool needsPrevious = true);
+  void start();
+  bool wasSuccessful();
 
 signals:
-    void finished(bool success);
-    void stepFinished(int stepIndex, bool success);
+  void finished(bool success);
+  void stepFinished(int stepIndex, bool success);
 
 private:
-    void execNext();
-    bool failed;
-    int numberOfSteps;
+  void execNext();
+  bool failed;
+  int numberOfSteps;
 
-    std::deque<std::pair<std::shared_ptr<Executor>, bool>> queue;
-    std::shared_ptr<Executor> current;
+  std::deque<std::pair<std::shared_ptr<Executor>, bool>> queue;
+  std::shared_ptr<Executor> current;
 };
 
 }

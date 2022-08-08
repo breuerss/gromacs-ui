@@ -9,103 +9,103 @@
 
 ProjectManager* ProjectManager::getInstance()
 {
-    static std::unique_ptr<ProjectManager> instance;
-    if (!instance)
-    {
-        instance.reset(new ProjectManager());
-        instance->createNewProject();
-    }
+  static std::unique_ptr<ProjectManager> instance;
+  if (!instance)
+  {
+    instance.reset(new ProjectManager());
+    instance->createNewProject();
+  }
 
-    return instance.get();
+  return instance.get();
 }
 
 const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 {
-    return currentProject;
+  return currentProject;
 }
 
 void ProjectManager::createNewProject()
 {
-    QMessageBox::StandardButton choice = QMessageBox::Yes;
-    if (currentProject)
-    {
-        choice = QMessageBox::question(
-                    nullptr, tr("New Project"),
-                    tr("Do you really want to dismiss all changes in your current project?"));
-    }
-    if (choice == QMessageBox::Yes)
-    {
-        // TODO get name from input mask
-        currentProject.reset(new Model::Project("test"));
-        emit currentProjectChanged(currentProject);
-    }
+  QMessageBox::StandardButton choice = QMessageBox::Yes;
+  if (currentProject)
+  {
+    choice = QMessageBox::question(
+      nullptr, tr("New Project"),
+      tr("Do you really want to dismiss all changes in your current project?"));
+  }
+  if (choice == QMessageBox::Yes)
+  {
+    // TODO get name from input mask
+    currentProject.reset(new Model::Project("test"));
+    emit currentProjectChanged(currentProject);
+  }
 }
 
 void ProjectManager::save()
 {
-    if (fileName.isEmpty())
-    {
-        saveAs();
-    }
-    else
-    {
-        saveAs(fileName);
-    }
+  if (fileName.isEmpty())
+  {
+    saveAs();
+  }
+  else
+  {
+    saveAs(fileName);
+  }
 }
 
 void ProjectManager::saveAs(const QString& saveAsFileName)
 {
-    QString writeToFileName = saveAsFileName;
-    if (writeToFileName.isEmpty())
+  QString writeToFileName = saveAsFileName;
+  if (writeToFileName.isEmpty())
+  {
+    QString suffix(".groproj");
+    writeToFileName = QFileDialog::getSaveFileName(
+      nullptr,
+      tr("Save Gromacs Project File"),
+      QDir::homePath(),
+      "*" + suffix
+      );
+
+    if (!writeToFileName.endsWith(suffix))
     {
-        QString suffix(".groproj");
-        writeToFileName = QFileDialog::getSaveFileName(
-                    nullptr,
-                    tr("Save Gromacs Project File"),
-                    QDir::homePath(),
-                    "*" + suffix
-                    );
-
-        if (!writeToFileName.endsWith(suffix))
-        {
-          writeToFileName += suffix;
-        }
+      writeToFileName += suffix;
     }
+  }
 
-    if (!writeToFileName.isEmpty())
+  if (!writeToFileName.isEmpty())
+  {
+    QFile file(writeToFileName);
+    file.open(QFile::WriteOnly);
+    QDataStream out(&file);
+    out << *(currentProject.get());
+    file.close();
+
+    if (fileName.isEmpty())
     {
-        QFile file(writeToFileName);
-        file.open(QFile::WriteOnly);
-        QDataStream out(&file);
-        out << *(currentProject.get());
-        file.close();
-
-        if (fileName.isEmpty())
-        {
-            fileName = writeToFileName;
-        }
+      fileName = writeToFileName;
     }
+  }
 }
 
 void ProjectManager::open()
 {
-    fileName = QFileDialog::getOpenFileName(
-                nullptr,
-                tr("Open Gromacs Simulation Project"),
-                QDir::homePath(),
-                "*.groproj"
-                );
-    if (!fileName.isEmpty())
+  fileName = QFileDialog::getOpenFileName(
+    nullptr,
+    tr("Open Gromacs Simulation Project"),
+    QDir::homePath(),
+    "*.groproj"
+    );
+  if (!fileName.isEmpty())
+  {
+    QFile file(fileName);
+    file.open(QFile::ReadOnly);
+    QDataStream data(&file);
+    if (!currentProject)
     {
-        QFile file(fileName);
-        file.open(QFile::ReadOnly);
-        QDataStream data(&file);
-        if (!currentProject)
-        {
-            createNewProject();
-        }
-        data >> *(currentProject.get());
-        file.close();
-        currentProjectChanged(currentProject);
+      createNewProject();
     }
+    data >> *(currentProject.get());
+    file.close();
+    currentProjectChanged(currentProject);
+  }
 }

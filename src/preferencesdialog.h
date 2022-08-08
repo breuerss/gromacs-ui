@@ -11,39 +11,39 @@ class PreferencesDialog;
 
 class PreferencesDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit PreferencesDialog(QWidget *parent = nullptr);
-    ~PreferencesDialog();
+  explicit PreferencesDialog(QWidget *parent = nullptr);
+  ~PreferencesDialog();
 
 protected:
-      void showEvent(QShowEvent *ev);
+  void showEvent(QShowEvent *ev);
 
-private slots:
-    void openSelectProjectDirectory();
-    void openSelectGmx();
-    void openSelectPdbwc();
-    void openSelectPdbchain();
-    void openSelectPdbdelhetatm();
-    void saveSettings();
+  private slots:
+  void openSelectProjectDirectory();
+  void openSelectGmx();
+  void openSelectPdbwc();
+  void openSelectPdbchain();
+  void openSelectPdbdelhetatm();
+  void saveSettings();
 
 private:
-    Ui::PreferencesDialog* ui;
-    Settings settings;
+  Ui::PreferencesDialog* ui;
+  Settings settings;
 
-    void loadSettings();
-    void setProjectDirectory(const QString& newProjectDirectory);
-    void setGmx(const QString& newGmxPath);
-    void setPdbwc(const QString& newPdbwc);
-    void setPdbchain(const QString& newPdbchain);
-    void setPdbdelhetatm(const QString& newPdbdelhetatm);
+  void loadSettings();
+  void setProjectDirectory(const QString& newProjectDirectory);
+  void setGmx(const QString& newGmxPath);
+  void setPdbwc(const QString& newPdbwc);
+  void setPdbchain(const QString& newPdbchain);
+  void setPdbdelhetatm(const QString& newPdbdelhetatm);
 
-    QString projectDirectory;
-    QString gmx;
-    QString pdbwc;
-    QString pdbchain;
-    QString pdbdelhetatm;
+  QString projectDirectory;
+  QString gmx;
+  QString pdbwc;
+  QString pdbchain;
+  QString pdbdelhetatm;
 };
 
 #endif // PREFERENCESDIALOG_H

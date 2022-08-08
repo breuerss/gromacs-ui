@@ -8,24 +8,24 @@
 
 class FileServer : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    static FileServer* getInstance();
-    QString getServerUrl();
-    QString getUrlForFile(const QString& absFilePath);
+  static FileServer* getInstance();
+  QString getServerUrl();
+  QString getUrlForFile(const QString& absFilePath);
 
-    ~FileServer();
+  ~FileServer();
 
-private slots:
-    void start();
+  private slots:
+  void start();
 
 private:
-    FileServer();
+  FileServer();
 
-    QProcess servingProcess;
-    QFileSystemWatcher watcher;
-    Settings settings;
-    int port;
+  QProcess servingProcess;
+  QFileSystemWatcher watcher;
+  Settings settings;
+  int port;
 
 };
 

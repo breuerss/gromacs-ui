@@ -17,20 +17,20 @@ class SimulationSetupForm;
 
 class SimulationSetupForm : public QWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    explicit SimulationSetupForm(std::shared_ptr<Model::Step> newStep, QWidget *parent = nullptr);
-    ~SimulationSetupForm();
+  explicit SimulationSetupForm(std::shared_ptr<Model::Step> newStep, QWidget *parent = nullptr);
+  ~SimulationSetupForm();
 
 private:
-    std::shared_ptr<Model::Step> step;
-    Ui::SimulationSetupForm *ui;
+  std::shared_ptr<Model::Step> step;
+  Ui::SimulationSetupForm *ui;
 
-    void updateUiForSimulationType(Model::SimulationType type = Model::SimulationType::None);
-    void setAlgorithmsForType(Model::SimulationType type);
-    void hideSettings();
-    void enableAllSettings();
+  void updateUiForSimulationType(Model::SimulationType type = Model::SimulationType::None);
+  void setAlgorithmsForType(Model::SimulationType type);
+  void hideSettings();
+  void enableAllSettings();
 };
 
 #endif // SIMULATIONSETUPFORM_H

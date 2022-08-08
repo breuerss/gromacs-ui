@@ -5,14 +5,14 @@
 #include <QDataStream>
 
 namespace Model {
-  Q_NAMESPACE
+Q_NAMESPACE
 
 enum class SimulationType : int {
-    None = 0,
-    Minimisation,
-    NVE,
-    NVT,
-    NPT
+  None = 0,
+  Minimisation,
+  NVE,
+  NVT,
+  NPT
 };
 
 }

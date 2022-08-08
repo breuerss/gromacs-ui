@@ -19,25 +19,25 @@ class PreferencesDialog;
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+  MainWindow(QWidget *parent = nullptr);
+  ~MainWindow();
 
 protected:
-    void closeEvent(QCloseEvent* event);
+  void closeEvent(QCloseEvent* event);
 
-private slots:
-    void openPreferencesDialog();
-    void addTabForStep(std::shared_ptr<Model::Step> step, int at = -1);
+  private slots:
+  void openPreferencesDialog();
+  void addTabForStep(std::shared_ptr<Model::Step> step, int at = -1);
 
 private:
-    Ui::MainWindow* ui;
-    PreferencesDialog* preferencesDialog;
-    void setupUIForProject();
-    Settings settings;
-    void setMoleculeFile(const QString& file = "", const QString& traj = "");
-    void removeTabAt(int index);
+  Ui::MainWindow* ui;
+  PreferencesDialog* preferencesDialog;
+  void setupUIForProject();
+  Settings settings;
+  void setMoleculeFile(const QString& file = "", const QString& traj = "");
+  void removeTabAt(int index);
 };
 #endif // MAINWINDOW_H

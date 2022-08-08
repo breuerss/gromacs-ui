@@ -14,14 +14,14 @@ namespace Command {
 class Neutralise : public Executor
 {
 public:
-    explicit Neutralise(
-        std::shared_ptr<Model::SystemSetup> newSystemSetup,
-        QObject *parent = nullptr
-        );
-    void exec() override;
+  explicit Neutralise(
+    std::shared_ptr<Model::SystemSetup> newSystemSetup,
+    QObject *parent = nullptr
+    );
+  void exec() override;
 
 private:
-    const std::shared_ptr<Model::SystemSetup> systemSetup;
+  const std::shared_ptr<Model::SystemSetup> systemSetup;
 };
 
 }

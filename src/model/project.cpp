@@ -7,95 +7,95 @@
 namespace Model {
 
 Project::Project(const QString& newName)
-    : systemSetup(new SystemSetup())
+  : systemSetup(new SystemSetup())
     , name(newName)
 {
 }
 
 std::shared_ptr<Step> Project::addStep()
 {
-    auto step = std::make_shared<Step>();
-    steps.push_back(step);
-    emit stepAdded(step, steps.size());
-    return step;
+  auto step = std::make_shared<Step>();
+  steps.push_back(step);
+  emit stepAdded(step, steps.size());
+  return step;
 }
 
 void Project::removeStep(int at)
 {
-    auto step = steps[at];
-    steps.erase(steps.begin() + at);
-    emit stepRemoved(step, at);
+  auto step = steps[at];
+  steps.erase(steps.begin() + at);
+  emit stepRemoved(step, at);
 }
 
 void Project::clearSteps()
 {
-    while (steps.size())
-    {
-        removeStep(0);
-    }
+  while (steps.size())
+  {
+    removeStep(0);
+  }
 }
 
 const std::vector<std::shared_ptr<Step>>& Project::getSteps() const
 {
-    return steps;
+  return steps;
 }
 
 std::shared_ptr<SystemSetup> Project::getSystemSetup() const
 {
-    return systemSetup;
+  return systemSetup;
 }
 
 QString Project::getProjectPath()
 {
-    Settings settings;
-    auto projectsPath = settings.value(Settings::PROJECTS_DIRECTORY).toString();
-    return projectsPath + "/" + name;
+  Settings settings;
+  auto projectsPath = settings.value(Settings::PROJECTS_DIRECTORY).toString();
+  return projectsPath + "/" + name;
 }
 
 QDataStream &operator<<(QDataStream &out, const Project &project)
 {
-    out << project.property("name");
-    out << *(project.getSystemSetup().get());
+  out << project.property("name");
+  out << *(project.getSystemSetup().get());
 
-    int numberOfSteps = project.getSteps().size();
-    out << numberOfSteps;
+  int numberOfSteps = project.getSteps().size();
+  out << numberOfSteps;
 
-    for (auto step: project.getSteps())
-    {
-        out << *(step.get());
-    }
+  for (auto step: project.getSteps())
+  {
+    out << *(step.get());
+  }
 
-    return out;
+  return out;
 }
 
 QDataStream &operator>>(QDataStream &in, Project &project)
 {
-    QString name;
-    in >> name;
-    project.setProperty("name", name);
+  QString name;
+  in >> name;
+  project.setProperty("name", name);
 
-    in >> *(project.getSystemSetup().get());
+  in >> *(project.getSystemSetup().get());
 
-    int numberOfSteps;
-    in >> numberOfSteps;
+  int numberOfSteps;
+  in >> numberOfSteps;
 
-    while (project.getSteps().size())
-    {
-      project.removeStep(project.getSteps().size() - 1);
-    }
+  while (project.getSteps().size())
+  {
+    project.removeStep(project.getSteps().size() - 1);
+  }
 
-    for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
-    {
-       project.addStep();
-    }
+  for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
+  {
+    project.addStep();
+  }
 
-    for (auto step: project.getSteps())
-    {
-        qDebug() << "reading step";
-        in >> *(step.get());
-    }
+  for (auto step: project.getSteps())
+  {
+    qDebug() << "reading step";
+    in >> *(step.get());
+  }
 
-    return in;
+  return in;
 }
 
 }
