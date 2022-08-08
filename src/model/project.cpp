@@ -6,9 +6,8 @@
 
 namespace Model {
 
-Project::Project(const QString& newName)
+Project::Project()
   : systemSetup(new SystemSetup())
-    , name(newName)
 {
 }
 
@@ -54,7 +53,7 @@ QString Project::getProjectPath()
 
 QDataStream &operator<<(QDataStream &out, const Project &project)
 {
-  out << project.property("name");
+  out << project.property("name").value<QString>();
   out << *(project.getSystemSetup().get());
 
   int numberOfSteps = project.getSteps().size();

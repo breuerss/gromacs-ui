@@ -17,7 +17,7 @@ class Project : public QObject
 {
   Q_OBJECT
 public:
-  Project(const QString& name);
+  Project();
 
   std::shared_ptr<Step> addStep();
   void clearSteps();
@@ -37,7 +37,7 @@ signals:
 private:
   std::vector<std::shared_ptr<Step>> steps;
   std::shared_ptr<SystemSetup> systemSetup;
-  QString name;
+  QString name = "";
 };
 
 QDataStream &operator<<(QDataStream &out, const Project &project);

@@ -35,8 +35,8 @@ void ProjectManager::createNewProject()
   }
   if (choice == QMessageBox::Yes)
   {
-    // TODO get name from input mask
-    currentProject.reset(new Model::Project("test"));
+    fileName.clear();
+    currentProject.reset(new Model::Project());
     emit currentProjectChanged(currentProject);
   }
 }
