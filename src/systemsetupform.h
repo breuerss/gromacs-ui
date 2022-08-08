@@ -2,6 +2,7 @@
 #define SYSTEMSETUPFORM_H
 
 #include <QWidget>
+#include <QMetaObject>
 
 namespace Ui {
 class SystemSetupForm;
@@ -35,6 +36,7 @@ private:
   void setGroupsEnabled(bool enabled);
 
   void handlePdbDownload(const QString& pdbCode, const QString& filePath);
+  QMetaObject::Connection projectConn;
 };
 
 #endif // SYSTEMSETUPFORM_H

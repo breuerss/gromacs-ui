@@ -31,7 +31,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectIonSelectors();
 
   connectToLineEdit(ui->projectName, project, "name");
-  connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
+  projectConn = connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
     ui->systemCoordinatesGroup->setEnabled(!projectName.isEmpty());
   });
 
@@ -124,6 +124,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 SystemSetupForm::~SystemSetupForm()
 {
   disconnect(systemSetup.get(), 0, 0, 0);
+  disconnect(projectConn);
   delete ui;
 }
 
