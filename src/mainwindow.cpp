@@ -252,5 +252,5 @@ void MainWindow::removeTabAt(int index)
 {
   QWidget* widget = ui->stepconfigurator->widget(index);
   ui->stepconfigurator->removeTab(index);
-  delete widget;
+  widget->deleteLater();
 }
