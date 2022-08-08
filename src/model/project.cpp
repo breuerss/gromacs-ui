@@ -45,16 +45,6 @@ std::shared_ptr<SystemSetup> Project::getSystemSetup() const
     return systemSetup;
 }
 
-const QString& Project::getName() const
-{
-    return name;
-}
-
-void Project::setName(const QString& newName)
-{
-    name = newName;
-}
-
 QString Project::getProjectPath()
 {
     Settings settings;
@@ -64,7 +54,7 @@ QString Project::getProjectPath()
 
 QDataStream &operator<<(QDataStream &out, const Project &project)
 {
-    out << project.getName();
+    out << project.property("name");
     out << *(project.getSystemSetup().get());
 
     int numberOfSteps = project.getSteps().size();
@@ -82,7 +72,7 @@ QDataStream &operator>>(QDataStream &in, Project &project)
 {
     QString name;
     in >> name;
-    project.setName(name);
+    project.setProperty("name", name);
 
     in >> *(project.getSystemSetup().get());
 

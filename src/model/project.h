@@ -25,13 +25,14 @@ public:
     const std::vector<std::shared_ptr<Step>>& getSteps() const;
     std::shared_ptr<SystemSetup> getSystemSetup() const;
 
-    const QString& getName() const;
-    void setName(const QString& newName);
     QString getProjectPath();
+
+    Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
 signals:
     void stepAdded(std::shared_ptr<Step> step, int at);
     void stepRemoved(std::shared_ptr<Step> step, int at);
+    void nameChanged(const QString&);
 
 private:
     std::vector<std::shared_ptr<Step>> steps;

@@ -30,6 +30,9 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     setIonFromModel();
     connectIonSelectors();
 
+    connectToLineEdit(ui->projectName, project, "name");
+    QRegExpValidator* projectNameValidator = new QRegExpValidator(QRegExp("[a-zA-Z0-9_]+"));
+    ui->projectName->setValidator(projectNameValidator);
 
     auto queue = std::make_shared<Command::Queue>();
     connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
