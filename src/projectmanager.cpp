@@ -58,17 +58,31 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
   QString writeToFileName = saveAsFileName;
   if (writeToFileName.isEmpty())
   {
-    QString suffix(".groproj");
+    QString defaultSuffix(".groproj");
+    QString filter = "*" + defaultSuffix;
+
     writeToFileName = QFileDialog::getSaveFileName(
       nullptr,
       tr("Save Gromacs Project File"),
       QDir::homePath(),
-      "*" + suffix
+      filter
       );
 
-    if (!writeToFileName.endsWith(suffix))
+    if (!writeToFileName.endsWith(defaultSuffix))
     {
-      writeToFileName += suffix;
+      writeToFileName += defaultSuffix;
+    }
+  }
+
+  if (QFile(writeToFileName).exists())
+  {
+    QMessageBox::StandardButton choice = QMessageBox::question(
+      nullptr,
+      tr("File exits"),
+      tr("File '%1' already exists. Do you want to overwrite?").arg(writeToFileName));
+    if (choice == QMessageBox::No)
+    {
+      saveAs();
     }
   }
 
