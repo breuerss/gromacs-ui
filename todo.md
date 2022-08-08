@@ -1,6 +1,5 @@
 # Open issues
 
-1. Ctrl+N deletes project without asking
 1. save as overwrites without prompting if the file is entered without suffix
 1. Missing status information about running simulation
 1. logger instead of QDebug
