@@ -4,6 +4,7 @@
 #include <memory>
 #include <exception>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QDebug>
 
 ProjectManager* ProjectManager::getInstance()
@@ -25,9 +26,19 @@ const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 
 void ProjectManager::createNewProject()
 {
-    // TODO get name from input mask
-    currentProject.reset(new Model::Project("test"));
-    emit currentProjectChanged(currentProject);
+    QMessageBox::StandardButton choice = QMessageBox::Yes;
+    if (currentProject)
+    {
+        choice = QMessageBox::question(
+                    nullptr, tr("New Project"),
+                    tr("Do you really want to dismiss all changes in your current project?"));
+    }
+    if (choice == QMessageBox::Yes)
+    {
+        // TODO get name from input mask
+        currentProject.reset(new Model::Project("test"));
+        emit currentProjectChanged(currentProject);
+    }
 }
 
 void ProjectManager::save()
