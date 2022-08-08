@@ -246,7 +246,7 @@ void SystemSetupForm::handlePdbDownload(const QString& pdbCode, const QString& a
         ui->pdbEntry->setStyleSheet("background: #55990000");
         StatusMessageSetter::getInstance()->setMessage(tr("PDB with id '%1' not found.").arg(pdbCode));
     });
-    connect(pdbDownloader, &PdbDownloader::error, [pdbDownloader, this] ()
+    connect(pdbDownloader, &PdbDownloader::error, [pdbDownloader] ()
     {
         pdbDownloader->deleteLater();
         StatusMessageSetter::getInstance()->setMessage(tr("Error communicating with PDB service."));
