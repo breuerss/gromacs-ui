@@ -102,8 +102,11 @@ MainWindow::MainWindow(QWidget *parent)
         project->clearSteps();
         auto step = project->addStep();
         step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::Minimisation));
+        step->setProperty("algorithm", "steep");
         step = project->addStep();
         step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::NVT));
+        step->setProperty("numberOfSteps", 10000);
+        step->setProperty("algorithm", "md");
 
         manager->currentProjectChanged(project);
     });
