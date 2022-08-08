@@ -47,6 +47,13 @@ MainWindow::MainWindow(QWidget *parent)
         [this] (std::shared_ptr<Model::Step>, int at) {
         removeTabAt(at + 1);
     });
+
+    connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
+        bool canContinue = !newName.isEmpty();
+        ui->actionAddStep->setEnabled(canContinue);
+        ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
+        ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());
+    });
     connect(LogForwarder::getInstance(), &LogForwarder::addMessage, ui->logOutput,
             &QPlainTextEdit::appendPlainText);
     connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
