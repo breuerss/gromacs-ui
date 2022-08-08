@@ -210,7 +210,7 @@ void MainWindow::setupUIForProject()
     settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
   }
 
-  setMoleculeFile();
+  //setMoleculeFile();
 }
 
 void MainWindow::addTabForStep(std::shared_ptr<Model::Step> step, int at)
