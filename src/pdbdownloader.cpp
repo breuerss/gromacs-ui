@@ -15,15 +15,28 @@ void PdbDownloader::download(const QString& pdbCode, const QString& fileName)
     QNetworkRequest request(createUrlFor(pdbCode));
     auto* reply = get(request);
     connect(reply, &QNetworkReply::finished, [this, pdbCode, reply, fileName] () {
-        // TODO error handling
-        qDebug() << "pdbCode" << pdbCode;
-        QString content = reply->readAll();
-        QFile file(fileName);
-        file.open(QFile::WriteOnly);
-        file.write(content.toUtf8());
-        file.close();
-        emit downloaded(pdbCode, fileName);
         reply->deleteLater();
+
+        if (reply->error() == QNetworkReply::ContentNotFoundError)
+        {
+            emit notFound();
+            return;
+        }
+
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            qDebug() << "pdbCode" << pdbCode;
+            QString content = reply->readAll();
+            QFile file(fileName);
+            file.open(QFile::WriteOnly);
+            file.write(content.toUtf8());
+            file.close();
+            emit downloaded(pdbCode, fileName);
+            return;
+        }
+
+        qDebug() << reply->error();
+        emit error();
     });
 }
 

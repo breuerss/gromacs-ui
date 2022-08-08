@@ -13,6 +13,8 @@ public:
 
 signals:
     void downloaded(const QString& pdbCode, const QString& content);
+    void error();
+    void notFound();
 
 private:
     QString baseUrl = "https://files.rcsb.org/download/";

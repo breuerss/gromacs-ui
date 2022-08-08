@@ -2,9 +2,10 @@
 #include "ui_systemsetupform.h"
 #include "pdbdownloader.h"
 #include "pdbinfoextractor.h"
+#include "uiconnectionhelper.h"
+#include "statusmessagesetter.h"
 #include "model/project.h"
 #include "model/systemsetup.h"
-#include "uiconnectionhelper.h"
 #include "command/queue.h"
 #include "command/creategromacsmodel.h"
 #include "command/createbox.h"
@@ -57,17 +58,9 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::SystemSetup> newSystemSe
     connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
     connectToLineEdit(ui->pdbEntry, systemSetup, "pdbCode", [this] (const QString& pdbCode) {
+        ui->pdbEntry->setStyleSheet("");
         if (pdbCode.length() == 4)
         {
-            qDebug() << "Starting PDB download for" << pdbCode;
-            auto* pdbDownloader = new PdbDownloader();
-            connect(pdbDownloader, &PdbDownloader::downloaded,
-                    [pdbDownloader, this] (const QString& /*pdbCode*/, const QString& file) {
-                qDebug() << "downloaded" << file;
-                systemSetup->setSourceStructureFile(file);
-                pdbDownloader->deleteLater();
-            });
-
             // TODO does that belong here? Isn't that part of the project setup?
             QDir dir(systemSetup->getProject()->getProjectPath());
             if (dir.mkpath("input"))
@@ -75,7 +68,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::SystemSetup> newSystemSe
                 dir.cd("input");
             }
             QString absFilePath = dir.absolutePath() + "/" + pdbCode + ".pdb";
-            pdbDownloader->download(pdbCode, absFilePath);
+            handlePdbDownload(pdbCode, absFilePath);
         }
         else
         {
@@ -229,4 +222,28 @@ void SystemSetupForm::setGroupsEnabled(bool enabled)
     ui->filterGroup->setEnabled(enabled);
     ui->systemSetupGroup->setEnabled(enabled);
     ui->neutraliseGroup->setEnabled(enabled);
+}
+
+void SystemSetupForm::handlePdbDownload(const QString& pdbCode, const QString& absFilePath)
+{
+    auto* pdbDownloader = new PdbDownloader();
+    connect(pdbDownloader, &PdbDownloader::downloaded,
+            [pdbDownloader, this] (const QString& /*pdbCode*/, const QString& file) {
+        pdbDownloader->deleteLater();
+        systemSetup->setSourceStructureFile(file);
+    });
+    connect(pdbDownloader, &PdbDownloader::notFound, [pdbCode, pdbDownloader, this] ()
+    {
+        pdbDownloader->deleteLater();
+        ui->pdbEntry->setStyleSheet("background: #55990000");
+        StatusMessageSetter::getInstance()->setMessage(tr("PDB with id '%1' not found.").arg(pdbCode));
+    });
+    connect(pdbDownloader, &PdbDownloader::error, [pdbDownloader, this] ()
+    {
+        pdbDownloader->deleteLater();
+        StatusMessageSetter::getInstance()->setMessage(tr("Error communicating with PDB service."));
+    });
+
+    pdbDownloader->download(pdbCode, absFilePath);
+
 }

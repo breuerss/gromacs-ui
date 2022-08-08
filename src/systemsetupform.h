@@ -31,6 +31,8 @@ private:
     void connectIonSelectors();
 
     void setGroupsEnabled(bool enabled);
+
+    void handlePdbDownload(const QString& pdbCode, const QString& filePath);
 };
 
 #endif // SYSTEMSETUPFORM_H
