@@ -18,71 +18,74 @@
     <normaloff>../../../../Downloads/gromacs.png</normaloff>../../../../Downloads/gromacs.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>1</number>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="moleculeViewerTab">
-       <attribute name="title">
-        <string>Molecule Viewer</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QWebEngineView" name="molpreview">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="url">
-           <url>
-            <string>about:blank</string>
-           </url>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="logOutputTab">
-       <attribute name="title">
-        <string>Applications Log</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QPlainTextEdit" name="logOutput">
-          <property name="readOnly">
-           <bool>true</bool>
-          </property>
-          <property name="plainText">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTabWidget" name="stepconfigurator">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <property name="tabsClosable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="tab">
-       <property name="enabled">
-        <bool>false</bool>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>1</number>
        </property>
-       <attribute name="title">
-        <string>System Setup</string>
-       </attribute>
+       <widget class="QWidget" name="moleculeViewerTab">
+        <attribute name="title">
+         <string>Molecule Viewer</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QWebEngineView" name="molpreview">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="url">
+            <url>
+             <string>about:blank</string>
+            </url>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="logOutputTab">
+        <attribute name="title">
+         <string>Applications Log</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QPlainTextEdit" name="logOutput">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QTabWidget" name="stepconfigurator">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <property name="tabsClosable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="tab">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <attribute name="title">
+         <string>System Setup</string>
+        </attribute>
+       </widget>
       </widget>
      </widget>
     </item>
