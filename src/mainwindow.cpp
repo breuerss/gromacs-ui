@@ -120,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
           [] (int index) {
-            ProjectManager::getInstance()->getCurrentProject()->removeStep(index);
+            ProjectManager::getInstance()->getCurrentProject()->removeStep(index - 1);
           });
 
   connect(
