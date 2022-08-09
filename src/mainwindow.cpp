@@ -18,6 +18,7 @@
 #include <QDebug>
 #include <QWebEngineSettings>
 #include <QUrlQuery>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -52,6 +53,14 @@ MainWindow::MainWindow(QWidget *parent)
 
   connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
     bool canContinue = !newName.isEmpty();
+    QString title = "GROMACS UI | " + newName;
+    QString fileName = ProjectManager::getInstance()->getFileName();
+    fileName.replace(QDir::homePath(), "~");
+    if (!fileName.isEmpty())
+    {
+      title += " | " + fileName;
+    }
+    this->setWindowTitle(title);
     ui->actionAddStep->setEnabled(canContinue);
     ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
     ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());

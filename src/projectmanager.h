@@ -15,6 +15,7 @@ public:
   static ProjectManager* getInstance();
   const std::shared_ptr<Model::Project> getCurrentProject() const;
   void createNewProject();
+  const QString& getFileName() const;
 
 signals:
   void currentProjectChanged(std::shared_ptr<Model::Project> currentProject);
