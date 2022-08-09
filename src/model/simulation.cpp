@@ -158,7 +158,7 @@ QDataStream &operator>>(QDataStream &in, Simulation& model)
 QString toString(Simulation::TemperatureAlgorithm algorithm)
 {
   const static QMap<Simulation::TemperatureAlgorithm, QString> map = {
-    { Simulation::TemperatureAlgorithm::None, "" },
+    { Simulation::TemperatureAlgorithm::None, "no" },
     { Simulation::TemperatureAlgorithm::Berendsen, "berendsen" },
     { Simulation::TemperatureAlgorithm::NoseHoover, "nose-hoover" },
     { Simulation::TemperatureAlgorithm::Andersen, "andersen" },
