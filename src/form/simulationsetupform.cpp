@@ -86,10 +86,6 @@ SimulationSetupForm::SimulationSetupForm(
   connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
   connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, step, "fourierSpacing");
   connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, step, "vdwCutoffRadius");
-  connect(ui->createConfig, &QPushButton::clicked, [this] () {
-    GromacsConfigFileGenerator::generate(step, "/tmp/tmp.mdp");
-  });
-
 
   connect(step.get(), &Model::Simulation::temperatureCouplingGroupAdded,
           this, &SimulationSetupForm::addTemperatureCouplingGroup);

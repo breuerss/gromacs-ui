@@ -708,13 +708,6 @@
      </property>
     </spacer>
    </item>
-   <item>
-    <widget class="QPushButton" name="createConfig">
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <resources/>
