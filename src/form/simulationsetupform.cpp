@@ -51,14 +51,6 @@ SimulationSetupForm::SimulationSetupForm(
     "pressureCouplingType"
     );
 
-  connectToComboBox<Simulation::Type>(
-    ui->simulationType,
-    step,
-    "simulationType",
-    [this] (Simulation::Type type) {
-      updateUiForSimulationType(type);
-    });
-
   QWidget* container = ui->settingsWidget;
   connectToComboBox<Simulation::Algorithm>(container, step, "algorithm");
 
