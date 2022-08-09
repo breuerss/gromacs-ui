@@ -28,7 +28,7 @@ public:
 protected:
   void closeEvent(QCloseEvent* event);
 
-  private slots:
+private slots:
   void openPreferencesDialog();
   void addTabForStep(std::shared_ptr<Model::Simulation> step, int at = -1);
 

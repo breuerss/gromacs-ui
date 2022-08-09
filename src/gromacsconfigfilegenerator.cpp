@@ -38,8 +38,10 @@ void GromacsConfigFileGenerator::generate(
     writeLine(writer, "rvdw", step->property("vdwCutoffRadius").toString());
 
     using Model::Simulation;
+
+    // pressure
     Simulation::PressureAlgorithm pressureAlgorithm =
-            step->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
+      step->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
     writeLine(writer, "pcoupl", toString(pressureAlgorithm));
     if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
     {

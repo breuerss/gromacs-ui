@@ -145,8 +145,10 @@ void SystemSetupForm::prepareWaterOptions()
 
 void SystemSetupForm::prepareForceFieldOptions()
 {
-  setOptions(ui->forceField, {
-    { "CHARMM27", "charmm27" },
+  setOptions(
+    ui->forceField,
+    {
+      { "CHARMM27", "charmm27" },
       { "OPLS-AA/L", "oplsaa" }
   }, 0);
 }
