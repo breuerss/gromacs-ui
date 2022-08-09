@@ -14,6 +14,10 @@ Simulation::Simulation()
   {
     qRegisterMetaType<Type>("Simulation::Type");
     qRegisterMetaTypeStreamOperators<int>("Simulation::Type");
+    qRegisterMetaType<PressureAlgorithm>("Simulation::PressureAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::PressureAlgorithm");
+    qRegisterMetaType<PressureCouplingType>("Simulation::PressureCouplingType");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::PressureCouplingType");
     registered = true;
   }
 }
@@ -62,6 +66,17 @@ QDataStream &operator>>(QDataStream &in, Simulation& step)
   return in;
 }
 
+QString toString(Simulation::PressureAlgorithm algorithm)
+{
+  const static QMap<Simulation::PressureAlgorithm, QString> map = {
+    { Simulation::PressureAlgorithm::None, "no" },
+    { Simulation::PressureAlgorithm::Berendsen, "berendsen" },
+    { Simulation::PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
+  };
+
+  return map[algorithm];
+}
+
 QString toString(Simulation::Type type, bool shortVersion)
 {
   const static QMap<Simulation::Type, QString> map = {
@@ -90,4 +105,15 @@ QString toString(Simulation::Type type, bool shortVersion)
   }
 }
 
+QString toString(Simulation::PressureCouplingType type)
+{
+  const static QMap<Simulation::PressureCouplingType, QString> map = {
+    { Simulation::PressureCouplingType::Isotropic, "isotropic" },
+    { Simulation::PressureCouplingType::SemiIsoTropic, "semiisotropic" },
+    { Simulation::PressureCouplingType::Anisotropic, "anisotropic" },
+    { Simulation::PressureCouplingType::SurfaceTension, "surface-tension" },
+  };
+
+  return map[type];
+}
 }

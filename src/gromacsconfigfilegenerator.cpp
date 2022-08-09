@@ -36,6 +36,17 @@ void GromacsConfigFileGenerator::generate(
 
     writeLine(writer, "rcoulomb", step->property("electrostaticCutoffRadius").toString());
     writeLine(writer, "rvdw", step->property("vdwCutoffRadius").toString());
+
+    using Model::Simulation;
+    Simulation::PressureAlgorithm pressureAlgorithm =
+            step->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
+    writeLine(writer, "pcoupl", toString(pressureAlgorithm));
+    if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
+    {
+      writeLine(writer, "pcoupltype", toString(step->property("pressureCouplingType").value<Simulation::PressureCouplingType>()));
+      writeLine(writer, "tau-p", QString::number(step->property("pressureUpdateInterval").value<double>()));
+      writeLine(writer, "ref-p", QString::number(step->property("pressure").value<double>()));
+    }
   }
 
   if (simulationType == Model::Simulation::Type::Minimisation)

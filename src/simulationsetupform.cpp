@@ -31,6 +31,21 @@ SimulationSetupForm::SimulationSetupForm(
       updateUiForSimulationType(type);
     });
 
+  QList<QPair<QString, Simulation::PressureCouplingType>> pressureCouplingTypeOptions = {
+    { "Isotropic", Simulation::PressureCouplingType::Isotropic },
+    { "SemiIsoTropic", Simulation::PressureCouplingType::SemiIsoTropic },
+    { "Anisotropic", Simulation::PressureCouplingType::Anisotropic },
+    { "Surface Tension", Simulation::PressureCouplingType::SurfaceTension },
+  };
+
+  setOptions<Simulation::PressureCouplingType>(ui->pressureCouplingType, pressureCouplingTypeOptions);
+
+  connectToComboBox<Simulation::PressureCouplingType>(
+    ui->pressureCouplingType,
+    step,
+    "pressureCouplingType"
+    );
+
   connectToComboBox<Simulation::Type>(
     ui->simulationType,
     step,
@@ -52,9 +67,19 @@ SimulationSetupForm::SimulationSetupForm(
   connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, step, "compressedPositionOutputFrequency");
   connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, step, "logOutputFrequency");
 
+  // pressure
+  connectToComboBox<Model::Simulation::PressureAlgorithm>(
+              ui->pressureAlgorithm, step, "pressureAlgorithm"
+              );
+  connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, step, "pressure");
+  connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, step, "pressureUpdateInterval");
+  connectToComboBox<Model::Simulation::PressureCouplingType>(
+              ui->pressureCouplingType, step, "pressureCouplingType"
+              );
+
   setOptions(ui->electrostaticAlgorithm, {
-    {"None", "no"},
-      {"PME", "PME"},
+     {"None", "no"},
+     {"PME", "PME"},
   }, 1);
   connectToComboBox<QString>(ui->electrostaticAlgorithm, step, "electrostaticAlgorithm");
   connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
@@ -71,6 +96,7 @@ void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type
 {
   hideSettings();
   setAlgorithmsForType(type);
+  setPressureAlgorithmsForType(type);
   enableAllSettings();
   using Model::Simulation;
   switch(type)
@@ -155,4 +181,20 @@ void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
   }
 
   setOptions(ui->algorithm, map, defaultIndex);
+}
+
+void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type type)
+{
+  using Model::Simulation;
+  QList<QPair<QString, Simulation::PressureAlgorithm>> map({
+    { "None", Simulation::PressureAlgorithm::None }
+  });
+  if (type == Model::Simulation::Type::NPT)
+  {
+    map = {
+      { "Berendsen", Simulation::PressureAlgorithm::Berendsen },
+      { "Parrinello-Rahman", Simulation::PressureAlgorithm::ParrinelloRahman }
+    };
+  }
+  setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map);
 }
