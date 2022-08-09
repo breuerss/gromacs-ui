@@ -20,7 +20,7 @@ public:
 
   TemperatureCouplingGroup();
 
-  Q_PROPERTY(TemperatureCouplingGroup::Group group MEMBER group NOTIFY groupChanged);
+  Q_PROPERTY(Group group MEMBER group NOTIFY groupChanged);
 
   Q_PROPERTY(double temperature MEMBER temperature NOTIFY temperatureChanged);
   Q_PROPERTY(double updateInterval MEMBER updateInterval NOTIFY updateIntervalChanged);

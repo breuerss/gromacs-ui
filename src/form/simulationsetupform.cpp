@@ -238,6 +238,16 @@ void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Typ
 void SimulationSetupForm::addTemperatureCouplingGroup(
   std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at)
 {
+  using Model::TemperatureCouplingGroup;
+  auto callback = [couplingGroup, this] (TemperatureCouplingGroup::Group groupType) {
+    bool enabled = groupType != TemperatureCouplingGroup::Group::System;
+    ui->addTemperatureCouplingGroup->setEnabled(enabled);
+  };
+  connect(couplingGroup.get(), &TemperatureCouplingGroup::groupChanged, callback);
+
+  auto groupType = couplingGroup->property("group").value<TemperatureCouplingGroup::Group>();
+  callback(groupType);
+
   TemperatureGroupConfigForm* groupEditor = new TemperatureGroupConfigForm(couplingGroup);
   connect(groupEditor, &TemperatureGroupConfigForm::removeRequested, [this, groupEditor] () {
     int at = ui->temperatureCouplingGroups->indexOf(groupEditor);
