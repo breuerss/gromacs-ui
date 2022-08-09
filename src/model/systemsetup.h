@@ -12,7 +12,17 @@ class SystemSetup : public QObject
 {
   Q_OBJECT
 public:
+  enum class WaterModel : int {
+    None = 0,
+    SPC,
+    TIP3P,
+    TIP4P,
+    TIP5P,
+  };
+  Q_ENUM(WaterModel);
+
   SystemSetup();
+
   void useChain(const QString& chain, bool use = true);
 
   void setStructureReady(bool);
@@ -39,7 +49,7 @@ public:
   Q_PROPERTY(QString negativeIon MEMBER negativeIon NOTIFY negativeIonChanged)
   Q_PROPERTY(QString positiveIon MEMBER positiveIon NOTIFY positiveIonChanged)
   Q_PROPERTY(QString boxType MEMBER boxType NOTIFY boxTypeChanged)
-  Q_PROPERTY(QString waterModel MEMBER waterModel NOTIFY waterModelChanged)
+  Q_PROPERTY(WaterModel waterModel MEMBER waterModel NOTIFY waterModelChanged)
   Q_PROPERTY(QString forceField MEMBER forceField NOTIFY forceFieldChanged)
   Q_PROPERTY(double distance MEMBER distance NOTIFY distanceChanged)
   Q_PROPERTY(bool removeHeteroAtoms MEMBER removeHeteroAtoms NOTIFY removeHeteroAtomsChanged)
@@ -47,7 +57,7 @@ public:
 signals:
   void pdbCodeChanged(const QString&);
   void boxTypeChanged(const QString&);
-  void waterModelChanged(const QString&);
+  void waterModelChanged(const WaterModel&);
   void forceFieldChanged(const QString&);
   void negativeIonChanged(const QString&);
   void positiveIonChanged(const QString&);
@@ -80,7 +90,7 @@ private:
   double ionConcentration = 0.15;
   QStringList chains;
 
-  QString waterModel = "tip3p";
+  WaterModel waterModel = WaterModel::SPC;
   QString boxType = "dodecahedron";
   QString forceField = "oplsaa";
   double distance = 1.0;
@@ -94,6 +104,8 @@ private:
 
 QDataStream &operator<<(QDataStream &out, const SystemSetup &project);
 QDataStream &operator>>(QDataStream &in, SystemSetup &project);
+
+QString toString(SystemSetup::WaterModel type);
 
 }
 

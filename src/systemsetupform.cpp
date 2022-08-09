@@ -131,11 +131,16 @@ SystemSetupForm::~SystemSetupForm()
 
 void SystemSetupForm::prepareWaterOptions()
 {
-  setOptions(ui->waterModel, {
-    { "SPC", "spc" },
-      { "TIP3P", "tip3p" },
-      { "TIP4P", "tip4p" }
-  }, 1);
+  using Model::SystemSetup;
+  setOptions<SystemSetup::WaterModel>(
+    ui->waterModel,
+    {
+      //{ "None", SystemSetup::WaterModel::None }, // not yet properly handled
+      { "SPC", SystemSetup::WaterModel::SPC },
+      { "TIP3P", SystemSetup::WaterModel::TIP3P },
+      { "TIP4P", SystemSetup::WaterModel::TIP4P },
+      { "TIP5P", SystemSetup::WaterModel::TIP5P },
+    }, 0);
 }
 
 void SystemSetupForm::prepareForceFieldOptions()
