@@ -263,5 +263,9 @@ void SimulationSetupForm::removeTemperatureCouplingGroup(
   std::shared_ptr<Model::TemperatureCouplingGroup>, int at)
 {
   ui->temperatureCouplingGroups->takeAt(at)->widget()->deleteLater();
+  if (!ui->temperatureCouplingGroups->count())
+  {
+    ui->addTemperatureCouplingGroup->setEnabled(true);
+  }
 }
 
