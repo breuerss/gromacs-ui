@@ -162,7 +162,11 @@ void SimulationSetupForm::hideSettings()
 
 void SimulationSetupForm::enableAllSettings()
 {
-  for (QWidget* child: ui->settingsWidget->findChildren<QWidget*>())
+  for (QWidget* child: ui->settingsWidget->findChildren<QSpinBox*>())
+  {
+    child->setEnabled(true);
+  }
+  for (QWidget* child: ui->settingsWidget->findChildren<QGroupBox*>())
   {
     child->setEnabled(true);
   }
