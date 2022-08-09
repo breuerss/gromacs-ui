@@ -55,12 +55,15 @@ void connectToComboBox(
 
   QVariant currentValue = model->property(elementName.toStdString().c_str());
   int index = widget->findData(currentValue);
+  widget->setCurrentIndex(index);
+
   // if no entry is found take the first one
   if (index == -1)
   {
     index = 0;
+    // second call necessary to trigger change event
+    widget->setCurrentIndex(index);
   }
-  widget->setCurrentIndex(index);
 }
 
 void connectToLineEdit(
