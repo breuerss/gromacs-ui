@@ -15,7 +15,7 @@ std::shared_ptr<Simulation> Project::addStep()
 {
   auto step = std::make_shared<Simulation>();
   steps.push_back(step);
-  emit stepAdded(step, steps.size());
+  emit stepAdded(step, steps.size() - 1);
   return step;
 }
 

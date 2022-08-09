@@ -238,8 +238,12 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
 {
   if (at == -1)
   {
-    at = ui->stepconfigurator->count();
+    at = ui->stepconfigurator->count() - 1;
   }
+
+  // take system setup into account
+  at += 1;
+
   connect(step.get(), &Model::Simulation::simulationTypeChanged, [this, step, at] () {
     ui->stepconfigurator->setTabText(at, step->getName());
   });
