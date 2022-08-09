@@ -25,6 +25,8 @@ Simulation::Simulation()
     qRegisterMetaTypeStreamOperators<int>("Simulation::TemperatureAlgorithm");
     registered = true;
   }
+
+  addTemperatureCouplingGroup();
 }
 
 QString Simulation::getName() const
