@@ -32,10 +32,6 @@ SimulationSetupForm::SimulationSetupForm(
       updateUiForSimulationType(type);
     });
 
-  connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
-    step->addTemperatureCouplingGroup();
-  });
-
   QList<QPair<QString, Simulation::PressureCouplingType>> pressureCouplingTypeOptions = {
     { "Isotropic", Simulation::PressureCouplingType::Isotropic },
     { "SemiIsoTropic", Simulation::PressureCouplingType::SemiIsoTropic },
@@ -75,6 +71,9 @@ SimulationSetupForm::SimulationSetupForm(
               );
 
   // temperature
+  connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
+    step->addTemperatureCouplingGroup();
+  });
   connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
               ui->temperatureAlgorithm, step, "temperatureAlgorithm"
               );
