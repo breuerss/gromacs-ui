@@ -145,21 +145,26 @@ void SystemSetupForm::prepareWaterOptions()
 
 void SystemSetupForm::prepareForceFieldOptions()
 {
-  setOptions(
+  using Model::SystemSetup;
+  setOptions<SystemSetup::ForceField>(
     ui->forceField,
     {
-      { "CHARMM27", "charmm27" },
-      { "OPLS-AA/L", "oplsaa" }
+      { "CHARMM27", SystemSetup::ForceField::CHARMM27 },
+      { "OPLS-AA/L", SystemSetup::ForceField::OPLSAA }
   }, 0);
 }
 
 void SystemSetupForm::prepareBoxOptions()
 {
-  setOptions(ui->boxType, {
-    { "Cubic", "cubic" },
-      { "Octahedron", "octahedron" },
-      { "Dodecahedron", "dodecahedron" }
-  }, 2);
+  using Model::SystemSetup;
+  setOptions<SystemSetup::BoxType>(
+    ui->boxType,
+    {
+      { "Cubic", SystemSetup::BoxType::Cubic },
+      { "Octahedron", SystemSetup::BoxType::Octahedron },
+      { "Dodecahedron", SystemSetup::BoxType::Dodecahedron }
+    },
+    2);
 }
 
 void SystemSetupForm::setIonFromModel()

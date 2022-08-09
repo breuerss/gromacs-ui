@@ -35,7 +35,7 @@ void CreateBox::exec()
   command += " -f " + inputFile;
   command += " -o " + outputFile;
   command += " -d " + systemSetup->property("distance").value<QString>();
-  command += " -bt " + systemSetup->property("boxType").value<QString>();
+  command += " -bt " + toString(systemSetup->property("boxType").value<Model::SystemSetup::BoxType>());
 
   QString inputDirectory = fileInfo.absolutePath();
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);

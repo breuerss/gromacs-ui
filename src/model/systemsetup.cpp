@@ -165,8 +165,9 @@ const QString& SystemSetup::getSolvatedStructureFile() const
 void SystemSetup::evaluateConfigReady()
 {
   qDebug() << "evaluateConfigReady"  << boxType << waterModel << forceField << filteredStructureFile;
-  const bool newConfigReady = !boxType.isEmpty() &&
-    !forceField.isEmpty() &&
+  const bool newConfigReady =
+    (boxType != BoxType::None) &&
+    (forceField != ForceField::None) &&
     !filteredStructureFile.isEmpty();
 
   configReady = newConfigReady;
@@ -180,6 +181,27 @@ QString toString(SystemSetup::WaterModel type)
     { SystemSetup::WaterModel::TIP3P, "tip3p" },
     { SystemSetup::WaterModel::TIP4P, "tip4p" },
     { SystemSetup::WaterModel::TIP5P, "tip5p" },
+  };
+
+  return map[type];
+}
+
+QString toString(SystemSetup::BoxType type)
+{
+  const static QMap<SystemSetup::BoxType, QString> map = {
+    { SystemSetup::BoxType::Cubic, "cubic" },
+    { SystemSetup::BoxType::Octahedron, "octahedron" },
+    { SystemSetup::BoxType::Dodecahedron, "dodecahedron" },
+  };
+
+  return map[type];
+}
+
+QString toString(SystemSetup::ForceField type)
+{
+  const static QMap<SystemSetup::ForceField, QString> map = {
+    { SystemSetup::ForceField::CHARMM27, "charmm27" },
+    { SystemSetup::ForceField::OPLSAA, "oplsaa" },
   };
 
   return map[type];
