@@ -5,7 +5,7 @@
 1. disable configuration during run
 1. loading of files without webserver?
 1. Enums for algorithms
-1. temperature config
+1. constraints config
 1. NPT
 1. electrostatic configuration
 
