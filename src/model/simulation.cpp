@@ -18,6 +18,8 @@ Simulation::Simulation()
     qRegisterMetaTypeStreamOperators<int>("Simulation::PressureAlgorithm");
     qRegisterMetaType<PressureCouplingType>("Simulation::PressureCouplingType");
     qRegisterMetaTypeStreamOperators<int>("Simulation::PressureCouplingType");
+    qRegisterMetaType<Algorithm>("Simulation::Algorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::Algorithm");
     registered = true;
   }
 }
@@ -64,6 +66,19 @@ QDataStream &operator>>(QDataStream &in, Simulation& step)
   }
 
   return in;
+}
+
+QString toString(Simulation::Algorithm algorithm)
+{
+  const static QMap<Simulation::Algorithm, QString> map = {
+    { Simulation::Algorithm::None, "" },
+    { Simulation::Algorithm::SteepestDecent, "steep" },
+    { Simulation::Algorithm::ConjugateGradient, "cg" },
+    { Simulation::Algorithm::LeapFrog, "md" },
+    { Simulation::Algorithm::StochasticDynamics, "sd" },
+  };
+
+  return map[algorithm];
 }
 
 QString toString(Simulation::PressureAlgorithm algorithm)

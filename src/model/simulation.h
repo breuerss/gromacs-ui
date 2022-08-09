@@ -12,6 +12,15 @@ class Simulation : public QObject
 {
   Q_OBJECT
 public:
+  enum class Algorithm : int {
+    None = 0,
+    SteepestDecent,
+    ConjugateGradient,
+    LeapFrog,
+    StochasticDynamics
+  };
+  Q_ENUM(Algorithm);
+
   enum class PressureAlgorithm : int {
     None = 0,
     Berendsen,
@@ -41,7 +50,7 @@ public:
   QString getDirectory() const;
 
   Q_PROPERTY(Simulation::Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
-  Q_PROPERTY(QString algorithm MEMBER algorithm NOTIFY algorithmChanged);
+  Q_PROPERTY(Simulation::Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
   Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
   Q_PROPERTY(double minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
@@ -67,7 +76,7 @@ signals:
   void directoryChanged();
 
   void simulationTypeChanged(Type);
-  void algorithmChanged(QString);
+  void algorithmChanged(Algorithm);
 
   void numberOfStepsChanged(int);
   void minimisationMaximumForceChanged(double);
@@ -92,7 +101,7 @@ signals:
 
 private:
   Type simulationType = Type::None;
-  QString algorithm = "";
+  Algorithm algorithm = Algorithm::None;
 
   int numberOfSteps = -1;
 
@@ -126,6 +135,7 @@ private:
 QDataStream &operator<<(QDataStream &out, const Simulation& step);
 QDataStream &operator>>(QDataStream &in, Simulation& step);
 
+QString toString(Simulation::Algorithm algorithm);
 QString toString(Simulation::PressureAlgorithm alogrithm);
 QString toString(Simulation::PressureCouplingType type);
 QString toString(Simulation::Type type, bool shortVersion = false);

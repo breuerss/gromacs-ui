@@ -32,10 +32,13 @@ void Solvate::exec()
   QString inputFile = systemSetup->getBoxedStructureFile();
   QFileInfo fileInfo(inputFile);
 
+  using Model::SystemSetup;
+  auto waterModel = systemSetup->property("waterModel").value<SystemSetup::WaterModel>();
+
   QString outputFile = fileInfo.baseName().replace("_boxed", "_solvated") + ".gro";
   command += " -cp " + inputFile;
   command += " -o " + outputFile;
-  command += " -cs " + getWaterBoxFor(systemSetup->property("waterModel").value<QString>());
+  command += " -cs " + getWaterBoxFor(waterModel);
   command += " -p topol.top";
 
   QString inputDirectory = fileInfo.absolutePath();
@@ -45,14 +48,15 @@ void Solvate::exec()
   systemSetup->setSolvatedStructureFile(inputDirectory + "/" + outputFile);
 }
 
-QString Solvate::getWaterBoxFor(const QString &solvent)
+QString Solvate::getWaterBoxFor(const Model::SystemSetup::WaterModel& solvent)
 {
+  using Model::SystemSetup;
   QString waterBox = "spc216.gro";
-  if (solvent == "tip4p")
+  if (solvent == SystemSetup::WaterModel::TIP4P)
   {
     waterBox = "tip4p.gro";
   }
-  else if (solvent == "tip5p")
+  else if (solvent == SystemSetup::WaterModel::TIP5P)
   {
     waterBox = "tip5p.gro";
   }

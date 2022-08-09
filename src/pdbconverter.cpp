@@ -52,8 +52,8 @@ QString PdbConverter::convert(const QString &fileName,
     process.start(command);
     process.waitForFinished();
   }
-
   LogForwarder::getInstance()->detach(&process);
+
   return outputFileName;
 }
 

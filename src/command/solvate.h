@@ -2,11 +2,8 @@
 #define SOLVATE_H
 
 #include "executor.h"
+#include "../model/systemsetup.h"
 #include <memory>
-
-namespace Model {
-class SystemSetup;
-}
 
 namespace Command {
 
@@ -18,7 +15,7 @@ public:
 
 private:
   const std::shared_ptr<Model::SystemSetup> systemSetup;
-  static QString getWaterBoxFor(const QString& solvent);
+  static QString getWaterBoxFor(const Model::SystemSetup::WaterModel& solvent);
 };
 
 }

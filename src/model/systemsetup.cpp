@@ -9,6 +9,13 @@ namespace Model {
 
 SystemSetup::SystemSetup()
 {
+  static bool registered = false;
+  if (!registered)
+  {
+    qRegisterMetaType<WaterModel>("SystemSetup::WaterModel");
+    qRegisterMetaTypeStreamOperators<int>("SystemSetup::WaterModel");
+    registered = true;
+  }
   connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
@@ -159,7 +166,6 @@ void SystemSetup::evaluateConfigReady()
 {
   qDebug() << "evaluateConfigReady"  << boxType << waterModel << forceField << filteredStructureFile;
   const bool newConfigReady = !boxType.isEmpty() &&
-    !waterModel.isEmpty() &&
     !forceField.isEmpty() &&
     !filteredStructureFile.isEmpty();
 
@@ -201,4 +207,15 @@ QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
   return in;
 }
 
+QString toString(SystemSetup::WaterModel type)
+{
+  const static QMap<SystemSetup::WaterModel, QString> map = {
+    { SystemSetup::WaterModel::SPC, "spc" },
+    { SystemSetup::WaterModel::TIP3P, "tip3p" },
+    { SystemSetup::WaterModel::TIP4P, "tip4p" },
+    { SystemSetup::WaterModel::TIP5P, "tip5p" },
+  };
+
+  return map[type];
+}
 }

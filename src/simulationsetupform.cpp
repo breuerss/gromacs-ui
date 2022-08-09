@@ -55,7 +55,7 @@ SimulationSetupForm::SimulationSetupForm(
     });
 
   QWidget* container = ui->settingsWidget;
-  connectToComboBox<QString>(container, step, "algorithm");
+  connectToComboBox<Simulation::Algorithm>(container, step, "algorithm");
 
   connectToSpinBox<QSpinBox, int>(container, step, "numberOfSteps");
   connectToSpinBox<QDoubleSpinBox, double>(container, step, "minimisationStepSize");
@@ -155,16 +155,16 @@ void SimulationSetupForm::enableAllSettings()
 
 void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
 {
-  QList<QPair<QString, QVariant>> map;
+  using Model::Simulation;
+  QList<QPair<QString, Simulation::Algorithm>> map;
   int defaultIndex = 0;
 
-  using Model::Simulation;
   switch(type)
   {
     case Simulation::Type::Minimisation:
       map = {
-        { "Steepest Descent", "steep" },
-        { "Conjugate Gradient", "cg" },
+        { "Steepest Descent", Simulation::Algorithm::SteepestDecent },
+        { "Conjugate Gradient", Simulation::Algorithm::ConjugateGradient },
       };
       defaultIndex = 1;
       break;
@@ -172,15 +172,15 @@ void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
     case Simulation::Type::NPT:
     case Simulation::Type::NVE:
       map = {
-        { "Leap Frog Integrator (md)", "md" },
-        { "Stochastic Dynamics Integrator (sd)", "sd" },
+        { "Leap Frog Integrator (md)", Simulation::Algorithm::LeapFrog },
+        { "Stochastic Dynamics Integrator (sd)", Simulation::Algorithm::StochasticDynamics },
       };
       defaultIndex = 1;
     default:
       break;
   }
 
-  setOptions(ui->algorithm, map, defaultIndex);
+  setOptions<Simulation::Algorithm>(ui->algorithm, map, defaultIndex);
 }
 
 void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type type)
