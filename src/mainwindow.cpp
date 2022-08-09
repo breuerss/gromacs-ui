@@ -19,6 +19,7 @@
 #include <QWebEngineSettings>
 #include <QUrlQuery>
 #include <QDir>
+#include <QToolButton>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -42,6 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionOpenProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::open);
 
+  QToolButton* addStepButton = new QToolButton(this);
+  addStepButton->setCursor(Qt::ArrowCursor);
+  addStepButton->setAutoRaise(true);
+  addStepButton->setIcon(QIcon::fromTheme("add"));
+  connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
+  ui->stepconfigurator->setCornerWidget(addStepButton);
   auto queue = std::make_shared<Command::Queue>();
   auto project = ProjectManager::getInstance()->getCurrentProject();
   connect (
