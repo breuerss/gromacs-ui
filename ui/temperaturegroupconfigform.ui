@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>226</width>
     <height>300</height>
    </rect>
   </property>
@@ -28,7 +28,33 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
+   <item row="3" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="1" alignment="Qt::AlignRight|Qt::AlignTop">
+    <widget class="QToolButton" name="removeTemperatureGroup">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="remove"/>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QLabel" name="temperatureLabel">
@@ -50,19 +76,6 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1">
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
       <widget class="QLabel" name="temperatureUpdateIntervalLabel">
@@ -82,16 +95,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="0" column="2" alignment="Qt::AlignTop">
-    <widget class="QToolButton" name="removeTemperatureGroup">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset theme="remove"/>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
