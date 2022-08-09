@@ -48,6 +48,7 @@ void GromacsConfigFileGenerator::generate(
       writeLine(writer, "pcoupltype", toString(step->property("pressureCouplingType").value<Simulation::PressureCouplingType>()));
       writeLine(writer, "tau-p", QString::number(step->property("pressureUpdateInterval").value<double>()));
       writeLine(writer, "ref-p", QString::number(step->property("pressure").value<double>()));
+      writeLine(writer, "compressibility", "4.5e-5");
     }
 
     // temperature
