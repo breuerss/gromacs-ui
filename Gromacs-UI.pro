@@ -29,11 +29,13 @@ SOURCES += \
     src/model/serializable.cpp \
     src/model/simulation.cpp \
     src/model/systemsetup.cpp \
+    src/model/temperaturecouplinggroup.cpp \
     src/projectmanager.cpp \
     src/settings.cpp \
     src/form/simulationsetupform.cpp \
     src/form/systemsetupform.cpp \
     src/form/preferencesdialog.cpp \
+    src/form/temperaturegroupconfigform.cpp \
     src/form/connectionhelper.cpp
 
 HEADERS += \
@@ -56,14 +58,17 @@ HEADERS += \
     src/model/serializable.h \
     src/model/simulation.h \
     src/model/systemsetup.h \
+    src/model/temperaturecouplinggroup.h \
     src/projectmanager.h \
     src/settings.h \
     src/form/simulationsetupform.h \
     src/statusmessagesetter.h \
     src/form/systemsetupform.h \
+    src/form/temperaturegroupconfigform.h \
     src/form/connectionhelper.h
 
 FORMS += \
+    ui/temperaturegroupconfigform.ui \
     ui/simulationsetupform.ui \
     ui/systemsetupform.ui \
     ui/mainwindow.ui \

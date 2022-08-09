@@ -25,8 +25,12 @@ private:
   void updateUiForSimulationType(Model::Simulation::Type type = Model::Simulation::Type::None);
   void setAlgorithmsForType(Model::Simulation::Type type);
   void setPressureAlgorithmsForType(Model::Simulation::Type type);
+  void setTemperatureAlgorithmsForType(Model::Simulation::Type type);
   void hideSettings();
   void enableAllSettings();
+
+  void addTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at = -1);
+  void removeTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at);
 };
 
 #endif // SIMULATIONSETUPFORM_H

@@ -2,8 +2,10 @@
 #define STEP_H
 
 #include "serializable.h"
+#include "temperaturecouplinggroup.h"
 #include <QString>
 #include <QDataStream>
+#include <memory>
 
 namespace Model {
 
@@ -44,10 +46,22 @@ public:
   };
   Q_ENUM(Type);
 
+  enum class TemperatureAlgorithm : int {
+    None = 0,
+    Berendsen,
+    NoseHoover,
+    Andersen,
+    AndersenMassive,
+    VelocityRescale,
+  };
+  Q_ENUM(TemperatureAlgorithm);
+
   Simulation();
   QString getName() const;
   QString getDirectory() const;
 
+  // temperature
+  std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
   Q_PROPERTY(Simulation::Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
   Q_PROPERTY(Simulation::Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
@@ -69,6 +83,9 @@ public:
   Q_PROPERTY(double pressure MEMBER pressure NOTIFY pressureChanged);
   Q_PROPERTY(double pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
   Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
+
+  Q_PROPERTY(Simulation::TemperatureAlgorithm temperatureAlgorithm
+             MEMBER temperatureAlgorithm NOTIFY temperatureAlgorithmChanged);
 
 signals:
   void nameChanged();
@@ -97,6 +114,15 @@ signals:
   void pressureChanged(double);
   void pressureUpdateIntervalChanged(double);
   void pressureCouplingTypeChanged(PressureCouplingType);
+
+  void temperatureAlgorithmChanged(TemperatureAlgorithm);
+  void temperatureCouplingGroupAdded(std::shared_ptr<TemperatureCouplingGroup>, int at);
+  void temperatureCouplingGroupRemoved(std::shared_ptr<TemperatureCouplingGroup>, int at);
+
+public slots:
+  const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups() const;
+  std::shared_ptr<TemperatureCouplingGroup> addTemperatureCouplingGroup();
+  void removeTemperatureCouplingGroup(int index);
 
 private:
   Type simulationType = Type::None;
@@ -129,13 +155,20 @@ private:
   double pressure = 1;
   double pressureUpdateInterval = 1;
   PressureCouplingType pressureCouplingType = PressureCouplingType::Isotropic;
-};
 
+  // temperature
+  TemperatureAlgorithm temperatureAlgorithm = TemperatureAlgorithm::None;
+  std::vector<std::shared_ptr<TemperatureCouplingGroup>> temperatureCouplingGroups;
+};
 
 QString toString(Simulation::Algorithm algorithm);
 QString toString(Simulation::PressureAlgorithm alogrithm);
 QString toString(Simulation::PressureCouplingType type);
+QString toString(Simulation::TemperatureAlgorithm algorithm);
 QString toString(Simulation::Type type, bool shortVersion = false);
+
+QDataStream &operator<<(QDataStream &out, const Simulation &model);
+QDataStream &operator>>(QDataStream &in, Simulation& model);
 
 }
 

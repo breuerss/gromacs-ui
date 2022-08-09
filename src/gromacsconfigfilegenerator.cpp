@@ -47,6 +47,29 @@ void GromacsConfigFileGenerator::generate(
       writeLine(writer, "tau-p", QString::number(step->property("pressureUpdateInterval").value<double>()));
       writeLine(writer, "ref-p", QString::number(step->property("pressure").value<double>()));
     }
+
+    // temperature
+    Simulation::TemperatureAlgorithm temperatureAlgorithm =
+      step->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
+    writeLine(writer, "tcoupl", toString(temperatureAlgorithm));
+    if (temperatureAlgorithm != Simulation::TemperatureAlgorithm::None)
+    {
+      QStringList groupNames;
+      QStringList temperatures;
+      QStringList updateIntervals;
+      // TODO write out coupling groups
+      const auto& groups = step->getTemperatureCouplingGroups();
+      for (auto group : groups)
+      {
+        groupNames << toString(group->property("group").value<Model::TemperatureCouplingGroup::Group>());
+        temperatures << QString::number(group->property("temperature").value<double>());
+        updateIntervals << QString::number(group->property("updateInterval").value<double>());
+      }
+
+      writeLine(writer, "tc-grps", groupNames.join(" "));
+      writeLine(writer, "tau-t", updateIntervals.join(" "));
+      writeLine(writer, "ref-t", temperatures.join(" "));
+    }
   }
 
   if (simulationType == Model::Simulation::Type::Minimisation)

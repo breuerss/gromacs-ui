@@ -1,5 +1,6 @@
 #include "simulationsetupform.h"
 #include "ui_simulationsetupform.h"
+#include "temperaturegroupconfigform.h"
 #include "../model/simulation.h"
 #include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
@@ -30,6 +31,10 @@ SimulationSetupForm::SimulationSetupForm(
     [this] (Simulation::Type type) {
       updateUiForSimulationType(type);
     });
+
+  connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
+    step->addTemperatureCouplingGroup();
+  });
 
   QList<QPair<QString, Simulation::PressureCouplingType>> pressureCouplingTypeOptions = {
     { "Isotropic", Simulation::PressureCouplingType::Isotropic },
@@ -77,6 +82,11 @@ SimulationSetupForm::SimulationSetupForm(
               ui->pressureCouplingType, step, "pressureCouplingType"
               );
 
+  // temperature
+  connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
+              ui->temperatureAlgorithm, step, "temperatureAlgorithm"
+              );
+
   setOptions(ui->electrostaticAlgorithm, {
      {"None", "no"},
      {"PME", "PME"},
@@ -85,6 +95,15 @@ SimulationSetupForm::SimulationSetupForm(
   connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, step, "electrostaticCutoffRadius");
   connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, step, "fourierSpacing");
   connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, step, "vdwCutoffRadius");
+  connect(ui->createConfig, &QPushButton::clicked, [this] () {
+    GromacsConfigFileGenerator::generate(step, "/tmp/tmp.mdp");
+  });
+
+
+  connect(step.get(), &Model::Simulation::temperatureCouplingGroupAdded,
+          this, &SimulationSetupForm::addTemperatureCouplingGroup);
+  connect(step.get(), &Model::Simulation::temperatureCouplingGroupRemoved,
+          this, &SimulationSetupForm::removeTemperatureCouplingGroup);
 }
 
 SimulationSetupForm::~SimulationSetupForm()
@@ -97,6 +116,7 @@ void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type
   hideSettings();
   setAlgorithmsForType(type);
   setPressureAlgorithmsForType(type);
+  setTemperatureAlgorithmsForType(type);
   enableAllSettings();
   using Model::Simulation;
   switch(type)
@@ -198,3 +218,38 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type t
   }
   setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map);
 }
+
+void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Type type)
+{
+  using Model::Simulation;
+  QList<QPair<QString, Simulation::TemperatureAlgorithm>> map({
+    { "None", Simulation::TemperatureAlgorithm::None }
+  });
+  if (type == Model::Simulation::Type::NPT || type == Model::Simulation::Type::NVT)
+  {
+    map = {
+      { "Berendsen", Simulation::TemperatureAlgorithm::Berendsen },
+      { "Nose-Hoover", Simulation::TemperatureAlgorithm::NoseHoover },
+      { "Velocity Rescale", Simulation::TemperatureAlgorithm::VelocityRescale }
+    };
+  }
+  setOptions<Simulation::TemperatureAlgorithm>(ui->temperatureAlgorithm, map);
+}
+
+void SimulationSetupForm::addTemperatureCouplingGroup(
+  std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at)
+{
+  TemperatureGroupConfigForm* groupEditor = new TemperatureGroupConfigForm(couplingGroup);
+  connect(groupEditor, &TemperatureGroupConfigForm::removeRequested, [this, groupEditor] () {
+    int at = ui->temperatureCouplingGroups->indexOf(groupEditor);
+    step->removeTemperatureCouplingGroup(at);
+  });
+  ui->temperatureCouplingGroups->insertWidget(at, groupEditor);
+}
+
+void SimulationSetupForm::removeTemperatureCouplingGroup(
+  std::shared_ptr<Model::TemperatureCouplingGroup>, int at)
+{
+  ui->temperatureCouplingGroups->takeAt(at)->widget()->deleteLater();
+}
+
