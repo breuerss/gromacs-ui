@@ -95,6 +95,10 @@ SimulationSetupForm::SimulationSetupForm(
           this, &SimulationSetupForm::addTemperatureCouplingGroup);
   connect(step.get(), &Model::Simulation::temperatureCouplingGroupRemoved,
           this, &SimulationSetupForm::removeTemperatureCouplingGroup);
+  for (auto group : step->getTemperatureCouplingGroups())
+  {
+    addTemperatureCouplingGroup(group);
+  }
 }
 
 SimulationSetupForm::~SimulationSetupForm()
