@@ -2,6 +2,7 @@
 
 #include "settings.h"
 #include "statusmessagesetter.h"
+#include "logforwarder.h"
 #include <QProcess>
 #include <QTranslator>
 #include <QDebug>
@@ -31,6 +32,7 @@ QString PdbConverter::convert(const QString &fileName,
 
   qDebug() << command << arguments;
   QProcess process;
+  LogForwarder::getInstance()->listenTo(&process);
   process.setStandardOutputFile(outputFileName);
   process.start(command, arguments);
   process.waitForFinished();
@@ -50,6 +52,8 @@ QString PdbConverter::convert(const QString &fileName,
     process.start(command);
     process.waitForFinished();
   }
+
+  LogForwarder::getInstance()->detach(&process);
   return outputFileName;
 }
 
