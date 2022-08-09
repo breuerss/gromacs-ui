@@ -77,6 +77,11 @@ SimulationSetupForm::SimulationSetupForm(
               ui->pressureCouplingType, step, "pressureCouplingType"
               );
 
+  // temperature
+  connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
+              ui->temperatureAlgorithm, step, "temperatureAlgorithm"
+              );
+
   setOptions(ui->electrostaticAlgorithm, {
      {"None", "no"},
      {"PME", "PME"},

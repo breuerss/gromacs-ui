@@ -34,6 +34,15 @@ QString Simulation::getDirectory() const
   return toString(simulationType, true);
 }
 
+std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups()
+{
+  return temperatureCouplingGroups;
+}
+
+const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups() const
+{
+  return temperatureCouplingGroups;
+}
 
 QString toString(Simulation::Algorithm algorithm)
 {
