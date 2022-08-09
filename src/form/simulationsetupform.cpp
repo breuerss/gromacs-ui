@@ -103,6 +103,9 @@ SimulationSetupForm::SimulationSetupForm(
 
 SimulationSetupForm::~SimulationSetupForm()
 {
+  for (QMetaObject::Connection conn: conns) {
+    QObject::disconnect(conn);
+  }
   delete ui;
 }
 
@@ -243,7 +246,7 @@ void SimulationSetupForm::addTemperatureCouplingGroup(
     bool enabled = groupType != TemperatureCouplingGroup::Group::System;
     ui->addTemperatureCouplingGroup->setEnabled(enabled);
   };
-  connect(couplingGroup.get(), &TemperatureCouplingGroup::groupChanged, callback);
+  conns.push_back(connect(couplingGroup.get(), &TemperatureCouplingGroup::groupChanged, callback));
 
   auto groupType = couplingGroup->property("group").value<TemperatureCouplingGroup::Group>();
   callback(groupType);

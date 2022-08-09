@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QComboBox>
 #include <memory>
+#include <QMetaObject>
+#include <vector>
 #include "../model/simulation.h"
 
 namespace Ui {
@@ -31,6 +33,7 @@ private:
 
   void addTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at = -1);
   void removeTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at);
+  std::vector<QMetaObject::Connection> conns;
 };
 
 #endif // SIMULATIONSETUPFORM_H
