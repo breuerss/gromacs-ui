@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QComboBox>
 #include <memory>
-#include "model/simulation.h"
+#include "../model/simulation.h"
 
 namespace Ui {
 class SimulationSetupForm;

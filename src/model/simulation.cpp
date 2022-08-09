@@ -34,39 +34,6 @@ QString Simulation::getDirectory() const
   return toString(simulationType, true);
 }
 
-QDataStream &operator<<(QDataStream &out, const Simulation& step)
-{
-  const QMetaObject *metaobject = step.metaObject();
-  int count = metaobject->propertyCount();
-  qDebug() << "Writing" << count << "properties from step";
-  for (int i = 0; i < count; ++i) {
-    QMetaProperty metaproperty = metaobject->property(i);
-    const char *name = metaproperty.name();
-    QVariant value = step.property(name);
-
-    out << value;
-  }
-
-  return out;
-}
-
-QDataStream &operator>>(QDataStream &in, Simulation& step)
-{
-  const QMetaObject *metaobject = step.metaObject();
-  int count = metaobject->propertyCount();
-
-  qDebug() << "Reading" << count << "properties to step";
-  for (int i = 0; i < count; ++i) {
-    QMetaProperty metaproperty = metaobject->property(i);
-    const char *name = metaproperty.name();
-
-    QVariant value;
-    in >> value;
-    step.setProperty(name, value);
-  }
-
-  return in;
-}
 
 QString toString(Simulation::Algorithm algorithm)
 {

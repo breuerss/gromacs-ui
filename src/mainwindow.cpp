@@ -1,10 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "preferencesdialog.h"
+#include "form/preferencesdialog.h"
 #include "projectmanager.h"
 #include "fileserver.h"
-#include "systemsetupform.h"
-#include "simulationsetupform.h"
+#include "form/systemsetupform.h"
+#include "form/simulationsetupform.h"
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 

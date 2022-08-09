@@ -17,23 +17,24 @@ SOURCES += \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
     src/fileserver.cpp \
+    src/pdbdownloader.cpp \
     src/gromacsconfigfilegenerator.cpp \
+    src/pdbconverter.cpp \
+    src/pdbinfoextractor.cpp \
+    src/statusmessagesetter.cpp \
     src/logforwarder.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/model/systemsetup.cpp \
-    src/pdbconverter.cpp \
-    src/pdbdownloader.cpp \
-    src/pdbinfoextractor.cpp \
-    src/preferencesdialog.cpp \
     src/model/project.cpp \
+    src/model/serializable.cpp \
+    src/model/simulation.cpp \
+    src/model/systemsetup.cpp \
     src/projectmanager.cpp \
     src/settings.cpp \
-    src/simulationsetupform.cpp \
-    src/statusmessagesetter.cpp \
-    src/model/simulation.cpp \
-    src/systemsetupform.cpp \
-    src/uiconnectionhelper.cpp
+    src/form/simulationsetupform.cpp \
+    src/form/systemsetupform.cpp \
+    src/form/preferencesdialog.cpp \
+    src/form/connectionhelper.cpp
 
 HEADERS += \
     src/command/createbox.h \
@@ -50,16 +51,17 @@ HEADERS += \
     src/pdbconverter.h \
     src/pdbdownloader.h \
     src/pdbinfoextractor.h \
-    src/preferencesdialog.h \
+    src/form/preferencesdialog.h \
     src/model/project.h \
-    src/projectmanager.h \
-    src/settings.h \
-    src/simulationsetupform.h \
-    src/statusmessagesetter.h \
+    src/model/serializable.h \
     src/model/simulation.h \
     src/model/systemsetup.h \
-    src/systemsetupform.h \
-    src/uiconnectionhelper.h
+    src/projectmanager.h \
+    src/settings.h \
+    src/form/simulationsetupform.h \
+    src/statusmessagesetter.h \
+    src/form/systemsetupform.h \
+    src/form/connectionhelper.h
 
 FORMS += \
     ui/simulationsetupform.ui \

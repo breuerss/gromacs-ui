@@ -1,4 +1,4 @@
-#include "uiconnectionhelper.h"
+#include "connectionhelper.h"
 
 void connectToLineEdit(
   QLineEdit* widget,

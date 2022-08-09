@@ -173,40 +173,6 @@ void SystemSetup::evaluateConfigReady()
   emit configReadyChanged(configReady);
 }
 
-QDataStream &operator<<(QDataStream &out, const SystemSetup &systemSetup)
-{
-  const QMetaObject *metaobject = systemSetup.metaObject();
-  int count = metaobject->propertyCount();
-  for (int i = 0; i < count; ++i) {
-    QMetaProperty metaproperty = metaobject->property(i);
-    const char *name = metaproperty.name();
-    QVariant value = systemSetup.property(name);
-
-    out << value;
-  }
-
-
-  return out;
-}
-
-QDataStream &operator>>(QDataStream &in, SystemSetup &systemSetup)
-{
-  const QMetaObject *metaobject = systemSetup.metaObject();
-  int count = metaobject->propertyCount();
-
-  for (int i = 0; i < count; ++i) {
-    QMetaProperty metaproperty = metaobject->property(i);
-    const char *name = metaproperty.name();
-
-    QVariant value;
-    in >> value;
-    systemSetup.setProperty(name, value);
-  }
-
-
-  return in;
-}
-
 QString toString(SystemSetup::WaterModel type)
 {
   const static QMap<SystemSetup::WaterModel, QString> map = {
@@ -218,4 +184,5 @@ QString toString(SystemSetup::WaterModel type)
 
   return map[type];
 }
+
 }

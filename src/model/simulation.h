@@ -1,14 +1,13 @@
 #ifndef STEP_H
 #define STEP_H
 
+#include "serializable.h"
 #include <QString>
-#include <QObject>
 #include <QDataStream>
 
 namespace Model {
-Q_NAMESPACE
 
-class Simulation : public QObject
+class Simulation : public Serializable
 {
   Q_OBJECT
 public:
@@ -132,8 +131,6 @@ private:
   PressureCouplingType pressureCouplingType = PressureCouplingType::Isotropic;
 };
 
-QDataStream &operator<<(QDataStream &out, const Simulation& step);
-QDataStream &operator>>(QDataStream &in, Simulation& step);
 
 QString toString(Simulation::Algorithm algorithm);
 QString toString(Simulation::PressureAlgorithm alogrithm);

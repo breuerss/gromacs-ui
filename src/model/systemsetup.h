@@ -2,13 +2,13 @@
 #define SYSTEMSETUP_H
 
 #include <QString>
-#include <QObject>
+#include "serializable.h"
 
 namespace Model {
 
 class Project;
 
-class SystemSetup : public QObject
+class SystemSetup : public Serializable
 {
   Q_OBJECT
 public:
@@ -101,9 +101,6 @@ private:
   void evaluateConfigReady();
   void filterSourceStructure();
 };
-
-QDataStream &operator<<(QDataStream &out, const SystemSetup &project);
-QDataStream &operator>>(QDataStream &in, SystemSetup &project);
 
 QString toString(SystemSetup::WaterModel type);
 
