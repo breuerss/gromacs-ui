@@ -59,7 +59,7 @@ void GromacsConfigFileGenerator::generate(
       QStringList groupNames;
       QStringList temperatures;
       QStringList updateIntervals;
-      // TODO write out coupling groups
+
       const auto& groups = step->getTemperatureCouplingGroups();
       for (auto group : groups)
       {
