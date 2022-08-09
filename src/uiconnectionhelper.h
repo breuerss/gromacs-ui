@@ -41,8 +41,6 @@ void connectToComboBox(
     widget = dynamic_cast<QComboBox*>(container);
   }
 
-  QVariant currentValue = model->property(elementName.toStdString().c_str());
-  int index = widget->findData(currentValue);
   QObject::connect(
     widget,
     QOverload<int>::of(&QComboBox::currentIndexChanged),
@@ -55,6 +53,13 @@ void connectToComboBox(
       }
     });
 
+  QVariant currentValue = model->property(elementName.toStdString().c_str());
+  int index = widget->findData(currentValue);
+  // if no entry is found take the first one
+  if (index == -1)
+  {
+    index = 0;
+  }
   widget->setCurrentIndex(index);
 }
 
