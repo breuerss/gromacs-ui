@@ -18,7 +18,7 @@ void GromacsConfigFileGenerator::generate(
   Simulation::Type simulationType = step->property("simulationType").value<Simulation::Type>();
   if (simulationType != Simulation::Type::None)
   {
-    writeLine(writer, "integrator", step->property("algorithm").toString());
+    writeLine(writer, "integrator", toString(step->property("algorithm").value<Simulation::Algorithm>()));
     writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
 
     // output control
