@@ -12,7 +12,7 @@
 #include "command/runsimulation.h"
 
 #include "model/project.h"
-#include "model/step.h"
+#include "model/simulation.h"
 #include "model/systemsetup.h"
 
 #include <QDebug>
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect (
     project.get(),
     &Model::Project::stepRemoved,
-    [this] (std::shared_ptr<Model::Step>, int at) {
+    [this] (std::shared_ptr<Model::Simulation>, int at) {
       removeTabAt(at + 1);
     });
 
@@ -121,14 +121,19 @@ MainWindow::MainWindow(QWidget *parent)
     &QAction::triggered,
     [] () {
 
+      using Model::Simulation;
       auto* manager = ProjectManager::getInstance();
       auto project = manager->getCurrentProject();
       project->clearSteps();
       auto step = project->addStep();
-      step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::Minimisation));
+      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::Minimisation));
       step->setProperty("algorithm", "steep");
       step = project->addStep();
-      step->setProperty("simulationType", QVariant::fromValue(Model::SimulationType::NVT));
+      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NVT));
+      step->setProperty("numberOfSteps", 10000);
+      step->setProperty("algorithm", "md");
+      step = project->addStep();
+      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NPT));
       step->setProperty("numberOfSteps", 10000);
       step->setProperty("algorithm", "md");
 
@@ -222,13 +227,13 @@ void MainWindow::setupUIForProject()
   //setMoleculeFile();
 }
 
-void MainWindow::addTabForStep(std::shared_ptr<Model::Step> step, int at)
+void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
 {
   if (at == -1)
   {
     at = ui->stepconfigurator->count();
   }
-  connect(step.get(), &Model::Step::simulationTypeChanged, [this, step, at] () {
+  connect(step.get(), &Model::Simulation::simulationTypeChanged, [this, step, at] () {
     ui->stepconfigurator->setTabText(at, step->getName());
   });
   ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());

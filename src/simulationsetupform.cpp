@@ -1,30 +1,41 @@
 #include "simulationsetupform.h"
 #include "ui_simulationsetupform.h"
-#include "model/simulationtype.h"
-#include "model/step.h"
+#include "model/simulation.h"
 #include "gromacsconfigfilegenerator.h"
 #include "uiconnectionhelper.h"
 
 SimulationSetupForm::SimulationSetupForm(
-  std::shared_ptr<Model::Step> newStep, QWidget *parent)
+  std::shared_ptr<Model::Simulation> newStep, QWidget *parent)
   : QWidget(parent)
     , step(newStep)
     , ui(new Ui::SimulationSetupForm)
 {
   ui->setupUi(this);
-  setOptions(ui->simulationType, {
-    { "None", QVariant::fromValue(Model::SimulationType::None) },
-      { "Minimisation", QVariant::fromValue(Model::SimulationType::Minimisation) },
-      //        { "Microcanonical (NVE)", SimulationType::NVE },
-      { "Canonical (NVT)", QVariant::fromValue(Model::SimulationType::NVT) },
-      //        { "Gibbs/Isobaric-isothermal (NPT)", SimulationType::NPT },
-  });
 
-  connectToComboBox<Model::SimulationType>(
+  using Model::Simulation;
+
+  QList<QPair<QString, Simulation::Type>> typeOptions = {
+    { toString(Simulation::Type::None), Simulation::Type::None },
+    { toString(Simulation::Type::Minimisation), Simulation::Type::Minimisation },
+    { toString(Simulation::Type::NVT), Simulation::Type::NVT },
+    { toString(Simulation::Type::NPT), Simulation::Type::NPT },
+    //{ toString(Simulation::Type::NVE), Simulation::Type::NVE },
+  };
+
+  setOptions<Simulation::Type>(ui->simulationType, typeOptions);
+  connectToComboBox<Simulation::Type>(
     ui->simulationType,
     step,
     "simulationType",
-    [this] (Model::SimulationType type) {
+    [this] (Simulation::Type type) {
+      updateUiForSimulationType(type);
+    });
+
+  connectToComboBox<Simulation::Type>(
+    ui->simulationType,
+    step,
+    "simulationType",
+    [this] (Simulation::Type type) {
       updateUiForSimulationType(type);
     });
 
@@ -56,14 +67,15 @@ SimulationSetupForm::~SimulationSetupForm()
   delete ui;
 }
 
-void SimulationSetupForm::updateUiForSimulationType(Model::SimulationType type)
+void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type)
 {
   hideSettings();
   setAlgorithmsForType(type);
   enableAllSettings();
+  using Model::Simulation;
   switch(type)
   {
-    case Model::SimulationType::Minimisation:
+    case Simulation::Type::Minimisation:
       ui->electrostaticsGroup->setVisible(true);
       ui->vanDerWaalsGroup->setVisible(true);
       ui->generalGroup->setVisible(true);
@@ -73,13 +85,24 @@ void SimulationSetupForm::updateUiForSimulationType(Model::SimulationType type)
       ui->velocityOutputFrequency->setEnabled(false);
       ui->forceOutputFrequency->setEnabled(false);
       break;
-    case Model::SimulationType::NVT:
+    case Simulation::Type::NVT:
       ui->electrostaticsGroup->setVisible(true);
       ui->vanDerWaalsGroup->setVisible(true);
       ui->generalGroup->setVisible(true);
       ui->outputSettingsGroup->setVisible(true);
+      ui->temperatureGroup->setVisible(true);
+      ui->pressureGroup->setVisible(true);
+      ui->pressureGroup->setEnabled(false);
       break;
-    case Model::SimulationType::None:
+    case Simulation::Type::NPT:
+      ui->electrostaticsGroup->setVisible(true);
+      ui->vanDerWaalsGroup->setVisible(true);
+      ui->generalGroup->setVisible(true);
+      ui->outputSettingsGroup->setVisible(true);
+      ui->temperatureGroup->setVisible(true);
+      ui->pressureGroup->setVisible(true);
+    case Simulation::Type::None:
+      break;
     default:
       break;
   }
@@ -104,26 +127,28 @@ void SimulationSetupForm::enableAllSettings()
   }
 }
 
-void SimulationSetupForm::setAlgorithmsForType(Model::SimulationType type)
+void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
 {
   QList<QPair<QString, QVariant>> map;
   int defaultIndex = 0;
 
+  using Model::Simulation;
   switch(type)
   {
-    case Model::SimulationType::Minimisation:
-      map = QList<QPair<QString, QVariant>>({
-        { "None", "" },
-          { "Steepest Descent", "steep" },
-          { "Conjugate Gradient", "cg" },
-      });
+    case Simulation::Type::Minimisation:
+      map = {
+        { "Steepest Descent", "steep" },
+        { "Conjugate Gradient", "cg" },
+      };
       defaultIndex = 1;
       break;
-    case Model::SimulationType::NVT:
-      map = QList<QPair<QString, QVariant>>({
-        { "None", "" },
-          { "Leap Frog", "md" },
-      });
+    case Simulation::Type::NVT:
+    case Simulation::Type::NPT:
+    case Simulation::Type::NVE:
+      map = {
+        { "Leap Frog Integrator (md)", "md" },
+        { "Stochastic Dynamics Integrator (sd)", "sd" },
+      };
       defaultIndex = 1;
     default:
       break;

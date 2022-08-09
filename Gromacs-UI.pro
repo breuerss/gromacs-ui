@@ -31,7 +31,7 @@ SOURCES += \
     src/settings.cpp \
     src/simulationsetupform.cpp \
     src/statusmessagesetter.cpp \
-    src/model/step.cpp \
+    src/model/simulation.cpp \
     src/systemsetupform.cpp \
     src/uiconnectionhelper.cpp
 
@@ -55,9 +55,8 @@ HEADERS += \
     src/projectmanager.h \
     src/settings.h \
     src/simulationsetupform.h \
-    src/model/simulationtype.h \
     src/statusmessagesetter.h \
-    src/model/step.h \
+    src/model/simulation.h \
     src/model/systemsetup.h \
     src/systemsetupform.h \
     src/uiconnectionhelper.h

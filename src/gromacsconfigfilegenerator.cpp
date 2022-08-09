@@ -1,13 +1,12 @@
 #include "gromacsconfigfilegenerator.h"
 
-#include "model/simulationtype.h"
-#include "model/step.h"
+#include "model/simulation.h"
 
 #include <QFile>
 #include <QTextStream>
 
 void GromacsConfigFileGenerator::generate(
-  std::shared_ptr<Model::Step> step,
+  std::shared_ptr<Model::Simulation> step,
   const QString& fileName
   )
 {
@@ -15,8 +14,9 @@ void GromacsConfigFileGenerator::generate(
   file.open(QFile::WriteOnly);
   QTextStream writer(&file);
 
-  Model::SimulationType simulationType = step->property("simulationType").value<Model::SimulationType>();
-  if (simulationType != Model::SimulationType::None)
+  using Model::Simulation;
+  Simulation::Type simulationType = step->property("simulationType").value<Simulation::Type>();
+  if (simulationType != Simulation::Type::None)
   {
     writeLine(writer, "integrator", step->property("algorithm").toString());
     writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
@@ -38,7 +38,7 @@ void GromacsConfigFileGenerator::generate(
     writeLine(writer, "rvdw", step->property("vdwCutoffRadius").toString());
   }
 
-  if (simulationType == Model::SimulationType::Minimisation)
+  if (simulationType == Model::Simulation::Type::Minimisation)
   {
     writeLine(writer, "emtol", step->property("minimisationMaximumForce").toString());
     writeLine(writer, "emstep", step->property("minimisationStepSize").toString());

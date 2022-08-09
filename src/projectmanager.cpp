@@ -24,6 +24,11 @@ const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
   return currentProject;
 }
 
+const QString& ProjectManager::getFileName() const
+{
+  return fileName;
+}
+
 void ProjectManager::createNewProject()
 {
   QMessageBox::StandardButton choice = QMessageBox::Yes;

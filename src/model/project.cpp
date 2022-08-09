@@ -1,6 +1,6 @@
 #include "project.h"
 #include "systemsetup.h"
-#include "step.h"
+#include "simulation.h"
 #include "../settings.h"
 #include <QDebug>
 
@@ -11,9 +11,9 @@ Project::Project()
 {
 }
 
-std::shared_ptr<Step> Project::addStep()
+std::shared_ptr<Simulation> Project::addStep()
 {
-  auto step = std::make_shared<Step>();
+  auto step = std::make_shared<Simulation>();
   steps.push_back(step);
   emit stepAdded(step, steps.size());
   return step;
@@ -34,7 +34,7 @@ void Project::clearSteps()
   }
 }
 
-const std::vector<std::shared_ptr<Step>>& Project::getSteps() const
+const std::vector<std::shared_ptr<Simulation>>& Project::getSteps() const
 {
   return steps;
 }

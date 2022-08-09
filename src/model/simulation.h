@@ -3,20 +3,30 @@
 
 #include <QString>
 #include <QObject>
-
-#include "simulationtype.h"
+#include <QDataStream>
 
 namespace Model {
+Q_NAMESPACE
 
-class Step : public QObject
+class Simulation : public QObject
 {
   Q_OBJECT
 public:
-  Step();
+
+  enum class Type : int {
+    None = 0,
+    Minimisation,
+    NVE,
+    NVT,
+    NPT
+  };
+  Q_ENUM(Type);
+
+  Simulation();
   QString getName() const;
   QString getDirectory() const;
 
-  Q_PROPERTY(Model::SimulationType simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
+  Q_PROPERTY(Simulation::Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
   Q_PROPERTY(QString algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
   Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
@@ -37,7 +47,7 @@ signals:
   void nameChanged();
   void directoryChanged();
 
-  void simulationTypeChanged(SimulationType);
+  void simulationTypeChanged(Type);
   void algorithmChanged(QString);
 
   void numberOfStepsChanged(int);
@@ -57,13 +67,16 @@ signals:
   void vdwCutoffRadiusChanged(double);
 
 private:
-  SimulationType simulationType = SimulationType::None;
+  Type simulationType = Type::None;
   QString algorithm = "";
 
   int numberOfSteps = -1;
+
+  // minimsation options
   double minimisationMaximumForce = 1000.0;
   double minimisationStepSize = 0.01;
 
+  // output frequencies
   int energyOutputFrequency = 500;
   int positionOutputFrequency = 0;
   int compressedPositionOutputFrequency = 1000;
@@ -71,15 +84,20 @@ private:
   int velocityOutputFrequency = 0;
   int forceOutputFrequency = 0;
 
+  // electrostatics
   QString electrostaticAlgorithm = "PME";
   double electrostaticCutoffRadius = 1.0;
   double fourierSpacing = 0.125;
+
+  // vdw
   double vdwCutoffRadius = 1.0;
 
 };
 
-QDataStream &operator<<(QDataStream &out, const Step& step);
-QDataStream &operator>>(QDataStream &in, Step& step);
+QDataStream &operator<<(QDataStream &out, const Simulation& step);
+QDataStream &operator>>(QDataStream &in, Simulation& step);
+
+QString toString(Simulation::Type type, bool shortVersion = false);
 
 }
 

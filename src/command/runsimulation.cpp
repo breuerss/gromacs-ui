@@ -3,7 +3,7 @@
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
 #include "../model/project.h"
-#include "../model/step.h"
+#include "../model/simulation.h"
 #include "../settings.h"
 #include "../logforwarder.h"
 
@@ -35,7 +35,7 @@ void RunSimulation::exec()
 
   QDir dir(project->getProjectPath());
   const auto& steps = project->getSteps();
-  std::shared_ptr<Model::Step> step = steps[stepIndex];
+  std::shared_ptr<Model::Simulation> step = steps[stepIndex];
 
   QString stepType = step->getDirectory();
   dir.mkdir(stepType);

@@ -72,11 +72,21 @@ void connectToCheckbox(
   std::function<void(bool)>&& callback = nullptr
   );
 
+template<typename TypeName = QVariant>
 void setOptions(
   QComboBox* comboBox,
-  const QList<QPair<QString, QVariant>>& options,
+  const QList<QPair<QString, TypeName>>& options,
   int defaultIndex = 0
-  );
+  )
+{
+  comboBox->clear();
+  for (const auto& entry: options)
+  {
+    comboBox->addItem(entry.first, QVariant::fromValue(entry.second));
+  }
+
+  comboBox->setCurrentIndex(defaultIndex);
+}
 
 
 #endif // UICONNECTIONHELPER_H

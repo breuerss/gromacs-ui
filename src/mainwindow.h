@@ -11,7 +11,7 @@ namespace Ui {
 class MainWindow;
 }
 namespace Model {
-class Step;
+class Simulation;
 }
 QT_END_NAMESPACE
 
@@ -30,7 +30,7 @@ protected:
 
   private slots:
   void openPreferencesDialog();
-  void addTabForStep(std::shared_ptr<Model::Step> step, int at = -1);
+  void addTabForStep(std::shared_ptr<Model::Simulation> step, int at = -1);
 
 private:
   Ui::MainWindow* ui;

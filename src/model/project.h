@@ -11,7 +11,7 @@
 namespace Model {
 
 class SystemSetup;
-class Step;
+class Simulation;
 
 class Project : public QObject
 {
@@ -19,10 +19,10 @@ class Project : public QObject
 public:
   Project();
 
-  std::shared_ptr<Step> addStep();
+  std::shared_ptr<Simulation> addStep();
   void clearSteps();
   void removeStep(int index);
-  const std::vector<std::shared_ptr<Step>>& getSteps() const;
+  const std::vector<std::shared_ptr<Simulation>>& getSteps() const;
   std::shared_ptr<SystemSetup> getSystemSetup() const;
 
   QString getProjectPath();
@@ -30,12 +30,12 @@ public:
   Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
 signals:
-  void stepAdded(std::shared_ptr<Step> step, int at);
-  void stepRemoved(std::shared_ptr<Step> step, int at);
+  void stepAdded(std::shared_ptr<Simulation> step, int at);
+  void stepRemoved(std::shared_ptr<Simulation> step, int at);
   void nameChanged(const QString&);
 
 private:
-  std::vector<std::shared_ptr<Step>> steps;
+  std::vector<std::shared_ptr<Simulation>> steps;
   std::shared_ptr<SystemSetup> systemSetup;
   QString name = "";
 };
