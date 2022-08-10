@@ -5,6 +5,7 @@
 #include <exception>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStandardPaths>
 #include <QDebug>
 
 ProjectManager* ProjectManager::getInstance()
@@ -69,7 +70,7 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
     writeToFileName = QFileDialog::getSaveFileName(
       nullptr,
       tr("Save Gromacs Project File"),
-      QDir::homePath(),
+      QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
       filter
       );
 
@@ -111,7 +112,7 @@ void ProjectManager::open()
   fileName = QFileDialog::getOpenFileName(
     nullptr,
     tr("Open Gromacs Simulation Project"),
-    QDir::homePath(),
+    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
     "*.groproj"
     );
   if (!fileName.isEmpty())
