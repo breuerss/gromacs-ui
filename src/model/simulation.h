@@ -66,6 +66,7 @@ public:
   Q_PROPERTY(Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
   Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
+  Q_PROPERTY(double timeStep MEMBER timeStep NOTIFY timeStepChanged);
   Q_PROPERTY(double minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
   Q_PROPERTY(double minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
   Q_PROPERTY(int energyOutputFrequency MEMBER energyOutputFrequency NOTIFY energyOutputFrequencyChanged);
@@ -95,6 +96,7 @@ signals:
   void algorithmChanged(Algorithm);
 
   void numberOfStepsChanged(int);
+  void timeStepChanged(double);
   void minimisationMaximumForceChanged(double);
   void minimisationStepSizeChanged(double);
 
@@ -129,6 +131,7 @@ private:
   Algorithm algorithm = Algorithm::None;
 
   int numberOfSteps = -1;
+  double timeStep = 2;
 
   // minimsation options
   double minimisationMaximumForce = 1000.0;

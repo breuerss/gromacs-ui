@@ -20,6 +20,7 @@ void GromacsConfigFileGenerator::generate(
   {
     writeLine(writer, "integrator", toString(step->property("algorithm").value<Simulation::Algorithm>()));
     writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
+    writeLine(writer, "dt", QString::number(step->property("timeStep").value<double>() / 1000));
 
     // output control
     writeLine(writer, "nstenergy", QString::number(step->property("energyOutputFrequency").value<int>()));

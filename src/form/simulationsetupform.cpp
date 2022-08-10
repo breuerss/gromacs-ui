@@ -58,6 +58,7 @@ SimulationSetupForm::SimulationSetupForm(
   connectToComboBox<Simulation::Algorithm>(container, simulation, "algorithm");
 
   connectToSpinBox<QSpinBox, int>(container, simulation, "numberOfSteps");
+  connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, simulation, "timeStep");
   connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationStepSize");
   connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationMaximumForce");
   connectToSpinBox<QSpinBox, int>(container, simulation, "energyOutputFrequency");
@@ -123,6 +124,15 @@ SimulationSetupForm::SimulationSetupForm(
                                  checker.hasTrajectory() ? checker.getTrajectoryPath() : "");
     }
   });
+
+  auto updateTimeStep = [this] (Simulation::Algorithm algorithm) {
+    bool timeStepSupported = algorithm == Simulation::Algorithm::LeapFrog ||
+      algorithm == Simulation::Algorithm::StochasticDynamics;
+    ui->timeStep->setEnabled(timeStepSupported);
+  };
+  conns.push_back(connect(simulation.get(), &Simulation::algorithmChanged, updateTimeStep));
+  updateTimeStep(simulation->property("algorithm").value<Simulation::Algorithm>());
+
 }
 
 SimulationSetupForm::~SimulationSetupForm()
