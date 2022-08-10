@@ -260,10 +260,17 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
 
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 {
-  // TODO shared path from install target
-  QString appPath = QCoreApplication::applicationDirPath() + "/../share/viewer.html";
-  QUrl url = QUrl::fromLocalFile(appPath);
+  QString viewerPath;
+#ifdef MOLVIEWER
+  viewerPath = QString(MOLVIEWER);
+#endif
+  if (!QFile(viewerPath).exists())
+  {
+    // override for local testing + if not yet installed
+    viewerPath = QCoreApplication::applicationDirPath() + "/../share/viewer.html";
+  }
 
+  QUrl url = QUrl::fromLocalFile(viewerPath);
   if (!file.isEmpty())
   {
     url.setQuery(QUrlQuery({{ "structure", file }, { "trajectory", trajectory } }));

@@ -83,3 +83,19 @@ CONFIG += embed_translations
 
 DISTFILES += \
     share/gromacs.png
+
+isEmpty( PREFIX ) {
+  PREFIX = /usr/local
+}
+
+TARGET=gromacs-ui
+target.path = $${PREFIX}/bin
+INSTALLS += target
+
+molviewer.path = $${PREFIX}/share/gromacs-ui
+molviewerhtml = viewer.html
+molviewer.files += share/$${molviewerhtml}
+molviewer.files += molstar/build/viewer/molstar.js
+molviewer.files += molstar/build/viewer/molstar.css
+DEFINES += MOLVIEWER=\\\"$${molviewer.path}/$${molviewerhtml}\\\"
+INSTALLS += molviewer
