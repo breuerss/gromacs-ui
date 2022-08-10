@@ -27,14 +27,13 @@ public:
   QString getCoordinatesPath() const;
   QString getLogPath() const;
   QString getMdpPath() const;
+  QString getTprPath() const;
 
-signals:
 private:
   QString getBasePath() const;
 
   std::shared_ptr<Model::Project> project;
   std::shared_ptr<Model::Simulation> simulation;
-
 };
 
 #endif // SIMULATIONSTATUSCHECKER_H

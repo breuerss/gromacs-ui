@@ -6,6 +6,7 @@
 #include "../model/simulation.h"
 #include "../appprovider.h"
 #include "../logforwarder.h"
+#include "../simulationstatuschecker.h"
 
 #include <QDebug>
 #include <QDir>
@@ -33,37 +34,38 @@ void RunSimulation::exec()
     return;
   }
 
-  QDir dir(project->getProjectPath());
   const auto& steps = project->getSteps();
-  std::shared_ptr<Model::Simulation> step = steps[stepIndex];
+  std::shared_ptr<Model::Simulation> currentSim = steps[stepIndex];
 
-  QString stepType = step->getDirectory();
-  dir.mkdir(stepType);
-  dir.cd(stepType);
-  QString mdpFile = dir.absolutePath() + "/" + stepType + ".mdp";
-  GromacsConfigFileGenerator::generate(step, mdpFile);
-  qDebug() << mdpFile;
+  SimulationStatusChecker currentSimChecker(project, currentSim);
+  QString mdpFile = currentSimChecker.getMdpPath();
+  QFileInfo fi(mdpFile);
+  QDir dir(fi.absolutePath());
+  dir.mkpath(".");
+
+  GromacsConfigFileGenerator::generate(currentSim, mdpFile);
 
   QString inputStructure = project->getSystemSetup()->getNeutralisedStructureFile();
   QFileInfo systemPath(inputStructure);
   if (stepIndex > 0)
   {
-    QString prevStepType = steps[stepIndex - 1]->getDirectory();
-    inputStructure = dir.absolutePath() + "/../" + prevStepType + "/" + prevStepType + ".gro";
+    auto prevStep = steps[stepIndex - 1];
+    SimulationStatusChecker prevSimChecker(project, prevStep);
+    inputStructure = prevSimChecker.getCoordinatesPath();
   }
 
   if (!execGrompp(
       mdpFile,
       inputStructure,
       systemPath.absolutePath() + "/topol.top",
-      stepType + ".tpr",
+      currentSimChecker.getTprPath(),
       dir.absolutePath()
       ))
   {
     return;
   }
 
-  const QString command = gmx + " mdrun -v -deffnm " + stepType;
+  const QString command = gmx + " mdrun -v -deffnm " + currentSim->getTypeAsString();
   qDebug() << "executing" << command;
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(dir.absolutePath());

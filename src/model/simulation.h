@@ -58,7 +58,7 @@ public:
 
   Simulation();
   QString getName() const;
-  QString getDirectory() const;
+  QString getTypeAsString() const;
 
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();

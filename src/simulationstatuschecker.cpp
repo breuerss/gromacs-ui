@@ -13,7 +13,6 @@ SimulationStatusChecker::SimulationStatusChecker(
     , project(project)
     , simulation(simulation)
 {
-
 }
 
 bool SimulationStatusChecker::hasData() const
@@ -61,10 +60,14 @@ QString SimulationStatusChecker::getMdpPath() const
   return getBasePath() + ".mdp";
 }
 
+QString SimulationStatusChecker::getTprPath() const
+{
+  return getBasePath() + ".tpr";
+}
+
 QString SimulationStatusChecker::getBasePath() const
 {
   QString projectPath = project->getProjectPath();
-  QString simulationType = simulation->getDirectory();
+  QString simulationType = simulation->getTypeAsString();
   return projectPath + "/" + simulationType + "/" + simulationType;
 }
-

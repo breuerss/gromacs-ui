@@ -34,7 +34,7 @@ QString Simulation::getName() const
   return toString(simulationType);
 }
 
-QString Simulation::getDirectory() const
+QString Simulation::getTypeAsString() const
 {
   return toString(simulationType, true);
 }
