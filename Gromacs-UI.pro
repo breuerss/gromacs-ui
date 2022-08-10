@@ -24,6 +24,7 @@ SOURCES += \
     src/statusmessagesetter.cpp \
     src/logforwarder.cpp \
     src/main.cpp \
+    src/appprovider.cpp \
     src/mainwindow.cpp \
     src/model/project.cpp \
     src/model/serializable.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     src/mainwindow.h \
     src/pdbconverter.h \
     src/pdbdownloader.h \
+    src/appprovider.h \
     src/pdbinfoextractor.h \
     src/form/preferencesdialog.h \
     src/model/project.h \

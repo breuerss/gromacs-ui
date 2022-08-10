@@ -4,7 +4,7 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QProcess>
-#include "settings.h"
+#include "qcoreapplication.h"
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +23,6 @@ int main(int argc, char *argv[])
     }
   }
 
-  Settings settings;
   MainWindow w;
   w.show();
   return a.exec();

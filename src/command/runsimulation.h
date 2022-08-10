@@ -24,7 +24,6 @@ private:
     const QString& output,
     const QString& workingDirectory
     );
-  QString getGmx() const;
 
   std::shared_ptr<Model::Project> project;
   int stepIndex;

@@ -1,6 +1,6 @@
 #include "createbox.h"
 
-#include "../settings.h"
+#include "../appprovider.h"
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
 #include <QFileInfo>
@@ -18,8 +18,7 @@ CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject
 void CreateBox::exec()
 {
   qDebug() << "Create Box";
-  Settings settings;
-  QString command = settings.value(Settings::GMX_PATH).toString();
+  QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");

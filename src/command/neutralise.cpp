@@ -1,6 +1,6 @@
 #include "neutralise.h"
 
-#include "../settings.h"
+#include "../appprovider.h"
 #include "../statusmessagesetter.h"
 #include "../logforwarder.h"
 #include "../model/systemsetup.h"
@@ -20,8 +20,7 @@ Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObje
 void Neutralise::exec()
 {
   qDebug() << "Neutralise";
-  Settings settings;
-  QString command = settings.value(Settings::GMX_PATH).toString();
+  QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");

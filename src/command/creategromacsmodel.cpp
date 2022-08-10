@@ -1,6 +1,6 @@
 #include "creategromacsmodel.h"
 
-#include "../settings.h"
+#include "../appprovider.h"
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
 
@@ -20,8 +20,7 @@ CreateGromacsModel::CreateGromacsModel(
 void CreateGromacsModel::exec()
 {
   qDebug() << "Create model";
-  Settings settings;
-  QString command = settings.value(Settings::GMX_PATH).toString();
+  QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");

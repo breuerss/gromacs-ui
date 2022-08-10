@@ -4,7 +4,7 @@
 #include "../model/systemsetup.h"
 #include "../model/project.h"
 #include "../model/simulation.h"
-#include "../settings.h"
+#include "../appprovider.h"
 #include "../logforwarder.h"
 
 #include <QDebug>
@@ -25,7 +25,7 @@ RunSimulation::RunSimulation(
 void RunSimulation::exec()
 {
   qDebug() << "Exec simulation";
-  QString gmx = getGmx();
+  QString gmx = AppProvider::get("gmx");
   if (gmx.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");
@@ -70,12 +70,6 @@ void RunSimulation::exec()
   process.start(command);
 }
 
-QString RunSimulation::getGmx() const
-{
-  Settings settings;
-  return settings.value(Settings::GMX_PATH).toString();
-}
-
 bool RunSimulation::execGrompp(
   const QString& mdpFile,
   const QString& inputStructure,
@@ -84,7 +78,7 @@ bool RunSimulation::execGrompp(
   const QString& workingDirectory
   )
 {
-  QString command = getGmx() + " grompp";
+  QString command = AppProvider::get("gmx") + " grompp";
   command += " -f " + mdpFile;
   command += " -c " + inputStructure;
   command += " -p " + topology;

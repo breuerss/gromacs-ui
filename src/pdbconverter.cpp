@@ -1,6 +1,6 @@
 #include "pdbconverter.h"
 
-#include "settings.h"
+#include "appprovider.h"
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 #include <QProcess>
@@ -20,8 +20,7 @@ QString PdbConverter::convert(const QString &fileName,
   QString outputFileName = fileName;
   outputFileName.replace(".pdb", "_filtered.pdb");
 
-  Settings settings;
-  QString command = settings.value(Settings::PDB_SELCHAIN).toString();
+  QString command = AppProvider::get("pdb_selchain");
   if (command.isEmpty())
   {
     StatusMessageSetter::getInstance()->setMessage("Path to pdb_selchain is not set.");
@@ -41,7 +40,7 @@ QString PdbConverter::convert(const QString &fileName,
   {
     QString tmpFileName = getTemporaryFileName();
     QFile(outputFileName).copy(tmpFileName);
-    command = settings.value(Settings::PDB_DELHETATM).toString();
+    command = AppProvider::get("pdb_delhetatm");
     if (command.isEmpty())
     {
       StatusMessageSetter::getInstance()->setMessage("Path to pdb_delhetatm is not set.");

@@ -1,13 +1,12 @@
 #include "pdbinfoextractor.h"
 
-#include "settings.h"
+#include "appprovider.h"
 #include <QProcess>
 #include <QDebug>
 
 QStringList PdbInfoExtractor::getChains(const QString &pdbFile)
 {
-  Settings settings;
-  QString command = settings.value(Settings::PDB_WC).toString();
+  QString command = AppProvider::get("pdb_wc");
   command += " -c " + pdbFile;
   qDebug() << "executing" << command;
   QProcess process;
