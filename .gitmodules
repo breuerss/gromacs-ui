@@ -1,3 +1,5 @@
 [submodule "molstar"]
 	path = molstar
 	url = https://github.com/molstar/molstar.git
+	shallow = true
+	branch = v3.13.3
