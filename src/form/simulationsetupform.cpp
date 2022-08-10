@@ -199,7 +199,6 @@ void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
         { "Steepest Descent", Simulation::Algorithm::SteepestDecent },
         { "Conjugate Gradient", Simulation::Algorithm::ConjugateGradient },
       };
-      defaultIndex = 1;
       break;
     case Simulation::Type::NVT:
     case Simulation::Type::NPT:
@@ -208,7 +207,6 @@ void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
         { "Leap Frog Integrator (md)", Simulation::Algorithm::LeapFrog },
         { "Stochastic Dynamics Integrator (sd)", Simulation::Algorithm::StochasticDynamics },
       };
-      defaultIndex = 1;
     default:
       break;
   }
