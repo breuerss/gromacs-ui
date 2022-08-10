@@ -6,6 +6,7 @@
 #include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
 #include "../simulationstatuschecker.h"
+#include "../filecontentviewer.h"
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
@@ -101,6 +102,18 @@ SimulationSetupForm::SimulationSetupForm(
   {
     addTemperatureCouplingGroup(group);
   }
+
+  connect(ui->showLog, &QPushButton::clicked, [this] () {
+    SimulationStatusChecker checker(project, simulation);
+    auto viewer = new FileContentViewer(checker.getLogPath());
+    viewer->show();
+  });
+
+  connect(ui->showMdp, &QPushButton::clicked, [this] () {
+    SimulationStatusChecker checker(project, simulation);
+    auto viewer = new FileContentViewer(checker.getMdpPath());
+    viewer->show();
+  });
 
   connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
     SimulationStatusChecker checker(project, simulation);
@@ -282,4 +295,6 @@ void SimulationSetupForm::showEvent(QShowEvent*)
 {
   SimulationStatusChecker checker(project, simulation);
   ui->showTrajectoryButton->setEnabled(checker.hasData());
+  ui->showLog->setEnabled(checker.hasLog());
+  ui->showMdp->setEnabled(checker.hasMdp());
 }

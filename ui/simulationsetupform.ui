@@ -80,6 +80,49 @@
        </spacer>
       </item>
       <item>
+       <layout class="QVBoxLayout" name="verticalLayout_30">
+        <item>
+         <widget class="QPushButton" name="showMdp">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Show mdp</string>
+          </property>
+          <property name="icon">
+           <iconset theme="emblem-system"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="showLog">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Show Log</string>
+          </property>
+          <property name="icon">
+           <iconset theme="document"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
        <layout class="QVBoxLayout" name="verticalLayout_26">
         <item alignment="Qt::AlignTop">
          <widget class="QPushButton" name="showTrajectoryButton">

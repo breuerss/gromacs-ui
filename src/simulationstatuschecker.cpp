@@ -31,6 +31,16 @@ bool SimulationStatusChecker::hasCoordinates() const
   return QFile(getCoordinatesPath()).exists();
 }
 
+bool SimulationStatusChecker::hasLog() const
+{
+  return QFile(getLogPath()).exists();
+}
+
+bool SimulationStatusChecker::hasMdp() const
+{
+  return QFile(getMdpPath()).exists();
+}
+
 QString SimulationStatusChecker::getTrajectoryPath() const
 {
   return getBasePath() + ".xtc";
@@ -39,6 +49,16 @@ QString SimulationStatusChecker::getTrajectoryPath() const
 QString SimulationStatusChecker::getCoordinatesPath() const
 {
   return getBasePath() + ".gro";
+}
+
+QString SimulationStatusChecker::getLogPath() const
+{
+  return getBasePath() + ".log";
+}
+
+QString SimulationStatusChecker::getMdpPath() const
+{
+  return getBasePath() + ".mdp";
 }
 
 QString SimulationStatusChecker::getBasePath() const

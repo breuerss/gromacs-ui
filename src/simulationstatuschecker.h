@@ -21,8 +21,12 @@ public:
   bool hasData() const;
   bool hasTrajectory() const;
   bool hasCoordinates() const;
+  bool hasLog() const;
+  bool hasMdp() const;
   QString getTrajectoryPath() const;
   QString getCoordinatesPath() const;
+  QString getLogPath() const;
+  QString getMdpPath() const;
 
 signals:
 private:
