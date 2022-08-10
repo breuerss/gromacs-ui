@@ -20,6 +20,7 @@
 #include <QUrlQuery>
 #include <QDir>
 #include <QToolButton>
+#include <QCoreApplication>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -260,8 +261,8 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 {
   // TODO shared path from install target
-  QString currentDir = QCoreApplication::applicationDirPath();
-  QUrl url = QUrl::fromLocalFile(currentDir + "/../embedded.html");
+  QString appPath = QCoreApplication::applicationDirPath() + "/../share/viewer.html";
+  QUrl url = QUrl::fromLocalFile(appPath);
 
   if (!file.isEmpty())
   {
