@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "form/preferencesdialog.h"
 #include "projectmanager.h"
-#include "fileserver.h"
 #include "form/systemsetupform.h"
 #include "form/simulationsetupform.h"
 #include "statusmessagesetter.h"

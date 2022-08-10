@@ -16,7 +16,6 @@ SOURCES += \
     src/command/queue.cpp \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
-    src/fileserver.cpp \
     src/pdbdownloader.cpp \
     src/gromacsconfigfilegenerator.cpp \
     src/pdbconverter.cpp \
@@ -47,7 +46,6 @@ HEADERS += \
     src/command/queue.h \
     src/command/runsimulation.h \
     src/command/solvate.h \
-    src/fileserver.h \
     src/gromacsconfigfilegenerator.h \
     src/logforwarder.h \
     src/mainwindow.h \
