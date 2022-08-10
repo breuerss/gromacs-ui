@@ -21,6 +21,7 @@ SOURCES += \
     src/gromacsconfigfilegenerator.cpp \
     src/pdbconverter.cpp \
     src/pdbinfoextractor.cpp \
+    src/simulationstatuschecker.cpp \
     src/statusmessagesetter.cpp \
     src/logforwarder.cpp \
     src/main.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     src/projectmanager.h \
     src/settings.h \
     src/form/simulationsetupform.h \
+    src/simulationstatuschecker.h \
     src/statusmessagesetter.h \
     src/form/systemsetupform.h \
     src/form/temperaturegroupconfigform.h \

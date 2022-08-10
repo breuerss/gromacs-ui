@@ -6,6 +6,7 @@
 #include "form/systemsetupform.h"
 #include "form/simulationsetupform.h"
 #include "statusmessagesetter.h"
+#include "simulationstatuschecker.h"
 #include "logforwarder.h"
 
 #include "command/queue.h"
@@ -80,17 +81,17 @@ MainWindow::MainWindow(QWidget *parent)
   connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
     if (success)
     {
-      QString projectPath = project->getProjectPath();
-      QString stepType = project->getSteps()[stepIndex]->getDirectory();
-      QString basePath = projectPath + "/" + stepType + "/" + stepType;
-      QString trajectory = basePath + ".xtc";
-      if (!QFile(trajectory).exists())
+      SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
+
+      QString trajectory;
+      if (checker.hasTrajectory())
       {
-        trajectory = "";
+        trajectory = checker.getTrajectoryPath();
       }
 
-      qDebug() << "molecule files" << basePath + ".gro" << trajectory;
-      setMoleculeFile(basePath + ".gro", trajectory);
+      QString coordinates = checker.getCoordinatesPath();
+      qDebug() << "molecule files" << coordinates << trajectory;
+      setMoleculeFile(coordinates, trajectory);
     }
   });
   connect(ui->actionRunSimulation, &QAction::triggered, [queue, project] () {
