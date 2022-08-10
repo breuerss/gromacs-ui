@@ -82,7 +82,7 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_26">
         <item alignment="Qt::AlignTop">
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="showTrajectoryButton">
           <property name="enabled">
            <bool>false</bool>
           </property>

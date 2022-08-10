@@ -245,10 +245,17 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
   // take system setup into account
   at += 1;
 
-  connect(step.get(), &Model::Simulation::simulationTypeChanged, [this, step, at] () {
+  connect(step.get(), &Model::Simulation::simulationTypeChanged,
+          [this, step, at] (Model::Simulation::Type) {
     ui->stepconfigurator->setTabText(at, step->getName());
   });
-  ui->stepconfigurator->insertTab(at, new SimulationSetupForm(step), step->getName());
+
+  auto project = ProjectManager::getInstance()->getCurrentProject();
+
+  SimulationSetupForm* simulationForm = new SimulationSetupForm(project, step);
+  connect(simulationForm, &SimulationSetupForm::displaySimulationData,
+          this, &MainWindow::setMoleculeFile);
+  ui->stepconfigurator->insertTab(at, simulationForm, step->getName());
 }
 
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
