@@ -9,7 +9,6 @@
 1. system setup needs to be read from file
 1. constraints config
 1. electrostatic configuration
-1. installation handling
 
 1. simplify widgets updates
 1. logger instead of QDebug
