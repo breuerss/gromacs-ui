@@ -3,6 +3,7 @@
 #include "simulation.h"
 #include "../settings.h"
 #include <QDebug>
+#include <QStandardPaths>
 
 namespace Model {
 
@@ -47,7 +48,8 @@ std::shared_ptr<SystemSetup> Project::getSystemSetup() const
 QString Project::getProjectPath()
 {
   Settings settings;
-  auto projectsPath = settings.value(Settings::PROJECTS_DIRECTORY).toString();
+  auto defaultPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/gromacs-ui";
+  auto projectsPath = settings.value(Settings::PROJECTS_DIRECTORY, defaultPath).toString();
   return projectsPath + "/" + name;
 }
 
