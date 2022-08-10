@@ -266,16 +266,7 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 
   if (!file.isEmpty())
   {
-    QString modelUrl = FileServer::getInstance()->getUrlForFile(file);
-    QString trajectoryUrl = trajectory;
-    if (!trajectory.isEmpty())
-    {
-      trajectoryUrl = FileServer::getInstance()->getUrlForFile(trajectory);
-    }
-    url.setQuery(QUrlQuery({
-      { "structure", modelUrl },
-        { "trajectory", trajectoryUrl }
-    }));
+    url.setQuery(QUrlQuery({{ "structure", file }, { "trajectory", trajectory } }));
   }
 
   ui->molpreview->setUrl(url);

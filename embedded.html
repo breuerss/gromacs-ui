@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-        <link rel="icon" href="./favicon.ico" type="image/x-icon">
         <title>Embedded Mol* Viewer</title>
         <style>
             #app {
@@ -20,56 +19,86 @@
         <div id="app"></div>
         <script type="text/javascript" src="./molstar/build/viewer/molstar.js"></script>
         <script type="text/javascript">
-            molstar.Viewer.create('app', {
-                layoutIsExpanded: true,
-                layoutShowControls: false,
-                layoutShowRemoteState: false,
-                layoutShowSequence: true,
-                layoutShowLog: false,
-                layoutShowLeftPanel: true,
+  (async () => {
+    async function loadFromFile(file, binary = false) {
+      const promise = new Promise((resolve, reject) => {
+        var rawFile = new XMLHttpRequest();
+        rawFile.open("GET", file, true);
+        if (binary) {
+          rawFile.responseType = "arraybuffer";
+        }
+        rawFile.onreadystatechange = function () {
+          if(rawFile.readyState === 4) {
+            if(rawFile.status === 200 || rawFile.status == 0) {
+              if (binary) {
+                resolve(new Uint8Array(rawFile.response));
+              } else {
+                resolve(rawFile.responseText);
+              }
+            } else {
+              reject("failed" + rawFile.status);
+            }
+          }
+        }
+        rawFile.send(null);
+      });
 
-                viewportShowExpand: false,
-                viewportShowSelectionMode: false,
-                viewportShowAnimation: true,
+      return promise;
+    }
 
-                pdbProvider: 'rcsb',
-                emdbProvider: 'rcsb',
-            }).then(async (viewer) => {
-                var urlSearchParams = new URLSearchParams(window.location.search);
-                var params = Object.fromEntries(urlSearchParams.entries());
-                var url = params.structure || '';
-                if (url.endsWith('pdb') || url.endsWith('gro')) {
-                    const type = url.split('.').pop();
-                    const trajectory = params.trajectory || '';
-                    if (trajectory && trajectory.endsWith('xtc')) {
-                        await viewer.loadTrajectory({
-                            model: { kind: 'model-url', url: url, format: type },
-                            coordinates: { kind: 'coordinates-url', url: trajectory, format: 'xtc', isBinary: true },
-                            preset: 'default'
-                        });
-                    } else {
-                        await viewer.loadStructureFromUrl(url, format=type);
-                    }
 
-                }
-                const { structures } = viewer.plugin.managers.structure.hierarchy.selection;
-                const preset = viewer.plugin.builders.structure.representation.providerMap.get("preset-structure-representation-illustrative");
-                await viewer.plugin.managers.structure.component.applyPreset(structures, preset);
-                if (viewer.plugin.canvas3d) {
-                    viewer.plugin.canvas3d.setProps({
-                        postprocessing: {
-                            outline: {
-                                name: 'on',
-                                params: { scale: 1, color: "#000000", threshold: 0.25 }
-                            },
-                            occlusion: {
-                                name: 'on',
-                                params: { bias: 0.8, blurKernelSize: 15, radius: 5, samples: 32, resolutionScale: 1 }
-                            },
-                        }
-                    });
-                }
-            });
-        </script>
-    </body>
-</html>
+    molstar.Viewer.create('app', {
+      layoutIsExpanded: true,
+      layoutShowControls: false,
+      layoutShowRemoteState: false,
+      layoutShowSequence: true,
+      layoutShowLog: false,
+      layoutShowLeftPanel: true,
+
+      viewportShowExpand: false,
+      viewportShowSelectionMode: false,
+      viewportShowAnimation: true,
+
+      pdbProvider: 'rcsb',
+      emdbProvider: 'rcsb',
+    }).then(async (viewer) => {
+      var urlSearchParams = new URLSearchParams(window.location.search);
+      var params = Object.fromEntries(urlSearchParams.entries());
+      var url = params.structure || '';
+      if (url.endsWith('pdb') || url.endsWith('gro')) {
+        const type = url.split('.').pop();
+        const coords = await loadFromFile(url);
+        let trajectoryPath = params.trajectory || '';
+        if (trajectoryPath && trajectoryPath.endsWith('xtc')) {
+          const trajectory = await loadFromFile(trajectoryPath, true);
+          await viewer.loadTrajectory({
+            model: { kind: 'model-data', data: coords, format: type },
+            coordinates: { kind: 'coordinates-data', data: trajectory, format: 'xtc', isBinary: true },
+            preset: 'default'
+          });
+        } else {
+          await viewer.loadStructureFromData(coords, format=type);
+        }
+      }
+      const { structures } = viewer.plugin.managers.structure.hierarchy.selection;
+      const preset = viewer.plugin.builders.structure.representation.providerMap.get("preset-structure-representation-illustrative");
+      await viewer.plugin.managers.structure.component.applyPreset(structures, preset);
+      if (viewer.plugin.canvas3d) {
+        viewer.plugin.canvas3d.setProps({
+          postprocessing: {
+            outline: {
+              name: 'on',
+              params: { scale: 1, color: "#000000", threshold: 0.25 }
+            },
+            occlusion: {
+              name: 'on',
+              params: { bias: 0.8, blurKernelSize: 15, radius: 5, samples: 32, resolutionScale: 1 }
+            },
+          }
+        });
+      }
+    });
+  })();
+</script>
+  </body>
+  </html>
