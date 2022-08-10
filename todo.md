@@ -1,13 +1,11 @@
 # Open issues
 
 1. Missing status information about running simulation
-1. detect if system was already run
 1. disable configuration during run
 1. loading of files without webserver?
-1. Enums for algorithms
 1. constraints config
-1. NPT
 1. electrostatic configuration
+1. use binaries from PATHS
 
 1. notify user if project name is already in use in project dir to avoid overwriting?
 
