@@ -14,6 +14,10 @@ SystemSetup::SystemSetup()
   {
     qRegisterMetaType<WaterModel>("SystemSetup::WaterModel");
     qRegisterMetaTypeStreamOperators<int>("SystemSetup::WaterModel");
+    qRegisterMetaType<BoxType>("SystemSetup::BoxType");
+    qRegisterMetaTypeStreamOperators<int>("SystemSetup::BoxType");
+    qRegisterMetaType<ForceField>("SystemSetup::ForceField");
+    qRegisterMetaTypeStreamOperators<int>("SystemSetup::ForceField");
     registered = true;
   }
   connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
