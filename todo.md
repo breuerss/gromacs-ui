@@ -2,7 +2,6 @@
 
 1. Missing status information about running simulation
 1. disable configuration during run
-1. loading of files without webserver?
 1. constraints config
 1. electrostatic configuration
 1. use binaries from PATHS
