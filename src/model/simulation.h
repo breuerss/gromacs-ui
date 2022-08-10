@@ -62,8 +62,8 @@ public:
 
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
-  Q_PROPERTY(Simulation::Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
-  Q_PROPERTY(Simulation::Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
+  Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
+  Q_PROPERTY(Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
   Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
   Q_PROPERTY(double minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
@@ -84,7 +84,7 @@ public:
   Q_PROPERTY(double pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
   Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
 
-  Q_PROPERTY(Simulation::TemperatureAlgorithm temperatureAlgorithm
+  Q_PROPERTY(TemperatureAlgorithm temperatureAlgorithm
              MEMBER temperatureAlgorithm NOTIFY temperatureAlgorithmChanged);
 
 signals:
