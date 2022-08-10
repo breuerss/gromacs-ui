@@ -1,6 +1,7 @@
 #include "preferencesdialog.h"
 #include "ui_preferencesdialog.h"
 #include <QFileDialog>
+#include <QStandardPaths>
 #include <QDebug>
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
   QDialog(parent),
@@ -26,7 +27,7 @@ void PreferencesDialog::openSelectProjectDirectory()
   const QString newProjectDirectory = QFileDialog::getExistingDirectory(
     this,
     tr("Select Project Directory"),
-    QDir::homePath(),
+    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
     QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
   if (!newProjectDirectory.isEmpty())
   {
@@ -39,7 +40,7 @@ void PreferencesDialog::openSelectGmx()
   const QString newGmxPath = QFileDialog::getOpenFileName(
     this,
     tr("Select Path to gmx"),
-    QDir::homePath());
+    QCoreApplication::applicationDirPath());
 
   if (!newGmxPath.isEmpty())
   {
@@ -52,7 +53,7 @@ void PreferencesDialog::openSelectPdbwc()
   const QString newPdbwcPath = QFileDialog::getOpenFileName(
     this,
     tr("Select Path to pdb_wc"),
-    QDir::homePath());
+    QCoreApplication::applicationDirPath());
 
   if (!newPdbwcPath.isEmpty())
   {
@@ -65,7 +66,7 @@ void PreferencesDialog::openSelectPdbchain()
   const QString newPdbchainPath = QFileDialog::getOpenFileName(
     this,
     tr("Select Path to pdb_chain"),
-    QDir::homePath());
+    QCoreApplication::applicationDirPath());
 
   if (!newPdbchainPath.isEmpty())
   {
@@ -78,7 +79,7 @@ void PreferencesDialog::openSelectPdbdelhetatm()
   const QString newPdbdelhetatmPath = QFileDialog::getOpenFileName(
     this,
     tr("Select Path to pdb_delhetatm"),
-    QDir::homePath());
+    QCoreApplication::applicationDirPath());
 
   if (!newPdbdelhetatmPath.isEmpty())
   {
