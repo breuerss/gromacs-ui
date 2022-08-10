@@ -131,17 +131,25 @@ QString toString(Simulation::PressureCouplingType type)
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model)
 {
-  out << static_cast<const Serializable&>(model);
+  const Serializable& tmp = model;
+  out << tmp;
 
-  int noOfGroups = model.getTemperatureCouplingGroups().size();
+  const auto& groups = model.getTemperatureCouplingGroups();
+  int noOfGroups = groups.size();
   out << noOfGroups;
+  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
+  {
+    out << *(groups[groupIndex]);
+  }
+
 
   return out;
 }
 
 QDataStream &operator>>(QDataStream &in, Simulation& model)
 {
-  in >> static_cast<Serializable&>(model);
+  Serializable& tmp = model;
+  in >> tmp;
 
   int noOfGroups;
   in >> noOfGroups;
