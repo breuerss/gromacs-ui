@@ -106,7 +106,8 @@ SimulationSetupForm::SimulationSetupForm(
     SimulationStatusChecker checker(project, simulation);
     if (checker.hasData())
     {
-      emit displaySimulationData(checker.getCoordinatesPath(), checker.getTrajectoryPath());
+      emit displaySimulationData(checker.getCoordinatesPath(),
+                                 checker.hasTrajectory() ? checker.getTrajectoryPath() : "");
     }
   });
 }
