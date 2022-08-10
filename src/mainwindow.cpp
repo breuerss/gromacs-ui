@@ -279,6 +279,7 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
   }
 
   ui->molpreview->setUrl(url);
+  ui->tabWidget->setCurrentIndex(0);
 }
 
 void MainWindow::removeTabAt(int index)
