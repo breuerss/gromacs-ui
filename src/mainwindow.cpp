@@ -21,6 +21,7 @@
 #include <QDir>
 #include <QToolButton>
 #include <QCoreApplication>
+#include <climits>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionOpenProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::open);
 
+  ui->splitter->setSizes({INT_MAX, INT_MAX});
   QToolButton* addStepButton = new QToolButton(this);
   addStepButton->setCursor(Qt::ArrowCursor);
   addStepButton->setAutoRaise(true);
