@@ -88,11 +88,26 @@ void setOptions(
   )
 {
   comboBox->clear();
+  if (options.length())
+  {
+    setOptions<TypeName>(comboBox, options, options[defaultIndex].second);
+  }
+}
+
+template<typename TypeName = QVariant>
+void setOptions(
+  QComboBox* comboBox,
+  const QList<QPair<QString, TypeName>>& options,
+  TypeName selectedOption
+  )
+{
+  comboBox->clear();
   for (const auto& entry: options)
   {
     comboBox->addItem(entry.first, QVariant::fromValue(entry.second));
   }
 
+  int defaultIndex = comboBox->findData(QVariant::fromValue(selectedOption));
   comboBox->setCurrentIndex(defaultIndex);
 }
 
