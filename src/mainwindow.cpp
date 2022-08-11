@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
 , ui(new Ui::MainWindow)
   , preferencesDialog(new PreferencesDialog(this))
+  , queue(std::make_shared<Command::Queue>())
 {
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
@@ -52,12 +53,12 @@ MainWindow::MainWindow(QWidget *parent)
   addStepButton->setIcon(QIcon::fromTheme("add"));
   connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
   ui->stepconfigurator->setCornerWidget(addStepButton);
-  auto queue = std::make_shared<Command::Queue>();
   auto project = ProjectManager::getInstance()->getCurrentProject();
   connect (
     project.get(),
     &Model::Project::stepRemoved,
     [this] (std::shared_ptr<Model::Simulation>, int at) {
+      queue->remove(at);
       removeTabAt(at + 1);
     });
 
@@ -96,14 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
       setMoleculeFile(coordinates, trajectory);
     }
   });
-  connect(ui->actionRunSimulation, &QAction::triggered, [queue, project] () {
-    queue->clear();
-    int noOfSteps = project->getSteps().size();
-    for (int stepIndex = 0; stepIndex < noOfSteps; ++stepIndex)
-    {
-      queue
-        ->enqueue(std::make_shared<Command::RunSimulation>(project, stepIndex));
-    }
+  connect(ui->actionRunSimulation, &QAction::triggered, [this] () {
     queue->start();
   });
 
@@ -206,63 +200,64 @@ void MainWindow::setupUIForProject()
     });
     ui->actionRunSimulation->setEnabled(project->getSystemSetup()->getStructureReady());
 
+    auto setCoordsFile = [this] (const QString& fileName) {
+      setMoleculeFile(fileName);
+    };
     conns << connect(
       systemSetup,
       &Model::SystemSetup::sourceStructureFileChanged,
-      [this] (const QString& fileName) {
-        qDebug() << "react to source struture changed";
-        setMoleculeFile(fileName);
-      });
+      setCoordsFile);
 
     conns << connect(
       systemSetup, 
       &Model::SystemSetup::filteredStructureFileChanged,
-      [this] (const QString& fileName) {
-        setMoleculeFile(fileName);
-      });
+      setCoordsFile);
 
     conns << connect(
       systemSetup,
       &Model::SystemSetup::solvatedStructureFileChanged,
-      [this] (const QString& fileName) {
-        setMoleculeFile(fileName);
-      });
+      setCoordsFile);
 
     conns << connect(
       systemSetup,
       &Model::SystemSetup::neutralisedStructureFileChanged,
-      [this] (const QString& fileName) {
-        setMoleculeFile(fileName);
-      });
+      setCoordsFile);
 
     QWebEngineSettings* settings = ui->molpreview->page()->settings();
     settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
   }
-
-  //setMoleculeFile();
 }
 
-void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> step, int at)
+void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, int at)
 {
   if (at == -1)
   {
     at = ui->stepconfigurator->count() - 1;
   }
 
-  // take system setup into account
+  auto project = ProjectManager::getInstance()->getCurrentProject();
+  auto command = std::make_shared<Command::RunSimulation>(project, at);
+  queue->insert(at, command);
+
+  // take system setup into account for tabs
   at += 1;
 
-  connect(step.get(), &Model::Simulation::simulationTypeChanged,
-          [this, step, at] (Model::Simulation::Type) {
-    ui->stepconfigurator->setTabText(at, step->getName());
+  connect(simulation.get(), &Model::Simulation::simulationTypeChanged,
+          [this, simulation, at] (Model::Simulation::Type) {
+    ui->stepconfigurator->setTabText(at, simulation->getName());
   });
 
-  auto project = ProjectManager::getInstance()->getCurrentProject();
-
-  SimulationSetupForm* simulationForm = new SimulationSetupForm(project, step);
+  SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
   connect(simulationForm, &SimulationSetupForm::displaySimulationData,
           this, &MainWindow::setMoleculeFile);
-  ui->stepconfigurator->insertTab(at, simulationForm, step->getName());
+  ui->stepconfigurator->insertTab(at, simulationForm, simulation->getName());
+}
+
+void MainWindow::removeTabAt(int at)
+{
+  QWidget* widget = ui->stepconfigurator->widget(at);
+  ui->stepconfigurator->removeTab(at);
+  widget->deleteLater();
 }
 
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
@@ -285,11 +280,4 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 
   ui->molpreview->setUrl(url);
   ui->tabWidget->setCurrentIndex(0);
-}
-
-void MainWindow::removeTabAt(int index)
-{
-  QWidget* widget = ui->stepconfigurator->widget(index);
-  ui->stepconfigurator->removeTab(index);
-  widget->deleteLater();
 }

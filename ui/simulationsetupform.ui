@@ -95,9 +95,9 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_26">
         <item alignment="Qt::AlignTop">
-         <widget class="QPushButton" name="pushButton_2">
+         <widget class="QPushButton" name="rerunSimulation">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>Rerun Simulation</string>

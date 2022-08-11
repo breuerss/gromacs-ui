@@ -32,6 +32,20 @@ Queue* Queue::enqueue(std::shared_ptr<Executor> executor, bool needsPrevious)
   return this;
 }
 
+Queue* Queue::remove(int at)
+{
+  queue.erase(queue.begin() + at);
+
+  return this;
+}
+
+Queue* Queue::insert(int at, std::shared_ptr<Executor> executor, bool needsPrevious)
+{
+  queue.insert(queue.begin() + at, {executor, needsPrevious});
+
+  return this;
+}
+
 void Queue::start()
 {
   qDebug() << __PRETTY_FUNCTION__;

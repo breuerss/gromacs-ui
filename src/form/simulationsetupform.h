@@ -5,11 +5,14 @@
 #include <QComboBox>
 #include <memory>
 #include <QMetaObject>
-#include <vector>
+#include <QList>
 #include "../model/simulation.h"
 
 namespace Model {
 class Project;
+}
+namespace Command {
+class RunSimulation;
 }
 namespace Ui {
 class SimulationSetupForm;
@@ -23,6 +26,7 @@ public:
   explicit SimulationSetupForm(
     std::shared_ptr<Model::Project> project,
     std::shared_ptr<Model::Simulation> simulation,
+    std::shared_ptr<Command::RunSimulation> command,
     QWidget *parent = nullptr);
   ~SimulationSetupForm();
 
@@ -34,6 +38,7 @@ signals:
 private:
   std::shared_ptr<Model::Project> project;
   std::shared_ptr<Model::Simulation> simulation;
+  std::shared_ptr<Command::RunSimulation> command;
   Ui::SimulationSetupForm *ui;
 
   void updateUiForSimulationType(Model::Simulation::Type type = Model::Simulation::Type::None);
@@ -45,7 +50,7 @@ private:
 
   void addTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at = -1);
   void removeTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at);
-  std::vector<QMetaObject::Connection> conns;
+  QList<QMetaObject::Connection> conns;
 };
 
 #endif // SIMULATIONSETUPFORM_H

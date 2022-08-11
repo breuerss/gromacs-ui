@@ -1,4 +1,6 @@
 #include "simulationsetupform.h"
+#include "qpushbutton.h"
+#include "src/command/runsimulation.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
 #include "../model/simulation.h"
@@ -13,11 +15,13 @@
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
   std::shared_ptr<Model::Simulation> newSimulation,
+  std::shared_ptr<Command::RunSimulation> newCommand,
   QWidget *parent
   )
   : QWidget(parent)
   , project(newProject)
   , simulation(newSimulation)
+  , command(newCommand)
   , ui(new Ui::SimulationSetupForm)
 {
   ui->setupUi(this);
@@ -162,9 +166,12 @@ SimulationSetupForm::SimulationSetupForm(
 
     ui->duration->setText(QString::number(duration) + " " + unitMap.at(unitStep));
   };
-  conns.push_back(connect(simulation.get(), &Simulation::numberOfStepsChanged, updateDuration));
-  conns.push_back(connect(simulation.get(), &Simulation::timeStepChanged, updateDuration));
+  conns << connect(simulation.get(), &Simulation::numberOfStepsChanged, updateDuration);
+  conns << connect(simulation.get(), &Simulation::timeStepChanged, updateDuration);
   updateDuration();
+
+  conns << connect(ui->rerunSimulation, &QPushButton::clicked,
+                   command.get(), &Command::RunSimulation::exec);
 }
 
 SimulationSetupForm::~SimulationSetupForm()

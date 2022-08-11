@@ -19,6 +19,8 @@ public:
 
   Queue* clear();
   Queue* enqueue(std::shared_ptr<Executor> executor, bool needsPrevious = true);
+  Queue* remove(int at);
+  Queue* insert(int at, std::shared_ptr<Executor> executor, bool needsPrevious = true);
   void start();
   bool wasSuccessful();
 

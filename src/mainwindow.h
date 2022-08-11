@@ -4,6 +4,7 @@
 #include "qlist.h"
 #include "qobjectdefs.h"
 #include "settings.h"
+#include "src/command/queue.h"
 
 #include <QMainWindow>
 #include <memory>
@@ -42,5 +43,6 @@ private:
   void setMoleculeFile(const QString& file = "", const QString& traj = "");
   void removeTabAt(int index);
   QList<QMetaObject::Connection> conns;
+  std::shared_ptr<Command::Queue> queue;
 };
 #endif // MAINWINDOW_H
