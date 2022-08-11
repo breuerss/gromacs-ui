@@ -243,14 +243,17 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type t
   QList<QPair<QString, Simulation::PressureAlgorithm>> map({
     { "None", Simulation::PressureAlgorithm::None }
   });
+  Simulation::PressureAlgorithm defaultValue = Simulation::PressureAlgorithm::None;
   if (type == Model::Simulation::Type::NPT)
   {
     map = {
+      { "Bussi", Simulation::PressureAlgorithm::Bussi },
       { "Berendsen", Simulation::PressureAlgorithm::Berendsen },
       { "Parrinello-Rahman", Simulation::PressureAlgorithm::ParrinelloRahman }
     };
+    defaultValue = Simulation::PressureAlgorithm::Bussi;
   }
-  setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map);
+  setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map, defaultValue);
 }
 
 void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Type type)
@@ -259,15 +262,17 @@ void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Typ
   QList<QPair<QString, Simulation::TemperatureAlgorithm>> map({
     { "None", Simulation::TemperatureAlgorithm::None }
   });
+  Simulation::TemperatureAlgorithm defaultValue = Simulation::TemperatureAlgorithm::None;
   if (type == Model::Simulation::Type::NPT || type == Model::Simulation::Type::NVT)
   {
     map = {
+      { "Velocity Rescale", Simulation::TemperatureAlgorithm::VelocityRescale },
       { "Berendsen", Simulation::TemperatureAlgorithm::Berendsen },
       { "Nose-Hoover", Simulation::TemperatureAlgorithm::NoseHoover },
-      { "Velocity Rescale", Simulation::TemperatureAlgorithm::VelocityRescale }
     };
+    defaultValue = Simulation::TemperatureAlgorithm::VelocityRescale;
   }
-  setOptions<Simulation::TemperatureAlgorithm>(ui->temperatureAlgorithm, map);
+  setOptions<Simulation::TemperatureAlgorithm>(ui->temperatureAlgorithm, map, defaultValue);
 }
 
 void SimulationSetupForm::addTemperatureCouplingGroup(

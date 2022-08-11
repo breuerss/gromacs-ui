@@ -84,6 +84,7 @@ QString toString(Simulation::PressureAlgorithm algorithm)
     { Simulation::PressureAlgorithm::None, "no" },
     { Simulation::PressureAlgorithm::Berendsen, "berendsen" },
     { Simulation::PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
+    { Simulation::PressureAlgorithm::Bussi, "C-rescale" },
   };
 
   return map[algorithm];
@@ -173,7 +174,7 @@ QString toString(Simulation::TemperatureAlgorithm algorithm)
     { Simulation::TemperatureAlgorithm::NoseHoover, "nose-hoover" },
     { Simulation::TemperatureAlgorithm::Andersen, "andersen" },
     { Simulation::TemperatureAlgorithm::AndersenMassive, "andersen-massive" },
-    { Simulation::TemperatureAlgorithm::VelocityRescale, "velocity-rescale" },
+    { Simulation::TemperatureAlgorithm::VelocityRescale, "V-rescale" },
   };
 
   return map[algorithm];

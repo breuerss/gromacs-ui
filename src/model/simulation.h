@@ -25,7 +25,8 @@ public:
   enum class PressureAlgorithm : int {
     None = 0,
     Berendsen,
-    ParrinelloRahman
+    ParrinelloRahman,
+    Bussi,
   };
   Q_ENUM(PressureAlgorithm);
 

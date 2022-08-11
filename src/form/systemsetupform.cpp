@@ -140,7 +140,7 @@ void SystemSetupForm::prepareWaterOptions()
       { "TIP3P", SystemSetup::WaterModel::TIP3P },
       { "TIP4P", SystemSetup::WaterModel::TIP4P },
       { "TIP5P", SystemSetup::WaterModel::TIP5P },
-    }, 0);
+    }, SystemSetup::WaterModel::SPC);
 }
 
 void SystemSetupForm::prepareForceFieldOptions()
@@ -151,7 +151,7 @@ void SystemSetupForm::prepareForceFieldOptions()
     {
       { "CHARMM27", SystemSetup::ForceField::CHARMM27 },
       { "OPLS-AA/L", SystemSetup::ForceField::OPLSAA }
-  }, 0);
+  }, SystemSetup::ForceField::CHARMM27);
 }
 
 void SystemSetupForm::prepareBoxOptions()
@@ -164,7 +164,7 @@ void SystemSetupForm::prepareBoxOptions()
       { "Octahedron", SystemSetup::BoxType::Octahedron },
       { "Dodecahedron", SystemSetup::BoxType::Dodecahedron }
     },
-    2);
+    SystemSetup::BoxType::Dodecahedron);
 }
 
 void SystemSetupForm::setIonFromModel()
