@@ -384,10 +384,13 @@ void SimulationSetupForm::addTemperatureCouplingGroup(
 }
 
 void SimulationSetupForm::removeTemperatureCouplingGroup(
-  std::shared_ptr<Model::TemperatureCouplingGroup>, int at)
+  std::shared_ptr<Model::TemperatureCouplingGroup> group, int at)
 {
   ui->temperatureCouplingGroups->takeAt(at)->widget()->deleteLater();
-  if (!ui->temperatureCouplingGroups->count())
+  if (!ui->temperatureCouplingGroups->count() ||
+      group->property("group").value<Model::TemperatureCouplingGroup::Group>() ==
+        Model::TemperatureCouplingGroup::Group::System)
+
   {
     ui->addTemperatureCouplingGroup->setEnabled(true);
   }
