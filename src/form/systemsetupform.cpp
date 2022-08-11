@@ -85,46 +85,48 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     }
   });
 
-  conns << connect(systemSetup.get(), &Model::SystemSetup::sourceStructureFileChanged,
-          [this] (const QString& sourceStructureFile) {
-            // Workaround since this callback is executed before the
-            // callback that should update the molecule preview.
-            QTimer::singleShot(100, [this, sourceStructureFile] {
+  conns << connect(
+    systemSetup.get(),
+    &Model::SystemSetup::sourceStructureFileChanged,
+    [this] (const QString& sourceStructureFile) {
+      // Workaround since this callback is executed before the
+      // callback that should update the molecule preview.
+      QTimer::singleShot(100, [this, sourceStructureFile] {
 
-              if (!sourceStructureFile.isEmpty())
-              {
-                setGroupsEnabled(true);
-                PdbInfoExtractor extractor;
-                QStringList chains = extractor.getChains(sourceStructureFile);
+        if (!sourceStructureFile.isEmpty())
+        {
+          setGroupsEnabled(true);
+          PdbInfoExtractor extractor;
+          QStringList chains = extractor.getChains(sourceStructureFile);
 
-                QLayoutItem* item;
-                while ((item = ui->chainsGroupLayout->takeAt(0)) != 0)
-                {
-                  if (item->widget())
-                  {
-                    delete item->widget();
-                  }
-                  delete item;
-                }
+          QLayoutItem* item;
+          while ((item = ui->chainsGroupLayout->takeAt(0)) != 0)
+          {
+            if (item->widget())
+            {
+              delete item->widget();
+            }
+            delete item;
+          }
 
-                systemSetup->setChains(chains);
-                for (const auto& chain: chains)
-                {
-                  QCheckBox* checkBox = new QCheckBox(chain);
-                  checkBox->setCheckState(Qt::Checked);
-                  connect(checkBox, &QCheckBox::stateChanged, [this, chain] (int state) {
-                    systemSetup->useChain(chain, state == Qt::Checked);
-                  });
-                  ui->chainsGroupLayout->addWidget(checkBox);
-                }
-              }
+          systemSetup->setChains(chains);
+          for (const auto& chain: chains)
+          {
+            QCheckBox* checkBox = new QCheckBox(chain);
+            checkBox->setCheckState(Qt::Checked);
+            connect(checkBox, &QCheckBox::stateChanged, [this, chain] (int state) {
+              systemSetup->useChain(chain, state == Qt::Checked);
             });
-          });
+            ui->chainsGroupLayout->addWidget(checkBox);
+          }
+        }
+      });
+    });
+
 }
 
 SystemSetupForm::~SystemSetupForm()
 {
-  qDebug() << __PRETTY_FUNCTION__;
   for (auto conn : conns)
   {
     disconnect(conn);
