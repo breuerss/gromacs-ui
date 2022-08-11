@@ -179,6 +179,10 @@ void MainWindow::setupUIForProject()
     {
       removeTabAt(0);
     }
+    for (auto conn : conns)
+    {
+      disconnect(conn);
+    }
     ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
     auto* tabBar = ui->stepconfigurator->tabBar();
     tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
@@ -189,9 +193,9 @@ void MainWindow::setupUIForProject()
     }
 
     Model::SystemSetup* systemSetup = project->getSystemSetup().get();
-    connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
+    conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
             ui->actionRunSimulation, &QAction::setEnabled);
-    connect(systemSetup, &Model::SystemSetup::structureReadyChanged, [this] (bool ready) {
+    conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged, [this] (bool ready) {
       int tabIndex = 0;
       if (!ready)
       {
@@ -202,28 +206,29 @@ void MainWindow::setupUIForProject()
     });
     ui->actionRunSimulation->setEnabled(project->getSystemSetup()->getStructureReady());
 
-    connect(
+    conns << connect(
       systemSetup,
       &Model::SystemSetup::sourceStructureFileChanged,
       [this] (const QString& fileName) {
+        qDebug() << "react to source struture changed";
         setMoleculeFile(fileName);
       });
 
-    connect(
+    conns << connect(
       systemSetup, 
       &Model::SystemSetup::filteredStructureFileChanged,
       [this] (const QString& fileName) {
         setMoleculeFile(fileName);
       });
 
-    connect(
+    conns << connect(
       systemSetup,
       &Model::SystemSetup::solvatedStructureFileChanged,
       [this] (const QString& fileName) {
         setMoleculeFile(fileName);
       });
 
-    connect(
+    conns << connect(
       systemSetup,
       &Model::SystemSetup::neutralisedStructureFileChanged,
       [this] (const QString& fileName) {

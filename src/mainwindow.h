@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "qlist.h"
+#include "qobjectdefs.h"
 #include "settings.h"
 
 #include <QMainWindow>
@@ -39,5 +41,6 @@ private:
   Settings settings;
   void setMoleculeFile(const QString& file = "", const QString& traj = "");
   void removeTabAt(int index);
+  QList<QMetaObject::Connection> conns;
 };
 #endif // MAINWINDOW_H

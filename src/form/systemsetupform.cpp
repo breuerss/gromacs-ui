@@ -31,7 +31,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectIonSelectors();
 
   connectToLineEdit(ui->projectName, project, "name");
-  projectConn = connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
+  conns << connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
     ui->systemCoordinatesGroup->setEnabled(!projectName.isEmpty());
   });
   ui->systemCoordinatesGroup->setEnabled(!project->property("name").toString().isEmpty());
@@ -43,7 +43,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
     systemSetup->setStructureReady(success);
   });
-  connect(systemSetup.get(), &Model::SystemSetup::configReadyChanged, [this, queue] (bool ready) {
+  conns << connect(systemSetup.get(), &Model::SystemSetup::configReadyChanged, [this, queue] (bool ready) {
     if (ready)
     {
       systemSetup->setStructureReady(false);
@@ -85,7 +85,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     }
   });
 
-  connect(systemSetup.get(), &Model::SystemSetup::sourceStructureFileChanged,
+  conns << connect(systemSetup.get(), &Model::SystemSetup::sourceStructureFileChanged,
           [this] (const QString& sourceStructureFile) {
             // Workaround since this callback is executed before the
             // callback that should update the molecule preview.
@@ -124,8 +124,11 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 
 SystemSetupForm::~SystemSetupForm()
 {
-  disconnect(systemSetup.get(), 0, 0, 0);
-  disconnect(projectConn);
+  qDebug() << __PRETTY_FUNCTION__;
+  for (auto conn : conns)
+  {
+    disconnect(conn);
+  }
   delete ui;
 }
 

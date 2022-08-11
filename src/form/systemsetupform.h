@@ -36,7 +36,7 @@ private:
   void setGroupsEnabled(bool enabled);
 
   void handlePdbDownload(const QString& pdbCode, const QString& filePath);
-  QMetaObject::Connection projectConn;
+  QList<QMetaObject::Connection> conns;
 };
 
 #endif // SYSTEMSETUPFORM_H
