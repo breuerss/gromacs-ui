@@ -244,14 +244,16 @@ void SystemSetupForm::connectIonSelectors()
   for (auto* button: negativeIonMap.keys())
   {
     QString ion = negativeIonMap[button];
-    connect(button, &QRadioButton::toggled,
-            [this, ion] (bool checked)
-            {
-              if (checked)
-              {
-                systemSetup->setProperty("negativeIon", ion);
-              }
-            });
+    connect(
+      button,
+      &QRadioButton::toggled,
+      [this, ion] (bool checked)
+      {
+        if (checked)
+        {
+          systemSetup->setProperty("negativeIon", ion);
+        }
+      });
   }
 }
 
