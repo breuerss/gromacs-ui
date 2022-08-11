@@ -1,7 +1,7 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
-#include <QDebug>
 #include "../logforwarder.h"
+#include <QDebug>
 
 namespace Command {
 
@@ -15,6 +15,7 @@ Executor::Executor(QObject *parent)
     [this] (int, QProcess::ExitStatus) {
       mHasRun = true;
       running = false;
+      emit runningChanged(running);
       QString command = process.program() + " " + process.arguments().join(" ");
       QString message("Error executing " + command);
       if (process.exitCode() == 0)
@@ -36,6 +37,7 @@ Executor::~Executor()
 void Executor::exec()
 {
   running = true;
+  emit runningChanged(running);
   emit started();
   doExecute();
 }

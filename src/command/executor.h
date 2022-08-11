@@ -24,6 +24,7 @@ signals:
   void finished();
   void started();
   void progress(int percentage);
+  void runningChanged(bool running);
 
 protected:
   QProcess process;

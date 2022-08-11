@@ -237,6 +237,10 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, in
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
   auto command = std::make_shared<Command::RunSimulation>(project, at);
+  connect(command.get(), &Command::RunSimulation::runningChanged,
+          [this] (bool isRunning) {
+            ui->actionRunSimulation->setEnabled(!isRunning);
+          });
   queue->insert(at, command);
 
   // take system setup into account for tabs
