@@ -93,7 +93,6 @@ MainWindow::MainWindow(QWidget *parent)
       }
 
       QString coordinates = checker.getCoordinatesPath();
-      qDebug() << "molecule files" << coordinates << trajectory;
       setMoleculeFile(coordinates, trajectory);
     }
   });
