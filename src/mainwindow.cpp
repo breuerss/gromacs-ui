@@ -53,37 +53,15 @@ MainWindow::MainWindow(QWidget *parent)
   addStepButton->setIcon(QIcon::fromTheme("add"));
   connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
   ui->stepconfigurator->setCornerWidget(addStepButton);
-  auto project = ProjectManager::getInstance()->getCurrentProject();
-  connect (
-    project.get(),
-    &Model::Project::stepRemoved,
-    [this] (std::shared_ptr<Model::Simulation>, int at) {
-      queue->remove(at);
-      removeTabAt(at + 1);
-    });
-
-  connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
-    bool canContinue = !newName.isEmpty();
-    QString title = "GROMACS UI | " + newName;
-    QString fileName = ProjectManager::getInstance()->getFileName();
-    fileName.replace(QDir::homePath(), "~");
-    if (!fileName.isEmpty())
-    {
-      title += " | " + fileName;
-    }
-    this->setWindowTitle(title);
-    ui->actionAddStep->setEnabled(canContinue);
-    ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
-    ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());
-  });
   connect(
     LogForwarder::getInstance(),
     &LogForwarder::addMessage,
     ui->logOutput,
     &QPlainTextEdit::appendPlainText);
-  connect(queue.get(), &Command::Queue::stepFinished, [this, project] (int stepIndex, bool success) {
+  connect(queue.get(), &Command::Queue::stepFinished, [this] (int stepIndex, bool success) {
     if (success)
     {
+      auto project = ProjectManager::getInstance()->getCurrentProject();
       SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
 
       QString trajectory;
@@ -224,6 +202,29 @@ void MainWindow::setupUIForProject()
 
     QWebEngineSettings* settings = ui->molpreview->page()->settings();
     settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+    conns << connect(
+      project.get(),
+      &Model::Project::stepRemoved,
+      [this] (std::shared_ptr<Model::Simulation>, int at) {
+        queue->remove(at);
+        removeTabAt(at + 1);
+      });
+
+
+    conns << connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
+      bool canContinue = !newName.isEmpty();
+      QString title = "GROMACS UI | " + newName;
+      QString fileName = ProjectManager::getInstance()->getFileName();
+      fileName.replace(QDir::homePath(), "~");
+      if (!fileName.isEmpty())
+      {
+        title += " | " + fileName;
+      }
+      this->setWindowTitle(title);
+      ui->actionAddStep->setEnabled(canContinue);
+      ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
+      ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());
+    });
   }
 }
 
