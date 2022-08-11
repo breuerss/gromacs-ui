@@ -26,6 +26,12 @@ Executor::Executor(QObject *parent)
       StatusMessageSetter::getInstance()->setMessage(message);
       emit finished();
     });
+  connect(
+    &process,
+    &QProcess::started,
+    [this] () {
+      running = true;
+    });
   LogForwarder::getInstance()->listenTo(&process);
 }
 
@@ -36,7 +42,6 @@ Executor::~Executor()
 
 void Executor::exec()
 {
-  running = true;
   emit runningChanged(running);
   emit started();
   doExecute();
