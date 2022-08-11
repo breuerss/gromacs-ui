@@ -100,7 +100,7 @@
            <bool>true</bool>
           </property>
           <property name="text">
-           <string>Rerun Simulation</string>
+           <string>Run Simulation</string>
           </property>
           <property name="icon">
            <iconset theme="reload">

@@ -219,7 +219,7 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connect(command.get(), &Command::RunSimulation::finished,
                    [this] () {
                      ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
-                     ui->rerunSimulation->setText(tr("Rerun simulation"));
+                     ui->rerunSimulation->setText(tr("Run simulation"));
                      ui->simulationProgress->setEnabled(false);
                    });
 }
