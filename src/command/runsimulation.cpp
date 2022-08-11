@@ -16,11 +16,11 @@ namespace Command {
 
 RunSimulation::RunSimulation(
   std::shared_ptr<Model::Project> project,
-  int stepIndex,
+  std::shared_ptr<Model::Simulation> newSimulation,
   QObject *parent)
   : Executor(parent)
     , project(project)
-    , stepIndex(stepIndex)
+    , simulation(newSimulation)
 {
   connect(this, &RunSimulation::finished, [this] () {
     progressChecker.removePath(simulationChecker->getLogPath());
@@ -42,23 +42,19 @@ void RunSimulation::doExecute()
     return;
   }
 
-  const auto& steps = project->getSteps();
-  std::shared_ptr<Model::Simulation> currentSim = steps[stepIndex];
-
-  simulationChecker = std::make_shared<SimulationStatusChecker>(project, currentSim);
+  simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulation);
   QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
 
-  GromacsConfigFileGenerator::generate(currentSim, mdpFile);
+  GromacsConfigFileGenerator::generate(simulation, mdpFile);
 
   QString inputStructure = project->getSystemSetup()->getNeutralisedStructureFile();
   QFileInfo systemPath(inputStructure);
-  if (stepIndex > 0)
+  if (simulation->getPreviousStep())
   {
-    auto prevStep = steps[stepIndex - 1];
-    SimulationStatusChecker prevSimChecker(project, prevStep);
+    SimulationStatusChecker prevSimChecker(project, simulation->getPreviousStep());
     inputStructure = prevSimChecker.getCoordinatesPath();
   }
 
@@ -74,7 +70,7 @@ void RunSimulation::doExecute()
   }
 
   QString command = gmx + " mdrun";
-  command += " -deffnm " + currentSim->getTypeAsString();
+  command += " -deffnm " + simulation->getTypeAsString();
   command += " -cpt 5";
   command += " -cpi";
 
@@ -132,9 +128,7 @@ void RunSimulation::checkProgress()
   int steps = stepsText.toInt(&ok, 10);
   if (ok)
   {
-    const auto& simulations = project->getSteps();
-    std::shared_ptr<Model::Simulation> currentSim = simulations[stepIndex];
-    float progressValue = 100.0 * steps / currentSim->property("numberOfSteps").value<double>();
+    float progressValue = 100.0 * steps / simulation->property("numberOfSteps").value<double>();
     emit progress(progressValue);
   }
 

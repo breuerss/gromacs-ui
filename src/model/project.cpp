@@ -4,6 +4,7 @@
 #include "../settings.h"
 #include <QDebug>
 #include <QStandardPaths>
+#include <memory>
 
 namespace Model {
 
@@ -15,6 +16,10 @@ Project::Project()
 std::shared_ptr<Simulation> Project::addStep()
 {
   auto step = std::make_shared<Simulation>();
+  if (steps.size() >= 1)
+  {
+    step->setPreviousStep(steps.back());
+  }
   steps.push_back(step);
   emit stepAdded(step, steps.size() - 1);
   return step;
@@ -24,6 +29,15 @@ void Project::removeStep(int at)
 {
   auto step = steps[at];
   steps.erase(steps.begin() + at);
+  if (steps.size() >= static_cast<size_t>(at))
+  {
+    std::shared_ptr<Simulation> previous;
+    if (at > 1)
+    {
+      previous = steps[at - 1];
+    }
+    steps[at]->setPreviousStep(previous);
+  }
   emit stepRemoved(step, at);
 }
 

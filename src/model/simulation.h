@@ -61,6 +61,9 @@ public:
   QString getName() const;
   QString getTypeAsString() const;
 
+  std::shared_ptr<Simulation> getPreviousStep() const;
+  void setPreviousStep(std::shared_ptr<Simulation> newPreviousStep);
+
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
   Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
@@ -163,6 +166,8 @@ private:
   // temperature
   TemperatureAlgorithm temperatureAlgorithm = TemperatureAlgorithm::None;
   std::vector<std::shared_ptr<TemperatureCouplingGroup>> temperatureCouplingGroups;
+
+  std::shared_ptr<Simulation> previousStep;
 };
 
 QString toString(Simulation::Algorithm algorithm);

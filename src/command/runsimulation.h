@@ -7,6 +7,7 @@
 
 namespace Model {
 class Project;
+class Simulation;
 }
 
 class SimulationStatusChecker;
@@ -16,7 +17,10 @@ namespace Command {
 class RunSimulation : public Executor
 {
 public:
-  explicit RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent = nullptr);
+  explicit RunSimulation(
+    std::shared_ptr<Model::Project> project,
+    std::shared_ptr<Model::Simulation> simulation,
+    QObject *parent = nullptr);
   void doExecute() override;
 
 private:
@@ -29,8 +33,8 @@ private:
     );
 
   std::shared_ptr<Model::Project> project;
+  std::shared_ptr<Model::Simulation> simulation;
   std::shared_ptr<SimulationStatusChecker> simulationChecker;
-  int stepIndex;
   QFileSystemWatcher progressChecker;
   void checkProgress();
 };

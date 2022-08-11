@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QMetaProperty>
 #include <cstring>
+#include <memory>
 
 namespace Model {
 
@@ -37,6 +38,16 @@ QString Simulation::getName() const
 QString Simulation::getTypeAsString() const
 {
   return toString(simulationType, true);
+}
+
+std::shared_ptr<Simulation> Simulation::getPreviousStep() const
+{
+  return previousStep;
+}
+
+void Simulation::setPreviousStep(std::shared_ptr<Simulation> newPreviousStep)
+{
+  previousStep = newPreviousStep;
 }
 
 std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups()

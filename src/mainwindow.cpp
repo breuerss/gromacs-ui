@@ -236,7 +236,7 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, in
   }
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
-  auto command = std::make_shared<Command::RunSimulation>(project, at);
+  auto command = std::make_shared<Command::RunSimulation>(project, simulation);
   connect(command.get(), &Command::RunSimulation::runningChanged,
           [this] (bool isRunning) {
             ui->actionRunSimulation->setEnabled(!isRunning);
