@@ -134,6 +134,11 @@ SystemSetupForm::~SystemSetupForm()
   delete ui;
 }
 
+void SystemSetupForm::showEvent(QShowEvent*)
+{
+  ui->projectName->setFocus();
+}
+
 void SystemSetupForm::prepareWaterOptions()
 {
   using Model::SystemSetup;

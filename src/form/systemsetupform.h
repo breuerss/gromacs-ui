@@ -21,6 +21,8 @@ public:
   explicit SystemSetupForm(std::shared_ptr<Model::Project> project, QWidget *parent = nullptr);
   ~SystemSetupForm();
 
+  void showEvent(QShowEvent*);
+
 private:
   Ui::SystemSetupForm *ui;
   std::shared_ptr<Model::Project> project;
