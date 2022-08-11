@@ -7,6 +7,8 @@
 #include "connectionhelper.h"
 #include "../simulationstatuschecker.h"
 #include "../filecontentviewer.h"
+#include <algorithm>
+#include <math.h>
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
@@ -133,6 +135,36 @@ SimulationSetupForm::SimulationSetupForm(
   conns.push_back(connect(simulation.get(), &Simulation::algorithmChanged, updateTimeStep));
   updateTimeStep(simulation->property("algorithm").value<Simulation::Algorithm>());
 
+  auto updateDuration = [this] () {
+    const double numberOfSteps = simulation->property("numberOfSteps").value<double>();
+    if (numberOfSteps < 0)
+    {
+      return;
+    }
+
+    const double timeStep = simulation->property("timeStep").value<double>();
+
+    // duration in fs
+    double duration = timeStep * numberOfSteps;
+    const int orderOfMagnitude = log10(duration);
+    int unitStep = orderOfMagnitude / 3;
+    const static std::map<int, QString> unitMap = {
+      { 0, "fs" },
+      { 1, "ps" },
+      { 2, "ns" },
+      { 3, "µs" },
+      { 4, "ms" },
+      { 5, "s" },
+    };
+
+    unitStep = std::min(unitStep, 5);
+    duration /= pow(10, 3 * unitStep);
+
+    ui->duration->setText(QString::number(duration) + " " + unitMap.at(unitStep));
+  };
+  conns.push_back(connect(simulation.get(), &Simulation::numberOfStepsChanged, updateDuration));
+  conns.push_back(connect(simulation.get(), &Simulation::timeStepChanged, updateDuration));
+  updateDuration();
 }
 
 SimulationSetupForm::~SimulationSetupForm()
