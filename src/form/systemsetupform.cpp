@@ -66,29 +66,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 
   connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
-  connectToLineEdit(ui->pdbEntry, systemSetup, "pdbCode", [this] (const QString& pdbCode) {
-    ui->pdbEntry->setStyleSheet("");
-    if (pdbCode.length() == 4)
-    {
-      // TODO does that belong here? Isn't that part of the project setup?
-      QDir dir(project->getProjectPath());
-      if (dir.mkpath("input"))
-      {
-        dir.cd("input");
-      }
-      QString absFilePath = dir.absolutePath() + "/" + pdbCode + ".pdb";
-      handlePdbDownload(pdbCode, absFilePath);
-    }
-    else
-    {
-      setGroupsEnabled(false);
-    }
-  });
-
-  conns << connect(
-    systemSetup.get(),
-    &Model::SystemSetup::sourceStructureFileChanged,
-    [this] (const QString& sourceStructureFile) {
+  auto reactToSourceStructureFileChange = [this] (const QString& sourceStructureFile) {
       // Workaround since this callback is executed before the
       // callback that should update the molecule preview.
       QTimer::singleShot(100, [this, sourceStructureFile] {
@@ -121,8 +99,36 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
           }
         }
       });
-    });
+  };
+  conns << connect(
+    systemSetup.get(),
+    &Model::SystemSetup::sourceStructureFileChanged,
+    reactToSourceStructureFileChange
+    );
 
+  setGroupsEnabled(!systemSetup->getSourceStructureFile().isEmpty());
+
+  auto reactToPdbCode = [this] (const QString& pdbCode) {
+    ui->pdbEntry->setStyleSheet("");
+    if (pdbCode.length() == 4)
+    {
+      // TODO does that belong here? Isn't that part of the project setup?
+      QDir dir(project->getProjectPath());
+      if (dir.mkpath("input"))
+      {
+        dir.cd("input");
+      }
+      QString absFilePath = dir.absolutePath() + "/" + pdbCode + ".pdb";
+      handlePdbDownload(pdbCode, absFilePath);
+    }
+    else
+    {
+      setGroupsEnabled(false);
+    }
+  };
+  connectToLineEdit(ui->pdbEntry, systemSetup, "pdbCode", reactToPdbCode);
+  qDebug() << systemSetup->property("pdbCode");
+  reactToPdbCode(systemSetup->property("pdbCode").toString());
 }
 
 SystemSetupForm::~SystemSetupForm()

@@ -154,14 +154,6 @@ void MainWindow::setupUIForProject()
     {
       disconnect(conn);
     }
-    ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
-    auto* tabBar = ui->stepconfigurator->tabBar();
-    tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
-    tabBar->setTabButton(0, QTabBar::RightSide, 0);
-    for (auto step: project->getSteps())
-    {
-      addTabForStep(step);
-    }
 
     Model::SystemSetup* systemSetup = project->getSystemSetup().get();
     conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
@@ -225,6 +217,15 @@ void MainWindow::setupUIForProject()
       ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
       ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());
     });
+
+    ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
+    auto* tabBar = ui->stepconfigurator->tabBar();
+    tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
+    tabBar->setTabButton(0, QTabBar::RightSide, 0);
+    for (auto step: project->getSteps())
+    {
+      addTabForStep(step);
+    }
   }
 }
 

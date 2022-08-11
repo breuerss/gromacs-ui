@@ -42,6 +42,11 @@ void SystemSetup::setSourceStructureFile(const QString &newSourceStructureFile)
   }
 }
 
+const QString& SystemSetup::getSourceStructureFile() const
+{
+  return sourceStructureFile;
+}
+
 void SystemSetup::setFilteredStructureFile(const QString &newFilteredStructureFile)
 {
   const bool changed = filteredStructureFile != newFilteredStructureFile;

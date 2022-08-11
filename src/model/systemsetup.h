@@ -51,6 +51,7 @@ public:
   void setNeutralisedStructureFile(const QString& neutralisedStructureFile);
 
   const QStringList& getChains() const;
+  const QString& getSourceStructureFile() const;
   const QString& getFilteredStructureFile() const;
   const QString& getProcessedStructureFile() const;
   const QString& getBoxedStructureFile() const;
