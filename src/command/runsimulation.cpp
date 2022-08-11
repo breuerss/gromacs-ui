@@ -77,7 +77,7 @@ void RunSimulation::doExecute()
   command += " -deffnm " + currentSim->getTypeAsString();
   command += " -cpt 5";
   command += " -cpi";
-  qDebug() << "executing" << command;
+
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(dir.absolutePath());
   process.start(command);
