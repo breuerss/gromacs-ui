@@ -73,7 +73,7 @@ void RunSimulation::doExecute()
     return;
   }
 
-  QString command = gmx + " mdrun -v";
+  QString command = gmx + " mdrun";
   command += " -deffnm " + currentSim->getTypeAsString();
   command += " -cpt 5";
   command += " -cpi";

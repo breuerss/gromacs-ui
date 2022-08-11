@@ -10,7 +10,9 @@
 #include "../simulationstatuschecker.h"
 #include "../filecontentviewer.h"
 #include <algorithm>
+#include <cmath>
 #include <math.h>
+#include <QDateTime>
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
@@ -181,10 +183,33 @@ SimulationSetupForm::SimulationSetupForm(
                        command->exec();
                      }
                    });
-  conns << connect(command.get(), &Command::RunSimulation::progress,
-                   ui->simulationProgress, &QProgressBar::setValue);
+  conns << connect(
+    command.get(),
+    &Command::RunSimulation::progress,
+    [this] (float progress) {
+      ui->simulationProgress->setValue(progress);
+
+      if (firstProgressValue == -1)
+      {
+        firstProgressValue = progress;
+      }
+
+      QString assumendEndText("∞");
+      // if simulation is resumed the percentage refers to the remaining time
+      float actualProgress = (progress - firstProgressValue) / (100.0 - firstProgressValue) * 100.0;
+      if (actualProgress > 0)
+      {
+        const qint64 currentTimeStamp = QDateTime::currentSecsSinceEpoch();
+        const qint64 timePassed = currentTimeStamp - timeStampStarted;
+        const qint64 assumedEndTimeStamp = timeStampStarted + (timePassed / actualProgress * 100);
+        assumendEndText = QDateTime::fromSecsSinceEpoch(assumedEndTimeStamp).toString();
+      }
+      ui->assumedFinished->setText(assumendEndText);
+    });
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {
+                     timeStampStarted = QDateTime::currentSecsSinceEpoch();
+                     firstProgressValue = -1;
                      ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
                      ui->rerunSimulation->setText(tr("Stop Simulation"));
                      ui->simulationProgress->setEnabled(true);

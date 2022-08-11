@@ -7,6 +7,7 @@
 #include <QMetaObject>
 #include <QList>
 #include "../model/simulation.h"
+#include "qglobal.h"
 
 namespace Model {
 class Project;
@@ -51,6 +52,9 @@ private:
   void addTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at = -1);
   void removeTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at);
   QList<QMetaObject::Connection> conns;
+
+  qint64 timeStampStarted;
+  float firstProgressValue = -1;
 };
 
 #endif // SIMULATIONSETUPFORM_H
