@@ -172,17 +172,19 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connect(simulation.get(), &Simulation::timeStepChanged, updateDuration);
   updateDuration();
 
-  conns << connect(ui->rerunSimulation, &QPushButton::clicked,
-                   [this] () {
-                     if (command->isRunning())
-                     {
-                       command->stop();
-                     }
-                     else
-                     {
-                       command->exec();
-                     }
-                   });
+  conns << connect(
+    ui->rerunSimulation,
+    &QPushButton::clicked,
+    [this] () {
+      if (command->isRunning())
+      {
+        command->stop();
+      }
+      else
+      {
+        command->exec();
+      }
+    });
   conns << connect(
     command.get(),
     &Command::RunSimulation::progress,

@@ -246,10 +246,12 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, in
   // take system setup into account for tabs
   at += 1;
 
-  connect(simulation.get(), &Model::Simulation::simulationTypeChanged,
-          [this, simulation, at] (Model::Simulation::Type) {
-    ui->stepconfigurator->setTabText(at, simulation->getName());
-  });
+  connect(
+    simulation.get(),
+    &Model::Simulation::simulationTypeChanged,
+    [this, simulation, at] (Model::Simulation::Type) {
+      ui->stepconfigurator->setTabText(at, simulation->getName());
+    });
 
   SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
   connect(simulationForm, &SimulationSetupForm::displaySimulationData,
