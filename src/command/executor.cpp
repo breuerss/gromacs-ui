@@ -14,6 +14,7 @@ Executor::Executor(QObject *parent)
     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
     [this] (int, QProcess::ExitStatus) {
       mHasRun = true;
+      running = false;
       QString command = process.program() + " " + process.arguments().join(" ");
       QString message("Error executing " + command);
       if (process.exitCode() == 0)
@@ -34,6 +35,7 @@ Executor::~Executor()
 
 void Executor::exec()
 {
+  running = true;
   emit started();
   doExecute();
 }
@@ -48,6 +50,11 @@ void Executor::stop()
 bool Executor::hasRun() const
 {
   return mHasRun;
+}
+
+bool Executor::isRunning() const
+{
+  return running;
 }
 
 bool Executor::wasSuccessful() const

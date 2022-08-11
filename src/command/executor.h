@@ -17,6 +17,7 @@ public:
   void stop();
 
   bool hasRun() const;
+  bool isRunning() const;
   bool wasSuccessful() const;
 
 signals:
@@ -29,6 +30,7 @@ protected:
 
 private:
   bool mHasRun;
+  bool running;
 
 };
 

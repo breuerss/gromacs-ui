@@ -171,15 +171,28 @@ SimulationSetupForm::SimulationSetupForm(
   updateDuration();
 
   conns << connect(ui->rerunSimulation, &QPushButton::clicked,
-                   command.get(), &Command::RunSimulation::exec);
+                   [this] () {
+                     if (command->isRunning())
+                     {
+                       command->stop();
+                     }
+                     else
+                     {
+                       command->exec();
+                     }
+                   });
   conns << connect(command.get(), &Command::RunSimulation::progress,
                    ui->simulationProgress, &QProgressBar::setValue);
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {
+                     ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
+                     ui->rerunSimulation->setText(tr("Stop Simulation"));
                      ui->simulationProgress->setEnabled(true);
                    });
   conns << connect(command.get(), &Command::RunSimulation::finished,
                    [this] () {
+                     ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
+                     ui->rerunSimulation->setText(tr("Rerun simulation"));
                      ui->simulationProgress->setEnabled(false);
                    });
 }
