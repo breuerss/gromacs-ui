@@ -32,6 +32,12 @@ Executor::~Executor()
   LogForwarder::getInstance()->detach(&process);
 }
 
+void Executor::exec()
+{
+  emit started();
+  doExecute();
+}
+
 void Executor::stop()
 {
   qDebug() << "stopping";

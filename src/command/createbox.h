@@ -14,7 +14,7 @@ class CreateBox : public Executor
 {
 public:
   explicit CreateBox(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
-  void exec() override;
+  void doExecute() override;
 
 private:
   const std::shared_ptr<Model::SystemSetup> systemSetup;

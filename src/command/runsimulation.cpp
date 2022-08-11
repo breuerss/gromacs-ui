@@ -23,7 +23,7 @@ RunSimulation::RunSimulation(
 {
 }
 
-void RunSimulation::exec()
+void RunSimulation::doExecute()
 {
   qDebug() << "Exec simulation";
   QString gmx = AppProvider::get("gmx");

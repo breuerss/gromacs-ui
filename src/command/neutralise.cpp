@@ -17,7 +17,7 @@ Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObje
 
 }
 
-void Neutralise::exec()
+void Neutralise::doExecute()
 {
   qDebug() << "Neutralise";
   QString command = AppProvider::get("gmx");

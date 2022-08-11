@@ -15,7 +15,7 @@ CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject
 
 }
 
-void CreateBox::exec()
+void CreateBox::doExecute()
 {
   qDebug() << "Create Box";
   QString command = AppProvider::get("gmx");

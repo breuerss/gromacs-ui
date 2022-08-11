@@ -12,7 +12,8 @@ class Executor : public QObject
 public:
   explicit Executor(QObject *parent = nullptr);
   ~Executor();
-  virtual void exec() = 0;
+  virtual void doExecute() = 0;
+  void exec();
   void stop();
 
   bool hasRun() const;
@@ -20,6 +21,7 @@ public:
 
 signals:
   void finished();
+  void started();
 
 protected:
   QProcess process;

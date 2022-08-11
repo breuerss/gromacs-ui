@@ -17,7 +17,7 @@ CreateGromacsModel::CreateGromacsModel(
 
 }
 
-void CreateGromacsModel::exec()
+void CreateGromacsModel::doExecute()
 {
   qDebug() << "Create model";
   QString command = AppProvider::get("gmx");

@@ -16,7 +16,7 @@ Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *pa
 
 }
 
-void Solvate::exec()
+void Solvate::doExecute()
 {
   qDebug() << "Solvate";
   QString command = AppProvider::get("gmx");

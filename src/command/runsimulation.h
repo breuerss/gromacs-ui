@@ -14,7 +14,7 @@ class RunSimulation : public Executor
 {
 public:
   explicit RunSimulation(std::shared_ptr<Model::Project> project, int stepIndex, QObject *parent = nullptr);
-  void exec() override;
+  void doExecute() override;
 
 private:
   bool execGrompp(

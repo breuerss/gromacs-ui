@@ -18,7 +18,7 @@ public:
     std::shared_ptr<Model::SystemSetup> newSystemSetup,
     QObject *parent = nullptr
     );
-  void exec() override;
+  void doExecute() override;
 
 private:
   const std::shared_ptr<Model::SystemSetup> systemSetup;
