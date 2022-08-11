@@ -143,7 +143,7 @@ SimulationSetupForm::SimulationSetupForm(
 
   auto updateDuration = [this] () {
     const double numberOfSteps = simulation->property("numberOfSteps").value<double>();
-    if (numberOfSteps < 0)
+    if (numberOfSteps < 1)
     {
       return;
     }
