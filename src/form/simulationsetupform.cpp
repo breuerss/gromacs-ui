@@ -57,7 +57,7 @@ SimulationSetupForm::SimulationSetupForm(
   QWidget* container = ui->settingsWidget;
   connectToComboBox<Simulation::Algorithm>(container, simulation, "algorithm");
 
-  connectToSpinBox<QSpinBox, int>(container, simulation, "numberOfSteps");
+  connectToSpinBox<QDoubleSpinBox, double>(ui->numberOfSteps, simulation, "numberOfSteps");
   connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, simulation, "timeStep");
   connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationStepSize");
   connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationMaximumForce");

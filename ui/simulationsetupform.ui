@@ -534,60 +534,53 @@
         <property name="title">
          <string>General</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_18">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QLabel" name="noOfStepsLabel">
-               <property name="text">
-                <string>Number of Steps</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="numberOfSteps">
-               <property name="minimum">
-                <number>-1</number>
-               </property>
-               <property name="maximum">
-                <number>99999999</number>
-               </property>
-               <property name="value">
-                <number>-1</number>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QLabel" name="noOfStepsLabel">
+             <property name="text">
+              <string>Number of Steps</string>
+             </property>
+            </widget>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_8">
-             <item>
-              <widget class="QLabel" name="timeStepLabel">
-               <property name="text">
-                <string>Time Step (fs)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QDoubleSpinBox" name="timeStep">
-               <property name="decimals">
-                <number>1</number>
-               </property>
-               <property name="maximum">
-                <double>10000.000000000000000</double>
-               </property>
-               <property name="value">
-                <double>1.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <widget class="QDoubleSpinBox" name="numberOfSteps">
+             <property name="decimals">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <double>1000000000000000000000.000000000000000</double>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
-         <item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QLabel" name="timeStepLabel">
+             <property name="text">
+              <string>Time Step (fs)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="timeStep">
+             <property name="decimals">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <double>10000.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
             <widget class="QLabel" name="algorithmLabel">

@@ -66,7 +66,7 @@ public:
   Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
   Q_PROPERTY(Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
-  Q_PROPERTY(int numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
+  Q_PROPERTY(double numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
   Q_PROPERTY(double timeStep MEMBER timeStep NOTIFY timeStepChanged);
   Q_PROPERTY(double minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
   Q_PROPERTY(double minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
@@ -96,7 +96,7 @@ signals:
   void simulationTypeChanged(Type);
   void algorithmChanged(Algorithm);
 
-  void numberOfStepsChanged(int);
+  void numberOfStepsChanged(double);
   void timeStepChanged(double);
   void minimisationMaximumForceChanged(double);
   void minimisationStepSizeChanged(double);
@@ -131,7 +131,7 @@ private:
   Type simulationType = Type::None;
   Algorithm algorithm = Algorithm::None;
 
-  int numberOfSteps = -1;
+  double numberOfSteps = -1;
   double timeStep = 2;
 
   // minimsation options
