@@ -19,7 +19,7 @@ void GromacsConfigFileGenerator::generate(
   if (simulationType != Simulation::Type::None)
   {
     writeLine(writer, "integrator", toString(step->property("algorithm").value<Simulation::Algorithm>()));
-    writeLine(writer, "nsteps", step->property("numberOfSteps").toString());
+    writeLine(writer, "nsteps", QString::number(step->property("numberOfSteps").value<double>(), 'f', 0));
     writeLine(writer, "dt", QString::number(step->property("timeStep").value<double>() / 1000));
 
     // output control

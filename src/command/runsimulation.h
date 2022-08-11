@@ -3,6 +3,7 @@
 
 #include "executor.h"
 #include <memory>
+#include <QTimer>
 
 namespace Model {
 class Project;
@@ -27,6 +28,8 @@ private:
 
   std::shared_ptr<Model::Project> project;
   int stepIndex;
+  QTimer progressChecker;
+  void checkProgress();
 };
 
 }

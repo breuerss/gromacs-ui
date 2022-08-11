@@ -172,6 +172,16 @@ SimulationSetupForm::SimulationSetupForm(
 
   conns << connect(ui->rerunSimulation, &QPushButton::clicked,
                    command.get(), &Command::RunSimulation::exec);
+  conns << connect(command.get(), &Command::RunSimulation::progress,
+                   ui->simulationProgress, &QProgressBar::setValue);
+  conns << connect(command.get(), &Command::RunSimulation::started,
+                   [this] () {
+                     ui->simulationProgress->setEnabled(true);
+                   });
+  conns << connect(command.get(), &Command::RunSimulation::finished,
+                   [this] () {
+                     ui->simulationProgress->setEnabled(false);
+                   });
 }
 
 SimulationSetupForm::~SimulationSetupForm()

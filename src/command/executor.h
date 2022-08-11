@@ -22,6 +22,7 @@ public:
 signals:
   void finished();
   void started();
+  void progress(int percentage);
 
 protected:
   QProcess process;

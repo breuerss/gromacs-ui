@@ -121,6 +121,16 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QProgressBar" name="simulationProgress">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>
