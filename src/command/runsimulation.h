@@ -3,11 +3,13 @@
 
 #include "executor.h"
 #include <memory>
-#include <QTimer>
+#include <QFileSystemWatcher>
 
 namespace Model {
 class Project;
 }
+
+class SimulationStatusChecker;
 
 namespace Command {
 
@@ -27,8 +29,9 @@ private:
     );
 
   std::shared_ptr<Model::Project> project;
+  std::shared_ptr<SimulationStatusChecker> simulationChecker;
   int stepIndex;
-  QTimer progressChecker;
+  QFileSystemWatcher progressChecker;
   void checkProgress();
 };
 

@@ -23,7 +23,7 @@ public:
 signals:
   void finished();
   void started();
-  void progress(int percentage);
+  void progress(float percentage);
   void runningChanged(bool running);
 
 protected:

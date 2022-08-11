@@ -7,6 +7,7 @@
 #include "../appprovider.h"
 #include "../logforwarder.h"
 #include "../simulationstatuschecker.h"
+#include "qfilesystemwatcher.h"
 
 #include <QDebug>
 #include <QDir>
@@ -21,14 +22,13 @@ RunSimulation::RunSimulation(
     , project(project)
     , stepIndex(stepIndex)
 {
-  connect(this, &RunSimulation::finished, &progressChecker, &QTimer::stop);
+  connect(this, &RunSimulation::finished, [this] () {
+    progressChecker.removePath(simulationChecker->getLogPath());
+  });
   connect(this, &RunSimulation::started, [this] () {
     emit progress(0);
   });
-  connect(this, &RunSimulation::finished, [this] () {
-    emit progress(100);
-  });
-  connect(&progressChecker, &QTimer::timeout, this, &RunSimulation::checkProgress);
+  connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
 }
 
 void RunSimulation::doExecute()
@@ -45,8 +45,8 @@ void RunSimulation::doExecute()
   const auto& steps = project->getSteps();
   std::shared_ptr<Model::Simulation> currentSim = steps[stepIndex];
 
-  SimulationStatusChecker currentSimChecker(project, currentSim);
-  QString mdpFile = currentSimChecker.getMdpPath();
+  simulationChecker = std::make_shared<SimulationStatusChecker>(project, currentSim);
+  QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
@@ -66,7 +66,7 @@ void RunSimulation::doExecute()
       mdpFile,
       inputStructure,
       systemPath.absolutePath() + "/topol.top",
-      currentSimChecker.getTprPath(),
+      simulationChecker->getTprPath(),
       dir.absolutePath()
       ))
   {
@@ -82,7 +82,7 @@ void RunSimulation::doExecute()
   process.setWorkingDirectory(dir.absolutePath());
   process.start(command);
 
-  progressChecker.start(2000);
+  progressChecker.addPath(simulationChecker->getLogPath());
 }
 
 bool RunSimulation::execGrompp(
@@ -121,12 +121,9 @@ bool RunSimulation::execGrompp(
 
 void RunSimulation::checkProgress()
 {
-  const auto& simulations = project->getSteps();
-  std::shared_ptr<Model::Simulation> currentSim = simulations[stepIndex];
-  SimulationStatusChecker currentSimChecker(project, currentSim);
   QProcess check;
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1")
-    .arg(currentSimChecker.getLogPath());
+    .arg(simulationChecker->getLogPath());
   check.start("bash", QStringList() << "-c" << command);
 
   check.waitForFinished();
@@ -135,9 +132,13 @@ void RunSimulation::checkProgress()
   int steps = stepsText.toInt(&ok, 10);
   if (ok)
   {
-    int progressValue = 100 * steps / currentSim->property("numberOfSteps").value<double>();
+    const auto& simulations = project->getSteps();
+    std::shared_ptr<Model::Simulation> currentSim = simulations[stepIndex];
+    float progressValue = 100.0 * steps / currentSim->property("numberOfSteps").value<double>();
     emit progress(progressValue);
   }
 
 }
+
+
 }
