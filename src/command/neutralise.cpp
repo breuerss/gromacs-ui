@@ -28,7 +28,7 @@ void Neutralise::doExecute()
     return;
   }
 
-  QString solvatedStructure = systemSetup->getSolvatedStructureFile();
+  QString solvatedStructure = getInputFilename();
   QFileInfo fileInfo(solvatedStructure);
 
   QString ionsBasePath = fileInfo.absolutePath() + "/ions";
@@ -62,7 +62,7 @@ void Neutralise::doExecute()
 
   command += " genion";
 
-  QString outputFile = fileInfo.baseName().replace("_solvated", "_neutralised") + ".gro";
+  QString outputFile = getOutputFilename();
   command += " -s " + ionsTprPath;
   command += " -o " + outputFile;
   command += " -conc " + QString::number(systemSetup->property("ionConcentration").value<double>());
@@ -86,8 +86,15 @@ void Neutralise::doExecute()
 
   process.setWorkingDirectory(inputDirectory);
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
+
   process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
-  systemSetup->setNeutralisedStructureFile(inputDirectory + "/" + outputFile);
+}
+
+QString Neutralise::getOutputFilename() const
+{
+  QFileInfo fileInfo(getInputFilename());
+
+  return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_neutralised.gro";
 }
 
 

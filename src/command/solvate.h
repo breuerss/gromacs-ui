@@ -3,15 +3,17 @@
 
 #include "executor.h"
 #include "../model/systemsetup.h"
+#include "inputoutputfilelink.h"
 #include <memory>
 
 namespace Command {
 
-class Solvate : public Executor
+class Solvate : public Executor, public InputOutputFileLink
 {
 public:
   explicit Solvate(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
   void doExecute() override;
+  QString getOutputFilename() const override;
 
 private:
   const std::shared_ptr<Model::SystemSetup> systemSetup;

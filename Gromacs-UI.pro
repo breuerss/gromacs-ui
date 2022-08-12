@@ -13,13 +13,16 @@ SOURCES += \
     src/command/createbox.cpp \
     src/command/creategromacsmodel.cpp \
     src/command/executor.cpp \
+    src/command/filter.cpp \
+    src/command/inputfilelink.cpp \
+    src/command/inputoutputfilelink.cpp \
     src/command/neutralise.cpp \
+    src/command/pdbfixer.cpp \
     src/command/queue.cpp \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
     src/pdbdownloader.cpp \
     src/gromacsconfigfilegenerator.cpp \
-    src/pdbconverter.cpp \
     src/pdbinfoextractor.cpp \
     src/simulationstatuschecker.cpp \
     src/statusmessagesetter.cpp \
@@ -45,14 +48,17 @@ HEADERS += \
     src/command/createbox.h \
     src/command/creategromacsmodel.h \
     src/command/executor.h \
+    src/command/filter.h \
+    src/command/inputfilelink.h \
+    src/command/inputoutputfilelink.h \
     src/command/neutralise.h \
+    src/command/pdbfixer.h \
     src/command/queue.h \
     src/command/runsimulation.h \
     src/command/solvate.h \
     src/gromacsconfigfilegenerator.h \
     src/logforwarder.h \
     src/mainwindow.h \
-    src/pdbconverter.h \
     src/pdbdownloader.h \
     src/appprovider.h \
     src/pdbinfoextractor.h \

@@ -1,9 +1,10 @@
-#ifndef CREATEBOX_H
-#define CREATEBOX_H
+#ifndef COMMAND_FILTER_H
+#define COMMAND_FILTER_H
 
+#include <QObject>
+#include <QStringList>
 #include "executor.h"
 #include "inputoutputfilelink.h"
-#include <memory>
 
 namespace Model {
 class SystemSetup;
@@ -11,10 +12,11 @@ class SystemSetup;
 
 namespace Command {
 
-class CreateBox : public Executor, public InputOutputFileLink
+class Filter : public Executor, public InputOutputFileLink
 {
 public:
-  explicit CreateBox(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
+  explicit Filter(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
+
   void doExecute() override;
   QString getOutputFilename() const override;
 
@@ -24,4 +26,4 @@ private:
 
 }
 
-#endif // CREATEBOX_H
+#endif

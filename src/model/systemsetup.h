@@ -44,19 +44,11 @@ public:
 
   void setChains(const QStringList& chains);
   void setSourceStructureFile(const QString& newSourceStructureFile);
-  void setFilteredStructureFile(const QString& newFilteredStructureFile);
   void setProcessedStructureFile(const QString& newProcessedStructureFile);
-  void setBoxedStructureFile(const QString& newBoxedStructureFile);
-  void setSolvatedStructureFile(const QString& newSolvatedStructureFile);
-  void setNeutralisedStructureFile(const QString& neutralisedStructureFile);
 
   const QStringList& getChains() const;
   const QString& getSourceStructureFile() const;
-  const QString& getFilteredStructureFile() const;
   const QString& getProcessedStructureFile() const;
-  const QString& getBoxedStructureFile() const;
-  const QString& getSolvatedStructureFile() const;
-  const QString& getNeutralisedStructureFile() const;
 
   bool getStructureReady() const;
 
@@ -84,11 +76,7 @@ signals:
   void removeHeteroAtomsChanged(bool);
 
   void sourceStructureFileChanged(const QString& sourceStructureFile);
-  void filteredStructureFileChanged(const QString& filteredStructureFile);
   void processedStructureFileChanged(const QString& processedStructureFile);
-  void boxedStructureFileChanged(const QString& boxedStructureFile);
-  void solvatedStructureFileChanged(const QString& solvatedStructureFile);
-  void neutralisedStructureFileChanged(const QString& solvatedStructureFile);
   void configReadyChanged(bool ready);
   void structureReadyChanged(bool);
 
@@ -96,11 +84,7 @@ private:
   QString pdbCode;
 
   QString sourceStructureFile;
-  QString filteredStructureFile;
   QString processedStructureFile;
-  QString boxedStructureFile;
-  QString solvatedStructureFile;
-  QString neutralisedStructureFile;
   QString positiveIon = "NA";
   QString negativeIon = "CL";
   double ionConcentration = 0.15;
@@ -115,7 +99,6 @@ private:
   bool structureReady = false;
 
   void evaluateConfigReady();
-  void filterSourceStructure();
 };
 
 QString toString(SystemSetup::WaterModel type);

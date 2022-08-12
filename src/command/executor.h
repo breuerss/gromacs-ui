@@ -32,7 +32,6 @@ protected:
 private:
   bool mHasRun;
   bool running;
-
 };
 
 }

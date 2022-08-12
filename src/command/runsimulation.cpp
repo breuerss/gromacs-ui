@@ -50,7 +50,7 @@ void RunSimulation::doExecute()
 
   GromacsConfigFileGenerator::generate(simulation, mdpFile);
 
-  QString inputStructure = project->getSystemSetup()->getNeutralisedStructureFile();
+  QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
   QFileInfo systemPath(inputStructure);
   if (simulation->getPreviousStep())
   {
@@ -155,6 +155,5 @@ void RunSimulation::checkProgress()
     }
   }
 }
-
 
 }

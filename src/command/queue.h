@@ -19,14 +19,18 @@ public:
 
   Queue* clear();
   Queue* enqueue(std::shared_ptr<Executor> executor, bool needsPrevious = true);
-  Queue* remove(int at);
-  Queue* insert(int at, std::shared_ptr<Executor> executor, bool needsPrevious = true);
+  Queue* remove(size_t at);
+  Queue* insert(size_t at, std::shared_ptr<Executor> executor, bool needsPrevious = true);
+  std::shared_ptr<Executor> getElement(size_t at);
+  std::shared_ptr<Executor> first();
+  std::shared_ptr<Executor> last();
+  void updateLink(std::shared_ptr<Executor> prevLink, std::shared_ptr<Executor> link);
   void start();
   bool wasSuccessful();
 
 signals:
   void finished(bool success);
-  void stepFinished(int stepIndex, bool success);
+  void stepFinished(size_t stepIndex, bool success);
 
 private:
   void execNext();

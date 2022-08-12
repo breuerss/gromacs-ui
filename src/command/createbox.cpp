@@ -27,20 +27,26 @@ void CreateBox::doExecute()
   }
 
   command += " editconf";
-  QString inputFile = systemSetup->getProcessedStructureFile();
-  QFileInfo fileInfo(inputFile);
+  QString inputFile = getInputFilename();
 
-  QString outputFile = fileInfo.baseName().replace("_processed", "_boxed") + ".gro";
+  QString outputFile = getOutputFilename();
   command += " -f " + inputFile;
   command += " -o " + outputFile;
   command += " -d " + systemSetup->property("distance").value<QString>();
   command += " -bt " + toString(systemSetup->property("boxType").value<Model::SystemSetup::BoxType>());
 
+  QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
-  systemSetup->setBoxedStructureFile(inputDirectory + "/" + outputFile);
+}
+
+QString CreateBox::getOutputFilename() const
+{
+  QFileInfo fileInfo(getInputFilename());
+
+  return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_boxed.gro";
 }
 
 }

@@ -6,6 +6,7 @@
 
 #include <QFileInfo>
 #include <QDebug>
+#include <stdexcept>
 
 namespace Command {
 
@@ -29,22 +30,27 @@ void CreateGromacsModel::doExecute()
   }
 
   command += " pdb2gmx";
-  QString inputFile = systemSetup->getFilteredStructureFile();
-  QFileInfo fileInfo(inputFile);
+  QString inputFile = getInputFilename();
 
+  const QString outputFileName(getOutputFilename());
   using Model::SystemSetup;
-  QString outputFileName = fileInfo.baseName().replace("_filtered", "_processed") + ".gro";
   command += " -f " + inputFile;
   command += " -o " + outputFileName;
+  command += " -ignh ";
   command += " -water " + toString(systemSetup->property("waterModel").value<SystemSetup::WaterModel>());
   command += " -ff " + toString(systemSetup->property("forceField").value<SystemSetup::ForceField>());
 
+  QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
 
-  QString absPathOutputFileName = inputDirectory + "/" + outputFileName;
-  systemSetup->setProcessedStructureFile(absPathOutputFileName);
+QString CreateGromacsModel::getOutputFilename() const
+{
+  QFileInfo fileInfo(getInputFilename());
+  return fileInfo.absolutePath() + "/" +
+    fileInfo.baseName() + "_model.gro";
 }
 
 }

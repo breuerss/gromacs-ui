@@ -28,23 +28,29 @@ void Solvate::doExecute()
   }
 
   command += " solvate";
-  QString inputFile = systemSetup->getBoxedStructureFile();
-  QFileInfo fileInfo(inputFile);
+  QString inputFile = getInputFilename();
 
   using Model::SystemSetup;
   auto waterModel = systemSetup->property("waterModel").value<SystemSetup::WaterModel>();
 
-  QString outputFile = fileInfo.baseName().replace("_boxed", "_solvated") + ".gro";
+  QString outputFile = getOutputFilename();
   command += " -cp " + inputFile;
   command += " -o " + outputFile;
   command += " -cs " + getWaterBoxFor(waterModel);
   command += " -p topol.top";
 
+  QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
   process.start(command);
-  systemSetup->setSolvatedStructureFile(inputDirectory + "/" + outputFile);
+}
+
+QString Solvate::getOutputFilename() const
+{
+  QFileInfo fileInfo(getInputFilename());
+  return fileInfo.absolutePath() + "/" +
+    fileInfo.baseName() + "_solvated.gro";
 }
 
 QString Solvate::getWaterBoxFor(const Model::SystemSetup::WaterModel& solvent)

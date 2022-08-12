@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "../logforwarder.h"
 #include "executor.h"
+#include "inputoutputfilelink.h"
 
 namespace Command {
 
@@ -27,20 +28,46 @@ Queue* Queue::clear()
 
 Queue* Queue::enqueue(std::shared_ptr<Executor> executor, bool needsPrevious)
 {
+  size_t beforeSize = queue.size();
+  if (beforeSize > 0)
+  {
+    updateLink(queue.at(beforeSize - 1).first, executor);
+  }
   queue.push_back({executor, needsPrevious});
 
   return this;
 }
 
-Queue* Queue::remove(int at)
+void Queue::updateLink(std::shared_ptr<Executor> prevExecutor, std::shared_ptr<Executor> executor)
+{
+  auto prevLink = std::dynamic_pointer_cast<InputOutputFileLink>(prevExecutor);
+  auto link = std::dynamic_pointer_cast<InputOutputFileLink>(executor);
+  if (link && prevLink)
+  {
+    link->setPreviousLink(prevLink);
+  }
+}
+
+Queue* Queue::remove(size_t at)
 {
   queue.erase(queue.begin() + at);
 
   return this;
 }
 
-Queue* Queue::insert(int at, std::shared_ptr<Executor> executor, bool needsPrevious)
+Queue* Queue::insert(size_t at, std::shared_ptr<Executor> executor, bool needsPrevious)
 {
+  if (at > 0)
+  {
+    updateLink(queue.at(0).first, executor);
+  }
+
+  size_t beforeSize = queue.size();
+  if (at != beforeSize)
+  {
+    updateLink(queue.at(at).first, executor);
+  }
+
   queue.insert(queue.begin() + at, {executor, needsPrevious});
 
   return this;
@@ -51,6 +78,21 @@ void Queue::start()
   qDebug() << __PRETTY_FUNCTION__;
   numberOfSteps = queue.size();
   execNext();
+}
+
+std::shared_ptr<Executor> Queue::getElement(size_t at)
+{
+  return queue.at(at).first;
+}
+
+std::shared_ptr<Executor> Queue::first()
+{
+  return queue.front().first;
+}
+
+std::shared_ptr<Executor> Queue::last()
+{
+  return queue.back().first;
 }
 
 bool Queue::wasSuccessful()

@@ -13,6 +13,10 @@ class SystemSetup;
 class Project;
 }
 
+namespace Command {
+class Queue;
+}
+
 class SystemSetupForm : public QWidget
 {
   Q_OBJECT
@@ -38,7 +42,9 @@ private:
   void setGroupsEnabled(bool enabled);
 
   void handlePdbDownload(const QString& pdbCode, const QString& filePath);
+  void preprocess();
   QList<QMetaObject::Connection> conns;
+  std::shared_ptr<Command::Queue> queue;
 };
 
 #endif // SYSTEMSETUPFORM_H

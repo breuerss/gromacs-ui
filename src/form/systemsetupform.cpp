@@ -1,3 +1,6 @@
+#include "../appprovider.h"
+#include "src/command/inputfilelink.h"
+#include "src/command/inputoutputfilelink.h"
 #include "systemsetupform.h"
 #include "ui_systemsetupform.h"
 #include "../pdbdownloader.h"
@@ -11,16 +14,20 @@
 #include "../command/createbox.h"
 #include "../command/solvate.h"
 #include "../command/neutralise.h"
+#include "../command/pdbfixer.h"
+#include "../command/filter.h"
 
 #include <QDir>
 #include <QCheckBox>
 #include <QTimer>
+#include <memory>
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWidget *parent)
 : QWidget(parent)
 , ui(new Ui::SystemSetupForm)
 , project(newProject)
   , systemSetup(project->getSystemSetup())
+  , queue(std::make_shared<Command::Queue>())
 {
   ui->setupUi(this);
 
@@ -39,21 +46,14 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   QRegExpValidator* projectNameValidator = new QRegExpValidator(QRegExp("[a-zA-Z0-9_]+"));
   ui->projectName->setValidator(projectNameValidator);
 
-  auto queue = std::make_shared<Command::Queue>();
   connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
-    systemSetup->setStructureReady(success);
-  });
-  conns << connect(systemSetup.get(), &Model::SystemSetup::configReadyChanged, [this, queue] (bool ready) {
-    if (ready)
+    if (success)
     {
-      systemSetup->setStructureReady(false);
-      queue
-        ->clear()
-        ->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup))
-        ->enqueue(std::make_shared<Command::CreateBox>(systemSetup))
-        ->enqueue(std::make_shared<Command::Solvate>(systemSetup))
-        ->enqueue(std::make_shared<Command::Neutralise>(systemSetup))
-        ->start();
+      auto link = std::dynamic_pointer_cast<Command::InputOutputFileLink>(queue->last());
+      if (link)
+      {
+        systemSetup->setProcessedStructureFile(link->getOutputFilename());
+      }
     }
   });
 
@@ -107,6 +107,8 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     );
 
   setGroupsEnabled(!systemSetup->getSourceStructureFile().isEmpty());
+  connect(ui->generateInputCoordinates, &QPushButton::clicked,
+          this, &SystemSetupForm::preprocess);
 
   auto reactToPdbCode = [this] (const QString& pdbCode) {
     ui->pdbEntry->setStyleSheet("");
@@ -129,6 +131,12 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectToLineEdit(ui->pdbEntry, systemSetup, "pdbCode", reactToPdbCode);
   qDebug() << systemSetup->property("pdbCode");
   reactToPdbCode(systemSetup->property("pdbCode").toString());
+
+  if (AppProvider::get("pdbfixer").isEmpty())
+  {
+    ui->usePdbFixer->setEnabled(false);
+    ui->usePdbFixer->setChecked(false);
+  }
 }
 
 SystemSetupForm::~SystemSetupForm()
@@ -138,6 +146,51 @@ SystemSetupForm::~SystemSetupForm()
     disconnect(conn);
   }
   delete ui;
+}
+
+void SystemSetupForm::preprocess()
+{
+  qDebug() << "preprocess";
+  queue->clear();
+
+  if (ui->usePdbFixer->isChecked())
+  {
+    queue->enqueue(std::make_shared<Command::PdbFixer>());
+  }
+
+  if (ui->useFilter->isChecked())
+  {
+    queue->enqueue(std::make_shared<Command::Filter>(systemSetup));
+  }
+
+  queue->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup));
+
+  if (ui->usecreateBox->isChecked())
+  {
+    queue->enqueue(std::make_shared<Command::CreateBox>(systemSetup));
+  }
+
+  if (ui->useSolvate->isChecked())
+  {
+    queue->enqueue(std::make_shared<Command::Solvate>(systemSetup));
+  }
+
+  if (ui->useNeutralise->isChecked() && ui->useNeutralise->isEnabled())
+  {
+    queue->enqueue(std::make_shared<Command::Neutralise>(systemSetup));
+  }
+
+  auto firstCommand = queue->first();
+  auto link = dynamic_cast<Command::InputOutputFileLink*>(firstCommand.get());
+
+  if (link)
+  {
+    auto inputLink = std::make_shared<Command::InputFileLink>(systemSetup->getSourceStructureFile());
+    link->setPreviousLink(inputLink);
+  }
+
+  queue->start();
+
 }
 
 void SystemSetupForm::showEvent(QShowEvent*)
@@ -259,9 +312,9 @@ void SystemSetupForm::connectIonSelectors()
 
 void SystemSetupForm::setGroupsEnabled(bool enabled)
 {
-  ui->filterGroup->setEnabled(enabled);
-  ui->systemSetupGroup->setEnabled(enabled);
-  ui->neutraliseGroup->setEnabled(enabled);
+  ui->preprocessingGroup->setEnabled(enabled);
+  ui->simulationModelGroup->setEnabled(enabled);
+  ui->generateInputCoordinates->setEnabled(enabled);
 }
 
 void SystemSetupForm::handlePdbDownload(const QString& pdbCode, const QString& absFilePath)

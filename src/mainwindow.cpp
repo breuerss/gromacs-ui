@@ -173,18 +173,8 @@ void MainWindow::setupUIForProject()
       setCoordsFile);
 
     conns << connect(
-      systemSetup, 
-      &Model::SystemSetup::filteredStructureFileChanged,
-      setCoordsFile);
-
-    conns << connect(
       systemSetup,
-      &Model::SystemSetup::solvatedStructureFileChanged,
-      setCoordsFile);
-
-    conns << connect(
-      systemSetup,
-      &Model::SystemSetup::neutralisedStructureFileChanged,
+      &Model::SystemSetup::processedStructureFileChanged,
       setCoordsFile);
 
     QWebEngineSettings* settings = ui->molpreview->page()->settings();
@@ -210,7 +200,8 @@ void MainWindow::setupUIForProject()
       this->setWindowTitle(title);
       ui->actionAddStep->setEnabled(canContinue);
       ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
-      ui->actionRunSimulation->setEnabled(canContinue && !project->getSystemSetup()->getNeutralisedStructureFile().isEmpty());
+      ui->actionRunSimulation->setEnabled(
+        canContinue && !project->getSystemSetup()->getProcessedStructureFile().isEmpty());
     });
 
     ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
