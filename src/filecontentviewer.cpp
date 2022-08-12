@@ -35,4 +35,5 @@ FileContentViewer::FileContentViewer(const QString& fileName)
   });
 
   resize(800, 600);
+  setWindowTitle(fileName);
 }
