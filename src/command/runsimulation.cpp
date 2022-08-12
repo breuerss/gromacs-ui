@@ -78,7 +78,7 @@ void RunSimulation::doExecute()
   process.setWorkingDirectory(dir.absolutePath());
   process.start(command);
 
-  progressChecker.addPath(simulationChecker->getLogPath());
+  checkProgress();
 }
 
 bool RunSimulation::execGrompp(
@@ -117,9 +117,28 @@ bool RunSimulation::execGrompp(
 
 void RunSimulation::checkProgress()
 {
+  QString logPath = simulationChecker->getLogPath();
+
+  QFile logFile(logPath);
+  if (!logFile.exists())
+  {
+    // file path needs to exist to being watched.
+    logFile.open(QFile::WriteOnly);
+    logFile.close();
+  }
+
+  if (!progressChecker.files().contains(logPath))
+  {
+    // needs reconnection since on the first start of
+    // simulation the logfile is removed and recreated
+    // by mdrun. So the first addition to watch is
+    // shifted inside of this function as well.
+    progressChecker.addPath(logPath);
+  }
+
   QProcess check;
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1")
-    .arg(simulationChecker->getLogPath());
+    .arg(logPath);
   check.start("bash", QStringList() << "-c" << command);
 
   check.waitForFinished();
@@ -131,7 +150,6 @@ void RunSimulation::checkProgress()
     float progressValue = 100.0 * steps / simulation->property("numberOfSteps").value<double>();
     emit progress(progressValue);
   }
-
 }
 
 
