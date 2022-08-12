@@ -23,7 +23,8 @@ signals:
   public slots:
   void save();
   void open();
-  void saveAs(const QString& fileName = "");
+  void saveAs();
+  void saveAs(const QString& fileName);
 
 private:
   ProjectManager() = default;

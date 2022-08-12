@@ -59,6 +59,11 @@ void ProjectManager::save()
   }
 }
 
+void ProjectManager::saveAs()
+{
+  saveAs("");
+}
+
 void ProjectManager::saveAs(const QString& saveAsFileName)
 {
   QString writeToFileName = saveAsFileName;

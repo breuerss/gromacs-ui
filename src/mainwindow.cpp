@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
+  ui->splitter->setSizes({INT_MAX, INT_MAX});
 
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,
@@ -40,24 +41,24 @@ MainWindow::MainWindow(QWidget *parent)
   });
   connect(ui->actionSave, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::save);
-  connect(ui->actionSaveProjectAs, &QAction::triggered, [] () {
-    ProjectManager::getInstance()->saveAs();
-  });
+  connect(ui->actionSaveProjectAs, &QAction::triggered,
+          ProjectManager::getInstance(), QOverload<>::of(&ProjectManager::saveAs));
   connect(ui->actionOpenProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::open);
+  connect(ui->actionRunSimulation, &QAction::triggered,
+          queue.get(), &Command::Queue::start);
 
-  ui->splitter->setSizes({INT_MAX, INT_MAX});
+  // add button to add step to tab widget
   QToolButton* addStepButton = new QToolButton(this);
   addStepButton->setCursor(Qt::ArrowCursor);
   addStepButton->setAutoRaise(true);
   addStepButton->setIcon(QIcon::fromTheme("add"));
   connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
   ui->stepconfigurator->setCornerWidget(addStepButton);
-  connect(
-    LogForwarder::getInstance(),
-    &LogForwarder::addMessage,
-    ui->logOutput,
-    &QPlainTextEdit::appendPlainText);
+
+  connect(LogForwarder::getInstance(), &LogForwarder::addMessage,
+          ui->logOutput, &QPlainTextEdit::appendPlainText);
+
   connect(queue.get(), &Command::Queue::stepFinished, [this] (int stepIndex, bool success) {
     if (success)
     {
@@ -74,23 +75,15 @@ MainWindow::MainWindow(QWidget *parent)
       setMoleculeFile(coordinates, trajectory);
     }
   });
-  connect(ui->actionRunSimulation, &QAction::triggered, [this] () {
-    queue->start();
-  });
 
-  connect(
-    StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
-    [this] (const QString& message) {
-      ui->statusbar->showMessage(message, 10000);
-    });
+  connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
+          [this] (const QString& message) {
+            ui->statusbar->showMessage(message);
+          });
+
   setupUIForProject();
-  connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged, [this] () {
-    connect(ProjectManager::getInstance()->getCurrentProject().get(),
-            &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
-    setupUIForProject();
-  });
-  connect(ProjectManager::getInstance()->getCurrentProject().get(), &Model::Project::stepAdded,
-          this, &MainWindow::addTabForStep);
+  connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
+          this, &MainWindow::setupUIForProject);
 
   connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
           [] (int index) {
@@ -155,6 +148,8 @@ void MainWindow::setupUIForProject()
       disconnect(conn);
     }
 
+    conns << connect(project.get(),
+            &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
     Model::SystemSetup* systemSetup = project->getSystemSetup().get();
     conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
             ui->actionRunSimulation, &QAction::setEnabled);
