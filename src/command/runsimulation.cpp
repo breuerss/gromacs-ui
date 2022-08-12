@@ -144,11 +144,15 @@ void RunSimulation::checkProgress()
   check.waitForFinished();
   QString stepsText = check.readAllStandardOutput();
   bool ok;
-  int steps = stepsText.toInt(&ok, 10);
+  int stepsDone = stepsText.toInt(&ok, 10);
   if (ok)
   {
-    float progressValue = 100.0 * steps / simulation->property("numberOfSteps").value<double>();
-    emit progress(progressValue);
+    double numberOfSteps = simulation->property("numberOfSteps").value<double>();
+    if (numberOfSteps > 0)
+    {
+      float progressValue = 100.0 * stepsDone / numberOfSteps;
+      emit progress(progressValue);
+    }
   }
 }
 
