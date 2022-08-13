@@ -7,16 +7,17 @@
 #include <memory>
 #include <functional>
 #include <QDebug>
+#include <QMetaObject>
 
 template<typename ElementType, typename ValueType>
-void connectToSpinBox(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
+QMetaObject::Connection connectToSpinBox(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
 {
   ElementType* widget = container->findChild<ElementType*>(elementName);
   if (!widget)
   {
     widget = dynamic_cast<ElementType*>(container);
   }
-  QObject::connect(
+  auto conn = QObject::connect(
     widget,
     QOverload<ValueType>::of(&ElementType::valueChanged),
     [model, elementName] (ValueType value) {
@@ -25,10 +26,11 @@ void connectToSpinBox(QWidget* container, std::shared_ptr<QObject> model, const 
 
   ValueType value = model->property(elementName.toStdString().c_str()).value<ValueType>();
   widget->setValue(value);
+  return conn;
 }
 
 template<typename ValueType>
-void connectToComboBox(
+QMetaObject::Connection connectToComboBox(
   QWidget* container,
   std::shared_ptr<QObject> model,
   const QString& elementName,
@@ -41,7 +43,7 @@ void connectToComboBox(
     widget = dynamic_cast<QComboBox*>(container);
   }
 
-  QObject::connect(
+  auto conn = QObject::connect(
     widget,
     QOverload<int>::of(&QComboBox::currentIndexChanged),
     [model, elementName, widget, callback] (int) {
@@ -64,16 +66,18 @@ void connectToComboBox(
 
   widget->setCurrentIndex(-1);
   widget->setCurrentIndex(index);
+
+  return conn;
 }
 
-void connectToLineEdit(
+QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
   std::shared_ptr<QObject> model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback = nullptr
   );
 
-void connectToCheckbox(
+QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
   std::shared_ptr<QObject> model,
   const QString& elementName,

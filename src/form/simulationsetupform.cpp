@@ -238,7 +238,7 @@ SimulationSetupForm::SimulationSetupForm(
       }
     });
 
-  connectToCheckbox(ui->resume, simulation, "resume");
+  conns << connectToCheckbox(ui->resume, simulation, "resume");
 
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {

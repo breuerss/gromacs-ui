@@ -1,13 +1,13 @@
 #include "connectionhelper.h"
 
-void connectToLineEdit(
+QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
   std::shared_ptr<QObject> model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback
   )
 {
-  QObject::connect(
+  auto conn = QObject::connect(
     widget,
     &QLineEdit::textChanged,
     [model, elementName, callback] (const QString& value) {
@@ -20,16 +20,18 @@ void connectToLineEdit(
 
   QString value = model->property(elementName.toStdString().c_str()).value<QString>();
   widget->setText(value);
+
+  return conn;
 }
 
-void connectToCheckbox(
+QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
   std::shared_ptr<QObject> model,
   const QString& elementName,
   std::function<void(bool)>&& callback
   )
 {
-  QObject::connect(
+  auto conn = QObject::connect(
     widget,
     &QCheckBox::stateChanged,
     [model, elementName, callback] (int state) {
@@ -43,4 +45,6 @@ void connectToCheckbox(
 
   bool value = model->property(elementName.toStdString().c_str()).value<bool>();
   widget->setChecked(value);
+
+  return conn;
 }
