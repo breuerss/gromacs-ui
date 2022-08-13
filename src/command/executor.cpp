@@ -17,11 +17,16 @@ Executor::Executor(QObject *parent)
       running = false;
       emit runningChanged(running);
       QString command = process.program() + " " + process.arguments().join(" ");
-      QString message("Error executing " + command);
+      QString message("Error executing ");
       if (process.exitCode() == 0)
       {
-        message = "Sucessfully executed " + command;
+        message = "Sucessfully executed ";
       }
+      else if (terminationRequested)
+      {
+        message = "Terminated command ";
+      }
+      message += command;
 
       StatusMessageSetter::getInstance()->setMessage(message);
       emit finished();
@@ -42,6 +47,7 @@ Executor::~Executor()
 
 void Executor::exec()
 {
+  terminationRequested = false;
   emit runningChanged(running);
   emit started();
   doExecute();
@@ -50,6 +56,7 @@ void Executor::exec()
 void Executor::stop()
 {
   qDebug() << "stopping";
+  terminationRequested = true;
   process.terminate();
   process.waitForFinished();
 }
