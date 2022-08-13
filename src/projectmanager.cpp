@@ -79,7 +79,7 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
       filter
       );
 
-    if (!writeToFileName.endsWith(defaultSuffix))
+    if (!writeToFileName.isEmpty() && !writeToFileName.endsWith(defaultSuffix))
     {
       writeToFileName += defaultSuffix;
     }
