@@ -39,6 +39,7 @@ void Filter::doExecute()
   process.start(command, arguments);
   process.waitForFinished();
 
+  // TODO split into different command/remove altogether if pdbfixer is present
   if (systemSetup->property("removeHeteroAtoms").value<bool>())
   {
     QString tmpFileName;
