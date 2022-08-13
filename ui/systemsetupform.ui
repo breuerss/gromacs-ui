@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>781</width>
-    <height>876</height>
+    <height>912</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -610,6 +610,35 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>projectName</tabstop>
+  <tabstop>pdbEntry</tabstop>
+  <tabstop>forceField</tabstop>
+  <tabstop>waterModel</tabstop>
+  <tabstop>generateInputCoordinates</tabstop>
+  <tabstop>usePdbFixer</tabstop>
+  <tabstop>useFilter</tabstop>
+  <tabstop>usecreateBox</tabstop>
+  <tabstop>useSolvate</tabstop>
+  <tabstop>useNeutralise</tabstop>
+  <tabstop>removeHeteroAtoms</tabstop>
+  <tabstop>boxType</tabstop>
+  <tabstop>distanceToEdge</tabstop>
+  <tabstop>ionConcentration</tabstop>
+  <tabstop>mgIon</tabstop>
+  <tabstop>liIon</tabstop>
+  <tabstop>kIon</tabstop>
+  <tabstop>csIon</tabstop>
+  <tabstop>caIon</tabstop>
+  <tabstop>naIon</tabstop>
+  <tabstop>rbIon</tabstop>
+  <tabstop>fIon</tabstop>
+  <tabstop>clIon</tabstop>
+  <tabstop>brIon</tabstop>
+  <tabstop>iIon</tabstop>
+  <tabstop>localFileDialogButton</tabstop>
+  <tabstop>localFile</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

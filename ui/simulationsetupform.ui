@@ -774,6 +774,34 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>simulationType</tabstop>
+  <tabstop>numberOfSteps</tabstop>
+  <tabstop>timeStep</tabstop>
+  <tabstop>algorithm</tabstop>
+  <tabstop>energyOutputFrequency</tabstop>
+  <tabstop>compressedPositionOutputFrequency</tabstop>
+  <tabstop>positionOutputFrequency</tabstop>
+  <tabstop>velocityOutputFrequency</tabstop>
+  <tabstop>forceOutputFrequency</tabstop>
+  <tabstop>logOutputFrequency</tabstop>
+  <tabstop>minimisationMaximumForce</tabstop>
+  <tabstop>minimisationStepSize</tabstop>
+  <tabstop>temperatureAlgorithm</tabstop>
+  <tabstop>pressureAlgorithm</tabstop>
+  <tabstop>pressureCouplingType</tabstop>
+  <tabstop>pressureUpdateInterval</tabstop>
+  <tabstop>pressure</tabstop>
+  <tabstop>electrostaticAlgorithm</tabstop>
+  <tabstop>electrostaticCutoffRadius</tabstop>
+  <tabstop>fourierSpacing</tabstop>
+  <tabstop>vdwCutoffRadius</tabstop>
+  <tabstop>rerunSimulation</tabstop>
+  <tabstop>addTemperatureCouplingGroup</tabstop>
+  <tabstop>showLog</tabstop>
+  <tabstop>showTrajectoryButton</tabstop>
+  <tabstop>showMdp</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
