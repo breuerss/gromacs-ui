@@ -38,6 +38,8 @@ private:
   std::shared_ptr<SimulationStatusChecker> simulationChecker;
   QFileSystemWatcher progressChecker;
   void checkProgress();
+
+  bool isMinimisation() const;
 };
 
 }

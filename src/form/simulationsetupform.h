@@ -3,9 +3,13 @@
 
 #include <QWidget>
 #include <QComboBox>
+#include <cmath>
 #include <memory>
 #include <QMetaObject>
 #include <QList>
+#include <QChart>
+#include <QSplineSeries>
+#include <QChartView>
 #include "../model/simulation.h"
 #include "qglobal.h"
 
@@ -44,6 +48,7 @@ private:
 
   void updateUiForSimulationType(Model::Simulation::Type type = Model::Simulation::Type::None);
   void setAlgorithmsForType(Model::Simulation::Type type);
+  void setProgressViewForType(Model::Simulation::Type type);
   void setPressureAlgorithmsForType(Model::Simulation::Type type);
   void setTemperatureAlgorithmsForType(Model::Simulation::Type type);
   void hideSettings();
@@ -55,6 +60,13 @@ private:
 
   qint64 timeStampStarted;
   float firstProgressValue = -1;
+
+  QtCharts::QChart* progressValueChart;
+  QtCharts::QChartView* chartView;
+  QtCharts::QSplineSeries* series;
+  void setupProgressValueChart();
+  float min = INFINITY;
+  float max = -INFINITY;
 };
 
 #endif // SIMULATIONSETUPFORM_H

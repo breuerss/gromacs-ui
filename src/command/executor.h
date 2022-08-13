@@ -11,6 +11,10 @@ class Executor : public QObject
 {
   Q_OBJECT
 public:
+  enum class ProgressType {
+    Percentage,
+    Value,
+  };
   explicit Executor(QObject *parent = nullptr);
   ~Executor();
   virtual void doExecute() = 0;
@@ -25,7 +29,7 @@ public:
 signals:
   void finished();
   void started();
-  void progress(float percentage);
+  void progress(float percentage, ProgressType type = ProgressType::Percentage);
   void runningChanged(bool running);
 
 protected:

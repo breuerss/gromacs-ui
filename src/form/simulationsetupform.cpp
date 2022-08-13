@@ -1,5 +1,8 @@
 #include "simulationsetupform.h"
+#include "qframe.h"
+#include "qnamespace.h"
 #include "qpushbutton.h"
+#include "qsizepolicy.h"
 #include "src/command/runsimulation.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
@@ -10,8 +13,8 @@
 #include "../simulationstatuschecker.h"
 #include "../filecontentviewer.h"
 #include <algorithm>
-#include <cmath>
-#include <math.h>
+#include <QGraphicsView>
+#include <QGraphicsLayout>
 #include <QDateTime>
 
 SimulationSetupForm::SimulationSetupForm(
@@ -27,6 +30,7 @@ SimulationSetupForm::SimulationSetupForm(
   , ui(new Ui::SimulationSetupForm)
 {
   ui->setupUi(this);
+  setupProgressValueChart();
 
   using Model::Simulation;
 
@@ -46,6 +50,7 @@ SimulationSetupForm::SimulationSetupForm(
     [this] (Simulation::Type type) {
       updateUiForSimulationType(type);
     });
+  updateUiForSimulationType(simulation->property("simulationType").value<Simulation::Type>());
 
   QList<QPair<QString, Simulation::PressureCouplingType>> pressureCouplingTypeOptions = {
     { "Isotropic", Simulation::PressureCouplingType::Isotropic },
@@ -185,33 +190,61 @@ SimulationSetupForm::SimulationSetupForm(
         command->exec();
       }
     });
+
   conns << connect(
     command.get(),
     &Command::RunSimulation::progress,
-    [this] (float progress) {
-      ui->simulationProgress->setValue(progress);
-
-      if (firstProgressValue == -1)
+    [this] (float progress, Command::Executor::ProgressType type) {
+      if (type == Command::Executor::ProgressType::Value)
       {
-        firstProgressValue = progress;
-      }
 
-      QString assumendEndText("∞");
-      // if simulation is resumed the percentage refers to the remaining time
-      float actualProgress = (progress - firstProgressValue) / (100.0 - firstProgressValue) * 100.0;
-      if (actualProgress > 0)
-      {
-        const qint64 currentTimeStamp = QDateTime::currentSecsSinceEpoch();
-        const qint64 timePassed = currentTimeStamp - timeStampStarted;
-        const qint64 assumedEndTimeStamp = timeStampStarted + (timePassed / actualProgress * 100);
-        assumendEndText = QDateTime::fromSecsSinceEpoch(assumedEndTimeStamp).toString();
+        if (progress == 0)
+        {
+          return;
+        }
+        using namespace QtCharts;
+        auto vertical = progressValueChart->axes(Qt::Vertical).first();
+        auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
+        min = std::min<float>(min, progress);
+        max = std::max<float>(max, progress);
+        vertical->setRange(min, max);
+
+        auto series = dynamic_cast<QSplineSeries*>(progressValueChart->series()[0]); 
+        horizontal->setRange(0, series->count());
+
+        auto point = QPointF(series->count(), progress);
+        (*series) << point;
       }
-      ui->assumedFinished->setText(assumendEndText);
+      else
+      {
+        ui->simulationProgress->setValue(progress);
+        if (firstProgressValue == -1)
+        {
+          firstProgressValue = progress;
+        }
+
+        QString assumedEndText("∞");
+        // if simulation is resumed the percentage refers to the remaining time
+        float actualProgress = (progress - firstProgressValue) / (100.0 - firstProgressValue) * 100.0;
+        if (actualProgress > 0)
+        {
+          const qint64 currentTimeStamp = QDateTime::currentSecsSinceEpoch();
+          const qint64 timePassed = currentTimeStamp - timeStampStarted;
+          const qint64 assumedEndTimeStamp = timeStampStarted + (timePassed / actualProgress * 100);
+          assumedEndText = QDateTime::fromSecsSinceEpoch(assumedEndTimeStamp).toString();
+        }
+        ui->assumedFinished->setText(assumedEndText);
+
+      }
     });
+
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {
                      timeStampStarted = QDateTime::currentSecsSinceEpoch();
+                     series->removePoints(0, series->count());
                      firstProgressValue = -1;
+                     min = INFINITY;
+                     max = -INFINITY;
                      ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
                      ui->rerunSimulation->setText(tr("Stop Simulation"));
                      ui->simulationProgress->setEnabled(true);
@@ -238,6 +271,7 @@ void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type
   setAlgorithmsForType(type);
   setPressureAlgorithmsForType(type);
   setTemperatureAlgorithmsForType(type);
+  setProgressViewForType(type);
   enableAllSettings();
   using Model::Simulation;
   switch(type)
@@ -345,6 +379,14 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type t
   setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map, defaultValue);
 }
 
+void SimulationSetupForm::setProgressViewForType(Model::Simulation::Type type)
+{
+  const bool showChart = type == Model::Simulation::Type::Minimisation;
+  chartView->setVisible(showChart);
+  ui->simulationProgress->setVisible(!showChart);
+  ui->assumedFinished->setVisible(!showChart);
+}
+
 void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Type type)
 {
   using Model::Simulation;
@@ -404,4 +446,33 @@ void SimulationSetupForm::showEvent(QShowEvent*)
   ui->showTrajectoryButton->setEnabled(checker.hasData());
   ui->showLog->setEnabled(checker.hasLog());
   ui->showMdp->setEnabled(checker.hasMdp());
+}
+
+void SimulationSetupForm::setupProgressValueChart()
+{
+  using namespace QtCharts;
+
+  progressValueChart = new QtCharts::QChart();
+
+  progressValueChart->setMargins(QMargins());
+  progressValueChart->legend()->hide();
+  progressValueChart->layout()->setContentsMargins(0, 6, 0, 0);
+  progressValueChart->setBackgroundVisible(false);
+
+  series = new QSplineSeries();
+  progressValueChart->addSeries(series);
+
+  progressValueChart->createDefaultAxes();
+  auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
+  horizontal->setVisible(false);
+  auto vertical = progressValueChart->axes(Qt::Vertical).first();
+  vertical->setVisible(false);
+
+  chartView = new QtCharts::QChartView(progressValueChart);
+  chartView->setFrameStyle(QFrame::NoFrame);
+  chartView->setRenderHint(QPainter::Antialiasing);
+  chartView->setStyleSheet("background-color: transparent;");
+  chartView->setMinimumWidth(180);
+  chartView->setVisible(false);
+  ui->runLayout->addWidget(chartView);
 }

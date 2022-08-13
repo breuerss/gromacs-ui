@@ -93,7 +93,7 @@
        </spacer>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_26">
+       <layout class="QVBoxLayout" name="runLayout">
         <item alignment="Qt::AlignTop">
          <widget class="QPushButton" name="rerunSimulation">
           <property name="enabled">
@@ -133,7 +133,7 @@
            <string/>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
