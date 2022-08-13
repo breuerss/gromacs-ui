@@ -3,8 +3,6 @@
 1. disable configuration during run
 1. import from mdp
 1. import from directory
-1. show trajectory button enabled although no input configuration exists
-1. simulation progress not shown, when the simulation is freshly started
 1. mdrun reports simulation failed although it was controlled interrupted
 1. autogeneration of configuration should be disabled
 1. generation of input configuration should be handled similarly to steps
