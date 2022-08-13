@@ -9,7 +9,7 @@ Executor::Executor(QObject *parent)
   : QObject{parent}
 , mHasRun(false)
 {
-  connect(
+  conns << connect(
     &process,
     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
     [this] (int, QProcess::ExitStatus) {
@@ -31,7 +31,7 @@ Executor::Executor(QObject *parent)
       StatusMessageSetter::getInstance()->setMessage(message);
       emit finished();
     });
-  connect(
+  conns << connect(
     &process,
     &QProcess::started,
     [this] () {
@@ -43,6 +43,12 @@ Executor::Executor(QObject *parent)
 Executor::~Executor()
 {
   LogForwarder::getInstance()->detach(&process);
+  for (auto& conn : conns)
+  {
+    disconnect(conn);
+  }
+  process.kill();
+  process.waitForFinished();
 }
 
 void Executor::exec()

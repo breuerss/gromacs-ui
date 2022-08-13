@@ -33,6 +33,7 @@ private:
   bool mHasRun;
   bool running;
   bool terminationRequested = false;
+  QList<QMetaObject::Connection> conns;
 };
 
 }
