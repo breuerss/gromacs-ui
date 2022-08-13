@@ -17,7 +17,7 @@ CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject
 
 void CreateBox::doExecute()
 {
-  qDebug() << "Create Box";
+  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -40,6 +40,11 @@ void CreateBox::doExecute()
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
+
+QString CreateBox::getName() const
+{
+  return "Box Creation";
 }
 
 QString CreateBox::getOutputFilename() const

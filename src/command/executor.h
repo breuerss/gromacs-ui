@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QString>
 
 namespace Command {
 
@@ -13,6 +14,7 @@ public:
   explicit Executor(QObject *parent = nullptr);
   ~Executor();
   virtual void doExecute() = 0;
+  virtual QString getName() const = 0;
   void exec();
   void stop();
 

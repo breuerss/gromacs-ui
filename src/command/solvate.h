@@ -13,6 +13,7 @@ class Solvate : public Executor, public InputOutputFileLink
 public:
   explicit Solvate(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
   void doExecute() override;
+  QString getName() const override;
   QString getOutputFilename() const override;
 
 private:

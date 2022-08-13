@@ -22,6 +22,7 @@ public:
     std::shared_ptr<Model::Simulation> simulation,
     QObject *parent = nullptr);
   void doExecute() override;
+  QString getName() const override;
 
 private:
   bool execGrompp(

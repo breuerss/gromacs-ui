@@ -19,7 +19,7 @@ Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObje
 
 void Neutralise::doExecute()
 {
-  qDebug() << "Neutralise";
+  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -88,6 +88,11 @@ void Neutralise::doExecute()
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
 
   process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
+}
+
+QString Neutralise::getName() const
+{
+  return "Neutralisation";
 }
 
 QString Neutralise::getOutputFilename() const

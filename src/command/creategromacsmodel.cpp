@@ -20,7 +20,7 @@ CreateGromacsModel::CreateGromacsModel(
 
 void CreateGromacsModel::doExecute()
 {
-  qDebug() << "Create model";
+  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -44,6 +44,11 @@ void CreateGromacsModel::doExecute()
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
+
+QString CreateGromacsModel::getName() const
+{
+  return "GROMACS model creation";
 }
 
 QString CreateGromacsModel::getOutputFilename() const

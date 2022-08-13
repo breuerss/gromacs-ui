@@ -16,6 +16,7 @@ class CreateBox : public Executor, public InputOutputFileLink
 public:
   explicit CreateBox(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
   void doExecute() override;
+  QString getName() const override;
   QString getOutputFilename() const override;
 
 private:

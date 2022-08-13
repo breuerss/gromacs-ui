@@ -18,7 +18,7 @@ Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *pa
 
 void Solvate::doExecute()
 {
-  qDebug() << "Solvate";
+  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -44,6 +44,11 @@ void Solvate::doExecute()
   process.setWorkingDirectory(inputDirectory);
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
   process.start(command);
+}
+
+QString Solvate::getName() const
+{
+  return "Solvation";
 }
 
 QString Solvate::getOutputFilename() const

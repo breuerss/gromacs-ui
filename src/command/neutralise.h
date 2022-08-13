@@ -20,6 +20,7 @@ public:
     QObject *parent = nullptr
     );
   void doExecute() override;
+  QString getName() const override;
   QString getOutputFilename() const override;
 
 private:

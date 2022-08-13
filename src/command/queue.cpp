@@ -17,9 +17,10 @@ Queue::Queue(QObject *parent)
 Queue* Queue::clear()
 {
   queue.clear();
+  disconnectCurrent();
+
   if (current)
   {
-    disconnect(current.get(), 0, 0, 0);
     current->stop();
     current.reset();
   }
@@ -34,6 +35,7 @@ Queue* Queue::enqueue(std::shared_ptr<Executor> executor, bool needsPrevious)
     updateLink(queue.at(beforeSize - 1).first, executor);
   }
   queue.push_back({executor, needsPrevious});
+  numberOfSteps = queue.size();
 
   return this;
 }
@@ -51,6 +53,7 @@ void Queue::updateLink(std::shared_ptr<Executor> prevExecutor, std::shared_ptr<E
 Queue* Queue::remove(size_t at)
 {
   queue.erase(queue.begin() + at);
+  numberOfSteps = queue.size();
 
   return this;
 }
@@ -69,6 +72,7 @@ Queue* Queue::insert(size_t at, std::shared_ptr<Executor> executor, bool needsPr
   }
 
   queue.insert(queue.begin() + at, {executor, needsPrevious});
+  numberOfSteps = queue.size();
 
   return this;
 }
@@ -76,13 +80,7 @@ Queue* Queue::insert(size_t at, std::shared_ptr<Executor> executor, bool needsPr
 void Queue::start()
 {
   qDebug() << __PRETTY_FUNCTION__;
-  numberOfSteps = queue.size();
   execNext();
-}
-
-std::shared_ptr<Executor> Queue::getElement(size_t at)
-{
-  return queue.at(at).first;
 }
 
 std::shared_ptr<Executor> Queue::first()
@@ -95,7 +93,7 @@ std::shared_ptr<Executor> Queue::last()
   return queue.back().first;
 }
 
-bool Queue::wasSuccessful()
+bool Queue::wasSuccessful() const
 {
   return !failed;
 }
@@ -105,6 +103,7 @@ void Queue::execNext()
   qDebug() << __PRETTY_FUNCTION__;
   if (queue.size() > 0)
   {
+    running = true;
     qDebug() << "queue has elements" << queue.size();
     auto nextCommand = queue.front();
     bool needsPrevious = nextCommand.second;
@@ -115,15 +114,14 @@ void Queue::execNext()
     {
       qDebug() << "can run";
       current = nextCommand.first;
-      connect(current.get(), &Executor::finished, [this] () {
-        if (current)
-        {
-          disconnect(current.get(), 0, 0, 0);
-        }
-        emit stepFinished(numberOfSteps - queue.size() - 1, current->wasSuccessful());
+      conn = connect(current.get(), &Executor::finished, [this] () {
+        disconnectCurrent();
+        emit stepFinished(numberOfSteps - queue.size() - 1, current, current->wasSuccessful());
+        running = false;
         execNext();
       });
       queue.pop_front();
+      emit stepStarted(numberOfSteps - queue.size() - 1, current);
       current->exec();
     }
     else
@@ -134,7 +132,36 @@ void Queue::execNext()
   }
   else
   {
+    running = false;
     emit finished(!failed);
+  }
+}
+
+size_t Queue::getSize() const
+{
+  return numberOfSteps;
+}
+
+bool Queue::isRunning() const
+{
+  return running;
+}
+
+void Queue::stop()
+{
+  disconnectCurrent();
+  if (current)
+  {
+    current->stop();
+  }
+  running = false;
+}
+
+void Queue::disconnectCurrent()
+{
+  if (current)
+  {
+    disconnect(conn);
   }
 }
 

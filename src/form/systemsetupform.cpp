@@ -1,4 +1,5 @@
 #include "../appprovider.h"
+#include "src/command/executor.h"
 #include "src/command/inputfilelink.h"
 #include "src/command/inputoutputfilelink.h"
 #include "systemsetupform.h"
@@ -47,6 +48,8 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   ui->projectName->setValidator(projectNameValidator);
 
   connect(queue.get(), &Command::Queue::finished, [this] (bool success) {
+    ui->currentlyRunning->setText("");
+    ui->processingProgress->setEnabled(false);
     if (success)
     {
       auto link = std::dynamic_pointer_cast<Command::InputOutputFileLink>(queue->last());
@@ -56,6 +59,16 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
       }
     }
   });
+  connect(queue.get(), &Command::Queue::stepStarted,
+          [this] (size_t, std::shared_ptr<Command::Executor> step) {
+            ui->currentlyRunning->setText(step->getName());
+          });
+
+  connect(queue.get(), &Command::Queue::stepFinished,
+          [this] (size_t stepIndex, std::shared_ptr<Command::Executor>, bool) {
+    ui->processingProgress->setValue(100.0 * (stepIndex + 1)/ queue->getSize());
+  });
+
 
   connectToComboBox<QString>(ui->boxType, systemSetup, "boxType");
   connectToComboBox<QString>(ui->waterModel, systemSetup, "waterModel");
@@ -108,7 +121,22 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 
   setGroupsEnabled(!systemSetup->getSourceStructureFile().isEmpty());
   connect(ui->generateInputCoordinates, &QPushButton::clicked,
-          this, &SystemSetupForm::preprocess);
+          [this] () {
+            QString icon = "system-run";
+            QString text = tr("Process Coordinates");
+            if (queue->isRunning())
+            {
+              stopPreprocess();
+            }
+            else
+            {
+              icon = "media-playback-stop";
+              text = tr("Stop processing");
+              preprocess();
+            }
+            ui->generateInputCoordinates->setIcon(QIcon::fromTheme(icon));
+            ui->generateInputCoordinates->setText(text);
+          });
 
   auto reactToPdbCode = [this] (const QString& pdbCode) {
     ui->pdbEntry->setStyleSheet("");
@@ -152,6 +180,8 @@ void SystemSetupForm::preprocess()
 {
   qDebug() << "preprocess";
   queue->clear();
+  ui->processingProgress->setEnabled(true);
+  ui->processingProgress->setValue(0);
 
   if (ui->usePdbFixer->isChecked())
   {
@@ -190,7 +220,12 @@ void SystemSetupForm::preprocess()
   }
 
   queue->start();
+}
 
+void SystemSetupForm::stopPreprocess()
+{
+  queue->stop();
+  ui->processingProgress->setEnabled(false);
 }
 
 void SystemSetupForm::showEvent(QShowEvent*)

@@ -81,6 +81,11 @@ void RunSimulation::doExecute()
   checkProgress();
 }
 
+QString RunSimulation::getName() const
+{
+  return "mdrun simulation";
+}
+
 bool RunSimulation::execGrompp(
   const QString& mdpFile,
   const QString& inputStructure,

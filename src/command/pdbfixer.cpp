@@ -17,7 +17,7 @@ PdbFixer::PdbFixer(QObject *parent)
 
 void PdbFixer::doExecute()
 {
-  qDebug() << "PDB Fixer";
+  qDebug() << getName();
   QString command = AppProvider::get("pdbfixer");
   if (command.isEmpty())
   {
@@ -41,6 +41,12 @@ void PdbFixer::doExecute()
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
+
+
+QString PdbFixer::getName() const
+{
+  return "pdbfixer";
 }
 
 QString PdbFixer::getOutputFilename() const

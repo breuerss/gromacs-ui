@@ -18,6 +18,7 @@ public:
   explicit Filter(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
 
   void doExecute() override;
+  QString getName() const override;
   QString getOutputFilename() const override;
 
 private:

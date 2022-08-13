@@ -22,6 +22,7 @@
 #include <QToolButton>
 #include <QCoreApplication>
 #include <climits>
+#include <memory>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -59,22 +60,23 @@ MainWindow::MainWindow(QWidget *parent)
   connect(LogForwarder::getInstance(), &LogForwarder::addMessage,
           ui->logOutput, &QPlainTextEdit::appendPlainText);
 
-  connect(queue.get(), &Command::Queue::stepFinished, [this] (int stepIndex, bool success) {
-    if (success)
-    {
-      auto project = ProjectManager::getInstance()->getCurrentProject();
-      SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
+  connect(queue.get(), &Command::Queue::stepFinished,
+          [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
+            if (success)
+            {
+              auto project = ProjectManager::getInstance()->getCurrentProject();
+              SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
 
-      QString trajectory;
-      if (checker.hasTrajectory())
-      {
-        trajectory = checker.getTrajectoryPath();
-      }
+              QString trajectory;
+              if (checker.hasTrajectory())
+              {
+                trajectory = checker.getTrajectoryPath();
+              }
 
-      QString coordinates = checker.getCoordinatesPath();
-      setMoleculeFile(coordinates, trajectory);
-    }
-  });
+              QString coordinates = checker.getCoordinatesPath();
+              setMoleculeFile(coordinates, trajectory);
+            }
+          });
 
   connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
           [this] (const QString& message) {
