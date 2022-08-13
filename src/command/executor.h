@@ -32,8 +32,8 @@ protected:
   QProcess process;
 
 private:
-  bool mHasRun;
-  bool running;
+  bool mHasRun = false;
+  bool running = false;
   bool terminationRequested = false;
   QList<QMetaObject::Connection> conns;
 };
