@@ -8,7 +8,6 @@
 1. loading source structure from drive
 1. simulation steps should only be runnable if source structure is available
 
-1. progress information for minimisation or at least a curve over time or the energy values
 1. system setup template names should be defined in system setup, regenerate signal should be used instead of value set
 
 1. visualisation presets do not allow to filter out molecule groups
