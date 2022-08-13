@@ -17,7 +17,7 @@ SimulationStatusChecker::SimulationStatusChecker(
 
 bool SimulationStatusChecker::hasData() const
 {
-  return hasCoordinates() || hasTrajectory();
+  return hasCoordinates();
 }
 
 bool SimulationStatusChecker::hasTrajectory() const
