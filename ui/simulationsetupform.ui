@@ -109,6 +109,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="resume">
+          <property name="text">
+           <string>Resume if possible</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_2">
           <property name="orientation">
            <enum>Qt::Vertical</enum>

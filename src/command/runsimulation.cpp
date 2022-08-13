@@ -72,7 +72,10 @@ void RunSimulation::doExecute()
   QString command = gmx + " mdrun";
   command += " -deffnm " + simulation->getTypeAsString();
   command += " -cpt 5";
-  command += " -cpi";
+  if (simulation->property("resume").value<bool>())
+  {
+    command += " -cpi";
+  }
 
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(dir.absolutePath());

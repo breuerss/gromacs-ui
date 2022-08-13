@@ -238,6 +238,8 @@ SimulationSetupForm::SimulationSetupForm(
       }
     });
 
+  connectToCheckbox(ui->resume, simulation, "resume");
+
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {
                      timeStampStarted = QDateTime::currentSecsSinceEpoch();

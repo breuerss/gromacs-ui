@@ -88,6 +88,7 @@ public:
   Q_PROPERTY(double pressure MEMBER pressure NOTIFY pressureChanged);
   Q_PROPERTY(double pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
   Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
+  Q_PROPERTY(bool resume MEMBER resume NOTIFY resumeChanged);
 
   Q_PROPERTY(TemperatureAlgorithm temperatureAlgorithm
              MEMBER temperatureAlgorithm NOTIFY temperatureAlgorithmChanged);
@@ -120,6 +121,7 @@ signals:
   void pressureChanged(double);
   void pressureUpdateIntervalChanged(double);
   void pressureCouplingTypeChanged(PressureCouplingType);
+  void resumeChanged(bool newResume);
 
   void temperatureAlgorithmChanged(TemperatureAlgorithm);
   void temperatureCouplingGroupAdded(std::shared_ptr<TemperatureCouplingGroup>, int at);
@@ -168,6 +170,8 @@ private:
   std::vector<std::shared_ptr<TemperatureCouplingGroup>> temperatureCouplingGroups;
 
   std::shared_ptr<Simulation> previousStep;
+
+  bool resume = true;
 };
 
 QString toString(Simulation::Algorithm algorithm);
