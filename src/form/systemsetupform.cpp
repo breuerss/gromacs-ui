@@ -310,7 +310,7 @@ void SystemSetupForm::connectIonSelectors()
     { ui->rbIon, "RB" },
     { ui->csIon, "CS" },
   };
-  for (auto* button: positiveIonMap.keys())
+  for (auto button: positiveIonMap.keys())
   {
     QString ion = positiveIonMap[button];
     connect(button, &QRadioButton::toggled,
@@ -329,7 +329,7 @@ void SystemSetupForm::connectIonSelectors()
     { ui->brIon, "BR" },
     { ui->iIon, "I" },
   };
-  for (auto* button: negativeIonMap.keys())
+  for (auto button: negativeIonMap.keys())
   {
     QString ion = negativeIonMap[button];
     connect(
@@ -354,7 +354,7 @@ void SystemSetupForm::setGroupsEnabled(bool enabled)
 
 void SystemSetupForm::handlePdbDownload(const QString& pdbCode, const QString& absFilePath)
 {
-  auto* pdbDownloader = new PdbDownloader();
+  auto pdbDownloader = new PdbDownloader();
   connect(pdbDownloader, &PdbDownloader::downloaded,
           [pdbDownloader, this] (const QString& /*pdbCode*/, const QString& file) {
             pdbDownloader->deleteLater();

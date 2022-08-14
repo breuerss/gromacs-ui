@@ -13,7 +13,7 @@ void PdbDownloader::download(const QString& pdbCode, const QString& fileName)
 {
   qDebug() << "pdb code" << pdbCode;
   QNetworkRequest request(createUrlFor(pdbCode));
-  auto* reply = get(request);
+  auto reply = get(request);
   connect(reply, &QNetworkReply::finished, [this, pdbCode, reply, fileName] () {
     reply->deleteLater();
 

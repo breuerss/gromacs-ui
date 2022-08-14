@@ -98,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent)
     [] () {
 
       using Model::Simulation;
-      auto* manager = ProjectManager::getInstance();
+      auto manager = ProjectManager::getInstance();
       auto project = manager->getCurrentProject();
       project->clearSteps();
       auto step = project->addStep();
@@ -207,7 +207,7 @@ void MainWindow::setupUIForProject()
     });
 
     ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
-    auto* tabBar = ui->stepconfigurator->tabBar();
+    auto tabBar = ui->stepconfigurator->tabBar();
     tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
     tabBar->setTabButton(0, QTabBar::RightSide, 0);
     for (auto step: project->getSteps())
