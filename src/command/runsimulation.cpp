@@ -26,7 +26,7 @@ RunSimulation::RunSimulation(
     progressChecker.removePath(simulationChecker->getLogPath());
   });
   connect(this, &RunSimulation::started, [this] () {
-    emit progress(0, isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
+    emit progress(0, simulation->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
   });
   connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
 }
@@ -145,7 +145,7 @@ void RunSimulation::checkProgress()
   }
 
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
-  if (isMinimisation())
+  if (simulation->isMinimisation())
   {
     command = QString("tail -n30 %1 | awk '/Potential/ { getline; print $1}' | tail -n1");
   }
@@ -162,7 +162,7 @@ void RunSimulation::checkProgress()
     return;
   }
 
-  if (isMinimisation())
+  if (simulation->isMinimisation())
   {
     emit progress(stepsDone, ProgressType::Value);
     return;
@@ -174,14 +174,6 @@ void RunSimulation::checkProgress()
     float progressValue = 100.0 * stepsDone / numberOfSteps;
     emit progress(progressValue);
   }
-}
-
-bool RunSimulation::isMinimisation() const
-{
-  using Model::Simulation;
-  auto algo = simulation->property("algorithm").value<Simulation::Algorithm>();
-  return algo == Simulation::Algorithm::SteepestDecent ||
-    algo == Simulation::Algorithm::ConjugateGradient;
 }
 
 }

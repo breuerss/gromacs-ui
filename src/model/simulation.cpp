@@ -50,6 +50,12 @@ void Simulation::setPreviousStep(std::shared_ptr<Simulation> newPreviousStep)
   previousStep = newPreviousStep;
 }
 
+bool Simulation::isMinimisation() const
+{
+  return algorithm == Simulation::Algorithm::SteepestDecent ||
+    algorithm == Simulation::Algorithm::ConjugateGradient;
+}
+
 std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups()
 {
   return temperatureCouplingGroups;

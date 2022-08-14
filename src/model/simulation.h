@@ -64,6 +64,8 @@ public:
   std::shared_ptr<Simulation> getPreviousStep() const;
   void setPreviousStep(std::shared_ptr<Simulation> newPreviousStep);
 
+  bool isMinimisation() const;
+
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
   Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
