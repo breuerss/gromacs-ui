@@ -38,6 +38,7 @@ private:
   double updateInterval = 1.00;
 };
 
+QVariant temperatureGroupFrom(const QString& group);
 QString toString(TemperatureCouplingGroup::Group group);
 
 }

@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "src/gromacsconfigfilegenerator.h"
 #include "ui_mainwindow.h"
 #include "form/preferencesdialog.h"
 #include "projectmanager.h"
@@ -112,6 +113,16 @@ MainWindow::MainWindow(QWidget *parent)
       step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NPT));
       step->setProperty("numberOfSteps", 10000);
       step->setProperty("algorithm", "md");
+
+      // import the existing definitions
+      for (auto step: project->getSteps())
+      {
+        SimulationStatusChecker checker(project, step);
+        if (checker.hasMdp())
+        {
+          GromacsConfigFileGenerator::setFromFile(step, checker.getMdpPath());
+        }
+      }
 
       manager->currentProjectChanged(project);
     });

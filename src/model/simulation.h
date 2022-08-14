@@ -6,6 +6,7 @@
 #include <QString>
 #include <QDataStream>
 #include <memory>
+#include "../misc/bimaphelper.h"
 
 namespace Model {
 
@@ -181,9 +182,13 @@ private:
   bool resume = true;
 };
 
+QVariant simulationAlgorithmFrom(const QString& value);
 QString toString(Simulation::Algorithm algorithm);
+QVariant pressureAlgorithmFrom(const QString& value);
 QString toString(Simulation::PressureAlgorithm alogrithm);
+QVariant pressureCouplingTypeFrom(const QString& value);
 QString toString(Simulation::PressureCouplingType type);
+QVariant temperatureAlgorithmFrom(const QString& value);
 QString toString(Simulation::TemperatureAlgorithm algorithm);
 QString toString(Simulation::Type type, bool shortVersion = false);
 

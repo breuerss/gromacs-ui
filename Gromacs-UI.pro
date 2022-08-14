@@ -9,7 +9,18 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/appprovider.cpp \
     src/filecontentviewer.cpp \
+    src/gromacsconfigfilegenerator.cpp \
+    src/logforwarder.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/pdbdownloader.cpp \
+    src/pdbinfoextractor.cpp \
+    src/projectmanager.cpp \
+    src/simulationstatuschecker.cpp \
+    src/settings.cpp \
+    src/statusmessagesetter.cpp \
     src/command/createbox.cpp \
     src/command/creategromacsmodel.cpp \
     src/command/executor.cpp \
@@ -21,30 +32,29 @@ SOURCES += \
     src/command/queue.cpp \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
-    src/pdbdownloader.cpp \
-    src/gromacsconfigfilegenerator.cpp \
-    src/pdbinfoextractor.cpp \
-    src/simulationstatuschecker.cpp \
-    src/statusmessagesetter.cpp \
-    src/logforwarder.cpp \
-    src/main.cpp \
-    src/appprovider.cpp \
-    src/mainwindow.cpp \
-    src/model/project.cpp \
-    src/model/serializable.cpp \
-    src/model/simulation.cpp \
-    src/model/systemsetup.cpp \
-    src/model/temperaturecouplinggroup.cpp \
-    src/projectmanager.cpp \
-    src/settings.cpp \
     src/form/simulationsetupform.cpp \
     src/form/systemsetupform.cpp \
     src/form/preferencesdialog.cpp \
     src/form/temperaturegroupconfigform.cpp \
-    src/form/connectionhelper.cpp
+    src/form/connectionhelper.cpp \
+    src/model/project.cpp \
+    src/model/serializable.cpp \
+    src/model/simulation.cpp \
+    src/model/systemsetup.cpp \
+    src/model/temperaturecouplinggroup.cpp
 
 HEADERS += \
+    src/appprovider.h \
     src/filecontentviewer.h \
+    src/gromacsconfigfilegenerator.h \
+    src/logforwarder.h \
+    src/mainwindow.h \
+    src/pdbdownloader.h \
+    src/pdbinfoextractor.h \
+    src/projectmanager.h \
+    src/settings.h \
+    src/simulationstatuschecker.h \
+    src/statusmessagesetter.h \
     src/command/createbox.h \
     src/command/creategromacsmodel.h \
     src/command/executor.h \
@@ -56,26 +66,17 @@ HEADERS += \
     src/command/queue.h \
     src/command/runsimulation.h \
     src/command/solvate.h \
-    src/gromacsconfigfilegenerator.h \
-    src/logforwarder.h \
-    src/mainwindow.h \
-    src/pdbdownloader.h \
-    src/appprovider.h \
-    src/pdbinfoextractor.h \
     src/form/preferencesdialog.h \
+    src/form/simulationsetupform.h \
+    src/form/systemsetupform.h \
+    src/form/temperaturegroupconfigform.h \
+    src/form/connectionhelper.h \
+    src/misc/bimaphelper.h \
     src/model/project.h \
     src/model/serializable.h \
     src/model/simulation.h \
     src/model/systemsetup.h \
-    src/model/temperaturecouplinggroup.h \
-    src/projectmanager.h \
-    src/settings.h \
-    src/form/simulationsetupform.h \
-    src/simulationstatuschecker.h \
-    src/statusmessagesetter.h \
-    src/form/systemsetupform.h \
-    src/form/temperaturegroupconfigform.h \
-    src/form/connectionhelper.h
+    src/model/temperaturecouplinggroup.h
 
 FORMS += \
     ui/temperaturegroupconfigform.ui \

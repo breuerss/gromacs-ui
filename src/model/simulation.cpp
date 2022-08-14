@@ -82,29 +82,39 @@ void Simulation::removeTemperatureCouplingGroup(int at)
   emit temperatureCouplingGroupRemoved(couplingGroup, at);
 }
 
+const static auto simulationAlgorithmBimap = makeBimap<Simulation::Algorithm, QString>({
+  { Simulation::Algorithm::None, "" },
+  { Simulation::Algorithm::SteepestDecent, "steep" },
+  { Simulation::Algorithm::ConjugateGradient, "cg" },
+  { Simulation::Algorithm::LeapFrog, "md" },
+  { Simulation::Algorithm::StochasticDynamics, "sd" },
+});
+
+QVariant simulationAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(simulationAlgorithmBimap.right.at(value));
+}
+
 QString toString(Simulation::Algorithm algorithm)
 {
-  const static QMap<Simulation::Algorithm, QString> map = {
-    { Simulation::Algorithm::None, "" },
-    { Simulation::Algorithm::SteepestDecent, "steep" },
-    { Simulation::Algorithm::ConjugateGradient, "cg" },
-    { Simulation::Algorithm::LeapFrog, "md" },
-    { Simulation::Algorithm::StochasticDynamics, "sd" },
-  };
+  return simulationAlgorithmBimap.left.at(algorithm);
+}
 
-  return map[algorithm];
+const static auto pressureAlgorithmBimap = makeBimap<Simulation::PressureAlgorithm, QString>({
+  { Simulation::PressureAlgorithm::None, "no" },
+  { Simulation::PressureAlgorithm::Berendsen, "berendsen" },
+  { Simulation::PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
+  { Simulation::PressureAlgorithm::Bussi, "C-rescale" },
+});
+
+QVariant pressureAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(pressureAlgorithmBimap.right.at(value));
 }
 
 QString toString(Simulation::PressureAlgorithm algorithm)
 {
-  const static QMap<Simulation::PressureAlgorithm, QString> map = {
-    { Simulation::PressureAlgorithm::None, "no" },
-    { Simulation::PressureAlgorithm::Berendsen, "berendsen" },
-    { Simulation::PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
-    { Simulation::PressureAlgorithm::Bussi, "C-rescale" },
-  };
-
-  return map[algorithm];
+  return pressureAlgorithmBimap.left.at(algorithm);
 }
 
 QString toString(Simulation::Type type, bool shortVersion)
@@ -135,16 +145,22 @@ QString toString(Simulation::Type type, bool shortVersion)
   }
 }
 
+const static auto pressureCouplingTypeBimap =
+makeBimap<Simulation::PressureCouplingType, QString>({
+  { Simulation::PressureCouplingType::Isotropic, "isotropic" },
+  { Simulation::PressureCouplingType::SemiIsoTropic, "semiisotropic" },
+  { Simulation::PressureCouplingType::Anisotropic, "anisotropic" },
+  { Simulation::PressureCouplingType::SurfaceTension, "surface-tension" },
+});
+
+QVariant pressureCouplingTypeFrom(const QString& value)
+{
+  return QVariant::fromValue(pressureCouplingTypeBimap.right.at(value));
+}
+
 QString toString(Simulation::PressureCouplingType type)
 {
-  const static QMap<Simulation::PressureCouplingType, QString> map = {
-    { Simulation::PressureCouplingType::Isotropic, "isotropic" },
-    { Simulation::PressureCouplingType::SemiIsoTropic, "semiisotropic" },
-    { Simulation::PressureCouplingType::Anisotropic, "anisotropic" },
-    { Simulation::PressureCouplingType::SurfaceTension, "surface-tension" },
-  };
-
-  return map[type];
+  return pressureCouplingTypeBimap.left.at(type);
 }
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model)
@@ -183,18 +199,24 @@ QDataStream &operator>>(QDataStream &in, Simulation& model)
   return in;
 }
 
+const static auto temperatureAlgorithmBimap =
+makeBimap<Simulation::TemperatureAlgorithm, QString>({
+  { Simulation::TemperatureAlgorithm::None, "no" },
+  { Simulation::TemperatureAlgorithm::Berendsen, "berendsen" },
+  { Simulation::TemperatureAlgorithm::NoseHoover, "nose-hoover" },
+  { Simulation::TemperatureAlgorithm::Andersen, "andersen" },
+  { Simulation::TemperatureAlgorithm::AndersenMassive, "andersen-massive" },
+  { Simulation::TemperatureAlgorithm::VelocityRescale, "V-rescale" },
+});
+
+QVariant temperatureAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(temperatureAlgorithmBimap.right.at(value));
+}
+
 QString toString(Simulation::TemperatureAlgorithm algorithm)
 {
-  const static QMap<Simulation::TemperatureAlgorithm, QString> map = {
-    { Simulation::TemperatureAlgorithm::None, "no" },
-    { Simulation::TemperatureAlgorithm::Berendsen, "berendsen" },
-    { Simulation::TemperatureAlgorithm::NoseHoover, "nose-hoover" },
-    { Simulation::TemperatureAlgorithm::Andersen, "andersen" },
-    { Simulation::TemperatureAlgorithm::AndersenMassive, "andersen-massive" },
-    { Simulation::TemperatureAlgorithm::VelocityRescale, "V-rescale" },
-  };
-
-  return map[algorithm];
+  return temperatureAlgorithmBimap.left.at(algorithm);
 }
 
 }

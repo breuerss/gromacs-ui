@@ -1,4 +1,5 @@
 #include "temperaturecouplinggroup.h"
+#include "../misc/bimaphelper.h"
 #include <QDebug>
 #include <QMetaProperty>
 #include <cstring>
@@ -18,15 +19,21 @@ TemperatureCouplingGroup::TemperatureCouplingGroup()
   }
 }
 
+const static auto temperatureCouplingGroupsBimap =
+makeBimap<TemperatureCouplingGroup::Group, QString>({
+  { TemperatureCouplingGroup::Group::System, "System" },
+  { TemperatureCouplingGroup::Group::Protein, "Protein" },
+  { TemperatureCouplingGroup::Group::Water, "Water" },
+});
+
+QVariant temperatureGroupFrom(const QString& group)
+{
+  return QVariant::fromValue(temperatureCouplingGroupsBimap.right.at(group));
+}
+
 QString toString(TemperatureCouplingGroup::Group group)
 {
-  const static QMap<TemperatureCouplingGroup::Group, QString> map = {
-    { TemperatureCouplingGroup::Group::System, "System" },
-    { TemperatureCouplingGroup::Group::Protein, "Protein" },
-    { TemperatureCouplingGroup::Group::Water, "Water" },
-  };
-
-  return map[group];
+  return temperatureCouplingGroupsBimap.left.at(group);
 }
 
 }

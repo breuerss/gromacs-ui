@@ -4,6 +4,58 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
+#include <memory>
+#include <qt5/QtCore/qvariant.h>
+#include <qt5/QtCore/qvarlengtharray.h>
+#include <stdexcept>
+
+const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
+  { "integrator", "algorithm" },
+  { "nsteps", "numberOfSteps" },
+  { "dt", "timeStep" },
+  { "nstenergy", "energyOutputFrequency" },
+  { "nstxout", "positionOutputFrequency" },
+  { "nstxout-compressed", "compressedPositionOutputFrequency" },
+  { "nstvout", "velocityOutputFrequency" },
+  { "nstfout", "forceOutputFrequency" },
+  { "nstlog", "logOutputFrequency" },
+  { "coulombtype", "electrostaticAlgorithm" },
+  { "fourierSpacing", "fourierSpacing" },
+  { "rcoulomb", "electrostaticCutoffRadius" },
+  { "rvdw", "vdwCutoffRadius" },
+  { "pcoupl", "pressureAlgorithm" },
+  { "pcoupltype", "pressureCouplingType" },
+  { "tau-p", "pressureUpdateInterval" },
+  { "ref-p", "pressure" },
+  { "compressibility", "compressibility" },
+  { "tcoupl", "temperatureAlgorithm" },
+  { "tc-grps", "group" },
+  { "tau-t", "updateInterval" },
+  { "ref-t", "temperature" },
+  { "emtol", "minimisationMaximumForce" },
+  { "emstep", "minimisationStepSize" },
+};
+
+const QMap<QString, std::function<QVariant(const QString&)>>
+GromacsConfigFileGenerator::conversionMap = {
+  { "integrator", Model::simulationAlgorithmFrom },
+  {
+    "dt", [] (const QString& timeStep) {
+      return QVariant::fromValue(timeStep.toFloat() * 1000);
+    },
+  },
+  { "pcoupl", Model::pressureAlgorithmFrom },
+  { "pcoupltype", Model::pressureCouplingTypeFrom },
+  { "tcoupl", Model::temperatureAlgorithmFrom },
+  { "tc-grps", Model::temperatureGroupFrom },
+};
+
+const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
+  "tc-grps",
+  "tau-t",
+  "ref-t",
+};
 
 void GromacsConfigFileGenerator::generate(
   std::shared_ptr<Model::Simulation> step,
@@ -86,7 +138,134 @@ void GromacsConfigFileGenerator::generate(
   file.close();
 }
 
+std::shared_ptr<Model::Simulation>
+GromacsConfigFileGenerator::createFrom(const QString& fileName)
+{
+  auto model = std::make_shared<Model::Simulation>();
+  setFromFile(model, fileName);
+  return model;
+}
+
+void GromacsConfigFileGenerator::setFromFile(
+  std::shared_ptr<Model::Simulation> model,
+  const QString& fileName
+  )
+{
+  QFile file(fileName);
+  if (file.exists())
+  {
+    file.open(QFile::ReadOnly);
+    QTextStream stream(&file);
+    while(!stream.atEnd())
+    {
+      QString line = stream.readLine().trimmed();
+      if (line.isEmpty())
+      {
+        continue;
+      }
+      if (line.startsWith(";"))
+      {
+        continue;
+      }
+
+      QStringList keyValue = line.split("=");
+      QString option = keyValue[0].trimmed();
+      if (!optionsMap.contains(option))
+      {
+        qDebug () << option << "not supported";
+        continue;
+      }
+
+      QString inputValueString = keyValue[1].trimmed().remove(";").trimmed();
+      if (temperatureCouplingOptions.contains(option))
+      {
+        QStringList groupsInputValues = inputValueString
+          .split(QRegExp("\\s+"), Qt::SkipEmptyParts);
+        auto& temperatureCouplingGroups = model->getTemperatureCouplingGroups();
+        for (int groupIndex = temperatureCouplingGroups.size();
+             groupIndex < groupsInputValues.size(); groupIndex++)
+        {
+          model->addTemperatureCouplingGroup();
+        }
+
+        for (int valueIndex = 0; valueIndex < groupsInputValues.size(); valueIndex++)
+        {
+          QVariant inputValue = createValueFrom(option, groupsInputValues[valueIndex]);
+          if (inputValue.isNull())
+          {
+            continue;
+          }
+
+          temperatureCouplingGroups[valueIndex]
+            ->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
+        }
+
+
+        continue;
+      }
+
+      QVariant inputValue = createValueFrom(option, inputValueString);
+      if (inputValue.isNull())
+      {
+        continue;
+      }
+
+      model->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
+    }
+    file.close();
+
+    using Model::Simulation;
+    auto simulationType = Simulation::Type::None;
+    if (model->isMinimisation())
+    {
+      simulationType = Simulation::Type::Minimisation;
+    }
+    else if (
+      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>() !=
+      Simulation::TemperatureAlgorithm::None)
+    {
+      simulationType = Simulation::Type::NVT;
+      if (
+        model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>() !=
+        Simulation::PressureAlgorithm::None
+        )
+      {
+        simulationType = Simulation::Type::NPT;
+      }
+    }
+    model->setProperty("type", QVariant::fromValue(simulationType));
+  }
+  else
+  {
+    qDebug() << fileName << "does not exist.";
+  }
+
+
+}
+
+QVariant GromacsConfigFileGenerator::createValueFrom(
+  const QString& option,
+  const QString& inputValueString)
+{
+  QVariant inputValue = QVariant::fromValue(inputValueString);
+  if (conversionMap.contains(option))
+  {
+    try
+    {
+      inputValue = conversionMap[option](inputValue.toString());
+    }
+    catch (const std::out_of_range& exc)
+    {
+      qDebug() << "Value" << inputValue.toString() << "for option" << option << "unknown.";
+      inputValue = QVariant();
+    }
+  }
+  return inputValue;
+}
+
+
 void GromacsConfigFileGenerator::writeLine(QTextStream& writer, const QString& key, const QString& value)
 {
   writer << qSetFieldWidth(25) << Qt::left << key << qSetFieldWidth(0) << " = " << value << ";" << Qt::endl;
 }
+
