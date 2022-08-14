@@ -256,6 +256,7 @@ SimulationSetupForm::SimulationSetupForm(
                      ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
                      ui->rerunSimulation->setText(tr("Run simulation"));
                      ui->simulationProgress->setEnabled(false);
+                     showEvent(nullptr);
                    });
 }
 
