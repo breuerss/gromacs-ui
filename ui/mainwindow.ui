@@ -165,16 +165,18 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionAddStep"/>
-    <addaction name="actionCreateDefaultSimulationSetup"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
-     <string>Simulation</string>
+     <string>Workflow</string>
     </property>
     <addaction name="actionRunSimulation"/>
+    <addaction name="separator"/>
+    <addaction name="actionCreateDefaultSimulationSetup"/>
+    <addaction name="actionAddStep"/>
+    <addaction name="actionAdd_Post_Processing"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -225,7 +227,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Add Step</string>
+    <string>Add Simulation</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -269,18 +271,29 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Run Simulation</string>
+    <string>Run Workflow</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionCreateDefaultSimulationSetup">
+   <property name="icon">
+    <iconset theme="edit-select-all"/>
+   </property>
    <property name="text">
-    <string>Create Default Simulation Setup</string>
+    <string>Create Default Workflow</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionAdd_Post_Processing">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Add Post Processing</string>
    </property>
   </action>
  </widget>
