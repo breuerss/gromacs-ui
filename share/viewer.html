@@ -80,8 +80,33 @@
           await viewer.loadStructureFromData(coords, format=type);
         }
       }
+      const preset = {
+        display: { name: '' },
+        async apply(ref, params, plugin) {
+          const structureCell = plugin.state.data.cells.get(ref.transform.ref);
+          if (!structureCell) return {};
+
+          const structure = plugin.builders.structure;
+          const components = {
+            water: await structure.tryCreateComponentStatic(structureCell, 'water'),
+            protein: await structure.tryCreateComponentStatic(structureCell, 'polymer'),
+            ions: await structure.tryCreateComponentStatic(structureCell, 'ion'),
+            lipid: await structure.tryCreateComponentStatic(structureCell, 'lipid'),
+          };
+
+          const update = plugin.state.data.build();
+          const builder = structure.representation;
+          const representations = {
+            water: builder.buildRepresentation(update, components.water, {type: 'spacefill', color: 'illustrative'}, {tag: 'water'}),
+            protein: builder.buildRepresentation(update, components.protein, {type: 'spacefill', color: 'illustrative'}, {tag: 'protein'}),
+            protein: builder.buildRepresentation(update, components.ions, {type: 'spacefill', color: 'illustrative'}, {tag: 'ions'}),
+            lipid: builder.buildRepresentation(update, components.lipid, {type: 'spacefill', color: 'illustrative'}, {tag: 'lipid'}),
+          };
+          await update.commit({revertOnError: true});
+          return { components, representations };
+        }
+      };
       const { structures } = viewer.plugin.managers.structure.hierarchy.selection;
-      const preset = viewer.plugin.builders.structure.representation.providerMap.get("preset-structure-representation-illustrative");
       await viewer.plugin.managers.structure.component.applyPreset(structures, preset);
       if (viewer.plugin.canvas3d) {
         viewer.plugin.canvas3d.setProps({
