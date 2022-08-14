@@ -90,6 +90,8 @@ public:
   Q_PROPERTY(double pressure MEMBER pressure NOTIFY pressureChanged);
   Q_PROPERTY(double pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
   Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
+  Q_PROPERTY(double compressibility MEMBER compressibility NOTIFY compressibilityChanged);
+
   Q_PROPERTY(bool resume MEMBER resume NOTIFY resumeChanged);
 
   Q_PROPERTY(TemperatureAlgorithm temperatureAlgorithm
@@ -123,6 +125,8 @@ signals:
   void pressureChanged(double);
   void pressureUpdateIntervalChanged(double);
   void pressureCouplingTypeChanged(PressureCouplingType);
+  void compressibilityChanged(double);
+
   void resumeChanged(bool newResume);
 
   void temperatureAlgorithmChanged(TemperatureAlgorithm);
@@ -165,6 +169,7 @@ private:
   PressureAlgorithm pressureAlgorithm = PressureAlgorithm::None;
   double pressure = 1;
   double pressureUpdateInterval = 1;
+  double compressibility = 0.000045;
   PressureCouplingType pressureCouplingType = PressureCouplingType::Isotropic;
 
   // temperature
