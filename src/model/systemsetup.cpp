@@ -47,6 +47,7 @@ void SystemSetup::setProcessedStructureFile(const QString &newProcessedStructure
 {
   processedStructureFile = newProcessedStructureFile;
   emit processedStructureFileChanged(processedStructureFile);
+  evaluateConfigReady();
 }
 
 void SystemSetup::setChains(const QStringList &newChains)
@@ -57,21 +58,6 @@ void SystemSetup::setChains(const QStringList &newChains)
 const QStringList& SystemSetup::getChains() const
 {
   return chains;
-}
-
-bool SystemSetup::getStructureReady() const
-{
-  return structureReady;
-}
-
-void SystemSetup::setStructureReady(bool newStructureReady)
-{
-  const bool changed = structureReady != newStructureReady;
-  structureReady = newStructureReady;
-  if (changed)
-  {
-    emit structureReadyChanged(structureReady);
-  }
 }
 
 void SystemSetup::useChain(const QString& chain, bool use)
@@ -104,13 +90,14 @@ void SystemSetup::evaluateConfigReady()
     << waterModel
     << forceField
     << processedStructureFile;
-  const bool newConfigReady =
-    (boxType != BoxType::None) &&
+  emit configReadyChanged(configReady());
+}
+
+bool SystemSetup::configReady() const
+{
+  return (boxType != BoxType::None) &&
     (forceField != ForceField::None) &&
     !processedStructureFile.isEmpty();
-
-  configReady = newConfigReady;
-  emit configReadyChanged(configReady);
 }
 
 QString toString(SystemSetup::WaterModel type)

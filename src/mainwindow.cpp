@@ -164,9 +164,11 @@ void MainWindow::setupUIForProject()
     conns << connect(project.get(),
             &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
     Model::SystemSetup* systemSetup = project->getSystemSetup().get();
-    conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged,
+    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged,
             ui->actionRunSimulation, &QAction::setEnabled);
-    conns << connect(systemSetup, &Model::SystemSetup::structureReadyChanged, [this] (bool ready) {
+    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged,
+            ui->actionCreateDefaultSimulationSetup, &QAction::setEnabled);
+    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged, [this] (bool ready) {
       int tabIndex = 0;
       if (!ready)
       {
@@ -175,7 +177,8 @@ void MainWindow::setupUIForProject()
       }
       ui->tabWidget->setCurrentIndex(tabIndex);
     });
-    ui->actionRunSimulation->setEnabled(project->getSystemSetup()->getStructureReady());
+    qDebug() << "structureReady"  << project->getSystemSetup()->configReady();
+    project->getSystemSetup()->configReadyChanged(project->getSystemSetup()->configReady());
 
     auto setCoordsFile = [this] (const QString& fileName) {
       setMoleculeFile(fileName);
@@ -211,10 +214,6 @@ void MainWindow::setupUIForProject()
         title += " | " + fileName;
       }
       this->setWindowTitle(title);
-      ui->actionAddStep->setEnabled(canContinue);
-      ui->actionCreateDefaultSimulationSetup->setEnabled(canContinue);
-      ui->actionRunSimulation->setEnabled(
-        canContinue && !project->getSystemSetup()->getProcessedStructureFile().isEmpty());
     });
 
     ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));

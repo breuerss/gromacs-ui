@@ -40,17 +40,14 @@ public:
 
   void useChain(const QString& chain, bool use = true);
 
-  void setStructureReady(bool);
-
   void setChains(const QStringList& chains);
   void setSourceStructureFile(const QString& newSourceStructureFile);
   void setProcessedStructureFile(const QString& newProcessedStructureFile);
+  bool configReady() const;
 
   const QStringList& getChains() const;
   const QString& getSourceStructureFile() const;
   const QString& getProcessedStructureFile() const;
-
-  bool getStructureReady() const;
 
   Q_PROPERTY(QString pdbCode MEMBER pdbCode NOTIFY pdbCodeChanged)
   Q_PROPERTY(double ionConcentration MEMBER ionConcentration NOTIFY ionConcentrationChanged)
@@ -78,7 +75,6 @@ signals:
   void sourceStructureFileChanged(const QString& sourceStructureFile);
   void processedStructureFileChanged(const QString& processedStructureFile);
   void configReadyChanged(bool ready);
-  void structureReadyChanged(bool);
 
 private:
   QString pdbCode;
@@ -95,8 +91,6 @@ private:
   ForceField forceField = ForceField::CHARMM27;
   double distance = 1.0;
   bool removeHeteroAtoms = true;
-  bool configReady = false;
-  bool structureReady = false;
 
   void evaluateConfigReady();
 };

@@ -197,6 +197,7 @@
    <addaction name="actionSave"/>
    <addaction name="actionSaveProjectAs"/>
    <addaction name="separator"/>
+   <addaction name="actionCreateDefaultSimulationSetup"/>
    <addaction name="actionAddStep"/>
    <addaction name="separator"/>
    <addaction name="actionRunSimulation"/>
@@ -279,7 +280,8 @@
   </action>
   <action name="actionCreateDefaultSimulationSetup">
    <property name="icon">
-    <iconset theme="edit-select-all"/>
+    <iconset theme="edit-select-all">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Create Default Workflow</string>
