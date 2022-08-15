@@ -4,6 +4,7 @@
 #include "qpushbutton.h"
 #include "qsizepolicy.h"
 #include "src/command/runsimulation.h"
+#include "src/form/progresschart.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
 #include "../model/simulation.h"
@@ -13,8 +14,6 @@
 #include "../simulationstatuschecker.h"
 #include "../filecontentviewer.h"
 #include <algorithm>
-#include <QGraphicsView>
-#include <QGraphicsLayout>
 #include <QDateTime>
 
 SimulationSetupForm::SimulationSetupForm(
@@ -202,18 +201,7 @@ SimulationSetupForm::SimulationSetupForm(
         {
           return;
         }
-        auto vertical = progressValueChart->axes(Qt::Vertical).first();
-        auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
-        min = std::min<float>(min, progress);
-        max = std::max<float>(max, progress);
-        vertical->setRange(min, max);
-
-        using namespace QtCharts;
-        auto series = dynamic_cast<QSplineSeries*>(progressValueChart->series()[0]); 
-        horizontal->setRange(0, series->count());
-
-        auto point = QPointF(series->count(), progress);
-        (*series) << point;
+        progressChart->appendValue(progress);
       }
       else
       {
@@ -242,11 +230,10 @@ SimulationSetupForm::SimulationSetupForm(
 
   conns << connect(command.get(), &Command::RunSimulation::started,
                    [this] () {
+                     progressChart->clear();
+
                      timeStampStarted = QDateTime::currentSecsSinceEpoch();
-                     series->removePoints(0, series->count());
                      firstProgressValue = -1;
-                     min = INFINITY;
-                     max = -INFINITY;
                      ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
                      ui->rerunSimulation->setText(tr("Stop Simulation"));
                      ui->simulationProgress->setEnabled(true);
@@ -264,22 +251,7 @@ SimulationSetupForm::SimulationSetupForm(
   {
     if (simulation->isMinimisation())
     {
-      QList<QPointF> points;
-      auto values = checker.getProgressValues();
-      for (int index = 0; index < values.size(); index++)
-      {
-        float progress = values[index];
-        points << QPointF(index, progress);
-        min = std::min<float>(min, progress);
-        max = std::max<float>(max, progress);
-      }
-
-      series->removePoints(0, series->count());
-      series->append(points);
-      auto vertical = progressValueChart->axes(Qt::Vertical).first();
-      vertical->setRange(min, max);
-      auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
-      horizontal->setRange(0, points.count());
+      progressChart->setValues(checker.getProgressValues());
     }
     else
     {
@@ -413,7 +385,7 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type t
 void SimulationSetupForm::setProgressViewForType(Model::Simulation::Type type)
 {
   const bool showChart = type == Model::Simulation::Type::Minimisation;
-  chartView->setVisible(showChart);
+  progressChart->setVisible(showChart);
   ui->simulationProgress->setVisible(!showChart);
   ui->assumedFinished->setVisible(!showChart);
 }
@@ -483,27 +455,11 @@ void SimulationSetupForm::setupProgressValueChart()
 {
   using namespace QtCharts;
 
-  progressValueChart = new QtCharts::QChart();
+  progressChart = new Gui::ProgressChart;
 
-  progressValueChart->setMargins(QMargins());
-  progressValueChart->legend()->hide();
-  progressValueChart->layout()->setContentsMargins(0, 6, 0, 0);
-  progressValueChart->setBackgroundVisible(false);
-
-  series = new QSplineSeries();
-  progressValueChart->addSeries(series);
-
-  progressValueChart->createDefaultAxes();
-  auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
-  horizontal->setVisible(false);
-  auto vertical = progressValueChart->axes(Qt::Vertical).first();
-  vertical->setVisible(false);
-
-  chartView = new QtCharts::QChartView(progressValueChart);
-  chartView->setFrameStyle(QFrame::NoFrame);
-  chartView->setRenderHint(QPainter::Antialiasing);
-  chartView->setStyleSheet("background-color: transparent;");
-  chartView->setMinimumWidth(180);
-  chartView->setVisible(false);
-  ui->runLayout->addWidget(chartView);
+  progressChart->setVisible(false);
+  progressChart->setMinimumWidth(180);
+  progressChart->setMaximumWidth(180);
+  progressChart->setMaximumHeight(40);
+  ui->runLayout->addWidget(progressChart);
 }

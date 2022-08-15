@@ -32,11 +32,12 @@ SOURCES += \
     src/command/queue.cpp \
     src/command/runsimulation.cpp \
     src/command/solvate.cpp \
+    src/form/connectionhelper.cpp \
+    src/form/preferencesdialog.cpp \
+    src/form/progresschart.cpp \
     src/form/simulationsetupform.cpp \
     src/form/systemsetupform.cpp \
-    src/form/preferencesdialog.cpp \
     src/form/temperaturegroupconfigform.cpp \
-    src/form/connectionhelper.cpp \
     src/model/project.cpp \
     src/model/serializable.cpp \
     src/model/simulation.cpp \
@@ -66,11 +67,12 @@ HEADERS += \
     src/command/queue.h \
     src/command/runsimulation.h \
     src/command/solvate.h \
+    src/form/connectionhelper.h \
     src/form/preferencesdialog.h \
+    src/form/progresschart.h \
     src/form/simulationsetupform.h \
     src/form/systemsetupform.h \
     src/form/temperaturegroupconfigform.h \
-    src/form/connectionhelper.h \
     src/misc/bimaphelper.h \
     src/model/project.h \
     src/model/serializable.h \

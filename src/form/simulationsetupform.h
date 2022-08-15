@@ -3,15 +3,12 @@
 
 #include <QWidget>
 #include <QComboBox>
-#include <cmath>
 #include <memory>
 #include <QMetaObject>
 #include <QList>
-#include <QChart>
-#include <QSplineSeries>
-#include <QChartView>
 #include "../model/simulation.h"
 #include "qglobal.h"
+#include "progresschart.h"
 
 namespace Model {
 class Project;
@@ -61,12 +58,8 @@ private:
   qint64 timeStampStarted;
   float firstProgressValue = -1;
 
-  QtCharts::QChart* progressValueChart;
-  QtCharts::QChartView* chartView;
-  QtCharts::QSplineSeries* series;
   void setupProgressValueChart();
-  float min = INFINITY;
-  float max = -INFINITY;
+  Gui::ProgressChart* progressChart;
 };
 
 #endif // SIMULATIONSETUPFORM_H
