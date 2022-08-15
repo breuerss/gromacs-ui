@@ -2,6 +2,7 @@
 #define SIMULATIONSTATUSCHECKER_H
 
 #include <QObject>
+#include <QList>
 #include <memory>
 
 namespace Model {
@@ -30,6 +31,7 @@ public:
   QString getTprPath() const;
 
   float getProgress() const;
+  QList<float> getProgressValues() const;
 
 private:
   QString getBasePath() const;

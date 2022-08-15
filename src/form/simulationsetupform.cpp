@@ -202,13 +202,13 @@ SimulationSetupForm::SimulationSetupForm(
         {
           return;
         }
-        using namespace QtCharts;
         auto vertical = progressValueChart->axes(Qt::Vertical).first();
         auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
         min = std::min<float>(min, progress);
         max = std::max<float>(max, progress);
         vertical->setRange(min, max);
 
+        using namespace QtCharts;
         auto series = dynamic_cast<QSplineSeries*>(progressValueChart->series()[0]); 
         horizontal->setRange(0, series->count());
 
@@ -258,6 +258,34 @@ SimulationSetupForm::SimulationSetupForm(
                      ui->simulationProgress->setEnabled(false);
                      showEvent(nullptr);
                    });
+
+  SimulationStatusChecker checker(project, simulation);
+  if (checker.hasLog())
+  {
+    if (simulation->isMinimisation())
+    {
+      QList<QPointF> points;
+      auto values = checker.getProgressValues();
+      for (int index = 0; index < values.size(); index++)
+      {
+        float progress = values[index];
+        points << QPointF(index, progress);
+        min = std::min<float>(min, progress);
+        max = std::max<float>(max, progress);
+      }
+
+      series->removePoints(0, series->count());
+      series->append(points);
+      auto vertical = progressValueChart->axes(Qt::Vertical).first();
+      vertical->setRange(min, max);
+      auto horizontal = progressValueChart->axes(Qt::Horizontal).first();
+      horizontal->setRange(0, points.count());
+    }
+    else
+    {
+      ui->simulationProgress->setValue(checker.getProgress());
+    }
+  }
 }
 
 SimulationSetupForm::~SimulationSetupForm()

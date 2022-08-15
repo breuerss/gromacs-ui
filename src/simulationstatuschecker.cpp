@@ -74,6 +74,27 @@ QString SimulationStatusChecker::getBasePath() const
   return projectPath + "/" + simulationType + "/" + simulationType;
 }
 
+QList<float> SimulationStatusChecker::getProgressValues() const
+{
+  QProcess check;
+  QString command("awk '/Potential/ { getline; print $1}' %1");
+  check.start("bash", QStringList() << "-c" << command.arg(getLogPath()));
+  check.waitForFinished();
+  QList<float> values;
+  while (check.canReadLine())
+  {
+    QString valueString = check.readLine();
+    bool ok;
+    float statusNumber = valueString.trimmed().toFloat(&ok);
+    if (ok)
+    {
+      values << statusNumber;
+    }
+  }
+
+  return values;
+}
+
 float SimulationStatusChecker::getProgress() const
 {
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
