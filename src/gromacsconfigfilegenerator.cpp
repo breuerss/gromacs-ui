@@ -1,10 +1,13 @@
 #include "gromacsconfigfilegenerator.h"
 
 #include "model/simulation.h"
+#include "appprovider.h"
 
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QProcess>
+#include <QTemporaryFile>
 #include <memory>
 #include <stdexcept>
 
@@ -259,6 +262,34 @@ QVariant GromacsConfigFileGenerator::createValueFrom(
     }
   }
   return inputValue;
+}
+
+void GromacsConfigFileGenerator::setFromTprFile(
+  std::shared_ptr<Model::Simulation> model,
+  const QString& fileName
+  )
+{
+  QProcess convert;
+  QString command = AppProvider::get("gmx");
+  if (command.isEmpty())
+  {
+    qDebug() << "Cannot import from tpr file. gmx command not found.";
+    return;
+  }
+
+  QTemporaryFile tmpfile;
+  tmpfile.open();
+  QString temporaryFileName = tmpfile.fileName();
+  command += "-s " + fileName;
+  command += "-om " + temporaryFileName;
+  convert.start(command);
+  convert.waitForFinished();
+  if (convert.exitCode() != 0)
+  {
+    qDebug() << "Cannot import from tpr file. Execution of " << command << "failed.";
+    return;
+  }
+  setFromMdpFile(model, temporaryFileName);
 }
 
 
