@@ -6,8 +6,6 @@
 #include <QTextStream>
 #include <QDebug>
 #include <memory>
-#include <qt5/QtCore/qvariant.h>
-#include <qt5/QtCore/qvarlengtharray.h>
 #include <stdexcept>
 
 const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
@@ -142,11 +140,11 @@ std::shared_ptr<Model::Simulation>
 GromacsConfigFileGenerator::createFrom(const QString& fileName)
 {
   auto model = std::make_shared<Model::Simulation>();
-  setFromFile(model, fileName);
+  setFromMdpFile(model, fileName);
   return model;
 }
 
-void GromacsConfigFileGenerator::setFromFile(
+void GromacsConfigFileGenerator::setFromMdpFile(
   std::shared_ptr<Model::Simulation> model,
   const QString& fileName
   )

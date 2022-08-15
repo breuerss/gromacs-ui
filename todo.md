@@ -1,7 +1,6 @@
 # Open issues
 
 1. disable configuration during run
-1. import from mdp
 1. import from directory
 1. Proper project handling, distinction between project, import from directory structure
 1. source structure should be processed structure before processing
