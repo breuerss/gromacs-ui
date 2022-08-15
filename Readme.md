@@ -1,3 +1,5 @@
+![Preview](docs/gromacs-ui-running-and-viewing-simulation.gif)
+
 # Overview
 
 This application is intended to provide a user interface for Gromacs
@@ -75,4 +77,26 @@ After installation the application can be started with
 ```
 gromacs-ui
 ```
+## Features
 
+- PDB download
+- PDB preparation
+- Simulation configuration including solvation and neutralisation
+- Simulation workflows with minimisation, NVT and NPT
+- Simulation configuration, temperature copuling groups
+- Trajectory and coordinate visualisation
+- Resume simulation
+- Simulation progress, tracking minimisation evolution
+- Display of logs, mdp configuration, simulation and preparation command output
+
+# Known issues (TODOs)
+
+- Missing analysis views
+- Missing trajectory conversions or postprocessing steps, e.g.
+trajectory smoothing, removal of periodic boundary jumps
+- Usage of own prepared structure
+- Support of full feature set of gromacs capabilities
+- Lingering binary incompatibility of project files between different
+versions of gromacs-ui, i.e. if new options are added. Project files
+should be converted to JSON.
+- Inconsistency between pdb_delhetatms and pdbfixer.
