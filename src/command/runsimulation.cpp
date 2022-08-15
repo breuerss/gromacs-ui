@@ -11,6 +11,7 @@
 
 #include <QDebug>
 #include <QDir>
+#include <cmath>
 
 namespace Command {
 
@@ -144,36 +145,17 @@ void RunSimulation::checkProgress()
     progressChecker.addPath(logPath);
   }
 
-  QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
-  if (simulation->isMinimisation())
-  {
-    command = QString("tail -n30 %1 | awk '/Potential/ { getline; print $1}' | tail -n1");
-  }
-
-  QProcess check;
-  check.start("bash", QStringList() << "-c" << command.arg(logPath));
-
-  check.waitForFinished();
-  QString stepsText = check.readAllStandardOutput();
-  bool ok;
-  float stepsDone = stepsText.trimmed().toFloat(&ok);
-  if (!ok)
+  SimulationStatusChecker statusChecker(project, simulation);
+  float progressValue = statusChecker.getProgress();
+  if (std::isnan(progressValue))
   {
     return;
   }
 
-  if (simulation->isMinimisation())
-  {
-    emit progress(stepsDone, ProgressType::Value);
-    return;
-  }
-
-  double numberOfSteps = simulation->property("numberOfSteps").value<double>();
-  if (numberOfSteps > 0)
-  {
-    float progressValue = 100.0 * stepsDone / numberOfSteps;
-    emit progress(progressValue);
-  }
+  emit progress(
+    progressValue,
+    simulation->isMinimisation() ? ProgressType::Value : ProgressType::Percentage
+    );
 }
 
 }

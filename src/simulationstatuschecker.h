@@ -29,6 +29,8 @@ public:
   QString getMdpPath() const;
   QString getTprPath() const;
 
+  float getProgress() const;
+
 private:
   QString getBasePath() const;
 

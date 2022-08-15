@@ -3,6 +3,8 @@
 #include "model/simulation.h"
 
 #include <QFile>
+#include <QProcess>
+#include <QVariant>
 
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
@@ -10,8 +12,8 @@ SimulationStatusChecker::SimulationStatusChecker(
   QObject *parent
   )
   : QObject(parent)
-    , project(project)
-    , simulation(simulation)
+  , project(project)
+  , simulation(simulation)
 {
 }
 
@@ -70,4 +72,38 @@ QString SimulationStatusChecker::getBasePath() const
   QString projectPath = project->getProjectPath();
   QString simulationType = simulation->getTypeAsString();
   return projectPath + "/" + simulationType + "/" + simulationType;
+}
+
+float SimulationStatusChecker::getProgress() const
+{
+  QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
+  if (simulation->isMinimisation())
+  {
+    command = QString("awk '/Potential/ { getline; print $1}' %1 | tail -n1");
+  }
+
+  QProcess check;
+  check.start("bash", QStringList() << "-c" << command.arg(getLogPath()));
+
+  check.waitForFinished();
+  QString valueString = check.readAllStandardOutput();
+  bool ok;
+  float statusNumber = valueString.trimmed().toFloat(&ok);
+  if (!ok)
+  {
+    return std::numeric_limits<float>::quiet_NaN();
+  }
+
+  if (simulation->isMinimisation())
+  {
+    return statusNumber;
+  }
+
+  double numberOfSteps = simulation->property("numberOfSteps").value<double>();
+  if (numberOfSteps > 0)
+  {
+    return 100.0 * statusNumber / numberOfSteps;
+  }
+
+  return std::numeric_limits<float>::quiet_NaN();
 }
