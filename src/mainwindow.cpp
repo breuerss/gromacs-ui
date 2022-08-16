@@ -120,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
         SimulationStatusChecker checker(project, step);
         if (checker.hasMdp())
         {
-          GromacsConfigFileGenerator::setFromMdpFile(step, checker.getMdpPath());
+          GromacsConfigFileGenerator(step).setFromMdpFile(checker.getMdpPath());
         }
       }
 
@@ -205,7 +205,6 @@ void MainWindow::setupUIForProject()
 
 
     conns << connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
-      bool canContinue = !newName.isEmpty();
       QString title = "GROMACS UI | " + newName;
       QString fileName = ProjectManager::getInstance()->getFileName();
       fileName.replace(QDir::homePath(), "~");

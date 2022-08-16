@@ -58,7 +58,31 @@ public:
   };
   Q_ENUM(TemperatureAlgorithm);
 
+  enum class ElectrostaticAlgorithm : int {
+    CutOff = 0,
+    Ewald,
+    PME,
+    P3MAD,
+    ReactionField,
+  };
+  Q_ENUM(ElectrostaticAlgorithm);
+
+  enum class VdwAlgorithm : int {
+    CutOff = 0,
+    PME,
+  };
+  Q_ENUM(VdwAlgorithm);
+
+  enum class VdwModifier : int {
+    None = 0,
+    PotentialShift,
+    ForceSwitch,
+    PotentialSwitch,
+  };
+  Q_ENUM(VdwModifier);
+
   Simulation();
+  ~Simulation();
   QString getName() const;
   QString getTypeAsString() const;
 
@@ -66,30 +90,44 @@ public:
   void setPreviousStep(std::shared_ptr<Simulation> newPreviousStep);
 
   bool isMinimisation() const;
+  bool pmeSettingsNeeded() const;
 
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
   Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
   Q_PROPERTY(Algorithm algorithm MEMBER algorithm NOTIFY algorithmChanged);
 
-  Q_PROPERTY(double numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
-  Q_PROPERTY(double timeStep MEMBER timeStep NOTIFY timeStepChanged);
-  Q_PROPERTY(double minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
-  Q_PROPERTY(double minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
-  Q_PROPERTY(int energyOutputFrequency MEMBER energyOutputFrequency NOTIFY energyOutputFrequencyChanged);
-  Q_PROPERTY(int positionOutputFrequency MEMBER positionOutputFrequency NOTIFY positionOutputFrequencyChanged);
-  Q_PROPERTY(int compressedPositionOutputFrequency MEMBER compressedPositionOutputFrequency NOTIFY compressedPositionOutputFrequencyChanged);
-  Q_PROPERTY(int velocityOutputFrequency MEMBER velocityOutputFrequency NOTIFY velocityOutputFrequencyChanged);
-  Q_PROPERTY(int forceOutputFrequency MEMBER forceOutputFrequency NOTIFY forceOutputFrequencyChanged);
-  Q_PROPERTY(int logOutputFrequency MEMBER logOutputFrequency NOTIFY logOutputFrequencyChanged);
-  Q_PROPERTY(QString electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
-  Q_PROPERTY(double electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
-  Q_PROPERTY(double fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
-  Q_PROPERTY(double vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
+  Q_PROPERTY(long long numberOfSteps MEMBER numberOfSteps NOTIFY numberOfStepsChanged);
+  Q_PROPERTY(float timeStep MEMBER timeStep NOTIFY timeStepChanged);
+  Q_PROPERTY(float minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
+  Q_PROPERTY(float minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
+
+  // output control
+  Q_PROPERTY(unsigned int energyOutputFrequency MEMBER energyOutputFrequency NOTIFY energyOutputFrequencyChanged);
+  Q_PROPERTY(unsigned int positionOutputFrequency MEMBER positionOutputFrequency NOTIFY positionOutputFrequencyChanged);
+  Q_PROPERTY(unsigned int compressedPositionOutputFrequency MEMBER compressedPositionOutputFrequency NOTIFY compressedPositionOutputFrequencyChanged);
+  Q_PROPERTY(unsigned int velocityOutputFrequency MEMBER velocityOutputFrequency NOTIFY velocityOutputFrequencyChanged);
+  Q_PROPERTY(unsigned int forceOutputFrequency MEMBER forceOutputFrequency NOTIFY forceOutputFrequencyChanged);
+  Q_PROPERTY(unsigned int logOutputFrequency MEMBER logOutputFrequency NOTIFY logOutputFrequencyChanged);
+
+  // electrostatics
+  Q_PROPERTY(ElectrostaticAlgorithm electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
+  Q_PROPERTY(float electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
+  Q_PROPERTY(double electrostaticEwaldRtol MEMBER electrostaticEwaldRtol NOTIFY electrostaticEwaldRtolChanged);
+
+  // PME
+  Q_PROPERTY(float fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
+  Q_PROPERTY(float pmeOrder MEMBER pmeOrder NOTIFY pmeOrderChanged);
+
+  // VdW
+  Q_PROPERTY(VdwAlgorithm vdwAlgorithm MEMBER vdwAlgorithm NOTIFY vdwAlgorithmChanged);
+  Q_PROPERTY(VdwModifier vdwModifier MEMBER vdwModifier NOTIFY vdwModifierChanged);
+  Q_PROPERTY(float vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
+  Q_PROPERTY(double vdwEwaldRtol MEMBER vdwEwaldRtol NOTIFY vdwEwaldRtolChanged);
 
   Q_PROPERTY(Simulation::PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
-  Q_PROPERTY(double pressure MEMBER pressure NOTIFY pressureChanged);
-  Q_PROPERTY(double pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
+  Q_PROPERTY(float pressure MEMBER pressure NOTIFY pressureChanged);
+  Q_PROPERTY(float pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
   Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
   Q_PROPERTY(double compressibility MEMBER compressibility NOTIFY compressibilityChanged);
 
@@ -105,26 +143,34 @@ signals:
   void simulationTypeChanged(Type);
   void algorithmChanged(Algorithm);
 
-  void numberOfStepsChanged(double);
-  void timeStepChanged(double);
-  void minimisationMaximumForceChanged(double);
-  void minimisationStepSizeChanged(double);
+  void numberOfStepsChanged(long long);
+  void timeStepChanged(float);
+  void minimisationMaximumForceChanged(float);
+  void minimisationStepSizeChanged(float);
 
-  void energyOutputFrequencyChanged(int);
-  void positionOutputFrequencyChanged(int);
-  void compressedPositionOutputFrequencyChanged(int);
-  void logOutputFrequencyChanged(int);
-  void velocityOutputFrequencyChanged(int);
-  void forceOutputFrequencyChanged(int);
+  void energyOutputFrequencyChanged(unsigned int);
+  void positionOutputFrequencyChanged(unsigned int);
+  void compressedPositionOutputFrequencyChanged(unsigned int);
+  void logOutputFrequencyChanged(unsigned int);
+  void velocityOutputFrequencyChanged(unsigned int);
+  void forceOutputFrequencyChanged(unsigned int);
 
-  void electrostaticAlgorithmChanged(QString);
-  void electrostaticCutoffRadiusChanged(double);
-  void fourierSpacingChanged(double);
-  void vdwCutoffRadiusChanged(double);
+  void electrostaticAlgorithmChanged(ElectrostaticAlgorithm);
+  void electrostaticCutoffRadiusChanged(float);
+  void electrostaticEwaldRtolChanged(float);
+
+
+  void fourierSpacingChanged(float);
+  void pmeOrderChanged(unsigned int);
+
+  void vdwCutoffRadiusChanged(float);
+  void vdwAlgorithmChanged(VdwAlgorithm);
+  void vdwModifierChanged(VdwModifier);
+  void vdwEwaldRtolChanged(double);
 
   void pressureAlgorithmChanged(PressureAlgorithm);
-  void pressureChanged(double);
-  void pressureUpdateIntervalChanged(double);
+  void pressureChanged(float);
+  void pressureUpdateIntervalChanged(float);
   void pressureCouplingTypeChanged(PressureCouplingType);
   void compressibilityChanged(double);
 
@@ -133,6 +179,8 @@ signals:
   void temperatureAlgorithmChanged(TemperatureAlgorithm);
   void temperatureCouplingGroupAdded(std::shared_ptr<TemperatureCouplingGroup>, int at);
   void temperatureCouplingGroupRemoved(std::shared_ptr<TemperatureCouplingGroup>, int at);
+
+  void pmeSettingsNeededChanged();
 
 public slots:
   const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups() const;
@@ -143,33 +191,40 @@ private:
   Type simulationType = Type::None;
   Algorithm algorithm = Algorithm::None;
 
-  double numberOfSteps = -1;
-  double timeStep = 2;
+  long long numberOfSteps = -1;
+  float timeStep = 2;
 
   // minimsation options
-  double minimisationMaximumForce = 1000.0;
-  double minimisationStepSize = 0.01;
+  float minimisationMaximumForce = 1000.0;
+  float minimisationStepSize = 0.01;
 
   // output frequencies
-  int energyOutputFrequency = 500;
-  int positionOutputFrequency = 0;
-  int compressedPositionOutputFrequency = 1000;
-  int logOutputFrequency = 1000;
-  int velocityOutputFrequency = 0;
-  int forceOutputFrequency = 0;
+  unsigned int energyOutputFrequency = 500;
+  unsigned int positionOutputFrequency = 0;
+  unsigned int compressedPositionOutputFrequency = 1000;
+  unsigned int logOutputFrequency = 1000;
+  unsigned int velocityOutputFrequency = 0;
+  unsigned int forceOutputFrequency = 0;
 
   // electrostatics
-  QString electrostaticAlgorithm = "PME";
-  double electrostaticCutoffRadius = 1.0;
-  double fourierSpacing = 0.125;
+  ElectrostaticAlgorithm electrostaticAlgorithm = ElectrostaticAlgorithm::PME;
+  float electrostaticCutoffRadius = 1.0;
+  double electrostaticEwaldRtol = 0.00001;
+
+  // PME
+  float fourierSpacing = 0.125;
+  unsigned int pmeOrder = 4;
 
   // vdw
-  double vdwCutoffRadius = 1.0;
+  VdwAlgorithm vdwAlgorithm = VdwAlgorithm::PME;
+  VdwModifier vdwModifier = VdwModifier::None;
+  float vdwCutoffRadius = 1.0;
+  double vdwEwaldRtol = 0.001;
 
   // pressure
   PressureAlgorithm pressureAlgorithm = PressureAlgorithm::None;
-  double pressure = 1;
-  double pressureUpdateInterval = 1;
+  float pressure = 1;
+  float pressureUpdateInterval = 1;
   double compressibility = 0.000045;
   PressureCouplingType pressureCouplingType = PressureCouplingType::Isotropic;
 
@@ -191,6 +246,12 @@ QString toString(Simulation::PressureCouplingType type);
 QVariant temperatureAlgorithmFrom(const QString& value);
 QString toString(Simulation::TemperatureAlgorithm algorithm);
 QString toString(Simulation::Type type, bool shortVersion = false);
+QVariant electrostaticAlgorithmFrom(const QString& value);
+QString toString(Simulation::ElectrostaticAlgorithm algorithm);
+QVariant vdwAlgorithmFrom(const QString& value);
+QString toString(Simulation::VdwAlgorithm algorithm);
+QVariant vdwModifierFrom(const QString& value);
+QString toString(Simulation::VdwModifier algorithm);
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model);
 QDataStream &operator>>(QDataStream &in, Simulation& model);

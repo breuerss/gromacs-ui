@@ -2,27 +2,59 @@
 #define GROMACSCONFIGFILEGENERATOR_H
 
 #include <memory>
+#include <type_traits>
 #include <QString>
 #include <QTextStream>
-
-namespace Model {
-class Simulation;
-}
+#include "model/simulation.h"
 
 class GromacsConfigFileGenerator
 {
 public:
-  static void generate(std::shared_ptr<Model::Simulation> step, const QString& fileName);
+  GromacsConfigFileGenerator(std::shared_ptr<Model::Simulation>);
+  void generate(const QString& fileName);
   static std::shared_ptr<Model::Simulation> createFrom(const QString& fileName);
-  static void setFromMdpFile(std::shared_ptr<Model::Simulation>, const QString& fileName);
-  static void setFromTprFile(std::shared_ptr<Model::Simulation>, const QString& fileName);
+  void setFromMdpFile(const QString& fileName);
+  void setFromTprFile(const QString& fileName);
 
 private:
-  static void writeLine(QTextStream& writer, const QString& key, const QString& value);
+  template<typename T>
+  QString getValueFromModelImpl(const QString& key, std::true_type)
+  {
+    return QString::number(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+  }
+
+  template<typename T>
+  QString getValueFromModelImpl(const QString& key, std::false_type)
+  {
+    return toString(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+  }
+
+  template<typename T>
+  QString getValueFromModel(const QString& key)
+  {
+    return getValueFromModelImpl<T>(key, std::integral_constant<bool, ((
+        std::is_integral<T>::value && !std::is_enum<T>::value && !std::is_same<T, bool>::value
+        ) || std::is_floating_point<T>::value)
+      >());
+  }
+
+  void writeLine(QTextStream& writer, const QString& key, const QString& value);
+  template<typename T>
+  void writeLine(
+    QTextStream& writer,
+    const QString& key
+    )
+  {
+    writeLine(writer, key, getValueFromModel<T>(key));
+  }
+
   static const QMap<QString, QString> optionsMap;
   static const QMap<QString, std::function<QVariant(const QString&)>> conversionMap;
   static const QList<QString> temperatureCouplingOptions;
   static QVariant createValueFrom(const QString& option, const QString& inputValueString);
+
+private:
+  std::shared_ptr<Model::Simulation> model;
 };
 
 #endif // GROMACSCONFIGFILEGENERATOR_H

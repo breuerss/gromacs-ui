@@ -24,10 +24,24 @@ Simulation::Simulation()
     qRegisterMetaTypeStreamOperators<int>("Simulation::Algorithm");
     qRegisterMetaType<TemperatureAlgorithm>("Simulation::TemperatureAlgorithm");
     qRegisterMetaTypeStreamOperators<int>("Simulation::TemperatureAlgorithm");
+    qRegisterMetaType<ElectrostaticAlgorithm>("Simulation::ElectrostaticAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::ElectrostaticAlgorithm");
+    qRegisterMetaType<VdwAlgorithm>("Simulation::VdwAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::VdwAlgorithm");
+    qRegisterMetaType<VdwModifier>("Simulation::VdwModifier");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::VdwModifier");
     registered = true;
   }
 
   addTemperatureCouplingGroup();
+  connect(this, &Simulation::vdwAlgorithmChanged, this, &Simulation::pmeSettingsNeededChanged);
+  connect(this, &Simulation::electrostaticAlgorithmChanged,
+          this, &Simulation::pmeSettingsNeededChanged);
+}
+
+Simulation::~Simulation()
+{
+  disconnect(this, 0, 0, 0);
 }
 
 QString Simulation::getName() const
@@ -54,6 +68,14 @@ bool Simulation::isMinimisation() const
 {
   return algorithm == Simulation::Algorithm::SteepestDecent ||
     algorithm == Simulation::Algorithm::ConjugateGradient;
+}
+
+bool Simulation::pmeSettingsNeeded() const
+{
+  return electrostaticAlgorithm == ElectrostaticAlgorithm::PME ||
+    electrostaticAlgorithm == ElectrostaticAlgorithm::P3MAD ||
+    electrostaticAlgorithm == ElectrostaticAlgorithm::Ewald ||
+    vdwAlgorithm == VdwAlgorithm::PME;
 }
 
 std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups()
@@ -217,6 +239,59 @@ QVariant temperatureAlgorithmFrom(const QString& value)
 QString toString(Simulation::TemperatureAlgorithm algorithm)
 {
   return temperatureAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto electrostaticAlgorithmBimap =
+makeBimap<Simulation::ElectrostaticAlgorithm, QString>({
+  { Simulation::ElectrostaticAlgorithm::CutOff, "Cut-Off" },
+  { Simulation::ElectrostaticAlgorithm::Ewald, "Ewald" },
+  { Simulation::ElectrostaticAlgorithm::PME, "PME" },
+  { Simulation::ElectrostaticAlgorithm::P3MAD, "P3M-AD" },
+  { Simulation::ElectrostaticAlgorithm::ReactionField, "Reaction-Field" },
+});
+
+QVariant electrostaticAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(electrostaticAlgorithmBimap.right.at(value));
+}
+
+QString toString(Simulation::ElectrostaticAlgorithm algorithm)
+{
+  return electrostaticAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto vdwAlgorithmBimap =
+makeBimap<Simulation::VdwAlgorithm, QString>({
+  { Simulation::VdwAlgorithm::CutOff, "Cut-Off" },
+  { Simulation::VdwAlgorithm::PME, "PME" },
+});
+
+QVariant vdwAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(vdwAlgorithmBimap.right.at(value));
+}
+
+QString toString(Simulation::VdwAlgorithm algorithm)
+{
+  return vdwAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto vdwModifierBimap =
+makeBimap<Simulation::VdwModifier, QString>({
+  { Simulation::VdwModifier::None, "None" },
+  { Simulation::VdwModifier::PotentialShift, "Potential-Shift" },
+  { Simulation::VdwModifier::ForceSwitch, "Force-Switch" },
+  { Simulation::VdwModifier::PotentialSwitch, "Potential-Switch" },
+});
+
+QVariant vdwModifierFrom(const QString& value)
+{
+  return QVariant::fromValue(vdwModifierBimap.right.at(value));
+}
+
+QString toString(Simulation::VdwModifier algorithm)
+{
+  return vdwModifierBimap.left.at(algorithm);
 }
 
 }

@@ -7,13 +7,47 @@
     <x>0</x>
     <y>0</y>
     <width>1042</width>
-    <height>861</height>
+    <height>1020</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_21">
+  <layout class="QVBoxLayout" name="verticalLayout_31">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="simulationTypeLabel">
+         <property name="text">
+          <string>Simulation Type</string>
+         </property>
+         <property name="buddy">
+          <cstring>simulationType</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="simulationType"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -163,42 +197,109 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="simulationTypeLabel">
-         <property name="text">
-          <string>Simulation Type</string>
-         </property>
-         <property name="buddy">
-          <cstring>simulationType</cstring>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="simulationType"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QWidget" name="settingsWidget" native="true">
      <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0" alignment="Qt::AlignTop">
+       <widget class="QGroupBox" name="generalGroup">
+        <property name="title">
+         <string>General</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QLabel" name="noOfStepsLabel">
+             <property name="text">
+              <string>Number of Steps</string>
+             </property>
+             <property name="buddy">
+              <cstring>numberOfSteps</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="numberOfSteps">
+             <property name="decimals">
+              <number>0</number>
+             </property>
+             <property name="minimum">
+              <double>-1.000000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1000000000000000000000.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QLabel" name="timeStepLabel">
+             <property name="text">
+              <string>Time Step (fs)</string>
+             </property>
+             <property name="buddy">
+              <cstring>timeStep</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="timeStep">
+             <property name="decimals">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <double>10000.000000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.000000000000000</double>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLabel" name="algorithmLabel">
+             <property name="text">
+              <string>Algorithm</string>
+             </property>
+             <property name="buddy">
+              <cstring>algorithm</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="algorithm"/>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <widget class="QLabel" name="durationLabel">
+             <property name="text">
+              <string>Duration</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="duration">
+             <property name="text">
+              <string>0</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QGroupBox" name="outputSettingsGroup">
         <property name="title">
@@ -607,124 +708,23 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="0" alignment="Qt::AlignTop">
-       <widget class="QGroupBox" name="generalGroup">
-        <property name="title">
-         <string>General</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_2">
-           <item>
-            <widget class="QLabel" name="noOfStepsLabel">
-             <property name="text">
-              <string>Number of Steps</string>
-             </property>
-             <property name="buddy">
-              <cstring>numberOfSteps</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDoubleSpinBox" name="numberOfSteps">
-             <property name="decimals">
-              <number>0</number>
-             </property>
-             <property name="minimum">
-              <double>-1.000000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>1000000000000000000000.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <item>
-            <widget class="QLabel" name="timeStepLabel">
-             <property name="text">
-              <string>Time Step (fs)</string>
-             </property>
-             <property name="buddy">
-              <cstring>timeStep</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QDoubleSpinBox" name="timeStep">
-             <property name="decimals">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <double>10000.000000000000000</double>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QLabel" name="algorithmLabel">
-             <property name="text">
-              <string>Algorithm</string>
-             </property>
-             <property name="buddy">
-              <cstring>algorithm</cstring>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QComboBox" name="algorithm"/>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout_18">
-           <item>
-            <widget class="QLabel" name="durationLabel">
-             <property name="text">
-              <string>Duration</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="duration">
-             <property name="text">
-              <string>0</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item alignment="Qt::AlignTop">
       <widget class="QGroupBox" name="electrostaticsGroup">
        <property name="title">
         <string>Electrostatic Potential</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_15">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_12">
           <item>
            <widget class="QLabel" name="electrostaticAlgorithmLabel">
             <property name="text">
-             <string>Long Range Electrostatics</string>
+             <string>Electrostatics Algorithm</string>
             </property>
             <property name="buddy">
              <cstring>electrostaticAlgorithm</cstring>
@@ -736,7 +736,7 @@
           </item>
          </layout>
         </item>
-        <item>
+        <item row="1" column="0">
          <layout class="QVBoxLayout" name="verticalLayout_13">
           <item>
            <widget class="QLabel" name="electrostaticCutoffRadiusLabel">
@@ -760,6 +760,141 @@
           </item>
          </layout>
         </item>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_32">
+          <item>
+           <widget class="QLabel" name="electrostaticEwaldRtolLabel">
+            <property name="text">
+             <string>Ewald Tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="electrostaticEwaldRtol">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="value">
+             <double>0.000010000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="vanDerWaalsGroup">
+       <property name="title">
+        <string>Van der Waals Interaction</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="vdwAlgorithmLabel">
+            <property name="text">
+             <string>VdW Algorithm</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwAlgorithm</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="vdwAlgorithm"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <item>
+           <widget class="QLabel" name="vdwModifierLabel">
+            <property name="text">
+             <string>VdW Modifier</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwModifier</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="vdwModifier"/>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_16">
+          <item>
+           <widget class="QLabel" name="vdwCutoffRadiusLabel">
+            <property name="text">
+             <string>Cutoff Radius (nm)</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwCutoffRadius</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
+            <property name="maximum">
+             <double>99999999.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_26">
+          <item>
+           <widget class="QLabel" name="vdwSwitchRadiusLabel">
+            <property name="text">
+             <string>Switch Radius</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwSwitchRadius</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwSwitchRadius"/>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_33">
+          <item>
+           <widget class="QLabel" name="vdwEwaldRtolLabel">
+            <property name="text">
+             <string>Ewald Tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwEwaldRtol">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="value">
+             <double>0.001000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item alignment="Qt::AlignTop">
+      <widget class="QGroupBox" name="pmeSettingsGroup">
+       <property name="title">
+        <string>Particle Mesh Ewald Settings</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_27">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
@@ -784,34 +919,25 @@
           </item>
          </layout>
         </item>
-       </layout>
-      </widget>
-     </item>
-     <item alignment="Qt::AlignTop">
-      <widget class="QGroupBox" name="vanDerWaalsGroup">
-       <property name="title">
-        <string>Van der Waals Interaction</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_17">
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_16">
+         <layout class="QVBoxLayout" name="verticalLayout_15">
           <item>
-           <widget class="QLabel" name="vdwCutoffRadiusLabel">
+           <widget class="QLabel" name="pmeOrderLabel">
             <property name="text">
-             <string>Cutoff Radius (nm)</string>
-            </property>
-            <property name="buddy">
-             <cstring>vdwCutoffRadius</cstring>
+             <string>Order</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
-            <property name="maximum">
-             <double>99999999.000000000000000</double>
+           <widget class="QSpinBox" name="pmeOrder">
+            <property name="minimum">
+             <number>4</number>
             </property>
-            <property name="value">
-             <double>1.000000000000000</double>
+            <property name="maximum">
+             <number>10</number>
+            </property>
+            <property name="singleStep">
+             <number>2</number>
             </property>
            </widget>
           </item>
@@ -830,7 +956,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>116</height>
+       <height>40</height>
       </size>
      </property>
     </spacer>

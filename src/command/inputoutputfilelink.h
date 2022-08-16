@@ -10,6 +10,7 @@ class InputOutputFileLink
 {
 public:
   InputOutputFileLink() = default;
+  virtual ~InputOutputFileLink() = default;
 
   void setPreviousLink(std::shared_ptr<InputOutputFileLink> newPreviousLink);
   std::shared_ptr<InputOutputFileLink> getPreviousLink() const;

@@ -24,7 +24,11 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "coulombtype", "electrostaticAlgorithm" },
   { "fourierSpacing", "fourierSpacing" },
   { "rcoulomb", "electrostaticCutoffRadius" },
+  { "ewald-rtol", "electrostaticEwaldRtol" },
+  { "vdwtype", "vdwAlgorithm" },
+  { "vdw-modifier", "vdwModifier" },
   { "rvdw", "vdwCutoffRadius" },
+  { "ewald-rtol-lj", "vdwEwaldRtol" },
   { "pcoupl", "pressureAlgorithm" },
   { "pcoupltype", "pressureCouplingType" },
   { "tau-p", "pressureUpdateInterval" },
@@ -36,7 +40,15 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "ref-t", "temperature" },
   { "emtol", "minimisationMaximumForce" },
   { "emstep", "minimisationStepSize" },
+  { "pme-order", "pmeOrder" },
 };
+
+GromacsConfigFileGenerator::GromacsConfigFileGenerator(
+  std::shared_ptr<Model::Simulation> model
+  )
+  : model(model)
+{
+}
 
 const QMap<QString, std::function<QVariant(const QString&)>>
 GromacsConfigFileGenerator::conversionMap = {
@@ -50,6 +62,9 @@ GromacsConfigFileGenerator::conversionMap = {
   { "pcoupltype", Model::pressureCouplingTypeFrom },
   { "tcoupl", Model::temperatureAlgorithmFrom },
   { "tc-grps", Model::temperatureGroupFrom },
+  { "coulombtype", Model::electrostaticAlgorithmFrom},
+  { "vdwtype", Model::vdwAlgorithmFrom},
+  { "vdw-modifier", Model::vdwModifierFrom},
 };
 
 const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
@@ -59,7 +74,6 @@ const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
 };
 
 void GromacsConfigFileGenerator::generate(
-  std::shared_ptr<Model::Simulation> step,
   const QString& fileName
   )
 {
@@ -68,55 +82,62 @@ void GromacsConfigFileGenerator::generate(
   QTextStream writer(&file);
 
   using Model::Simulation;
-  Simulation::Type simulationType = step->property("simulationType").value<Simulation::Type>();
+  Simulation::Type simulationType = model->property("simulationType").value<Simulation::Type>();
   if (simulationType != Simulation::Type::None)
   {
-    writeLine(writer, "integrator", toString(step->property("algorithm").value<Simulation::Algorithm>()));
-    writeLine(writer, "nsteps", QString::number(step->property("numberOfSteps").value<double>(), 'f', 0));
-    writeLine(writer, "dt", QString::number(step->property("timeStep").value<double>() / 1000));
+    writeLine<Simulation::Algorithm>(writer, "integrator");
+    writeLine(writer, "nsteps", QString::number(model->property("numberOfSteps").value<double>(), 'f', 0));
+    writeLine(writer, "dt", QString::number(model->property("timeStep").value<double>() / 1000));
 
     // output control
-    writeLine(writer, "nstenergy", QString::number(step->property("energyOutputFrequency").value<int>()));
-    writeLine(writer, "nstxout", QString::number(step->property("positionOutputFrequency").value<int>()));
-    writeLine(writer, "nstxout-compressed", QString::number(step->property("compressedPositionOutputFrequency").value<int>()));
+    writeLine<unsigned int>(writer, "nstenergy");
+    writeLine<unsigned int>(writer, "nstxout");
+    writeLine<unsigned int>(writer, "nstxout-compressed");
 
-    writeLine(writer, "nstvout", QString::number(step->property("velocityOutputFrequency").value<int>()));
-    writeLine(writer, "nstfout", QString::number(step->property("forceOutputFrequency").value<int>()));
-    writeLine(writer, "nstlog", QString::number(step->property("logOutputFrequency").value<int>()));
+    writeLine<unsigned int>(writer, "nstvout");
+    writeLine<unsigned int>(writer, "nstfout");
+    writeLine<unsigned int>(writer, "nstlog");
 
-    // electrostatics and VdW
-    writeLine(writer, "coulombtype", step->property("electrostaticAlgorithm").toString());
-    writeLine(writer, "fourierSpacing", step->property("fourierSpacing").toString());
+    // electrostatics
+    writeLine<Simulation::ElectrostaticAlgorithm>(writer, "coulombtype");
+    writeLine<float>(writer, "rcoulomb");
+    writeLine<double>(writer, "ewald-rtol");
 
-    writeLine(writer, "rcoulomb", step->property("electrostaticCutoffRadius").toString());
-    writeLine(writer, "rvdw", step->property("vdwCutoffRadius").toString());
+    // PME
+    writeLine<float>(writer, "fourierSpacing");
+    writeLine<unsigned int>(writer, "pmd-order");
+
+    //  and VdW
+    writeLine<Simulation::VdwAlgorithm>(writer, "vdwtype");
+    writeLine<Simulation::VdwModifier>(writer, "vdw-modifier");
+    writeLine<float>(writer, "rvdw");
+    writeLine<double>(writer, "ewald-rtol-lj");
 
     using Model::Simulation;
 
     // pressure
+    writeLine<Simulation::PressureAlgorithm>(writer, "pcoupl");
     Simulation::PressureAlgorithm pressureAlgorithm =
-      step->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
-    writeLine(writer, "pcoupl", toString(pressureAlgorithm));
+      model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
     if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
     {
-      writeLine(writer, "pcoupltype", toString(step->property("pressureCouplingType").value<Simulation::PressureCouplingType>()));
-      writeLine(writer, "tau-p", QString::number(step->property("pressureUpdateInterval").value<double>()));
-      writeLine(writer, "ref-p", QString::number(step->property("pressure").value<double>()));
-      writeLine(writer, "compressibility", QString::number(step->property("compressibility")
-                                                           .value<double>()));
+      writeLine<Simulation::PressureCouplingType>(writer, "pcoupltype");
+      writeLine<float>(writer, "tau-p");
+      writeLine<float>(writer, "ref-p");
+      writeLine<double>(writer, "compressibility");
     }
 
     // temperature
     Simulation::TemperatureAlgorithm temperatureAlgorithm =
-      step->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
-    writeLine(writer, "tcoupl", toString(temperatureAlgorithm));
+      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
+    writeLine<Simulation::TemperatureAlgorithm>(writer, "tcoupl");
     if (temperatureAlgorithm != Simulation::TemperatureAlgorithm::None)
     {
       QStringList groupNames;
       QStringList temperatures;
       QStringList updateIntervals;
 
-      const auto& groups = step->getTemperatureCouplingGroups();
+      const auto& groups = model->getTemperatureCouplingGroups();
       for (auto group : groups)
       {
         groupNames << toString(group->property("group").value<Model::TemperatureCouplingGroup::Group>());
@@ -132,8 +153,8 @@ void GromacsConfigFileGenerator::generate(
 
   if (simulationType == Model::Simulation::Type::Minimisation)
   {
-    writeLine(writer, "emtol", step->property("minimisationMaximumForce").toString());
-    writeLine(writer, "emstep", step->property("minimisationStepSize").toString());
+    writeLine<float>(writer, "emtol");
+    writeLine<float>(writer, "emstep");
   }
 
   file.close();
@@ -143,12 +164,11 @@ std::shared_ptr<Model::Simulation>
 GromacsConfigFileGenerator::createFrom(const QString& fileName)
 {
   auto model = std::make_shared<Model::Simulation>();
-  setFromMdpFile(model, fileName);
+  GromacsConfigFileGenerator(model).setFromMdpFile(fileName);
   return model;
 }
 
 void GromacsConfigFileGenerator::setFromMdpFile(
-  std::shared_ptr<Model::Simulation> model,
   const QString& fileName
   )
 {
@@ -265,7 +285,6 @@ QVariant GromacsConfigFileGenerator::createValueFrom(
 }
 
 void GromacsConfigFileGenerator::setFromTprFile(
-  std::shared_ptr<Model::Simulation> model,
   const QString& fileName
   )
 {
@@ -289,7 +308,7 @@ void GromacsConfigFileGenerator::setFromTprFile(
     qDebug() << "Cannot import from tpr file. Execution of " << command << "failed.";
     return;
   }
-  setFromMdpFile(model, temporaryFileName);
+  setFromMdpFile(temporaryFileName);
 }
 
 
