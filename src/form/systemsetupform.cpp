@@ -82,38 +82,41 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
   auto reactToSourceStructureFileChange = [this] (const QString& sourceStructureFile) {
-      // Workaround since this callback is executed before the
-      // callback that should update the molecule preview.
-      QTimer::singleShot(100, [this, sourceStructureFile] {
+    if (!sourceStructureFile.isEmpty())
+    {
+      setGroupsEnabled(true);
+      const bool isPdb = sourceStructureFile.endsWith(".pdb");
+      if (!isPdb)
+      {
+        disablePdbfixer();
+      }
+      else
+      {
+        PdbInfoExtractor extractor;
+        QStringList chains = extractor.getChains(sourceStructureFile);
 
-        if (!sourceStructureFile.isEmpty())
+        QLayoutItem* item;
+        while ((item = ui->chainsGroupLayout->takeAt(0)) != 0)
         {
-          setGroupsEnabled(true);
-          PdbInfoExtractor extractor;
-          QStringList chains = extractor.getChains(sourceStructureFile);
-
-          QLayoutItem* item;
-          while ((item = ui->chainsGroupLayout->takeAt(0)) != 0)
+          if (item->widget())
           {
-            if (item->widget())
-            {
-              delete item->widget();
-            }
-            delete item;
+            delete item->widget();
           }
-
-          systemSetup->setChains(chains);
-          for (const auto& chain: chains)
-          {
-            QCheckBox* checkBox = new QCheckBox(chain);
-            checkBox->setCheckState(Qt::Checked);
-            connect(checkBox, &QCheckBox::stateChanged, [this, chain] (int state) {
-              systemSetup->useChain(chain, state == Qt::Checked);
-            });
-            ui->chainsGroupLayout->addWidget(checkBox);
-          }
+          delete item;
         }
-      });
+
+        systemSetup->setChains(chains);
+        for (const auto& chain: chains)
+        {
+          QCheckBox* checkBox = new QCheckBox(chain);
+          checkBox->setCheckState(Qt::Checked);
+          connect(checkBox, &QCheckBox::stateChanged, [this, chain] (int state) {
+            systemSetup->useChain(chain, state == Qt::Checked);
+          });
+          ui->chainsGroupLayout->addWidget(checkBox);
+        }
+      }
+    }
   };
   conns << connect(
     systemSetup.get(),
@@ -164,8 +167,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 
   if (AppProvider::get("pdbfixer").isEmpty())
   {
-    ui->usePdbFixer->setEnabled(false);
-    ui->usePdbFixer->setChecked(false);
+    disablePdbfixer();
   }
 
   connect(ui->localFileDialogButton, &QPushButton::clicked,
@@ -179,6 +181,12 @@ SystemSetupForm::~SystemSetupForm()
     disconnect(conn);
   }
   delete ui;
+}
+
+void SystemSetupForm::disablePdbfixer()
+{
+  ui->usePdbFixer->setEnabled(false);
+  ui->usePdbFixer->setChecked(false);
 }
 
 void SystemSetupForm::preprocess()
