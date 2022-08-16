@@ -44,6 +44,7 @@ private:
   void handlePdbDownload(const QString& pdbCode, const QString& filePath);
   void preprocess();
   void stopPreprocess();
+  void loadFileFromDisk();
   QList<QMetaObject::Connection> conns;
   std::shared_ptr<Command::Queue> queue;
 };

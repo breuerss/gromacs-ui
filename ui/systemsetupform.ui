@@ -28,7 +28,7 @@
         <item>
          <widget class="QWidget" name="widget" native="true">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <property name="spacing">

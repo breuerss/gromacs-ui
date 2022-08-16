@@ -21,6 +21,8 @@
 #include <QDir>
 #include <QCheckBox>
 #include <QTimer>
+#include <QFileDialog>
+#include <QStandardPaths>
 #include <memory>
 
 SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWidget *parent)
@@ -165,6 +167,9 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     ui->usePdbFixer->setEnabled(false);
     ui->usePdbFixer->setChecked(false);
   }
+
+  connect(ui->localFileDialogButton, &QPushButton::clicked,
+          this, &SystemSetupForm::loadFileFromDisk);
 }
 
 SystemSetupForm::~SystemSetupForm()
@@ -374,4 +379,18 @@ void SystemSetupForm::handlePdbDownload(const QString& pdbCode, const QString& a
 
   pdbDownloader->download(pdbCode, absFilePath);
 
+}
+
+void SystemSetupForm::loadFileFromDisk()
+{
+  QString fileName = QFileDialog::getOpenFileName(
+    nullptr,
+    tr("Load structure from file"),
+    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+    tr("Structures (*.gro *.pdb)")
+    );
+  if (!fileName.isEmpty())
+  {
+    systemSetup->setSourceStructureFile(fileName);
+  }
 }
