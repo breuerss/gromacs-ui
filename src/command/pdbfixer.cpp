@@ -34,6 +34,7 @@ void PdbFixer::doExecute()
   command += " --replace-nonstandard";
   command += " --keep-heterogens=none";
   command += " --add-residues";
+  command += " --add-atoms=heavy";
   command += " --verbose";
 
   QFileInfo fileInfo(inputFile);
