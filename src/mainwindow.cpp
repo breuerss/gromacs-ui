@@ -120,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
         SimulationStatusChecker checker(project, step);
         if (checker.hasMdp())
         {
-          GromacsConfigFileGenerator::setFromMdpFile(step, checker.getMdpPath());
+          GromacsConfigFileGenerator(step).setFromMdpFile(checker.getMdpPath());
         }
       }
 

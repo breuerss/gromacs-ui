@@ -64,7 +64,7 @@ cd -
 ## Compile gromacs-ui
 mkdir build
 cd build
-qmake .. && \
+qmake -spec linux-clang .. && \
         make -j $(nproc) && \
         sudo make install
 cd -

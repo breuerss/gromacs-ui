@@ -49,7 +49,7 @@ void RunSimulation::doExecute()
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
 
-  GromacsConfigFileGenerator::generate(simulation, mdpFile);
+  GromacsConfigFileGenerator(simulation).generate(mdpFile);
 
   QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
   QFileInfo systemPath(inputStructure);
