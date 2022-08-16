@@ -98,16 +98,35 @@ SimulationSetupForm::SimulationSetupForm(
               ui->temperatureAlgorithm, simulation, "temperatureAlgorithm"
               );
 
+  // electrostatics
   setOptions<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, {
      {"PME", Simulation::ElectrostaticAlgorithm::PME },
      {"Cut-Off", Simulation::ElectrostaticAlgorithm::CutOff },
      {"Ewald", Simulation::ElectrostaticAlgorithm::Ewald },
      {"P3M-AD", Simulation::ElectrostaticAlgorithm::P3MAD },
      {"Reaction-Field", Simulation::ElectrostaticAlgorithm::ReactionField },
-  }, 1);
+  }, Simulation::ElectrostaticAlgorithm::PME);
   connectToComboBox<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
   connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, simulation, "electrostaticCutoffRadius");
   connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, simulation, "fourierSpacing");
+
+
+  // vdw
+  setOptions<Simulation::VdwAlgorithm>(ui->vdwAlgorithm, {
+     {"PME", Simulation::VdwAlgorithm::PME },
+     {"Cut-Off", Simulation::VdwAlgorithm::CutOff },
+  }, Simulation::VdwAlgorithm::PME);
+  connectToComboBox<Simulation::VdwAlgorithm>(
+    ui->vdwAlgorithm, simulation, "vdwAlgorithm",
+    [this] (Simulation::VdwAlgorithm algorithm) {
+      ui->vdwModifier->setEnabled(algorithm == Simulation::VdwAlgorithm::CutOff);
+    });
+  setOptions<Simulation::VdwModifier>(ui->vdwModifier, {
+     {"None", Simulation::VdwModifier::None },
+     {"Potential-Switch", Simulation::VdwModifier::PotentialSwitch },
+     {"Potential-Shift", Simulation::VdwModifier::PotentialShift },
+     {"Force-Switch", Simulation::VdwModifier::ForceSwitch },
+  }, Simulation::VdwModifier::None);
   connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, simulation, "vdwCutoffRadius");
 
   connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupAdded,

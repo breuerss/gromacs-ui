@@ -13,7 +13,41 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_21">
+  <layout class="QVBoxLayout" name="verticalLayout_27">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="simulationTypeLabel">
+         <property name="text">
+          <string>Simulation Type</string>
+         </property>
+         <property name="buddy">
+          <cstring>simulationType</cstring>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="simulationType"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -161,40 +195,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QLabel" name="simulationTypeLabel">
-         <property name="text">
-          <string>Simulation Type</string>
-         </property>
-         <property name="buddy">
-          <cstring>simulationType</cstring>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="simulationType"/>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="QWidget" name="settingsWidget" native="true">
@@ -712,8 +712,8 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item alignment="Qt::AlignTop">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
       <widget class="QGroupBox" name="electrostaticsGroup">
        <property name="title">
         <string>Electrostatic Potential</string>
@@ -724,7 +724,7 @@
           <item>
            <widget class="QLabel" name="electrostaticAlgorithmLabel">
             <property name="text">
-             <string>Long Range Electrostatics</string>
+             <string>Electrostatics Algorithm</string>
             </property>
             <property name="buddy">
              <cstring>electrostaticAlgorithm</cstring>
@@ -787,12 +787,43 @@
        </layout>
       </widget>
      </item>
-     <item alignment="Qt::AlignTop">
+     <item>
       <widget class="QGroupBox" name="vanDerWaalsGroup">
        <property name="title">
         <string>Van der Waals Interaction</string>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_17">
+       <layout class="QVBoxLayout" name="verticalLayout_26">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="vdwAlgorithmLabel">
+            <property name="text">
+             <string>VdW Algorithm</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwAlgorithm</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="vdwAlgorithm"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <item>
+           <widget class="QLabel" name="vdwModifierLabel">
+            <property name="text">
+             <string>VdW Modifier</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="vdwModifier"/>
+          </item>
+         </layout>
+        </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
@@ -821,19 +852,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>116</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

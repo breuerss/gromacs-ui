@@ -26,6 +26,10 @@ Simulation::Simulation()
     qRegisterMetaTypeStreamOperators<int>("Simulation::TemperatureAlgorithm");
     qRegisterMetaType<ElectrostaticAlgorithm>("Simulation::ElectrostaticAlgorithm");
     qRegisterMetaTypeStreamOperators<int>("Simulation::ElectrostaticAlgorithm");
+    qRegisterMetaType<VdwAlgorithm>("Simulation::VdwAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::VdwAlgorithm");
+    qRegisterMetaType<VdwModifier>("Simulation::VdwModifier");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::VdwModifier");
     registered = true;
   }
 
@@ -238,6 +242,40 @@ QVariant electrostaticAlgorithmFrom(const QString& value)
 QString toString(Simulation::ElectrostaticAlgorithm algorithm)
 {
   return electrostaticAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto vdwAlgorithmBimap =
+makeBimap<Simulation::VdwAlgorithm, QString>({
+  { Simulation::VdwAlgorithm::CutOff, "Cut-Off" },
+  { Simulation::VdwAlgorithm::PME, "PME" },
+});
+
+QVariant vdwAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(vdwAlgorithmBimap.right.at(value));
+}
+
+QString toString(Simulation::VdwAlgorithm algorithm)
+{
+  return vdwAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto vdwModifierBimap =
+makeBimap<Simulation::VdwModifier, QString>({
+  { Simulation::VdwModifier::None, "None" },
+  { Simulation::VdwModifier::PotentialShift, "Potential-Shift" },
+  { Simulation::VdwModifier::ForceSwitch, "Force-Switch" },
+  { Simulation::VdwModifier::PotentialSwitch, "Potential-Switch" },
+});
+
+QVariant vdwModifierFrom(const QString& value)
+{
+  return QVariant::fromValue(vdwModifierBimap.right.at(value));
+}
+
+QString toString(Simulation::VdwModifier algorithm)
+{
+  return vdwModifierBimap.left.at(algorithm);
 }
 
 }

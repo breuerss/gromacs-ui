@@ -67,6 +67,20 @@ public:
   };
   Q_ENUM(ElectrostaticAlgorithm);
 
+  enum class VdwAlgorithm : int {
+    CutOff = 0,
+    PME,
+  };
+  Q_ENUM(VdwAlgorithm);
+
+  enum class VdwModifier : int {
+    None = 0,
+    PotentialShift,
+    ForceSwitch,
+    PotentialSwitch,
+  };
+  Q_ENUM(VdwModifier);
+
   Simulation();
   QString getName() const;
   QString getTypeAsString() const;
@@ -94,6 +108,8 @@ public:
   Q_PROPERTY(ElectrostaticAlgorithm electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
   Q_PROPERTY(float electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
   Q_PROPERTY(float fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
+  Q_PROPERTY(VdwAlgorithm vdwAlgorithm MEMBER vdwAlgorithm NOTIFY vdwAlgorithmChanged);
+  Q_PROPERTY(VdwModifier vdwModifier MEMBER vdwModifier NOTIFY vdwModifierChanged);
   Q_PROPERTY(float vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
 
   Q_PROPERTY(Simulation::PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
@@ -131,6 +147,8 @@ signals:
   void fourierSpacingChanged(float);
 
   void vdwCutoffRadiusChanged(float);
+  void vdwAlgorithmChanged(VdwAlgorithm);
+  void vdwModifierChanged(VdwModifier);
 
   void pressureAlgorithmChanged(PressureAlgorithm);
   void pressureChanged(float);
@@ -174,6 +192,8 @@ private:
   float fourierSpacing = 0.125;
 
   // vdw
+  VdwAlgorithm vdwAlgorithm = VdwAlgorithm::PME;
+  VdwModifier vdwModifier = VdwModifier::None;
   float vdwCutoffRadius = 1.0;
 
   // pressure
@@ -203,6 +223,10 @@ QString toString(Simulation::TemperatureAlgorithm algorithm);
 QString toString(Simulation::Type type, bool shortVersion = false);
 QVariant electrostaticAlgorithmFrom(const QString& value);
 QString toString(Simulation::ElectrostaticAlgorithm algorithm);
+QVariant vdwAlgorithmFrom(const QString& value);
+QString toString(Simulation::VdwAlgorithm algorithm);
+QVariant vdwModifierFrom(const QString& value);
+QString toString(Simulation::VdwModifier algorithm);
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model);
 QDataStream &operator>>(QDataStream &in, Simulation& model);

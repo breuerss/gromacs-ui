@@ -24,6 +24,8 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "coulombtype", "electrostaticAlgorithm" },
   { "fourierSpacing", "fourierSpacing" },
   { "rcoulomb", "electrostaticCutoffRadius" },
+  { "vdwtype", "vdwAlgorithm" },
+  { "vdw-modifier", "vdwModifier" },
   { "rvdw", "vdwCutoffRadius" },
   { "pcoupl", "pressureAlgorithm" },
   { "pcoupltype", "pressureCouplingType" },
@@ -58,6 +60,8 @@ GromacsConfigFileGenerator::conversionMap = {
   { "tcoupl", Model::temperatureAlgorithmFrom },
   { "tc-grps", Model::temperatureGroupFrom },
   { "coulombtype", Model::electrostaticAlgorithmFrom},
+  { "vdwtype", Model::vdwAlgorithmFrom},
+  { "vdw-modifier", Model::vdwModifierFrom},
 };
 
 const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
@@ -99,6 +103,8 @@ void GromacsConfigFileGenerator::generate(
     writeLine<float>(writer, "fourierSpacing");
 
     //  and VdW
+    writeLine<Simulation::VdwAlgorithm>(writer, "vdwtype");
+    writeLine<Simulation::VdwModifier>(writer, "vdw-modifier");
     writeLine<float>(writer, "rvdw");
 
     using Model::Simulation;
