@@ -85,7 +85,7 @@ void GromacsConfigFileGenerator::generate(
     writeLine(writer, "nstlog", QString::number(step->property("logOutputFrequency").value<int>()));
 
     // electrostatics and VdW
-    writeLine(writer, "coulombtype", step->property("electrostaticAlgorithm").toString());
+    writeLine(writer, "coulombtype", toString(step->property("electrostaticAlgorithm").value<Simulation::ElectrostaticAlgorithm>()));
     writeLine(writer, "fourierSpacing", step->property("fourierSpacing").toString());
 
     writeLine(writer, "rcoulomb", step->property("electrostaticCutoffRadius").toString());

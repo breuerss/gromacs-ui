@@ -24,6 +24,8 @@ Simulation::Simulation()
     qRegisterMetaTypeStreamOperators<int>("Simulation::Algorithm");
     qRegisterMetaType<TemperatureAlgorithm>("Simulation::TemperatureAlgorithm");
     qRegisterMetaTypeStreamOperators<int>("Simulation::TemperatureAlgorithm");
+    qRegisterMetaType<ElectrostaticAlgorithm>("Simulation::ElectrostaticAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Simulation::ElectrostaticAlgorithm");
     registered = true;
   }
 
@@ -217,6 +219,25 @@ QVariant temperatureAlgorithmFrom(const QString& value)
 QString toString(Simulation::TemperatureAlgorithm algorithm)
 {
   return temperatureAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto electrostaticAlgorithmBimap =
+makeBimap<Simulation::ElectrostaticAlgorithm, QString>({
+  { Simulation::ElectrostaticAlgorithm::CutOff, "Cut-Off" },
+  { Simulation::ElectrostaticAlgorithm::Ewald, "Ewald" },
+  { Simulation::ElectrostaticAlgorithm::PME, "PME" },
+  { Simulation::ElectrostaticAlgorithm::P3MAD, "P3M-AD" },
+  { Simulation::ElectrostaticAlgorithm::ReactionField, "Reaction-Field" },
+});
+
+QVariant electrostaticAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(electrostaticAlgorithmBimap.right.at(value));
+}
+
+QString toString(Simulation::ElectrostaticAlgorithm algorithm)
+{
+  return electrostaticAlgorithmBimap.left.at(algorithm);
 }
 
 }

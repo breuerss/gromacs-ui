@@ -58,6 +58,15 @@ public:
   };
   Q_ENUM(TemperatureAlgorithm);
 
+  enum class ElectrostaticAlgorithm : int {
+    CutOff = 0,
+    Ewald,
+    PME,
+    P3MAD,
+    ReactionField,
+  };
+  Q_ENUM(ElectrostaticAlgorithm);
+
   Simulation();
   QString getName() const;
   QString getTypeAsString() const;
@@ -82,7 +91,7 @@ public:
   Q_PROPERTY(int velocityOutputFrequency MEMBER velocityOutputFrequency NOTIFY velocityOutputFrequencyChanged);
   Q_PROPERTY(int forceOutputFrequency MEMBER forceOutputFrequency NOTIFY forceOutputFrequencyChanged);
   Q_PROPERTY(int logOutputFrequency MEMBER logOutputFrequency NOTIFY logOutputFrequencyChanged);
-  Q_PROPERTY(QString electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
+  Q_PROPERTY(ElectrostaticAlgorithm electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
   Q_PROPERTY(double electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
   Q_PROPERTY(double fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
   Q_PROPERTY(double vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
@@ -117,7 +126,7 @@ signals:
   void velocityOutputFrequencyChanged(int);
   void forceOutputFrequencyChanged(int);
 
-  void electrostaticAlgorithmChanged(QString);
+  void electrostaticAlgorithmChanged(ElectrostaticAlgorithm);
   void electrostaticCutoffRadiusChanged(double);
   void fourierSpacingChanged(double);
   void vdwCutoffRadiusChanged(double);
@@ -159,7 +168,7 @@ private:
   int forceOutputFrequency = 0;
 
   // electrostatics
-  QString electrostaticAlgorithm = "PME";
+  ElectrostaticAlgorithm electrostaticAlgorithm = ElectrostaticAlgorithm::PME;
   double electrostaticCutoffRadius = 1.0;
   double fourierSpacing = 0.125;
 
@@ -191,6 +200,8 @@ QString toString(Simulation::PressureCouplingType type);
 QVariant temperatureAlgorithmFrom(const QString& value);
 QString toString(Simulation::TemperatureAlgorithm algorithm);
 QString toString(Simulation::Type type, bool shortVersion = false);
+QVariant electrostaticAlgorithmFrom(const QString& value);
+QString toString(Simulation::ElectrostaticAlgorithm algorithm);
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model);
 QDataStream &operator>>(QDataStream &in, Simulation& model);

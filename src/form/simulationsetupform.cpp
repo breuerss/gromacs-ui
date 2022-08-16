@@ -98,11 +98,14 @@ SimulationSetupForm::SimulationSetupForm(
               ui->temperatureAlgorithm, simulation, "temperatureAlgorithm"
               );
 
-  setOptions(ui->electrostaticAlgorithm, {
-     {"None", "no"},
-     {"PME", "PME"},
+  setOptions<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, {
+     {"PME", Simulation::ElectrostaticAlgorithm::PME },
+     {"Cut-Off", Simulation::ElectrostaticAlgorithm::CutOff },
+     {"Ewald", Simulation::ElectrostaticAlgorithm::Ewald },
+     {"P3M-AD", Simulation::ElectrostaticAlgorithm::P3MAD },
+     {"Reaction-Field", Simulation::ElectrostaticAlgorithm::ReactionField },
   }, 1);
-  connectToComboBox<QString>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
+  connectToComboBox<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
   connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, simulation, "electrostaticCutoffRadius");
   connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, simulation, "fourierSpacing");
   connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, simulation, "vdwCutoffRadius");
