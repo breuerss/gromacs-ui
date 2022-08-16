@@ -42,7 +42,7 @@ SimulationSetupForm::SimulationSetupForm(
   };
 
   setOptions<Simulation::Type>(ui->simulationType, typeOptions);
-  connectToComboBox<Simulation::Type>(
+  conns << connectToComboBox<Simulation::Type>(
     ui->simulationType,
     simulation,
     "simulationType",
@@ -60,41 +60,41 @@ SimulationSetupForm::SimulationSetupForm(
 
   setOptions<Simulation::PressureCouplingType>(ui->pressureCouplingType, pressureCouplingTypeOptions);
 
-  connectToComboBox<Simulation::PressureCouplingType>(
+  conns << connectToComboBox<Simulation::PressureCouplingType>(
     ui->pressureCouplingType,
     simulation,
     "pressureCouplingType"
     );
 
   QWidget* container = ui->settingsWidget;
-  connectToComboBox<Simulation::Algorithm>(container, simulation, "algorithm");
+  conns << connectToComboBox<Simulation::Algorithm>(container, simulation, "algorithm");
 
-  connectToSpinBox<QDoubleSpinBox, double>(ui->numberOfSteps, simulation, "numberOfSteps");
-  connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, simulation, "timeStep");
-  connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationStepSize");
-  connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationMaximumForce");
-  connectToSpinBox<QSpinBox, int>(container, simulation, "energyOutputFrequency");
-  connectToSpinBox<QSpinBox, int>(container, simulation, "positionOutputFrequency");
-  connectToSpinBox<QSpinBox, int>(container, simulation, "velocityOutputFrequency");
-  connectToSpinBox<QSpinBox, int>(container, simulation, "forceOutputFrequency");
-  connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, simulation, "compressedPositionOutputFrequency");
-  connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, simulation, "logOutputFrequency");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->numberOfSteps, simulation, "numberOfSteps");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, simulation, "timeStep");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationStepSize");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(container, simulation, "minimisationMaximumForce");
+  conns << connectToSpinBox<QSpinBox, int>(container, simulation, "energyOutputFrequency");
+  conns << connectToSpinBox<QSpinBox, int>(container, simulation, "positionOutputFrequency");
+  conns << connectToSpinBox<QSpinBox, int>(container, simulation, "velocityOutputFrequency");
+  conns << connectToSpinBox<QSpinBox, int>(container, simulation, "forceOutputFrequency");
+  conns << connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, simulation, "compressedPositionOutputFrequency");
+  conns << connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, simulation, "logOutputFrequency");
 
   // pressure
-  connectToComboBox<Model::Simulation::PressureAlgorithm>(
+  conns << connectToComboBox<Model::Simulation::PressureAlgorithm>(
               ui->pressureAlgorithm, simulation, "pressureAlgorithm"
               );
-  connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, simulation, "pressure");
-  connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, simulation, "pressureUpdateInterval");
-  connectToComboBox<Model::Simulation::PressureCouplingType>(
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, simulation, "pressure");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, simulation, "pressureUpdateInterval");
+  conns << connectToComboBox<Model::Simulation::PressureCouplingType>(
               ui->pressureCouplingType, simulation, "pressureCouplingType"
               );
 
   // temperature
-  connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
+  conns << connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
     simulation->addTemperatureCouplingGroup();
   });
-  connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
+  conns << connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
               ui->temperatureAlgorithm, simulation, "temperatureAlgorithm"
               );
 
@@ -106,9 +106,8 @@ SimulationSetupForm::SimulationSetupForm(
      {"P3M-AD", Simulation::ElectrostaticAlgorithm::P3MAD },
      {"Reaction-Field", Simulation::ElectrostaticAlgorithm::ReactionField },
   }, Simulation::ElectrostaticAlgorithm::PME);
-  connectToComboBox<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
-  connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, simulation, "electrostaticCutoffRadius");
-  connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, simulation, "fourierSpacing");
+  conns << connectToComboBox<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, simulation, "electrostaticCutoffRadius");
 
 
   // vdw
@@ -116,10 +115,13 @@ SimulationSetupForm::SimulationSetupForm(
      {"PME", Simulation::VdwAlgorithm::PME },
      {"Cut-Off", Simulation::VdwAlgorithm::CutOff },
   }, Simulation::VdwAlgorithm::PME);
-  connectToComboBox<Simulation::VdwAlgorithm>(
+  conns << connectToComboBox<Simulation::VdwAlgorithm>(
     ui->vdwAlgorithm, simulation, "vdwAlgorithm",
     [this] (Simulation::VdwAlgorithm algorithm) {
-      ui->vdwModifier->setEnabled(algorithm == Simulation::VdwAlgorithm::CutOff);
+      // shoule be based on model
+      const bool modfierAllowed = algorithm == Simulation::VdwAlgorithm::CutOff;
+      ui->vdwModifierLabel->setEnabled(modfierAllowed);
+      ui->vdwModifier->setEnabled(modfierAllowed);
     });
   setOptions<Simulation::VdwModifier>(ui->vdwModifier, {
      {"None", Simulation::VdwModifier::None },
@@ -127,30 +129,47 @@ SimulationSetupForm::SimulationSetupForm(
      {"Potential-Shift", Simulation::VdwModifier::PotentialShift },
      {"Force-Switch", Simulation::VdwModifier::ForceSwitch },
   }, Simulation::VdwModifier::None);
-  connectToSpinBox<QDoubleSpinBox, double>(ui->vdwCutoffRadius, simulation, "vdwCutoffRadius");
+  conns << connectToComboBox<Simulation::VdwModifier>(
+    ui->vdwModifier, simulation, "vdwModifier",
+    [this] (Simulation::VdwModifier modifier) {
+      const bool switchRadiusNeeded = modifier == Simulation::VdwModifier::PotentialSwitch ||
+        modifier == Simulation::VdwModifier::ForceSwitch;
+      ui->vdwSwitchRadius->setEnabled(switchRadiusNeeded);
+      ui->vdwSwitchRadiusLabel->setEnabled(switchRadiusNeeded);
+    });
+  conns << connectToSpinBox<QDoubleSpinBox, double>(
+    ui->vdwCutoffRadius, simulation, "vdwCutoffRadius");
 
-  connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupAdded,
+  // PME
+  conns << connect(simulation.get(), &Simulation::pmeSettingsNeededChanged,
+          [this] () {
+            ui->pmeSettingsGroup->setEnabled(simulation->pmeSettingsNeeded());
+          });
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, simulation, "fourierSpacing");
+  conns << connectToSpinBox<QSpinBox, int>(ui->pmeOrder, simulation, "pmeOrder");
+
+  conns << connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupAdded,
           this, &SimulationSetupForm::addTemperatureCouplingGroup);
-  connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupRemoved,
+  conns << connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupRemoved,
           this, &SimulationSetupForm::removeTemperatureCouplingGroup);
   for (auto group : simulation->getTemperatureCouplingGroups())
   {
     addTemperatureCouplingGroup(group);
   }
 
-  connect(ui->showLog, &QPushButton::clicked, [this] () {
+  conns << connect(ui->showLog, &QPushButton::clicked, [this] () {
     SimulationStatusChecker checker(project, simulation);
     auto viewer = new FileContentViewer(checker.getLogPath());
     viewer->show();
   });
 
-  connect(ui->showMdp, &QPushButton::clicked, [this] () {
+  conns << connect(ui->showMdp, &QPushButton::clicked, [this] () {
     SimulationStatusChecker checker(project, simulation);
     auto viewer = new FileContentViewer(checker.getMdpPath());
     viewer->show();
   });
 
-  connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
+  conns << connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
     SimulationStatusChecker checker(project, simulation);
     if (checker.hasData())
     {
@@ -164,7 +183,7 @@ SimulationSetupForm::SimulationSetupForm(
       algorithm == Simulation::Algorithm::StochasticDynamics;
     ui->timeStep->setEnabled(timeStepSupported);
   };
-  conns.push_back(connect(simulation.get(), &Simulation::algorithmChanged, updateTimeStep));
+  conns << connect(simulation.get(), &Simulation::algorithmChanged, updateTimeStep);
   updateTimeStep(simulation->property("algorithm").value<Simulation::Algorithm>());
 
   auto updateDuration = [this] () {

@@ -34,6 +34,14 @@ Simulation::Simulation()
   }
 
   addTemperatureCouplingGroup();
+  connect(this, &Simulation::vdwAlgorithmChanged, this, &Simulation::pmeSettingsNeededChanged);
+  connect(this, &Simulation::electrostaticAlgorithmChanged,
+          this, &Simulation::pmeSettingsNeededChanged);
+}
+
+Simulation::~Simulation()
+{
+  disconnect(this, 0, 0, 0);
 }
 
 QString Simulation::getName() const
@@ -60,6 +68,14 @@ bool Simulation::isMinimisation() const
 {
   return algorithm == Simulation::Algorithm::SteepestDecent ||
     algorithm == Simulation::Algorithm::ConjugateGradient;
+}
+
+bool Simulation::pmeSettingsNeeded() const
+{
+  return electrostaticAlgorithm == ElectrostaticAlgorithm::PME ||
+    electrostaticAlgorithm == ElectrostaticAlgorithm::P3MAD ||
+    electrostaticAlgorithm == ElectrostaticAlgorithm::Ewald ||
+    vdwAlgorithm == VdwAlgorithm::PME;
 }
 
 std::vector<std::shared_ptr<TemperatureCouplingGroup>>& Simulation::getTemperatureCouplingGroups()

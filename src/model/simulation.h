@@ -82,6 +82,7 @@ public:
   Q_ENUM(VdwModifier);
 
   Simulation();
+  ~Simulation();
   QString getName() const;
   QString getTypeAsString() const;
 
@@ -89,6 +90,7 @@ public:
   void setPreviousStep(std::shared_ptr<Simulation> newPreviousStep);
 
   bool isMinimisation() const;
+  bool pmeSettingsNeeded() const;
 
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
@@ -99,15 +101,24 @@ public:
   Q_PROPERTY(float timeStep MEMBER timeStep NOTIFY timeStepChanged);
   Q_PROPERTY(float minimisationMaximumForce MEMBER minimisationMaximumForce NOTIFY minimisationMaximumForceChanged);
   Q_PROPERTY(float minimisationStepSize MEMBER minimisationStepSize NOTIFY minimisationStepSizeChanged);
+
+  // output control
   Q_PROPERTY(unsigned int energyOutputFrequency MEMBER energyOutputFrequency NOTIFY energyOutputFrequencyChanged);
   Q_PROPERTY(unsigned int positionOutputFrequency MEMBER positionOutputFrequency NOTIFY positionOutputFrequencyChanged);
   Q_PROPERTY(unsigned int compressedPositionOutputFrequency MEMBER compressedPositionOutputFrequency NOTIFY compressedPositionOutputFrequencyChanged);
   Q_PROPERTY(unsigned int velocityOutputFrequency MEMBER velocityOutputFrequency NOTIFY velocityOutputFrequencyChanged);
   Q_PROPERTY(unsigned int forceOutputFrequency MEMBER forceOutputFrequency NOTIFY forceOutputFrequencyChanged);
   Q_PROPERTY(unsigned int logOutputFrequency MEMBER logOutputFrequency NOTIFY logOutputFrequencyChanged);
+
+  // electrostatics
   Q_PROPERTY(ElectrostaticAlgorithm electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
   Q_PROPERTY(float electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
+
+  // PME
   Q_PROPERTY(float fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
+  Q_PROPERTY(float pmeOrder MEMBER pmeOrder NOTIFY pmeOrderChanged);
+
+  // VdW
   Q_PROPERTY(VdwAlgorithm vdwAlgorithm MEMBER vdwAlgorithm NOTIFY vdwAlgorithmChanged);
   Q_PROPERTY(VdwModifier vdwModifier MEMBER vdwModifier NOTIFY vdwModifierChanged);
   Q_PROPERTY(float vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
@@ -145,6 +156,7 @@ signals:
   void electrostaticAlgorithmChanged(ElectrostaticAlgorithm);
   void electrostaticCutoffRadiusChanged(float);
   void fourierSpacingChanged(float);
+  void pmeOrderChanged(unsigned int);
 
   void vdwCutoffRadiusChanged(float);
   void vdwAlgorithmChanged(VdwAlgorithm);
@@ -161,6 +173,8 @@ signals:
   void temperatureAlgorithmChanged(TemperatureAlgorithm);
   void temperatureCouplingGroupAdded(std::shared_ptr<TemperatureCouplingGroup>, int at);
   void temperatureCouplingGroupRemoved(std::shared_ptr<TemperatureCouplingGroup>, int at);
+
+  void pmeSettingsNeededChanged();
 
 public slots:
   const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups() const;
@@ -189,7 +203,10 @@ private:
   // electrostatics
   ElectrostaticAlgorithm electrostaticAlgorithm = ElectrostaticAlgorithm::PME;
   float electrostaticCutoffRadius = 1.0;
+
+  // PME
   float fourierSpacing = 0.125;
+  unsigned int pmeOrder = 4;
 
   // vdw
   VdwAlgorithm vdwAlgorithm = VdwAlgorithm::PME;
