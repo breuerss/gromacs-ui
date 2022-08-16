@@ -64,7 +64,6 @@ void Executor::stop()
   qDebug() << "stopping";
   terminationRequested = true;
   process.terminate();
-  process.waitForFinished();
 }
 
 bool Executor::hasRun() const
