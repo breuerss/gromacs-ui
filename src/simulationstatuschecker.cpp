@@ -74,10 +74,12 @@ QString SimulationStatusChecker::getBasePath() const
   return projectPath + "/" + simulationType + "/" + simulationType;
 }
 
+static const QString potentialCommand("awk '/ Potential / {for(i=1;i<length;i+=15){ a=substr($0,i,15); if (a ~ /Potential/) { getline; print substr($0,i,15)}}}'");
+
 QList<float> SimulationStatusChecker::getProgressValues() const
 {
   QProcess check;
-  QString command("awk '/Potential/ { getline; print $1}' %1");
+  QString command(potentialCommand);
   check.start("bash", QStringList() << "-c" << command.arg(getLogPath()));
   check.waitForFinished();
   QList<float> values;
@@ -100,7 +102,7 @@ float SimulationStatusChecker::getProgress() const
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
   if (simulation->isMinimisation())
   {
-    command = QString("awk '/Potential/ { getline; print $1}' %1 | tail -n1");
+    command = potentialCommand + " | tail -n1";
   }
 
   QProcess check;
