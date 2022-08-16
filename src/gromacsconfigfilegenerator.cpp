@@ -24,9 +24,11 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "coulombtype", "electrostaticAlgorithm" },
   { "fourierSpacing", "fourierSpacing" },
   { "rcoulomb", "electrostaticCutoffRadius" },
+  { "ewald-rtol", "electrostaticEwaldRtol" },
   { "vdwtype", "vdwAlgorithm" },
   { "vdw-modifier", "vdwModifier" },
   { "rvdw", "vdwCutoffRadius" },
+  { "ewald-rtol-lj", "vdwEwaldRtol" },
   { "pcoupl", "pressureAlgorithm" },
   { "pcoupltype", "pressureCouplingType" },
   { "tau-p", "pressureUpdateInterval" },
@@ -38,6 +40,7 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "ref-t", "temperature" },
   { "emtol", "minimisationMaximumForce" },
   { "emstep", "minimisationStepSize" },
+  { "pme-order", "pmeOrder" },
 };
 
 GromacsConfigFileGenerator::GromacsConfigFileGenerator(
@@ -98,14 +101,17 @@ void GromacsConfigFileGenerator::generate(
     // electrostatics
     writeLine<Simulation::ElectrostaticAlgorithm>(writer, "coulombtype");
     writeLine<float>(writer, "rcoulomb");
+    writeLine<double>(writer, "ewald-rtol");
 
     // PME
     writeLine<float>(writer, "fourierSpacing");
+    writeLine<unsigned int>(writer, "pmd-order");
 
     //  and VdW
     writeLine<Simulation::VdwAlgorithm>(writer, "vdwtype");
     writeLine<Simulation::VdwModifier>(writer, "vdw-modifier");
     writeLine<float>(writer, "rvdw");
+    writeLine<double>(writer, "ewald-rtol-lj");
 
     using Model::Simulation;
 

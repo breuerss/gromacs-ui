@@ -113,6 +113,7 @@ public:
   // electrostatics
   Q_PROPERTY(ElectrostaticAlgorithm electrostaticAlgorithm MEMBER electrostaticAlgorithm NOTIFY electrostaticAlgorithmChanged);
   Q_PROPERTY(float electrostaticCutoffRadius MEMBER electrostaticCutoffRadius NOTIFY electrostaticCutoffRadiusChanged);
+  Q_PROPERTY(double electrostaticEwaldRtol MEMBER electrostaticEwaldRtol NOTIFY electrostaticEwaldRtolChanged);
 
   // PME
   Q_PROPERTY(float fourierSpacing MEMBER fourierSpacing NOTIFY fourierSpacingChanged);
@@ -122,6 +123,7 @@ public:
   Q_PROPERTY(VdwAlgorithm vdwAlgorithm MEMBER vdwAlgorithm NOTIFY vdwAlgorithmChanged);
   Q_PROPERTY(VdwModifier vdwModifier MEMBER vdwModifier NOTIFY vdwModifierChanged);
   Q_PROPERTY(float vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
+  Q_PROPERTY(double vdwEwaldRtol MEMBER vdwEwaldRtol NOTIFY vdwEwaldRtolChanged);
 
   Q_PROPERTY(Simulation::PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
   Q_PROPERTY(float pressure MEMBER pressure NOTIFY pressureChanged);
@@ -155,12 +157,16 @@ signals:
 
   void electrostaticAlgorithmChanged(ElectrostaticAlgorithm);
   void electrostaticCutoffRadiusChanged(float);
+  void electrostaticEwaldRtolChanged(float);
+
+
   void fourierSpacingChanged(float);
   void pmeOrderChanged(unsigned int);
 
   void vdwCutoffRadiusChanged(float);
   void vdwAlgorithmChanged(VdwAlgorithm);
   void vdwModifierChanged(VdwModifier);
+  void vdwEwaldRtolChanged(double);
 
   void pressureAlgorithmChanged(PressureAlgorithm);
   void pressureChanged(float);
@@ -203,6 +209,7 @@ private:
   // electrostatics
   ElectrostaticAlgorithm electrostaticAlgorithm = ElectrostaticAlgorithm::PME;
   float electrostaticCutoffRadius = 1.0;
+  double electrostaticEwaldRtol = 0.00001;
 
   // PME
   float fourierSpacing = 0.125;
@@ -212,6 +219,7 @@ private:
   VdwAlgorithm vdwAlgorithm = VdwAlgorithm::PME;
   VdwModifier vdwModifier = VdwModifier::None;
   float vdwCutoffRadius = 1.0;
+  double vdwEwaldRtol = 0.001;
 
   // pressure
   PressureAlgorithm pressureAlgorithm = PressureAlgorithm::None;

@@ -106,8 +106,17 @@ SimulationSetupForm::SimulationSetupForm(
      {"P3M-AD", Simulation::ElectrostaticAlgorithm::P3MAD },
      {"Reaction-Field", Simulation::ElectrostaticAlgorithm::ReactionField },
   }, Simulation::ElectrostaticAlgorithm::PME);
-  conns << connectToComboBox<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm");
+  conns << connectToComboBox<Simulation::ElectrostaticAlgorithm>(
+    ui->electrostaticAlgorithm, simulation, "electrostaticAlgorithm",
+    [this] (Simulation::ElectrostaticAlgorithm algorithm) {
+      const bool needsPme = algorithm == Simulation::ElectrostaticAlgorithm::PME ||
+        algorithm == Simulation::ElectrostaticAlgorithm::P3MAD ||
+        algorithm == Simulation::ElectrostaticAlgorithm::Ewald;
+      ui->electrostaticEwaldRtol->setEnabled(needsPme);
+      ui->electrostaticEwaldRtolLabel->setEnabled(needsPme);
+    });
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, simulation, "electrostaticCutoffRadius");
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticEwaldRtol, simulation, "electrostaticEwaldRtol");
 
 
   // vdw
@@ -122,7 +131,11 @@ SimulationSetupForm::SimulationSetupForm(
       const bool modfierAllowed = algorithm == Simulation::VdwAlgorithm::CutOff;
       ui->vdwModifierLabel->setEnabled(modfierAllowed);
       ui->vdwModifier->setEnabled(modfierAllowed);
+      const bool needsPme = algorithm == Simulation::VdwAlgorithm::PME;
+      ui->vdwEwaldRtol->setEnabled(needsPme);
+      ui->vdwEwaldRtolLabel->setEnabled(needsPme);
     });
+  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->vdwEwaldRtol, simulation, "vdwEwaldRtol");
   setOptions<Simulation::VdwModifier>(ui->vdwModifier, {
      {"None", Simulation::VdwModifier::None },
      {"Potential-Switch", Simulation::VdwModifier::PotentialSwitch },

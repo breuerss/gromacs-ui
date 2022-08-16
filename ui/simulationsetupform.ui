@@ -713,7 +713,7 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+     <item alignment="Qt::AlignTop">
       <widget class="QGroupBox" name="electrostaticsGroup">
        <property name="title">
         <string>Electrostatic Potential</string>
@@ -760,6 +760,27 @@
           </item>
          </layout>
         </item>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_32">
+          <item>
+           <widget class="QLabel" name="electrostaticEwaldRtolLabel">
+            <property name="text">
+             <string>Ewald Tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="electrostaticEwaldRtol">
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="value">
+             <double>0.000010000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
        </layout>
       </widget>
      </item>
@@ -770,92 +791,105 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <layout class="QVBoxLayout" name="verticalLayout_17">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_17">
-            <item>
-             <widget class="QLabel" name="vdwAlgorithmLabel">
-              <property name="text">
-               <string>VdW Algorithm</string>
-              </property>
-              <property name="buddy">
-               <cstring>vdwAlgorithm</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="vdwAlgorithm"/>
-            </item>
-           </layout>
+           <widget class="QLabel" name="vdwAlgorithmLabel">
+            <property name="text">
+             <string>VdW Algorithm</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwAlgorithm</cstring>
+            </property>
+           </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_21">
-            <item>
-             <widget class="QLabel" name="vdwModifierLabel">
-              <property name="text">
-               <string>VdW Modifier</string>
-              </property>
-              <property name="buddy">
-               <cstring>vdwModifier</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QComboBox" name="vdwModifier"/>
-            </item>
-           </layout>
+           <widget class="QComboBox" name="vdwAlgorithm"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_21">
+          <item>
+           <widget class="QLabel" name="vdwModifierLabel">
+            <property name="text">
+             <string>VdW Modifier</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwModifier</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="vdwModifier"/>
           </item>
          </layout>
         </item>
         <item row="1" column="0">
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <layout class="QVBoxLayout" name="verticalLayout_16">
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_16">
-            <item>
-             <widget class="QLabel" name="vdwCutoffRadiusLabel">
-              <property name="text">
-               <string>Cutoff Radius (nm)</string>
-              </property>
-              <property name="buddy">
-               <cstring>vdwCutoffRadius</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
-              <property name="maximum">
-               <double>99999999.000000000000000</double>
-              </property>
-              <property name="value">
-               <double>1.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QLabel" name="vdwCutoffRadiusLabel">
+            <property name="text">
+             <string>Cutoff Radius (nm)</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwCutoffRadius</cstring>
+            </property>
+           </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="verticalLayout_26">
-            <item>
-             <widget class="QLabel" name="vdwSwitchRadiusLabel">
-              <property name="text">
-               <string>Switch Radius</string>
-              </property>
-              <property name="buddy">
-               <cstring>vdwSwitchRadius</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QDoubleSpinBox" name="vdwSwitchRadius"/>
-            </item>
-           </layout>
+           <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
+            <property name="maximum">
+             <double>99999999.000000000000000</double>
+            </property>
+            <property name="value">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_26">
+          <item>
+           <widget class="QLabel" name="vdwSwitchRadiusLabel">
+            <property name="text">
+             <string>Switch Radius</string>
+            </property>
+            <property name="buddy">
+             <cstring>vdwSwitchRadius</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwSwitchRadius"/>
+          </item>
+         </layout>
+        </item>
+        <item row="2" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_33">
+          <item>
+           <widget class="QLabel" name="vdwEwaldRtolLabel">
+            <property name="text">
+             <string>Ewald Tolerance</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QDoubleSpinBox" name="vdwEwaldRtol">
+            <property name="decimals">
+             <number>5</number>
+            </property>
+            <property name="value">
+             <double>0.001000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
        </layout>
       </widget>
      </item>
-     <item>
+     <item alignment="Qt::AlignTop">
       <widget class="QGroupBox" name="pmeSettingsGroup">
        <property name="title">
         <string>Particle Mesh Ewald Settings</string>
