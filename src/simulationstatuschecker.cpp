@@ -1,6 +1,7 @@
 #include "simulationstatuschecker.h"
 #include "model/project.h"
 #include "model/simulation.h"
+#include "appprovider.h"
 
 #include <QFile>
 #include <QProcess>
@@ -19,7 +20,7 @@ SimulationStatusChecker::SimulationStatusChecker(
 
 bool SimulationStatusChecker::hasData() const
 {
-  return hasCoordinates();
+  return hasCoordinates() || hasTrajectory();
 }
 
 bool SimulationStatusChecker::hasTrajectory() const
@@ -32,6 +33,11 @@ bool SimulationStatusChecker::hasCoordinates() const
   return QFile(getCoordinatesPath()).exists();
 }
 
+bool SimulationStatusChecker::hasInputCoordinates() const
+{
+  return QFile(getInputCoordinatesPath()).exists();
+}
+
 bool SimulationStatusChecker::hasLog() const
 {
   return QFile(getLogPath()).exists();
@@ -42,6 +48,16 @@ bool SimulationStatusChecker::hasMdp() const
   return QFile(getMdpPath()).exists();
 }
 
+bool SimulationStatusChecker::hasTpr() const
+{
+  return QFile(getTprPath()).exists();
+}
+
+QString SimulationStatusChecker::getSmoothTrajectoryPath() const
+{
+  return getBasePath() + "-smooth.xtc";
+}
+
 QString SimulationStatusChecker::getTrajectoryPath() const
 {
   return getBasePath() + ".xtc";
@@ -50,6 +66,23 @@ QString SimulationStatusChecker::getTrajectoryPath() const
 QString SimulationStatusChecker::getCoordinatesPath() const
 {
   return getBasePath() + ".gro";
+}
+
+QString SimulationStatusChecker::getInputCoordinatesPath() const
+{
+  QString fileName = getBasePath() + "-input.gro";
+  if (!QFile(fileName).exists() && hasTpr())
+  {
+    QProcess createInput;
+    QString command = AppProvider::get("gmx");
+    command += " editconf";
+    command += " -f " + getTprPath();
+    command += " -o " + fileName;
+    createInput.start(command);
+    createInput.waitForFinished();
+  }
+
+  return fileName;
 }
 
 QString SimulationStatusChecker::getLogPath() const
@@ -74,7 +107,7 @@ QString SimulationStatusChecker::getBasePath() const
   return projectPath + "/" + simulationType + "/" + simulationType;
 }
 
-static const QString potentialCommand("awk '/ Potential / {for(i=1;i<length;i+=15){ a=substr($0,i,15); if (a ~ /Potential/) { getline; print substr($0,i,15)}}}'");
+static const QString potentialCommand("awk '/ Potential / {for(i=1;i<length;i+=15){ a=substr($0,i,15); if (a ~ /Potential/) { getline; print substr($0,i,15)}}}' %1");
 
 QList<float> SimulationStatusChecker::getProgressValues() const
 {

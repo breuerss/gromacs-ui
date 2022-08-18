@@ -15,6 +15,7 @@
 #include "../filecontentviewer.h"
 #include <algorithm>
 #include <QDateTime>
+#include "../appprovider.h"
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
@@ -182,11 +183,28 @@ SimulationSetupForm::SimulationSetupForm(
     viewer->show();
   });
 
+  conns << connect(ui->showSmoothTrajectory, &QToolButton::clicked, [this] () {
+    SimulationStatusChecker checker(project, simulation);
+    if (checker.hasTrajectory())
+    {
+      QProcess createInput;
+      QString command = AppProvider::get("gmx");
+      command += " filter";
+      command += " -s " + checker.getTprPath();
+      command += " -f " + checker.getTrajectoryPath();
+      command += " -ol " + checker.getSmoothTrajectoryPath();
+      command += " -all -nojump -nf 5";
+      createInput.start(command);
+      createInput.waitForFinished();
+      emit displaySimulationData(checker.getInputCoordinatesPath(),
+                                 checker.getSmoothTrajectoryPath());
+    }
+  });
   conns << connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
     SimulationStatusChecker checker(project, simulation);
     if (checker.hasData())
     {
-      emit displaySimulationData(checker.getCoordinatesPath(),
+      emit displaySimulationData(checker.getInputCoordinatesPath(),
                                  checker.hasTrajectory() ? checker.getTrajectoryPath() : "");
     }
   });
@@ -501,6 +519,7 @@ void SimulationSetupForm::showEvent(QShowEvent*)
 {
   SimulationStatusChecker checker(project, simulation);
   ui->showTrajectoryButton->setEnabled(checker.hasData());
+  ui->showSmoothTrajectory->setEnabled(checker.hasTrajectory());
   ui->showLog->setEnabled(checker.hasLog());
   ui->showMdp->setEnabled(checker.hasMdp());
 }

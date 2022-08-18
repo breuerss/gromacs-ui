@@ -42,7 +42,8 @@ private:
   void setGroupsEnabled(bool enabled);
 
   void handlePdbDownload(const QString& pdbCode, const QString& filePath);
-  void disablePdbfixer();
+  void setPdbfixerEnabled(bool enabled);
+  void setFilterEnabled(bool enabled);
   void preprocess();
   void stopPreprocess();
   void loadFileFromDisk();

@@ -86,11 +86,9 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     {
       setGroupsEnabled(true);
       const bool isPdb = sourceStructureFile.endsWith(".pdb");
-      if (!isPdb)
-      {
-        disablePdbfixer();
-      }
-      else
+      setPdbfixerEnabled(isPdb);
+      setFilterEnabled(isPdb);
+      if (isPdb)
       {
         PdbInfoExtractor extractor;
         QStringList chains = extractor.getChains(sourceStructureFile);
@@ -165,10 +163,7 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   qDebug() << systemSetup->property("pdbCode");
   reactToPdbCode(systemSetup->property("pdbCode").toString());
 
-  if (AppProvider::get("pdbfixer").isEmpty())
-  {
-    disablePdbfixer();
-  }
+  setPdbfixerEnabled(!AppProvider::get("pdbfixer").isEmpty());
 
   connect(ui->localFileDialogButton, &QPushButton::clicked,
           this, &SystemSetupForm::loadFileFromDisk);
@@ -183,10 +178,16 @@ SystemSetupForm::~SystemSetupForm()
   delete ui;
 }
 
-void SystemSetupForm::disablePdbfixer()
+void SystemSetupForm::setPdbfixerEnabled(bool enabled)
 {
-  ui->usePdbFixer->setEnabled(false);
-  ui->usePdbFixer->setChecked(false);
+  ui->usePdbFixer->setEnabled(enabled);
+  ui->usePdbFixer->setChecked(enabled);
+}
+
+void SystemSetupForm::setFilterEnabled(bool enabled)
+{
+  ui->useFilter->setEnabled(enabled);
+  ui->useFilter->setChecked(enabled);
 }
 
 void SystemSetupForm::preprocess()

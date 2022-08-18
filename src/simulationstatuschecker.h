@@ -22,10 +22,14 @@ public:
   bool hasData() const;
   bool hasTrajectory() const;
   bool hasCoordinates() const;
+  bool hasInputCoordinates() const;
   bool hasLog() const;
   bool hasMdp() const;
+  bool hasTpr() const;
   QString getTrajectoryPath() const;
+  QString getSmoothTrajectoryPath() const;
   QString getCoordinatesPath() const;
+  QString getInputCoordinatesPath() const;
   QString getLogPath() const;
   QString getMdpPath() const;
   QString getTprPath() const;
