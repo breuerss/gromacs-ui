@@ -42,7 +42,8 @@ SOURCES += \
     src/model/serializable.cpp \
     src/model/simulation.cpp \
     src/model/systemsetup.cpp \
-    src/model/temperaturecouplinggroup.cpp
+    src/model/temperaturecouplinggroup.cpp \
+    $$files(src/pipeline/*.cpp)
 
 HEADERS += \
     src/appprovider.h \
@@ -78,7 +79,9 @@ HEADERS += \
     src/model/serializable.h \
     src/model/simulation.h \
     src/model/systemsetup.h \
-    src/model/temperaturecouplinggroup.h
+    src/model/temperaturecouplinggroup.h \
+    $$files(src/pipeline/*.h)
+
 
 FORMS += \
     ui/temperaturegroupconfigform.ui \

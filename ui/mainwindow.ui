@@ -40,8 +40,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="moleculeViewerTab">
         <attribute name="title">
@@ -77,6 +80,20 @@
            </property>
            <property name="plainText">
             <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="pipelineTab">
+        <attribute name="title">
+         <string>Pipeline</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <widget class="QGraphicsView" name="pipelineView">
+           <property name="renderHints">
+            <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
            </property>
           </widget>
          </item>

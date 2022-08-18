@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "qgraphicsitem.h"
 #include "src/gromacsconfigfilegenerator.h"
 #include "ui_mainwindow.h"
 #include "form/preferencesdialog.h"
@@ -24,6 +25,9 @@
 #include <QCoreApplication>
 #include <climits>
 #include <memory>
+#include "pipeline/panel.h"
+#include "pipeline/node.h"
+#include "pipeline/connector.h"
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -34,6 +38,20 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
   ui->splitter->setSizes({INT_MAX, INT_MAX});
+
+  Pipeline::Panel* pipeline = new Pipeline::Panel(this);
+  pipeline->setSceneRect(0, 0, ui->pipelineView->width(), ui->pipelineView->height());
+  pipeline->setBackgroundBrush(QBrush("#aaaaaa"));
+  ui->pipelineView->setScene(pipeline);
+  auto node = new Pipeline::Node("Fetch PDB");
+  pipeline->addItem(node);
+  auto node2 = new Pipeline::Node("Box");
+  node->setPos(1, 1);
+  pipeline->addItem(node2);
+  node2->setPos(80, 80);
+  auto connector = new Pipeline::Connector(node->getOutputPort(0));
+  connector->setEndingPort(node2->getInputPort(0));
+  pipeline->addItem(connector);
 
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,
@@ -172,7 +190,7 @@ void MainWindow::setupUIForProject()
       int tabIndex = 0;
       if (!ready)
       {
-        tabIndex = 1;
+        tabIndex = 2;
         ui->logOutput->setPlainText("");
       }
       ui->tabWidget->setCurrentIndex(tabIndex);
