@@ -11,29 +11,49 @@ Connector::Connector(Port* startingPort)
   : startingPort(startingPort)
   , endingPort(nullptr)
 {
-  QObject::connect(startingPort, &Port::centerPositionChanged, [this] () {
+  startingPort->setConnected();
+  conn = QObject::connect(startingPort, &Port::centerPositionChanged, [this] () {
     redraw();
   });
   setFlag(QGraphicsItem::ItemStacksBehindParent);
+}
+
+Connector::~Connector()
+{
+  QObject::disconnect(conn);
 }
 
 void Connector::setEndingPort(Port* newEndingPort)
 {
   if (endingPort)
   {
+    endingPort->setConnected(false);
     QObject::disconnect(endingPort, &Port::centerPositionChanged, nullptr, nullptr);
   }
+
   endingPort = newEndingPort;
-  QObject::connect(endingPort, &Port::centerPositionChanged, [this] () {
-    redraw();
-  });
+  if (endingPort)
+  {
+    endingPort->setConnected();
+    QObject::connect(endingPort, &Port::centerPositionChanged, [this] () {
+      redraw();
+    });
+  }
   redraw();
 }
 
-void Connector::redraw()
+void Connector::redraw(const QPointF& endingPointOverride)
 {
   auto startingPoint = startingPort->getCenterInScene();
-  auto endingPoint = endingPort->getCenterInScene();
+  auto endingPoint = endingPointOverride;
+  if (endingPoint.isNull())
+  {
+    if (!endingPort)
+    {
+      return;
+    }
+    endingPoint = endingPort->getCenterInScene();
+  }
   auto midPoint = (startingPoint + endingPoint) / 2;
 
   QPainterPath painterPath;
@@ -44,9 +64,19 @@ void Connector::redraw()
   painterPath.cubicTo(midPoint, endingPoint - buffer, endingPoint);
 
   QPen pen(QColorConstants::Svg::darkslategray);
-  pen.setWidth(3);
+  pen.setWidth(2);
   setPen(pen);
   setPath(painterPath);
+}
+
+Port* Connector::getStartingPort() const
+{
+  return startingPort;
+}
+
+Port* Connector::getEndingPort() const
+{
+  return endingPort;
 }
 
 }

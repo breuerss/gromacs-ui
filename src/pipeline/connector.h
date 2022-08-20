@@ -9,15 +9,17 @@ class Connector : public QGraphicsPathItem
 {
 public:
   Connector(Port* startingPort);
+  ~Connector();
 
   void setEndingPort(Port* endingPort);
-  void setEndingPoint(const QPointF& endingPoint);
+  void redraw(const QPointF& endingPoint = QPointF());
+  Port* getStartingPort() const;
+  Port* getEndingPort() const;
 
 private:
   Port* startingPort;
   Port* endingPort;
-  void redraw();
-
+  QMetaObject::Connection conn;
 };
 
 }

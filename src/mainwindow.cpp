@@ -39,9 +39,8 @@ MainWindow::MainWindow(QWidget *parent)
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
   ui->splitter->setSizes({INT_MAX, INT_MAX});
 
-  Pipeline::Panel* pipeline = new Pipeline::Panel(this);
-  pipeline->setSceneRect(0, 0, ui->pipelineView->width(), ui->pipelineView->height());
-  pipeline->setBackgroundBrush(QBrush("#aaaaaa"));
+  Pipeline::Panel* pipeline = Pipeline::Panel::getInstance();
+  ui->pipelineView->setSceneRect(0, 0, ui->pipelineView->width(), ui->pipelineView->height());
   ui->pipelineView->setScene(pipeline);
   auto node = new Pipeline::Node("Fetch PDB");
   pipeline->addItem(node);
