@@ -89,15 +89,7 @@
         <attribute name="title">
          <string>Pipeline</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <widget class="QGraphicsView" name="pipelineView">
-           <property name="renderHints">
-            <set>QPainter::Antialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <layout class="QVBoxLayout" name="verticalLayout_5"/>
        </widget>
       </widget>
       <widget class="QScrollArea" name="scrollArea">

@@ -25,9 +25,7 @@
 #include <QCoreApplication>
 #include <climits>
 #include <memory>
-#include "pipeline/panel.h"
-#include "pipeline/node.h"
-#include "pipeline/connector.h"
+#include "pipeline/view.h"
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -39,18 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
   ui->splitter->setSizes({INT_MAX, INT_MAX});
 
-  Pipeline::Panel* pipeline = Pipeline::Panel::getInstance();
-  ui->pipelineView->setSceneRect(0, 0, ui->pipelineView->width(), ui->pipelineView->height());
-  ui->pipelineView->setScene(pipeline);
-  auto node = new Pipeline::Node("Fetch PDB");
-  pipeline->addItem(node);
-  auto node2 = new Pipeline::Node("Box");
-  node->setPos(1, 1);
-  pipeline->addItem(node2);
-  node2->setPos(80, 80);
-  auto connector = new Pipeline::Connector(node->getOutputPort(0));
-  connector->setEndingPort(node2->getInputPort(0));
-  pipeline->addItem(connector);
+  ui->pipelineTab->layout()->addWidget(new Pipeline::View(this));
 
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,
