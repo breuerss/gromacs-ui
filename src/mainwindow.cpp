@@ -26,6 +26,7 @@
 #include <climits>
 #include <memory>
 #include "pipeline/view.h"
+#include "pipeline/panel.h"
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -37,7 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
   ui->splitter->setSizes({INT_MAX, INT_MAX});
 
-  ui->pipelineTab->layout()->addWidget(new Pipeline::View(this));
+  auto view = new Pipeline::View(this);
+  ui->pipelineTab->layout()->addWidget(view);
+  auto panel = new Pipeline::Panel(this);
+  view->setScene(panel);
+  panel->setProject(ProjectManager::getInstance()->getCurrentProject());
 
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,

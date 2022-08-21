@@ -16,16 +16,18 @@ public:
   };
   Port(double x, double y, Type type, QGraphicsItem* parent = nullptr);
 
-  QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value);
+  QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
   QPointF getCenterInScene() const;
   void setConnected(bool connected = true);
 
 protected:
-  void mousePressEvent(QGraphicsSceneMouseEvent* event);
-  void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-  void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-  void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
-  void dropEvent(QGraphicsSceneDragDropEvent *event);
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+  void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
+  void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
+  void dropEvent(QGraphicsSceneDragDropEvent *event) override;
+  void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
+  void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
 
 signals:
   void centerPositionChanged(const QPointF center);

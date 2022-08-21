@@ -2,10 +2,12 @@
 
 #include "panel.h"
 #include "node.h"
-#include "qnamespace.h"
 #include <QWheelEvent>
 #include <QMargins>
 #include <QDebug>
+#include <QGraphicsWidget>
+#include <QPushButton>
+#include <QLayout>
 
 namespace Pipeline {
 
@@ -14,22 +16,24 @@ View::View(QWidget* parent)
 {
   setDragMode(QGraphicsView::ScrollHandDrag);
   setRenderHint(QPainter::Antialiasing);
-
-  auto pipeline = Panel::getInstance();
-  //setSceneRect(-100, -100, 1000, 1000);
-  setScene(pipeline);
-  auto node = new Node("Fetch PDB");
-  centerOn(node);
-  pipeline->addItem(node);
-  auto node2 = new Node("Box");
-  node->setPos(1, 1);
-  pipeline->addItem(node2);
-  node2->setPos(80, 80);
-  auto connector = new Pipeline::Connector(node->getOutputPort(0));
-  connector->setEndingPort(node2->getInputPort(0));
-  pipeline->addItem(connector);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+  auto layout = new QGridLayout(this);
+  layout->setContentsMargins(20, 20, 20, 20);
+  layout->setRowStretch(0, 1);
+  layout->setColumnStretch(0, 1);
+  addButton = new ActionButton(this);
+  addButton->setText("+");
+  layout->addWidget(addButton);
+  layout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
+  connect(addButton, &QPushButton::clicked, [this] () {
+    auto project = dynamic_cast<Pipeline::Panel*>(scene())->getProject();
+    if (project)
+    {
+      project->addStep();
+    }
+  });
 }
 
 void View::wheelEvent(QWheelEvent *event)
@@ -48,6 +52,11 @@ void View::keyPressEvent(QKeyEvent *event)
     const auto& rect = scene()->itemsBoundingRect();
     fitInView(rect + QMargins(10, 10, 10, 10), Qt::KeepAspectRatio);
   }
+}
+
+void View::drawForeground(QPainter *painter, const QRectF &rect)
+{
+  QGraphicsView::drawForeground(painter, rect);
 }
 
 }

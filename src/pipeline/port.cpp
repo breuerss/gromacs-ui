@@ -19,6 +19,7 @@ Port::Port(double x, double y, Type type, QGraphicsItem* parent)
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setAcceptedMouseButtons(Qt::LeftButton);
   setAcceptDrops(type == Type::Input);
+  setAcceptHoverEvents(true);
 }
 
 QVariant Port::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
@@ -40,6 +41,16 @@ QPointF Port::getCenterInScene() const
   return mapToScene(rect().center());
 }
 
+void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
+{
+  setCursor(Qt::PointingHandCursor);
+}
+
+void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+  unsetCursor();
+}
+
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
   setCursor(Qt::ClosedHandCursor);
@@ -47,8 +58,8 @@ void Port::mousePressEvent(QGraphicsSceneMouseEvent* /*event*/)
 
 void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
-  Pipeline::Panel::getInstance()->stopConnector();
-  setCursor(Qt::ArrowCursor);
+  dynamic_cast<Panel*>(scene())->stopConnector();
+  unsetCursor();
 }
 
 void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
@@ -58,7 +69,7 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  auto panel = Panel::getInstance();
+  auto panel = dynamic_cast<Panel*>(scene());
   if (type == Type::Input)
   {
     if (connected)
@@ -88,14 +99,14 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
   drag->setMimeData(mime);
   drag->exec();
 
-  setCursor(Qt::ArrowCursor);
+  unsetCursor();
   panel->stopConnector();
   panel->startingNode = nullptr;
 }
 
 void Port::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-  if (parentItem() != Panel::getInstance()->startingNode && !connected)
+  if (parentItem() != dynamic_cast<Panel*>(scene())->startingNode && !connected)
   {
     event->accept();
   }
@@ -107,7 +118,7 @@ void Port::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void Port::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
 {
-  auto panel = Panel::getInstance();
+  auto panel = dynamic_cast<Panel*>(scene());
   panel->getActiveConnector()->setEndingPort(this);
   panel->connectorAccepted();
 }
