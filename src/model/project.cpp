@@ -25,6 +25,31 @@ std::shared_ptr<Simulation> Project::addStep()
   return step;
 }
 
+/**
+ * TODO
+ *
+ * FileObject {
+ *   type,
+ *   fileName,
+ *   exists
+ * }
+ *
+ * FileObjectProvider {
+ *   provides -> QList<FileObject> = 0
+ * }
+ *
+ * FileObjectConsumer {
+ *   requires -> QMap<FileObject::category, QList<FileObject::type>> = 0
+ *
+ *   bool accepts(FileObject);
+ *   void connectTo(FileObject);
+ *   connectedTo -> QMap<FileObject::type, FileObject>
+ * }
+ *
+ *  Unify Command and Simulation
+ *  Split up SystemSetup to series of Pipeline Nodes
+ */
+
 void Project::removeStep(int at)
 {
   auto step = steps[at];
