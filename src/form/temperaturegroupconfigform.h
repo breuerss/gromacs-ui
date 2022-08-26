@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <memory>
-#include "../model/temperaturecouplinggroup.h"
+#include "../config/temperaturecouplinggroup.h"
 
 namespace Model {
 class TemperatureCouplingGroup;
@@ -19,14 +19,14 @@ class TemperatureGroupConfigForm : public QWidget
 
 public:
   explicit TemperatureGroupConfigForm(
-    std::shared_ptr<Model::TemperatureCouplingGroup> model, QWidget *parent = nullptr);
+    std::shared_ptr<Config::TemperatureCouplingGroup> model, QWidget *parent = nullptr);
   ~TemperatureGroupConfigForm();
 
 signals:
   void removeRequested();
 
 private:
-  std::shared_ptr<Model::TemperatureCouplingGroup> model;
+  std::shared_ptr<Config::TemperatureCouplingGroup> model;
   Ui::TemperatureGroupConfigForm *ui;
 };
 

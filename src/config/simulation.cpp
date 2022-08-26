@@ -5,7 +5,7 @@
 #include <cstring>
 #include <memory>
 
-namespace Model {
+namespace Config {
 
 Simulation::Simulation()
 {
@@ -52,16 +52,6 @@ QString Simulation::getName() const
 QString Simulation::getTypeAsString() const
 {
   return toString(simulationType, true);
-}
-
-std::shared_ptr<Simulation> Simulation::getPreviousStep() const
-{
-  return previousStep;
-}
-
-void Simulation::setPreviousStep(std::shared_ptr<Simulation> newPreviousStep)
-{
-  previousStep = newPreviousStep;
 }
 
 bool Simulation::isMinimisation() const
@@ -187,7 +177,7 @@ QString toString(Simulation::PressureCouplingType type)
 
 QDataStream &operator<<(QDataStream &out, const Simulation &model)
 {
-  const Serializable& tmp = model;
+  const Model::Serializable& tmp = model;
   out << tmp;
 
   const auto& groups = model.getTemperatureCouplingGroups();
@@ -204,7 +194,7 @@ QDataStream &operator<<(QDataStream &out, const Simulation &model)
 
 QDataStream &operator>>(QDataStream &in, Simulation& model)
 {
-  Serializable& tmp = model;
+  Model::Serializable& tmp = model;
   in >> tmp;
 
   int noOfGroups;

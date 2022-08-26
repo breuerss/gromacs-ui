@@ -2,6 +2,7 @@
 #include "panel.h"
 #include "port.h"
 #include "../step.h"
+#include "src/command/fileobject.h"
 #include <QBrush>
 #include <QDebug>
 #include <cmath>
@@ -33,35 +34,35 @@ Node::Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent)
 
   setFlags(QGraphicsItem::ItemIsMovable);
 
-  addOutputPort(QColorConstants::Svg::darkorange);
-  addOutputPort(QColorConstants::Svg::darkblue);
-  addOutputPort(QColorConstants::Svg::darkred);
-
-  for (const auto& category: step->fileObjectConsumer.requires().keys())
+  for (const auto& fileObject: step->getFileObjectProvider().provides())
   {
-    addInputPort(getColorFor(category));
+    addOutputPort(fileObject, getColorFor(fileObject->type));
+  }
+
+  auto inputPortConfigs = step->getFileObjectConsumer().requires();
+  for (const auto& category: inputPortConfigs.keys())
+  {
+    addInputPort(inputPortConfigs[category], getColorFor(category));
   }
 }
 
-QColor Node::getColorFor(Command::FileObject::Category category)
-{
-  const static QMap<Command::FileObject::Category, QColor> colors = {
-    { Command::FileObject::Category::Coordinates, QColorConstants::Svg::green }
-  };
-
-  return colors[category];
-}
-
-void Node::addInputPort(const QColor& color)
+void Node::addInputPort(const QList<Command::FileObject::Type>& acceptedFileTypes, const QColor& color)
 {
   auto inputPort = createPort(color, Port::Type::Input);
+  inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPorts << inputPort;
   arrangeInputPorts();
 }
 
-void Node::addOutputPort(const QColor& color)
+void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color)
 {
   auto outputPort = createPort(color, Port::Type::Output);
+  outputPort->setProvidedFileObject(fileObject);
+  QObject::connect(
+    outputPort, &Port::connectedToChanged, 
+    [this] (std::shared_ptr<Command::FileObject> fileObject) {
+      step->getFileObjectConsumer().connectTo(fileObject);
+    });
   outputPorts << outputPort;
   arrangeOutputPorts();
 }
@@ -72,6 +73,28 @@ Port* Node::createPort(const QColor& color, Port::Type type)
   port->setBrush(QBrush(color));
   port->setZValue(100);
   return port;
+}
+
+QColor Node::getColorFor(Command::FileObject::Category category)
+{
+  using Category = Command::FileObject::Category;
+  const static QMap<Category, QColor> colors = {
+    { Category::Coordinates, 0xff5b81e4 },
+    { Category::Trajectory, 0xffe7911d },
+    { Category::Energy, 0xffc0c753 },
+    { Category::Forces, 0xff9974aa },
+
+    //0xffc1584f
+  };
+
+  return colors[category];
+}
+
+QColor Node::getColorFor(Command::FileObject::Type type)
+{
+  auto category = Command::FileObject::getCategoryFor(type);
+
+  return getColorFor(category);
 }
 
 void Node::arrangeOutputPorts()

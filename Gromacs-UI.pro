@@ -29,11 +29,7 @@ SOURCES += \
     src/form/simulationsetupform.cpp \
     src/form/systemsetupform.cpp \
     src/form/temperaturegroupconfigform.cpp \
-    src/model/project.cpp \
-    src/model/serializable.cpp \
-    src/model/simulation.cpp \
-    src/model/systemsetup.cpp \
-    src/model/temperaturecouplinggroup.cpp \
+    $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
     $$files(src/config/*.cpp) \
     $$files(src/pipeline/*.cpp, true)
@@ -57,11 +53,7 @@ HEADERS += \
     src/form/systemsetupform.h \
     src/form/temperaturegroupconfigform.h \
     src/misc/bimaphelper.h \
-    src/model/project.h \
-    src/model/serializable.h \
-    src/model/simulation.h \
-    src/model/systemsetup.h \
-    src/model/temperaturecouplinggroup.h \
+    $$files(src/model/*.h) \
     $$files(src/command/*.h) \
     $$files(src/config/*.h) \
     $$files(src/pipeline/*.h, true)

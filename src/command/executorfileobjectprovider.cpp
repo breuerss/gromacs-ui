@@ -4,7 +4,7 @@ namespace Command {
 
 ExecutorFileObjectProvider::ExecutorFileObjectProvider(
   std::shared_ptr<Model::Project> project,
-  std::shared_ptr<Model::Simulation> step
+  std::shared_ptr<Config::Simulation> step
   )
   : project(project)
     , step(step)

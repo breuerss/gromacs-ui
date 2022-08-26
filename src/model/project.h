@@ -9,10 +9,13 @@
 #include <memory>
 #include "../pipeline/supportedsteps.h"
 
+namespace Config {
+class Simulation;
+}
+
 namespace Model {
 
 class SystemSetup;
-class Simulation;
 
 class Project : public QObject
 {
@@ -58,15 +61,10 @@ public:
    *
    **/
 
-  std::shared_ptr<Simulation> addStep();
+  Pipeline::StepType addStep();
   void clearSteps();
   void removeStep(int index);
-  const std::vector<std::shared_ptr<Simulation>>& getSteps() const;
-
-  Pipeline::StepType addPipelineStep();
-  void clearPipelineSteps();
-  void removePipelineStep(int index);
-  const std::vector<Pipeline::StepType>& getPipelineSteps() const { return pipelineSteps; }
+  const std::vector<Pipeline::StepType>& getSteps() const;
 
   std::shared_ptr<SystemSetup> getSystemSetup() const;
 
@@ -75,16 +73,12 @@ public:
   Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
 signals:
-  void stepAdded(std::shared_ptr<Simulation> step, int at);
-  void stepRemoved(std::shared_ptr<Simulation> step, int at);
-
-  void pipelineStepAdded(Pipeline::StepType step, int at);
-  void pipelineStepRemoved(Pipeline::StepType step, int at);
+  void stepAdded(Pipeline::StepType step, int at);
+  void stepRemoved(Pipeline::StepType step, int at);
 
   void nameChanged(const QString&);
 
 private:
-  std::vector<std::shared_ptr<Simulation>> steps;
   std::shared_ptr<SystemSetup> systemSetup;
 
   std::vector<Pipeline::StepType> pipelineSteps;

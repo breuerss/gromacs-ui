@@ -1,10 +1,10 @@
 #include "temperaturegroupconfigform.h"
 #include "ui_temperaturegroupconfigform.h"
 #include "connectionhelper.h"
-#include "../model/temperaturecouplinggroup.h"
+#include "../config/temperaturecouplinggroup.h"
 
 TemperatureGroupConfigForm::TemperatureGroupConfigForm(
-  std::shared_ptr<Model::TemperatureCouplingGroup> model, QWidget *parent)
+  std::shared_ptr<Config::TemperatureCouplingGroup> model, QWidget *parent)
     : QWidget(parent)
     , model(model)
     , ui(new Ui::TemperatureGroupConfigForm)
@@ -13,14 +13,15 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     connect(ui->removeTemperatureGroup, &QToolButton::clicked,
             this, &TemperatureGroupConfigForm::removeRequested);
 
-    QList<QPair<QString, Model::TemperatureCouplingGroup::Group>> options = {
-      { "System",  Model::TemperatureCouplingGroup::Group::System },
-      { "Protein",  Model::TemperatureCouplingGroup::Group::Protein },
-      { "Water",  Model::TemperatureCouplingGroup::Group::Water },
+    using CouplingGroup = Config::TemperatureCouplingGroup::Group;
+    QList<QPair<QString, CouplingGroup>> options = {
+      { "System",  CouplingGroup::System },
+      { "Protein",  CouplingGroup::Protein },
+      { "Water",  CouplingGroup::Water },
     };
-    setOptions<Model::TemperatureCouplingGroup::Group>(
+    setOptions<CouplingGroup>(
       ui->temperatureCouplingGroup, options);
-    connectToComboBox<Model::TemperatureCouplingGroup::Group>(
+    connectToComboBox<CouplingGroup>(
       ui->temperatureCouplingGroup, model, "group");
     connectToSpinBox<QDoubleSpinBox, double>(
       ui->temperature, model, "temperature");

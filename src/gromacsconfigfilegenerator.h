@@ -5,14 +5,14 @@
 #include <type_traits>
 #include <QString>
 #include <QTextStream>
-#include "model/simulation.h"
+#include "config/simulation.h"
 
 class GromacsConfigFileGenerator
 {
 public:
-  GromacsConfigFileGenerator(std::shared_ptr<Model::Simulation>);
+  GromacsConfigFileGenerator(std::shared_ptr<Config::Simulation>);
   void generate(const QString& fileName);
-  static std::shared_ptr<Model::Simulation> createFrom(const QString& fileName);
+  static std::shared_ptr<Config::Simulation> createFrom(const QString& fileName);
   void setFromMdpFile(const QString& fileName);
   void setFromTprFile(const QString& fileName);
 
@@ -54,7 +54,7 @@ private:
   static QVariant createValueFrom(const QString& option, const QString& inputValueString);
 
 private:
-  std::shared_ptr<Model::Simulation> model;
+  std::shared_ptr<Config::Simulation> model;
 };
 
 #endif // GROMACSCONFIGFILEGENERATOR_H

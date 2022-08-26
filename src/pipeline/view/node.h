@@ -25,17 +25,22 @@ public:
   Port* getInputPort(int at);
   Port* getOutputPort(int at);
 
-  void addInputPort(const QColor& color);
-  void addOutputPort(const QColor& color);
+  void addInputPort(const QList<Command::FileObject::Type>& acceptedFileTypes, const QColor& color);
+  void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
+
+  std::shared_ptr<Pipeline::Step> getStep() const { return step ; }
 
 private:
-  Port* createPort(const QColor& color, Port::Type type);
+  Port* createPort(
+    const QColor& color,
+    Port::Type type);
 
   void arrangeOutputPorts();
   void arrangeInputPorts();
 
   QPointF getCirclePointForAngle(double angle) const;
   QColor getColorFor(Command::FileObject::Category category);
+  QColor getColorFor(Command::FileObject::Type type);
 
   void arrangePortsHeights(QList<Port*> ports);
   QGraphicsTextItem* text;

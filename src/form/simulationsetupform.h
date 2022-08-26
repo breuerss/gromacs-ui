@@ -6,7 +6,7 @@
 #include <memory>
 #include <QMetaObject>
 #include <QList>
-#include "../model/simulation.h"
+#include "../config/simulation.h"
 #include "qglobal.h"
 #include "progresschart.h"
 
@@ -27,7 +27,7 @@ class SimulationSetupForm : public QWidget
 public:
   explicit SimulationSetupForm(
     std::shared_ptr<Model::Project> project,
-    std::shared_ptr<Model::Simulation> simulation,
+    std::shared_ptr<Config::Simulation> simulation,
     std::shared_ptr<Command::RunSimulation> command,
     QWidget *parent = nullptr);
   ~SimulationSetupForm();
@@ -39,20 +39,20 @@ signals:
 
 private:
   std::shared_ptr<Model::Project> project;
-  std::shared_ptr<Model::Simulation> simulation;
+  std::shared_ptr<Config::Simulation> simulation;
   std::shared_ptr<Command::RunSimulation> command;
   Ui::SimulationSetupForm *ui;
 
-  void updateUiForSimulationType(Model::Simulation::Type type = Model::Simulation::Type::None);
-  void setAlgorithmsForType(Model::Simulation::Type type);
-  void setProgressViewForType(Model::Simulation::Type type);
-  void setPressureAlgorithmsForType(Model::Simulation::Type type);
-  void setTemperatureAlgorithmsForType(Model::Simulation::Type type);
+  void updateUiForSimulationType(Config::Simulation::Type type = Config::Simulation::Type::None);
+  void setAlgorithmsForType(Config::Simulation::Type type);
+  void setProgressViewForType(Config::Simulation::Type type);
+  void setPressureAlgorithmsForType(Config::Simulation::Type type);
+  void setTemperatureAlgorithmsForType(Config::Simulation::Type type);
   void hideSettings();
   void enableAllSettings();
 
-  void addTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at = -1);
-  void removeTemperatureCouplingGroup(std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at);
+  void addTemperatureCouplingGroup(std::shared_ptr<Config::TemperatureCouplingGroup> couplingGroup, int at = -1);
+  void removeTemperatureCouplingGroup(std::shared_ptr<Config::TemperatureCouplingGroup> couplingGroup, int at);
   QList<QMetaObject::Connection> conns;
 
   qint64 timeStampStarted;

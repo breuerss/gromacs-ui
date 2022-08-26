@@ -1,7 +1,7 @@
 #include "project.h"
 #include "src/command/runsimulation.h"
 #include "systemsetup.h"
-#include "simulation.h"
+#include "../config/simulation.h"
 #include "../settings.h"
 #include <QDebug>
 #include <QStandardPaths>
@@ -14,24 +14,15 @@ Project::Project()
 {
 }
 
-std::shared_ptr<Simulation> Project::addStep()
+Pipeline::StepType Project::addStep()
 {
-  auto step = std::make_shared<Simulation>();
-  if (steps.size() >= 1)
-  {
-    step->setPreviousStep(steps.back());
-  }
-  steps.push_back(step);
   std::shared_ptr<Project> project;
   project.reset(this);
 
-  auto pipelineStep = std::make_shared<Command::RunSimulation>(
-    project, step
-    );
+  auto pipelineStep = std::make_shared<Command::RunSimulation>(project);
   pipelineSteps.push_back(pipelineStep);
-  emit stepAdded(step, steps.size() - 1);
-  emit pipelineStepAdded(pipelineStep, steps.size() - 1);
-  return step;
+  emit stepAdded(pipelineStep, pipelineSteps.size() - 1);
+  return pipelineStep;
 }
 
 /**
@@ -43,31 +34,22 @@ std::shared_ptr<Simulation> Project::addStep()
 
 void Project::removeStep(int at)
 {
-  auto step = steps[at];
-  steps.erase(steps.begin() + at);
-  if (steps.size() >= static_cast<size_t>(at))
-  {
-    std::shared_ptr<Simulation> previous;
-    if (at > 1)
-    {
-      previous = steps[at - 1];
-    }
-    steps[at]->setPreviousStep(previous);
-  }
+  auto step = pipelineSteps[at];
+  pipelineSteps.erase(pipelineSteps.begin() + at);
   emit stepRemoved(step, at);
 }
 
 void Project::clearSteps()
 {
-  while (steps.size())
+  while (pipelineSteps.size())
   {
     removeStep(0);
   }
 }
 
-const std::vector<std::shared_ptr<Simulation>>& Project::getSteps() const
+const std::vector<Pipeline::StepType>& Project::getSteps() const
 {
-  return steps;
+  return pipelineSteps;
 }
 
 std::shared_ptr<SystemSetup> Project::getSystemSetup() const
@@ -91,10 +73,10 @@ QDataStream &operator<<(QDataStream &out, const Project &project)
   int numberOfSteps = project.getSteps().size();
   out << numberOfSteps;
 
-  for (auto step: project.getSteps())
-  {
-    out << *(step.get());
-  }
+  //for (auto step: project.getSteps())
+  //{
+  //  out << *(step.get());
+  //}
 
   return out;
 }
@@ -120,11 +102,11 @@ QDataStream &operator>>(QDataStream &in, Project &project)
     project.addStep();
   }
 
-  for (auto step: project.getSteps())
-  {
-    qDebug() << "reading step";
-    in >> *(step.get());
-  }
+  //for (auto step: project.getSteps())
+  //{
+    //qDebug() << "reading step";
+    //in >> *(step.get());
+  //}
 
   return in;
 }

@@ -1,16 +1,16 @@
 #ifndef STEP_H
 #define STEP_H
 
-#include "serializable.h"
+#include "../model/serializable.h"
 #include "temperaturecouplinggroup.h"
 #include <QString>
 #include <QDataStream>
 #include <memory>
 #include "../misc/bimaphelper.h"
 
-namespace Model {
+namespace Config {
 
-class Simulation : public Serializable
+class Simulation : public Model::Serializable
 {
   Q_OBJECT
 public:
@@ -85,9 +85,6 @@ public:
   ~Simulation();
   QString getName() const;
   QString getTypeAsString() const;
-
-  std::shared_ptr<Simulation> getPreviousStep() const;
-  void setPreviousStep(std::shared_ptr<Simulation> newPreviousStep);
 
   bool isMinimisation() const;
   bool pmeSettingsNeeded() const;
@@ -231,8 +228,6 @@ private:
   // temperature
   TemperatureAlgorithm temperatureAlgorithm = TemperatureAlgorithm::None;
   std::vector<std::shared_ptr<TemperatureCouplingGroup>> temperatureCouplingGroups;
-
-  std::shared_ptr<Simulation> previousStep;
 
   bool resume = true;
 };

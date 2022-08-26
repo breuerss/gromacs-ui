@@ -12,7 +12,8 @@
 
 namespace Pipeline { namespace View {
 
-Port::Port(double x, double y, Type type, QGraphicsItem* parent)
+Port::Port(
+  double x, double y, Type type, QGraphicsItem* parent)
   : QGraphicsEllipseItem(x, y, 2 * RADIUS, 2 * RADIUS, parent)
   , type(type)
 {
@@ -20,6 +21,16 @@ Port::Port(double x, double y, Type type, QGraphicsItem* parent)
   setAcceptedMouseButtons(Qt::LeftButton);
   setAcceptDrops(type == Type::Input);
   setAcceptHoverEvents(true);
+}
+
+void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
+{
+  fileObject = newFileObject;
+}
+
+void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)
+{
+  acceptedFileTypes = newAcceptedFileTypes;
 }
 
 QVariant Port::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
@@ -106,20 +117,27 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void Port::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-  if (parentItem() != dynamic_cast<Panel*>(scene())->startingNode && !connected)
+  auto panel = dynamic_cast<Panel*>(scene());
+  if (!connected && parentItem() != panel->startingNode)
   {
-    event->accept();
+    auto port = panel->getActiveConnector()->getStartingPort();
+    if (acceptedFileTypes.contains(port->getFileObject()->type))
+    {
+      event->accept();
+      return;
+    }
   }
-  else
-  {
-    event->ignore();
-  }
+
+  event->ignore();
 }
 
 void Port::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
 {
   auto panel = dynamic_cast<Panel*>(scene());
-  panel->getActiveConnector()->setEndingPort(this);
+  auto connector = panel->getActiveConnector();
+  connector->setEndingPort(this);
+  auto startingPort = connector->getStartingPort();
+  connectedToChanged(startingPort->getFileObject());
   panel->connectorAccepted();
 }
 

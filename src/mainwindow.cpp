@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "qgraphicsitem.h"
 #include "src/gromacsconfigfilegenerator.h"
+#include "src/pipeline/step.h"
 #include "ui_mainwindow.h"
 #include "form/preferencesdialog.h"
 #include "projectmanager.h"
@@ -14,7 +15,7 @@
 #include "command/runsimulation.h"
 
 #include "model/project.h"
-#include "model/simulation.h"
+#include "config/simulation.h"
 #include "model/systemsetup.h"
 
 #include <QDebug>
@@ -70,23 +71,23 @@ MainWindow::MainWindow(QWidget *parent)
   connect(LogForwarder::getInstance(), &LogForwarder::addMessage,
           ui->logOutput, &QPlainTextEdit::appendPlainText);
 
-  connect(queue.get(), &Command::Queue::stepFinished,
-          [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
-            if (success)
-            {
-              auto project = ProjectManager::getInstance()->getCurrentProject();
-              SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
+  //connect(queue.get(), &Command::Queue::stepFinished,
+  //        [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
+  //          if (success)
+  //          {
+              //auto project = ProjectManager::getInstance()->getCurrentProject();
+              //SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
 
-              QString trajectory;
-              if (checker.hasTrajectory())
-              {
-                trajectory = checker.getTrajectoryPath();
-              }
+              //QString trajectory;
+              //if (checker.hasTrajectory())
+              //{
+                //trajectory = checker.getTrajectoryPath();
+              //}
 
-              QString coordinates = checker.getCoordinatesPath();
-              setMoleculeFile(coordinates, trajectory);
-            }
-          });
+              //QString coordinates = checker.getCoordinatesPath();
+              //setMoleculeFile(coordinates, trajectory);
+   //         }
+   //       });
 
   connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
           [this] (const QString& message) {
@@ -107,31 +108,32 @@ MainWindow::MainWindow(QWidget *parent)
     &QAction::triggered,
     [] () {
 
-      using Model::Simulation;
+      using Config::Simulation;
       auto manager = ProjectManager::getInstance();
       auto project = manager->getCurrentProject();
       project->clearSteps();
-      auto step = project->addStep();
-      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::Minimisation));
-      step->setProperty("algorithm", "steep");
-      step = project->addStep();
-      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NVT));
-      step->setProperty("numberOfSteps", 10000);
-      step->setProperty("algorithm", "md");
-      step = project->addStep();
-      step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NPT));
-      step->setProperty("numberOfSteps", 10000);
-      step->setProperty("algorithm", "md");
+      //auto step = std::get<std::shared_ptr<Command::RunSimulation>>(project->addStep());
+      //auto config = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
+      //config->setProperty("simulationType", QVariant::fromValue(Simulation::Type::Minimisation));
+      //step->setProperty("algorithm", "steep");
+      //step = project->addStep();
+      //step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NVT));
+      //step->setProperty("numberOfSteps", 10000);
+      //step->setProperty("algorithm", "md");
+      //step = project->addStep();
+      //step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NPT));
+      //step->setProperty("numberOfSteps", 10000);
+      //step->setProperty("algorithm", "md");
 
       // import the existing definitions
-      for (auto step: project->getSteps())
-      {
-        SimulationStatusChecker checker(project, step);
-        if (checker.hasMdp())
-        {
-          GromacsConfigFileGenerator(step).setFromMdpFile(checker.getMdpPath());
-        }
-      }
+      //for (auto step: project->getSteps())
+      //{
+      //  SimulationStatusChecker checker(project, step);
+      //  if (checker.hasMdp())
+      //  {
+      //    GromacsConfigFileGenerator(step).setFromMdpFile(checker.getMdpPath());
+      //  }
+      //}
 
       manager->currentProjectChanged(project);
     });
@@ -170,8 +172,8 @@ void MainWindow::setupUIForProject()
       disconnect(conn);
     }
 
-    conns << connect(project.get(),
-            &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
+    //conns << connect(project.get(),
+    //        &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
     Model::SystemSetup* systemSetup = project->getSystemSetup().get();
     conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged,
             ui->actionRunSimulation, &QAction::setEnabled);
@@ -204,13 +206,13 @@ void MainWindow::setupUIForProject()
 
     QWebEngineSettings* settings = ui->molpreview->page()->settings();
     settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
-    conns << connect(
-      project.get(),
-      &Model::Project::stepRemoved,
-      [this] (std::shared_ptr<Model::Simulation>, int at) {
-        queue->remove(at);
-        removeTabAt(at + 1);
-      });
+    //conns << connect(
+    //  project.get(),
+    //  &Model::Project::stepRemoved,
+    //  [this] (std::shared_ptr<Config::Simulation>, int at) {
+    //    queue->remove(at);
+    //    removeTabAt(at + 1);
+    //  });
 
 
     conns << connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
@@ -228,14 +230,14 @@ void MainWindow::setupUIForProject()
     auto tabBar = ui->stepconfigurator->tabBar();
     tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
     tabBar->setTabButton(0, QTabBar::RightSide, 0);
-    for (auto step: project->getSteps())
-    {
-      addTabForStep(step);
-    }
+    //for (auto step: project->getSteps())
+    //{
+    //  addTabForStep(step);
+    //}
   }
 }
 
-void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, int at)
+void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, int at)
 {
   if (at == -1)
   {
@@ -243,7 +245,7 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, in
   }
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
-  auto command = std::make_shared<Command::RunSimulation>(project, simulation);
+  auto command = std::make_shared<Command::RunSimulation>(project);
   connect(command.get(), &Command::RunSimulation::runningChanged,
           [this] (bool isRunning) {
             ui->actionRunSimulation->setEnabled(!isRunning);
@@ -255,8 +257,8 @@ void MainWindow::addTabForStep(std::shared_ptr<Model::Simulation> simulation, in
 
   connect(
     simulation.get(),
-    &Model::Simulation::simulationTypeChanged,
-    [this, simulation, at] (Model::Simulation::Type) {
+    &Config::Simulation::simulationTypeChanged,
+    [this, simulation, at] (Config::Simulation::Type) {
       ui->stepconfigurator->setTabText(at, simulation->getName());
     });
 

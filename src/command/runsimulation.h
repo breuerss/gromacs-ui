@@ -6,9 +6,11 @@
 #include <QFileSystemWatcher>
 #include "../pipeline/step.h"
 
+namespace Config {
+class Simulation;
+}
 namespace Model {
 class Project;
-class Simulation;
 }
 
 class SimulationStatusChecker;
@@ -20,7 +22,6 @@ class RunSimulation : public Executor, public Pipeline::Step
 public:
   explicit RunSimulation(
     std::shared_ptr<Model::Project> project,
-    std::shared_ptr<Model::Simulation> simulation,
     QObject *parent = nullptr);
   void doExecute() override;
   QString getName() const override;
@@ -35,7 +36,7 @@ private:
     );
 
   std::shared_ptr<Model::Project> project;
-  std::shared_ptr<Model::Simulation> simulation;
+  std::shared_ptr<Config::Simulation> simulation;
   std::shared_ptr<SimulationStatusChecker> simulationChecker;
   QFileSystemWatcher progressChecker;
   void checkProgress();

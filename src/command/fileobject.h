@@ -27,11 +27,15 @@ public:
     Forces,
   };
 
-  FileObject(const QString& newFileName, Type newType);
+  FileObject(Type newType);
   bool exists() const;
+  void setFileName(const QString& fileName);
 
-  const QString fileName;
   const Type type;
+  static Category getCategoryFor(Type);
+
+private:
+  QString fileName;
 };
 
 }

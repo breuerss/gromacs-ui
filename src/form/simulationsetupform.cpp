@@ -7,7 +7,7 @@
 #include "src/form/progresschart.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
-#include "../model/simulation.h"
+#include "../config/simulation.h"
 #include "../model/project.h"
 #include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
@@ -19,7 +19,7 @@
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
-  std::shared_ptr<Model::Simulation> newSimulation,
+  std::shared_ptr<Config::Simulation> newSimulation,
   std::shared_ptr<Command::RunSimulation> newCommand,
   QWidget *parent
   )
@@ -32,7 +32,7 @@ SimulationSetupForm::SimulationSetupForm(
   ui->setupUi(this);
   setupProgressValueChart();
 
-  using Model::Simulation;
+  using Config::Simulation;
 
   QList<QPair<QString, Simulation::Type>> typeOptions = {
     { toString(Simulation::Type::None), Simulation::Type::None },
@@ -81,13 +81,14 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, simulation, "compressedPositionOutputFrequency");
   conns << connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, simulation, "logOutputFrequency");
 
+  using Config::Simulation;
   // pressure
-  conns << connectToComboBox<Model::Simulation::PressureAlgorithm>(
+  conns << connectToComboBox<Simulation::PressureAlgorithm>(
               ui->pressureAlgorithm, simulation, "pressureAlgorithm"
               );
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, simulation, "pressure");
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, simulation, "pressureUpdateInterval");
-  conns << connectToComboBox<Model::Simulation::PressureCouplingType>(
+  conns << connectToComboBox<Simulation::PressureCouplingType>(
               ui->pressureCouplingType, simulation, "pressureCouplingType"
               );
 
@@ -95,7 +96,7 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
     simulation->addTemperatureCouplingGroup();
   });
-  conns << connectToComboBox<Model::Simulation::TemperatureAlgorithm>(
+  conns << connectToComboBox<Simulation::TemperatureAlgorithm>(
               ui->temperatureAlgorithm, simulation, "temperatureAlgorithm"
               );
 
@@ -162,9 +163,9 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, simulation, "fourierSpacing");
   conns << connectToSpinBox<QSpinBox, int>(ui->pmeOrder, simulation, "pmeOrder");
 
-  conns << connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupAdded,
+  conns << connect(simulation.get(), &Simulation::temperatureCouplingGroupAdded,
           this, &SimulationSetupForm::addTemperatureCouplingGroup);
-  conns << connect(simulation.get(), &Model::Simulation::temperatureCouplingGroupRemoved,
+  conns << connect(simulation.get(), &Simulation::temperatureCouplingGroupRemoved,
           this, &SimulationSetupForm::removeTemperatureCouplingGroup);
   for (auto group : simulation->getTemperatureCouplingGroups())
   {
@@ -340,7 +341,7 @@ SimulationSetupForm::~SimulationSetupForm()
   delete ui;
 }
 
-void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type)
+void SimulationSetupForm::updateUiForSimulationType(Config::Simulation::Type type)
 {
   hideSettings();
   setAlgorithmsForType(type);
@@ -348,7 +349,7 @@ void SimulationSetupForm::updateUiForSimulationType(Model::Simulation::Type type
   setTemperatureAlgorithmsForType(type);
   setProgressViewForType(type);
   enableAllSettings();
-  using Model::Simulation;
+  using Config::Simulation;
   switch(type)
   {
     case Simulation::Type::Minimisation:
@@ -407,9 +408,9 @@ void SimulationSetupForm::enableAllSettings()
   }
 }
 
-void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
+void SimulationSetupForm::setAlgorithmsForType(Config::Simulation::Type type)
 {
-  using Model::Simulation;
+  using Config::Simulation;
   QList<QPair<QString, Simulation::Algorithm>> map;
   int defaultIndex = 0;
 
@@ -435,14 +436,14 @@ void SimulationSetupForm::setAlgorithmsForType(Model::Simulation::Type type)
   setOptions<Simulation::Algorithm>(ui->algorithm, map, defaultIndex);
 }
 
-void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type type)
+void SimulationSetupForm::setPressureAlgorithmsForType(Config::Simulation::Type type)
 {
-  using Model::Simulation;
+  using Config::Simulation;
   QList<QPair<QString, Simulation::PressureAlgorithm>> map({
     { "None", Simulation::PressureAlgorithm::None }
   });
   Simulation::PressureAlgorithm defaultValue = Simulation::PressureAlgorithm::None;
-  if (type == Model::Simulation::Type::NPT)
+  if (type == Simulation::Type::NPT)
   {
     map = {
       { "Bussi", Simulation::PressureAlgorithm::Bussi },
@@ -454,22 +455,22 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Model::Simulation::Type t
   setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map, defaultValue);
 }
 
-void SimulationSetupForm::setProgressViewForType(Model::Simulation::Type type)
+void SimulationSetupForm::setProgressViewForType(Config::Simulation::Type type)
 {
-  const bool showChart = type == Model::Simulation::Type::Minimisation;
+  const bool showChart = type == Config::Simulation::Type::Minimisation;
   progressChart->setVisible(showChart);
   ui->simulationProgress->setVisible(!showChart);
   ui->assumedFinished->setVisible(!showChart);
 }
 
-void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Type type)
+void SimulationSetupForm::setTemperatureAlgorithmsForType(Config::Simulation::Type type)
 {
-  using Model::Simulation;
+  using Config::Simulation;
   QList<QPair<QString, Simulation::TemperatureAlgorithm>> map({
     { "None", Simulation::TemperatureAlgorithm::None }
   });
   Simulation::TemperatureAlgorithm defaultValue = Simulation::TemperatureAlgorithm::None;
-  if (type == Model::Simulation::Type::NPT || type == Model::Simulation::Type::NVT)
+  if (type == Simulation::Type::NPT || type == Simulation::Type::NVT)
   {
     map = {
       { "Velocity Rescale", Simulation::TemperatureAlgorithm::VelocityRescale },
@@ -482,9 +483,9 @@ void SimulationSetupForm::setTemperatureAlgorithmsForType(Model::Simulation::Typ
 }
 
 void SimulationSetupForm::addTemperatureCouplingGroup(
-  std::shared_ptr<Model::TemperatureCouplingGroup> couplingGroup, int at)
+  std::shared_ptr<Config::TemperatureCouplingGroup> couplingGroup, int at)
 {
-  using Model::TemperatureCouplingGroup;
+  using Config::TemperatureCouplingGroup;
   auto callback = [couplingGroup, this] (TemperatureCouplingGroup::Group groupType) {
     bool enabled = groupType != TemperatureCouplingGroup::Group::System;
     ui->addTemperatureCouplingGroup->setEnabled(enabled);
@@ -503,12 +504,12 @@ void SimulationSetupForm::addTemperatureCouplingGroup(
 }
 
 void SimulationSetupForm::removeTemperatureCouplingGroup(
-  std::shared_ptr<Model::TemperatureCouplingGroup> group, int at)
+  std::shared_ptr<Config::TemperatureCouplingGroup> group, int at)
 {
+  using CouplingGroup = Config::TemperatureCouplingGroup::Group;
   ui->temperatureCouplingGroups->takeAt(at)->widget()->deleteLater();
   if (!ui->temperatureCouplingGroups->count() ||
-      group->property("group").value<Model::TemperatureCouplingGroup::Group>() ==
-        Model::TemperatureCouplingGroup::Group::System)
+      group->property("group").value<CouplingGroup>() == CouplingGroup::System)
 
   {
     ui->addTemperatureCouplingGroup->setEnabled(true);

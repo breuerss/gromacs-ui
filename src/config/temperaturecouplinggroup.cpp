@@ -4,7 +4,7 @@
 #include <QMetaProperty>
 #include <cstring>
 
-namespace Model {
+namespace Config {
 
 TemperatureCouplingGroup::TemperatureCouplingGroup()
 {

@@ -3,11 +3,12 @@
 #include "../statusmessagesetter.h"
 #include "../model/systemsetup.h"
 #include "../model/project.h"
-#include "../model/simulation.h"
+#include "../config/simulation.h"
 #include "../appprovider.h"
 #include "../logforwarder.h"
 #include "../simulationstatuschecker.h"
 #include "qfilesystemwatcher.h"
+#include "src/command/fileobject.h"
 
 #include <QDebug>
 #include <QDir>
@@ -17,14 +18,19 @@ namespace Command {
 
 RunSimulation::RunSimulation(
   std::shared_ptr<Model::Project> project,
-  std::shared_ptr<Model::Simulation> newSimulation,
   QObject *parent)
   : Executor(parent)
-  , Step({
-    { FileObject::Category::Coordinates, { FileObject::Type::GRO } }
-  })
+  , Step(
+    {
+      { FileObject::Category::Coordinates, { FileObject::Type::GRO } }
+    },
+    {
+      FileObject::Type::GRO,
+      FileObject::Type::XTC
+    },
+    std::make_shared<Config::Simulation>()
+    )
   , project(project)
-  , simulation(newSimulation)
 {
   connect(this, &RunSimulation::finished, [this] () {
     progressChecker.removePath(simulationChecker->getLogPath());
@@ -56,11 +62,11 @@ void RunSimulation::doExecute()
 
   QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
   QFileInfo systemPath(inputStructure);
-  if (simulation->getPreviousStep())
-  {
-    SimulationStatusChecker prevSimChecker(project, simulation->getPreviousStep());
-    inputStructure = prevSimChecker.getCoordinatesPath();
-  }
+  //if (simulation->getPreviousStep())
+  //{
+  //  SimulationStatusChecker prevSimChecker(project, simulation->getPreviousStep());
+  //  inputStructure = prevSimChecker.getCoordinatesPath();
+  //}
 
   if (!execGrompp(
       mdpFile,

@@ -1,13 +1,13 @@
 #ifndef TEMPERATURECOUPLINGGROUP_H
 #define TEMPERATURECOUPLINGGROUP_H
 
-#include "serializable.h"
+#include "../model/serializable.h"
 #include <QString>
 #include <QDataStream>
 
-namespace Model {
+namespace Config {
 
-class TemperatureCouplingGroup : public Serializable
+class TemperatureCouplingGroup : public Model::Serializable
 {
   Q_OBJECT
 public:
