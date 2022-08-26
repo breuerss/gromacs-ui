@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 void RoundedRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
@@ -23,5 +23,4 @@ void RoundedRectItem::setRoundedRect(const QRectF rect, const double radius_x, c
   this->setRadiusY(radius_y);
 }
 
-
-}
+} }

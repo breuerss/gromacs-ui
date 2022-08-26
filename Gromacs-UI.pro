@@ -2,7 +2,9 @@ QT       += core gui webenginewidgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++17
+CONFIG += object_parallel_to_source
+
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -21,17 +23,6 @@ SOURCES += \
     src/simulationstatuschecker.cpp \
     src/settings.cpp \
     src/statusmessagesetter.cpp \
-    src/command/createbox.cpp \
-    src/command/creategromacsmodel.cpp \
-    src/command/executor.cpp \
-    src/command/filter.cpp \
-    src/command/inputfilelink.cpp \
-    src/command/inputoutputfilelink.cpp \
-    src/command/neutralise.cpp \
-    src/command/pdbfixer.cpp \
-    src/command/queue.cpp \
-    src/command/runsimulation.cpp \
-    src/command/solvate.cpp \
     src/form/connectionhelper.cpp \
     src/form/preferencesdialog.cpp \
     src/form/progresschart.cpp \
@@ -43,7 +34,9 @@ SOURCES += \
     src/model/simulation.cpp \
     src/model/systemsetup.cpp \
     src/model/temperaturecouplinggroup.cpp \
-    $$files(src/pipeline/*.cpp)
+    $$files(src/command/*.cpp) \
+    $$files(src/config/*.cpp) \
+    $$files(src/pipeline/*.cpp, true)
 
 HEADERS += \
     src/appprovider.h \
@@ -57,17 +50,6 @@ HEADERS += \
     src/settings.h \
     src/simulationstatuschecker.h \
     src/statusmessagesetter.h \
-    src/command/createbox.h \
-    src/command/creategromacsmodel.h \
-    src/command/executor.h \
-    src/command/filter.h \
-    src/command/inputfilelink.h \
-    src/command/inputoutputfilelink.h \
-    src/command/neutralise.h \
-    src/command/pdbfixer.h \
-    src/command/queue.h \
-    src/command/runsimulation.h \
-    src/command/solvate.h \
     src/form/connectionhelper.h \
     src/form/preferencesdialog.h \
     src/form/progresschart.h \
@@ -80,7 +62,9 @@ HEADERS += \
     src/model/simulation.h \
     src/model/systemsetup.h \
     src/model/temperaturecouplinggroup.h \
-    $$files(src/pipeline/*.h)
+    $$files(src/command/*.h) \
+    $$files(src/config/*.h) \
+    $$files(src/pipeline/*.h, true)
 
 
 FORMS += \

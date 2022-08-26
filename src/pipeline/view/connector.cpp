@@ -5,7 +5,7 @@
 #include <QPainter>
 #include <QPainterPath>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 Connector::Connector(Port* startingPort)
   : startingPort(startingPort)
@@ -79,4 +79,4 @@ Port* Connector::getEndingPort() const
   return endingPort;
 }
 
-}
+} }

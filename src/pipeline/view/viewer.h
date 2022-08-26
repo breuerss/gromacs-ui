@@ -4,11 +4,12 @@
 #include <QGraphicsView>
 #include "actionbutton.h"
 
-namespace Pipeline {
-class View: public QGraphicsView
+namespace Pipeline { namespace View {
+
+class Viewer: public QGraphicsView
 {
 public:
-  View(QWidget* parent = nullptr);
+  Viewer(QWidget* parent = nullptr);
 
 protected slots:
   void wheelEvent(QWheelEvent *event);
@@ -18,6 +19,7 @@ protected slots:
 private:
   ActionButton* addButton;
 };
-}
+
+} }
 
 #endif

@@ -4,6 +4,7 @@
 #include "executor.h"
 #include <memory>
 #include <QFileSystemWatcher>
+#include "../pipeline/step.h"
 
 namespace Model {
 class Project;
@@ -14,7 +15,7 @@ class SimulationStatusChecker;
 
 namespace Command {
 
-class RunSimulation : public Executor
+class RunSimulation : public Executor, public Pipeline::Step
 {
 public:
   explicit RunSimulation(

@@ -10,7 +10,7 @@
 #include <QMimeData>
 #include <QWidget>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 Port::Port(double x, double y, Type type, QGraphicsItem* parent)
   : QGraphicsEllipseItem(x, y, 2 * RADIUS, 2 * RADIUS, parent)
@@ -123,4 +123,4 @@ void Port::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
   panel->connectorAccepted();
 }
 
-}
+} }

@@ -3,7 +3,8 @@
 
 #include <QGraphicsPathItem>
 #include "port.h"
-namespace Pipeline {
+
+namespace Pipeline { namespace View {
 
 class Connector : public QGraphicsPathItem
 {
@@ -22,6 +23,6 @@ private:
   QMetaObject::Connection conn;
 };
 
-}
+} }
 
 #endif

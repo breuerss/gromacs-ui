@@ -3,7 +3,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QDebug>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 ActionButton::ActionButton(QWidget* parent)
   : QPushButton(parent)
@@ -41,4 +41,4 @@ void ActionButton::leaveEvent(QEvent*)
   unsetCursor();
 }
 
-}
+} }

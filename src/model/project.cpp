@@ -1,4 +1,5 @@
 #include "project.h"
+#include "src/command/runsimulation.h"
 #include "systemsetup.h"
 #include "simulation.h"
 #include "../settings.h"
@@ -21,30 +22,20 @@ std::shared_ptr<Simulation> Project::addStep()
     step->setPreviousStep(steps.back());
   }
   steps.push_back(step);
+  std::shared_ptr<Project> project;
+  project.reset(this);
+
+  auto pipelineStep = std::make_shared<Command::RunSimulation>(
+    project, step
+    );
+  pipelineSteps.push_back(pipelineStep);
   emit stepAdded(step, steps.size() - 1);
+  emit pipelineStepAdded(pipelineStep, steps.size() - 1);
   return step;
 }
 
 /**
  * TODO
- *
- * FileObject {
- *   type,
- *   fileName,
- *   exists
- * }
- *
- * FileObjectProvider {
- *   provides -> QList<FileObject> = 0
- * }
- *
- * FileObjectConsumer {
- *   requires -> QMap<FileObject::category, QList<FileObject::type>> = 0
- *
- *   bool accepts(FileObject);
- *   void connectTo(FileObject);
- *   connectedTo -> QMap<FileObject::type, FileObject>
- * }
  *
  *  Unify Command and Simulation
  *  Split up SystemSetup to series of Pipeline Nodes

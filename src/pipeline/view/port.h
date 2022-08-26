@@ -3,7 +3,7 @@
 
 #include <QGraphicsEllipseItem>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 class Port : public QObject, public QGraphicsEllipseItem
 {
@@ -37,6 +37,7 @@ private:
   bool connected = false;
 
 };
-}
+
+} }
 
 #endif

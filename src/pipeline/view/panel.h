@@ -3,13 +3,20 @@
 
 #include "connector.h"
 #include "node.h"
-#include "../model/project.h"
 #include <QGraphicsScene>
 #include <QMetaObject>
 #include <QGraphicsSceneMouseEvent>
 #include <memory>
 
 namespace Pipeline {
+class Step;
+}
+
+namespace Model {
+class Project;
+}
+
+namespace Pipeline { namespace View {
 
 class Panel : public QGraphicsScene
 {
@@ -34,9 +41,10 @@ protected:
 private:
   std::shared_ptr<Model::Project> project;
   QList<QMetaObject::Connection> conns;
-  void addNode(std::shared_ptr<Model::Simulation> step);
+  void addNode(std::shared_ptr<Pipeline::Step> step);
+  std::map<std::shared_ptr<Pipeline::Step>, Node*> modelViewMap;
 };
 
-}
+} }
 
 #endif

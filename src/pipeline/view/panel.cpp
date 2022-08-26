@@ -2,9 +2,10 @@
 #include "qgraphicssceneevent.h"
 #include <memory>
 #include <QDebug>
-#include "../model/simulation.h"
+#include "../../model/project.h"
+#include "src/pipeline/supportedsteps.h"
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 void Panel::reuseConnector(Connector* connector)
 {
@@ -26,19 +27,20 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
     disconnect(conn);
   }
 
+  modelViewMap.clear();
   clear();
 
   project = newProject;
 
-  for (auto step : project->getSteps())
+  for (auto step : project->getPipelineSteps())
   {
-    addNode(step);
+    std::visit([this] (auto step) { addNode(step); }, step);
   }
 
   conns << connect(
-    project.get(), &Model::Project::stepAdded,
-    [this] (std::shared_ptr<Model::Simulation> step) {
-      addNode(step);
+    project.get(), &Model::Project::pipelineStepAdded,
+    [this] (const Pipeline::StepType& step) {
+      std::visit([this] (auto step) { addNode(step); }, step);
     });
 }
 
@@ -47,9 +49,10 @@ std::shared_ptr<Model::Project> Panel::getProject() const
   return project;
 }
 
-void Panel::addNode(std::shared_ptr<Model::Simulation> step)
+void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
-  auto node = new Node(step->getName());
+  auto node = new Node(step);
+  modelViewMap[step] = node;
   addItem(node);
   node->setPos(itemsBoundingRect().topRight() + QPointF(20, 0));
 }
@@ -72,7 +75,7 @@ void Panel::connectorAccepted()
 Panel::Panel(QObject* parent)
   : QGraphicsScene(parent)
 {
-  setBackgroundBrush(QBrush("#aaaaaa"));
+  setBackgroundBrush(QBrush("#cccccc"));
 }
 
 void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
@@ -89,4 +92,4 @@ Connector* Panel::getActiveConnector()
   return activeConnector;
 }
 
-}
+} }

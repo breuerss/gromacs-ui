@@ -4,7 +4,7 @@
 #include <QGraphicsRectItem>
 #include <QPainter>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 class RoundedRectItem : public QGraphicsRectItem {
 
@@ -36,6 +36,6 @@ private:
   double yRadius;
 };
 
-}
+} }
 
 #endif

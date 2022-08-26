@@ -6,13 +6,13 @@
 namespace Command {
 
 Executor::Executor(QObject *parent)
-  : QObject{parent}
-, mHasRun(false)
+  : QObject(parent)
+    , mHasRun(false)
 {
   conns << connect(
     &process,
     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-    [this] (int, QProcess::ExitStatus) {
+    [this] () {
       mHasRun = true;
       running = false;
       emit runningChanged(running);
@@ -82,5 +82,15 @@ bool Executor::wasSuccessful() const
     process.exitStatus() == QProcess::NormalExit &&
     process.exitCode() == 0;
 }
+
+//const FileObjectConsumer& Executor::getFileConsumer() const
+//{
+//  return fileConsumer;
+//}
+//
+//const ExecutorFileObjectProvider& Executor::getFileProvider() const
+//{
+//  return fileProvider;
+//}
 
 }

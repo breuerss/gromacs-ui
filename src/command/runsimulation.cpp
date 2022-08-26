@@ -20,8 +20,11 @@ RunSimulation::RunSimulation(
   std::shared_ptr<Model::Simulation> newSimulation,
   QObject *parent)
   : Executor(parent)
-    , project(project)
-    , simulation(newSimulation)
+  , Step({
+    { FileObject::Category::Coordinates, { FileObject::Type::GRO } }
+  })
+  , project(project)
+  , simulation(newSimulation)
 {
   connect(this, &RunSimulation::finished, [this] () {
     progressChecker.removePath(simulationChecker->getLogPath());

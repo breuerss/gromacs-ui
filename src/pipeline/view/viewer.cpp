@@ -1,7 +1,8 @@
-#include "view.h"
+#include "viewer.h"
 
 #include "panel.h"
 #include "node.h"
+#include "../../model/project.h"
 #include <QWheelEvent>
 #include <QMargins>
 #include <QDebug>
@@ -9,9 +10,9 @@
 #include <QPushButton>
 #include <QLayout>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
-View::View(QWidget* parent)
+Viewer::Viewer(QWidget* parent)
   : QGraphicsView(parent)
 {
   setDragMode(QGraphicsView::ScrollHandDrag);
@@ -28,7 +29,7 @@ View::View(QWidget* parent)
   layout->addWidget(addButton);
   layout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
   connect(addButton, &QPushButton::clicked, [this] () {
-    auto project = dynamic_cast<Pipeline::Panel*>(scene())->getProject();
+    auto project = dynamic_cast<Pipeline::View::Panel*>(scene())->getProject();
     if (project)
     {
       project->addStep();
@@ -36,7 +37,7 @@ View::View(QWidget* parent)
   });
 }
 
-void View::wheelEvent(QWheelEvent *event)
+void Viewer::wheelEvent(QWheelEvent *event)
 {
   if(event->angleDelta().y() > 0)
     scale(1.25, 1.25);
@@ -44,7 +45,7 @@ void View::wheelEvent(QWheelEvent *event)
     scale(0.8, 0.8);
 }
 
-void View::keyPressEvent(QKeyEvent *event)
+void Viewer::keyPressEvent(QKeyEvent *event)
 {
   if(event->key() == Qt::Key_Home)
   {
@@ -54,9 +55,9 @@ void View::keyPressEvent(QKeyEvent *event)
   }
 }
 
-void View::drawForeground(QPainter *painter, const QRectF &rect)
+void Viewer::drawForeground(QPainter *painter, const QRectF &rect)
 {
   QGraphicsView::drawForeground(painter, rect);
 }
 
-}
+} }

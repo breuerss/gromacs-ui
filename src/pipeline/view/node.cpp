@@ -1,19 +1,18 @@
 #include "node.h"
-#include "qcolor.h"
-#include "qgraphicsitem.h"
 #include "panel.h"
 #include "port.h"
+#include "../step.h"
 #include <QBrush>
 #include <QDebug>
 #include <cmath>
-#include <qt5/QtWidgets/qgraphicsitem.h>
 #include <ratio>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
-Node::Node(const QString& label, QGraphicsItem* parent)
+Node::Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
-  , text(new QGraphicsTextItem(label, this))
+  , text(new QGraphicsTextItem(step->getName(), this))
+  , step(step)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   QPen pen(QColor(0, 0, 0, 0));
@@ -38,8 +37,19 @@ Node::Node(const QString& label, QGraphicsItem* parent)
   addOutputPort(QColorConstants::Svg::darkblue);
   addOutputPort(QColorConstants::Svg::darkred);
 
-  addInputPort(QColorConstants::Svg::lightblue);
-  addInputPort(QColorConstants::Svg::lightcyan);
+  for (const auto& category: step->fileObjectConsumer.requires().keys())
+  {
+    addInputPort(getColorFor(category));
+  }
+}
+
+QColor Node::getColorFor(Command::FileObject::Category category)
+{
+  const static QMap<Command::FileObject::Category, QColor> colors = {
+    { Command::FileObject::Category::Coordinates, QColorConstants::Svg::green }
+  };
+
+  return colors[category];
 }
 
 void Node::addInputPort(const QColor& color)
@@ -125,4 +135,4 @@ Port* Node::getOutputPort(int at)
   return outputPorts[at];
 }
 
-}
+} }

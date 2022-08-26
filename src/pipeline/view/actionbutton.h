@@ -4,7 +4,7 @@
 #include <QPushButton>
 #include <QGraphicsDropShadowEffect>
 
-namespace Pipeline {
+namespace Pipeline { namespace View {
 
 class ActionButton : public QPushButton
 {
@@ -19,6 +19,6 @@ private:
   QGraphicsDropShadowEffect* effect = nullptr;
 };
 
-}
+} }
 
 #endif

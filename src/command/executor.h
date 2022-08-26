@@ -5,6 +5,9 @@
 #include <QProcess>
 #include <QString>
 
+#include "fileobjectconsumer.h"
+//#include "executorfileobjectprovider.h"
+
 namespace Command {
 
 class Executor : public QObject
@@ -25,6 +28,8 @@ public:
   bool hasRun() const;
   bool isRunning() const;
   bool wasSuccessful() const;
+  //const FileObjectConsumer& getFileConsumer() const;
+  //const ExecutorFileObjectProvider& getFileProvider() const;
 
 signals:
   void finished();
@@ -34,6 +39,8 @@ signals:
 
 protected:
   QProcess process;
+  //FileObjectConsumer fileConsumer;
+  //ExecutorFileObjectProvider fileProvider;
 
 private:
   bool mHasRun = false;
