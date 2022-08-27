@@ -3,6 +3,7 @@
 
 #include <QPushButton>
 #include <QGraphicsDropShadowEffect>
+#include "colors.h"
 
 namespace Pipeline { namespace View {
 
@@ -13,19 +14,23 @@ public:
     QWidget* parent = nullptr);
   ActionButton(
     unsigned size = defaultSize,
-    const QColor& color = "green",
+    const QColor& color = defaultColor,
     QWidget* parent = nullptr);
   void setColor(const QColor& hexColor);
+  void setText(const QString& text);
 
 protected:
   void enterEvent(QEvent* event);
   void leaveEvent(QEvent* event);
 
-private:
+protected:
   void updateStyle();
   static const unsigned defaultSize = 60;
+  static QColor defaultColor;
   unsigned size;
   QColor color;
+
+private:
   QGraphicsDropShadowEffect* effect = nullptr;
 };
 

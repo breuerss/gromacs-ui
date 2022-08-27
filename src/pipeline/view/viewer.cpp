@@ -34,8 +34,8 @@ void Viewer::createAddButton()
   addButton->setText("+");
   layout->addWidget(addButton);
   layout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
-  addMenu.reset(new AddMenu(addButton));
-  connect(addButton, &QPushButton::clicked, addMenu.get(), &AddMenu::toggle);
+  addMenu = new AddMenu(addButton);
+  connect(addButton, &QPushButton::clicked, addMenu, &AddMenu::toggle);
 }
 
 void Viewer::wheelEvent(QWheelEvent *event)

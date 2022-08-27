@@ -5,8 +5,10 @@
 
 namespace Pipeline { namespace View {
 
+QColor ActionButton::defaultColor = Colors::Green;
+
 ActionButton::ActionButton(QWidget* parent)
-  : ActionButton(defaultSize, "green", parent)
+  : ActionButton(defaultSize, defaultColor, parent)
 {
 }
 
@@ -33,18 +35,33 @@ void ActionButton::setColor(const QColor& newColor)
 
 void ActionButton::updateStyle()
 {
-  setStyleSheet(
-    QString("border-radius: %1;"
-            "background-color: " + color.name() + ";"
-            "color: white;"
-            "font-size: %2px;"
-            "line-height: 1;"
-            "padding: 0px;"
-            "padding-top: -10px;"
-            )
-            .arg(size / 2)
-            .arg(size / 5. * 3.)
-    );
+  QString style = QString(
+    "border-radius: %1;"
+    "background-color: " + color.name() + ";"
+    "color: white;"
+    "font-size: %2px;"
+    "line-height: 1;"
+    "padding: 0px 20px;"
+    )
+    .arg(size / 2)
+    .arg(size / 5. * 3.);
+
+  if (minimumWidth() == maximumWidth())
+  {
+    style += "padding: 0px;";
+  }
+  if (text() == "+")
+  {
+    style += "padding-top: -10px;";
+  }
+
+  setStyleSheet(style);
+}
+
+void ActionButton::setText(const QString& text)
+{
+  QPushButton::setText(text);
+  updateStyle();
 }
 
 void ActionButton::enterEvent(QEvent*)

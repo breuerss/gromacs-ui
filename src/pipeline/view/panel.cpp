@@ -4,6 +4,7 @@
 #include <QDebug>
 #include "../../model/project.h"
 #include "src/pipeline/supportedsteps.h"
+#include "colors.h"
 
 namespace Pipeline { namespace View {
 
@@ -75,7 +76,7 @@ void Panel::connectorAccepted()
 Panel::Panel(QObject* parent)
   : QGraphicsScene(parent)
 {
-  setBackgroundBrush(QBrush("#cccccc"));
+  setBackgroundBrush(QBrush(Colors::Egg));
 }
 
 void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)

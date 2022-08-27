@@ -21,7 +21,7 @@ protected slots:
 private:
   void createAddButton();
   ActionButton* addButton;
-  std::shared_ptr<AddMenu> addMenu;
+  AddMenu* addMenu;
 
 };
 

@@ -20,11 +20,16 @@ public slots:
   void toggle();
 
 private:
-  void addMoveAnimation(std::shared_ptr<ActionButton> button, const QPoint& start, const QPoint& end);
-  std::shared_ptr<ActionButton> addDataProviderButton;
-  std::shared_ptr<ActionButton> addPreprocessButton;
-  std::shared_ptr<ActionButton> addSimulationButton;
-  std::shared_ptr<ActionButton> addViewerButton;
+  void addMoveAnimation(ActionButton* button, const QPoint& start, const QPoint& end);
+
+  struct ButtonDefinition {
+    QColor color;
+    QString label;
+    QString buttonType;
+  };
+
+  typedef QPair<QString, ActionButton*> ButtonPair;
+  QList<ButtonPair> buttons;
   ActionButton* trigger;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
   void createShowAnimation();

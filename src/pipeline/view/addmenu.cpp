@@ -1,34 +1,39 @@
 #include "addmenu.h"
+#include "addnodebutton.h"
+#include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
 #include <QDebug>
 #include <QIcon>
-#include <qabstractanimation.h>
-#include <qeasingcurve.h>
-#include <qpushbutton.h>
 
 namespace Pipeline { namespace View {
 
 AddMenu::AddMenu(ActionButton* trigger)
   : QWidget(trigger->parentWidget())
-  , addDataProviderButton(std::make_shared<ActionButton>(50, "#b1c41b", this))
-  , addPreprocessButton(std::make_shared<ActionButton>(50, "orange", this))
-  , addSimulationButton(std::make_shared<ActionButton>(50, "orange", this))
-  , addViewerButton(std::make_shared<ActionButton>(50, "orange", this))
   , trigger(trigger)
   , showAnimation(std::make_shared<QParallelAnimationGroup>())
 {
-  addDataProviderButton->setText("D");
-  addPreprocessButton->setText("P");
-  addSimulationButton->setText("S");
-  addViewerButton->setText("V");
-  connect(addSimulationButton.get(), &QPushButton::clicked, [this] {
-    auto button = new ActionButton(50, "#000055", this);
-    qDebug() << addSimulationButton->pos();
+  QList<ButtonDefinition> definitions = {
+    { Colors::Pink, "D", "addDataProvider" },
+    { Colors::Orange, "P", "addPreprocess" },
+    { Colors::Blue, "S", "addSimulation" },
+    { Colors::Violet, "V", "addViewer" },
+  };
+  for (const auto& definition: definitions)
+  {
+    auto button = new ActionButton(50, definition.color, this);
+    button->setText(definition.label);
+    buttons << ButtonPair({ definition.buttonType, button });
+  }
+
+  auto button = buttons[2].second;
+  connect(button, &QPushButton::clicked, [this, button] {
+    auto addNodeButton = new AddNodeButton("Simulation", 40, Colors::Blue, this);
+    button->stackUnder(button);
     button->show();
-    QPropertyAnimation* animation = new QPropertyAnimation(button, "pos");
-    animation->setStartValue(addSimulationButton->pos());
-    animation->setEndValue(addSimulationButton->pos() + QPoint(70, 0));
+    QPropertyAnimation* animation = new QPropertyAnimation(addNodeButton, "pos");
+    animation->setStartValue(button->pos());
+    animation->setEndValue(button->pos() + QPoint(70, 0));
     animation->setEasingCurve(QEasingCurve::OutQuad);
     animation->setDuration(200);
     animation->start();
@@ -68,22 +73,19 @@ void AddMenu::hide()
 void AddMenu::createShowAnimation()
 {
   showAnimation->clear();
-  int height = 20 + trigger->width();
+  const unsigned buffer = 15;
+  const unsigned height = buffer + trigger->height();
   auto position = QPoint(
-    (trigger->width() - addDataProviderButton->width()) / 2, -height
+    (trigger->width() - buttons[0].second->width()) / 2, -height
     );
   auto start = trigger->mapToParent(QPoint(position.x(), 0));
   auto end = trigger->mapToParent(position);
-  addMoveAnimation(addDataProviderButton, start, end);
-  position.ry() -= height;
-  end = trigger->mapToParent(position);
-  addMoveAnimation(addPreprocessButton, start, end);
-  position.ry() -= height;
-  end = trigger->mapToParent(position);
-  addMoveAnimation(addSimulationButton, start, end);
-  position.ry() -= height;
-  end = trigger->mapToParent(position);
-  addMoveAnimation(addViewerButton, start, end);
+  for (auto& buttonPair: buttons)
+  {
+    addMoveAnimation(buttonPair.second, start, end);
+    position.ry() -= buttonPair.second->height() + buffer;
+    end = trigger->mapToParent(position);
+  }
 }
 
 void AddMenu::toggle()
@@ -99,9 +101,9 @@ void AddMenu::toggle()
 }
 
 void AddMenu::addMoveAnimation(
-  std::shared_ptr<ActionButton> button, const QPoint& start, const QPoint& end)
+  ActionButton* button, const QPoint& start, const QPoint& end)
 {
-  auto animation = new QPropertyAnimation(button.get(), "pos");
+  auto animation = new QPropertyAnimation(button, "pos");
   animation->setDuration(200);
   animation->setStartValue(start);
   animation->setEndValue(end);
