@@ -2,7 +2,9 @@
 #define PIPELINE_VIEW_H
 
 #include <QGraphicsView>
+#include <memory>
 #include "actionbutton.h"
+#include "addmenu.h"
 
 namespace Pipeline { namespace View {
 
@@ -17,7 +19,10 @@ protected slots:
   void drawForeground(QPainter *painter, const QRectF &rect);
 
 private:
+  void createAddButton();
   ActionButton* addButton;
+  std::shared_ptr<AddMenu> addMenu;
+
 };
 
 } }

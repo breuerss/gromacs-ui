@@ -3,6 +3,7 @@
 #include "panel.h"
 #include "node.h"
 #include "../../model/project.h"
+#include "src/pipeline/view/addmenu.h"
 #include <QWheelEvent>
 #include <QMargins>
 #include <QDebug>
@@ -20,6 +21,11 @@ Viewer::Viewer(QWidget* parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+  createAddButton();
+}
+
+void Viewer::createAddButton()
+{
   auto layout = new QGridLayout(this);
   layout->setContentsMargins(20, 20, 20, 20);
   layout->setRowStretch(0, 1);
@@ -28,13 +34,8 @@ Viewer::Viewer(QWidget* parent)
   addButton->setText("+");
   layout->addWidget(addButton);
   layout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
-  connect(addButton, &QPushButton::clicked, [this] () {
-    auto project = dynamic_cast<Pipeline::View::Panel*>(scene())->getProject();
-    if (project)
-    {
-      project->addStep();
-    }
-  });
+  addMenu.reset(new AddMenu(addButton));
+  connect(addButton, &QPushButton::clicked, addMenu.get(), &AddMenu::toggle);
 }
 
 void Viewer::wheelEvent(QWheelEvent *event)

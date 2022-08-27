@@ -6,14 +6,36 @@
 namespace Pipeline { namespace View {
 
 ActionButton::ActionButton(QWidget* parent)
-  : QPushButton(parent)
+  : ActionButton(defaultSize, "green", parent)
 {
-  int size = 60;
+}
+
+ActionButton::ActionButton(unsigned size, const QColor& color, QWidget* parent)
+  : QPushButton(parent)
+  , size(size)
+  , color(color)
+{
   setFixedWidth(size);
   setFixedHeight(size);
+  effect = new QGraphicsDropShadowEffect();
+  effect->setBlurRadius(10);
+  effect->setOffset(0, 0);
+  setGraphicsEffect(effect);
+
+  updateStyle();
+}
+
+void ActionButton::setColor(const QColor& newColor)
+{
+  color = newColor;
+  updateStyle();
+}
+
+void ActionButton::updateStyle()
+{
   setStyleSheet(
     QString("border-radius: %1;"
-            "background-color: green;"
+            "background-color: " + color.name() + ";"
             "color: white;"
             "font-size: %2px;"
             "line-height: 1;"
@@ -23,10 +45,6 @@ ActionButton::ActionButton(QWidget* parent)
             .arg(size / 2)
             .arg(size / 5. * 3.)
     );
-  effect = new QGraphicsDropShadowEffect();
-  effect->setBlurRadius(10);
-  effect->setOffset(0, 0);
-  setGraphicsEffect(effect);
 }
 
 void ActionButton::enterEvent(QEvent*)
