@@ -1,10 +1,13 @@
 #include "addmenu.h"
 #include "addnodebutton.h"
+#include "addnodemenu.h"
 #include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
 #include <QDebug>
 #include <QIcon>
+#include "../../projectmanager.h"
+#include "../../model/project.h"
 
 namespace Pipeline { namespace View {
 
@@ -19,25 +22,58 @@ AddMenu::AddMenu(ActionButton* trigger)
     { Colors::Blue, "S", "addSimulation" },
     { Colors::Violet, "V", "addViewer" },
   };
+
+  QMap<QString, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
+  nodeMenuDefinitions["addDataProvider"] = {
+    {
+      "PDB Downloader",
+      "pdbDownloader",
+      [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addStep();
+      }
+    },
+    { "Load From File", "fileloader", []() {} },
+    { "Load From File", "fileloader", []() {} },
+    { "Load From File", "fileloader", []() {} },
+  };
+  nodeMenuDefinitions["addViewer"] = {
+    { "Trajectory Viewer", "trajectoryViewer", []() {} },
+    { "Coordinate Viewer", "coordinateViewer", []() {} },
+  };
+  nodeMenuDefinitions["addSimulation"] = {
+    { "Minimisation", "nptSimulation", []() {} },
+    { "NVT Simulation", "nvtSimulation", []() {} },
+    { "NPT Simulation", "nptSimulation", []() {} },
+  };
   for (const auto& definition: definitions)
   {
     auto button = new ActionButton(50, definition.color, this);
     button->setText(definition.label);
     buttons << ButtonPair({ definition.buttonType, button });
+    menus[definition.buttonType] = new AddNodeMenu(
+      nodeMenuDefinitions[definition.buttonType], definition.color, button, this);
+    connect(
+      button, &QPushButton::clicked,
+      [
+        this,
+        buttonType = definition.buttonType
+      ] () {
+        for (const auto& currentButtonType: menus.keys())
+        {
+          auto menu = menus[currentButtonType];
+          if (currentButtonType == buttonType)
+          {
+            menu->toggle();
+          }
+          else
+          {
+            menu->hide();
+          }
+        }
+
+    });
   }
 
-  auto button = buttons[2].second;
-  connect(button, &QPushButton::clicked, [this, button] {
-    auto addNodeButton = new AddNodeButton("Simulation", 40, Colors::Blue, this);
-    button->stackUnder(button);
-    button->show();
-    QPropertyAnimation* animation = new QPropertyAnimation(addNodeButton, "pos");
-    animation->setStartValue(button->pos());
-    animation->setEndValue(button->pos() + QPoint(70, 0));
-    animation->setEasingCurve(QEasingCurve::OutQuad);
-    animation->setDuration(200);
-    animation->start();
-  });
   //addViewerButton->setIcon(QIcon::fromTheme("screen"));
   setStyleSheet("background-color: red");
   stackUnder(trigger);
@@ -61,6 +97,10 @@ void AddMenu::show()
 
 void AddMenu::hide()
 {
+  for (auto menu : menus)
+  {
+    menu->hide();
+  }
   showAnimation->setDirection(QAbstractAnimation::Backward);
   connect(
     showAnimation.get(), &QAbstractAnimation::finished,

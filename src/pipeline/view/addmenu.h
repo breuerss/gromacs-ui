@@ -2,7 +2,9 @@
 #define PIPELINE_VIEW_MENU_H
 
 #include "actionbutton.h"
+#include "src/pipeline/view/addnodemenu.h"
 #include <QWidget>
+#include <QMap>
 #include <QParallelAnimationGroup>
 #include <memory>
 
@@ -32,6 +34,7 @@ private:
   QList<ButtonPair> buttons;
   ActionButton* trigger;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
+  QMap<QString, AddNodeMenu*> menus;
   void createShowAnimation();
 
 };
