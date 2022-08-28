@@ -10,19 +10,9 @@
 namespace Model {
 
 Project::Project()
-  : systemSetup(new SystemSetup())
+  : QObject(nullptr)
+  , systemSetup(new SystemSetup())
 {
-}
-
-Pipeline::StepType Project::addStep()
-{
-  std::shared_ptr<Project> project;
-  project.reset(this);
-
-  auto pipelineStep = std::make_shared<Command::RunSimulation>(project);
-  pipelineSteps.push_back(pipelineStep);
-  emit stepAdded(pipelineStep, pipelineSteps.size() - 1);
-  return pipelineStep;
 }
 
 /**
@@ -97,10 +87,10 @@ QDataStream &operator>>(QDataStream &in, Project &project)
     project.removeStep(project.getSteps().size() - 1);
   }
 
-  for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
-  {
-    project.addStep();
-  }
+  //for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
+  //{
+  //  project.addStep();
+  //}
 
   //for (auto step: project.getSteps())
   //{

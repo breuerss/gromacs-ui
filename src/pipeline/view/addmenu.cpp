@@ -29,11 +29,8 @@ AddMenu::AddMenu(ActionButton* trigger)
       "PDB Downloader",
       "pdbDownloader",
       [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep();
       }
     },
-    { "Load From File", "fileloader", []() {} },
-    { "Load From File", "fileloader", []() {} },
     { "Load From File", "fileloader", []() {} },
   };
   nodeMenuDefinitions["addViewer"] = {
@@ -41,7 +38,10 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "Coordinate Viewer", "coordinateViewer", []() {} },
   };
   nodeMenuDefinitions["addSimulation"] = {
-    { "Minimisation", "nptSimulation", []() {} },
+    { "Minimisation", "nptSimulation",
+      [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addStep<Command::RunSimulation>();
+      } },
     { "NVT Simulation", "nvtSimulation", []() {} },
     { "NPT Simulation", "nptSimulation", []() {} },
   };
@@ -65,7 +65,7 @@ AddMenu::AddMenu(ActionButton* trigger)
           {
             menu->toggle();
           }
-          else
+          else 
           {
             menu->hide();
           }

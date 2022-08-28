@@ -6,9 +6,13 @@
 #include "../config/supportedconfigs.h"
 #include <QString>
 
+// helper type for the visitor #4
+template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
+template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+
 namespace Pipeline {
 
-class Step {
+class Step : public std::enable_shared_from_this<Step> {
 public:
   Step(
     const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
@@ -21,6 +25,9 @@ public:
   Command::FileObjectConsumer& getFileObjectConsumer() { return fileObjectConsumer; }
   const Command::FileObjectProvider& getFileObjectProvider() { return fileObjectProvider; }
   const Config::Type& getConfiguration() { return configuration; }
+
+  void showConfigUI(bool show = true);
+  void showStatusUI(bool show = true);
 
 protected:
   Command::FileObjectConsumer fileObjectConsumer;

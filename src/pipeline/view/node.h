@@ -1,7 +1,6 @@
 #ifndef PIPELINE_NODE_H
 #define PIPELINE_NODE_H
 
-#include <QGraphicsItemGroup>
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QList>
@@ -10,6 +9,7 @@
 #include "roundedrectitem.h"
 #include "port.h"
 #include "../../command/fileobject.h"
+#include "clickableicon.h"
 
 namespace Pipeline {
 
@@ -30,6 +30,10 @@ public:
 
   std::shared_ptr<Pipeline::Step> getStep() const { return step ; }
 
+protected:
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+
 private:
   Port* createPort(
     const QColor& color,
@@ -44,10 +48,14 @@ private:
 
   void arrangePortsHeights(QList<Port*> ports);
   QGraphicsTextItem* text;
+  ClickableIcon* settingsIcon;
+  ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
   QList<Port*> inputPorts;
   QList<Port*> outputPorts;
+
   std::shared_ptr<Pipeline::Step> step;
+  bool selected = false;
 };
 
 } }

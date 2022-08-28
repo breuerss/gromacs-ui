@@ -13,7 +13,8 @@ class ProjectManager : public QObject
   Q_OBJECT
 public:
   static ProjectManager* getInstance();
-  const std::shared_ptr<Model::Project> getCurrentProject() const;
+  std::shared_ptr<Model::Project> getCurrentProject() const;
+  ~ProjectManager();
   void createNewProject();
   const QString& getFileName() const;
 

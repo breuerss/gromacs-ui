@@ -1,8 +1,4 @@
 #include "simulationsetupform.h"
-#include "qframe.h"
-#include "qnamespace.h"
-#include "qpushbutton.h"
-#include "qsizepolicy.h"
 #include "src/command/runsimulation.h"
 #include "src/form/progresschart.h"
 #include "ui_simulationsetupform.h"
@@ -18,6 +14,15 @@
 #include "../appprovider.h"
 
 SimulationSetupForm::SimulationSetupForm(
+  std::shared_ptr<Config::Simulation> newSimulation
+  ) 
+  : simulation(newSimulation)
+  , ui(new Ui::SimulationSetupForm)
+{
+  ui->setupUi(this);
+}
+
+SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Model::Project> newProject,
   std::shared_ptr<Config::Simulation> newSimulation,
   std::shared_ptr<Command::RunSimulation> newCommand,
@@ -30,7 +35,6 @@ SimulationSetupForm::SimulationSetupForm(
   , ui(new Ui::SimulationSetupForm)
 {
   ui->setupUi(this);
-  setupProgressValueChart();
 
   using Config::Simulation;
 
@@ -172,44 +176,6 @@ SimulationSetupForm::SimulationSetupForm(
     addTemperatureCouplingGroup(group);
   }
 
-  conns << connect(ui->showLog, &QPushButton::clicked, [this] () {
-    SimulationStatusChecker checker(project, simulation);
-    auto viewer = new FileContentViewer(checker.getLogPath());
-    viewer->show();
-  });
-
-  conns << connect(ui->showMdp, &QPushButton::clicked, [this] () {
-    SimulationStatusChecker checker(project, simulation);
-    auto viewer = new FileContentViewer(checker.getMdpPath());
-    viewer->show();
-  });
-
-  conns << connect(ui->showSmoothTrajectory, &QToolButton::clicked, [this] () {
-    SimulationStatusChecker checker(project, simulation);
-    if (checker.hasTrajectory())
-    {
-      QProcess createInput;
-      QString command = AppProvider::get("gmx");
-      command += " filter";
-      command += " -s " + checker.getTprPath();
-      command += " -f " + checker.getTrajectoryPath();
-      command += " -ol " + checker.getSmoothTrajectoryPath();
-      command += " -all -nojump -nf 5";
-      createInput.start(command);
-      createInput.waitForFinished();
-      emit displaySimulationData(checker.getInputCoordinatesPath(),
-                                 checker.getSmoothTrajectoryPath());
-    }
-  });
-  conns << connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
-    SimulationStatusChecker checker(project, simulation);
-    if (checker.hasData())
-    {
-      emit displaySimulationData(checker.getInputCoordinatesPath(),
-                                 checker.hasTrajectory() ? checker.getTrajectoryPath() : "");
-    }
-  });
-
   auto updateTimeStep = [this] (Simulation::Algorithm algorithm) {
     bool timeStepSupported = algorithm == Simulation::Algorithm::LeapFrog ||
       algorithm == Simulation::Algorithm::StochasticDynamics;
@@ -249,88 +215,6 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connect(simulation.get(), &Simulation::timeStepChanged, updateDuration);
   updateDuration();
 
-  conns << connect(
-    ui->rerunSimulation,
-    &QPushButton::clicked,
-    [this] () {
-      if (command->isRunning())
-      {
-        command->stop();
-      }
-      else
-      {
-        command->exec();
-      }
-    });
-
-  conns << connect(
-    command.get(),
-    &Command::RunSimulation::progress,
-    [this] (float progress, Command::Executor::ProgressType type) {
-      if (type == Command::Executor::ProgressType::Value)
-      {
-
-        if (progress == 0)
-        {
-          return;
-        }
-        progressChart->appendValue(progress);
-      }
-      else
-      {
-        ui->simulationProgress->setValue(progress);
-        if (firstProgressValue == -1)
-        {
-          firstProgressValue = progress;
-        }
-
-        QString assumedEndText("∞");
-        // if simulation is resumed the percentage refers to the remaining time
-        float actualProgress = (progress - firstProgressValue) / (100.0 - firstProgressValue) * 100.0;
-        if (actualProgress > 0)
-        {
-          const qint64 currentTimeStamp = QDateTime::currentSecsSinceEpoch();
-          const qint64 timePassed = currentTimeStamp - timeStampStarted;
-          const qint64 assumedEndTimeStamp = timeStampStarted + (timePassed / actualProgress * 100);
-          assumedEndText = QDateTime::fromSecsSinceEpoch(assumedEndTimeStamp).toString();
-        }
-        ui->assumedFinished->setText(assumedEndText);
-
-      }
-    });
-
-  conns << connectToCheckbox(ui->resume, simulation, "resume");
-
-  conns << connect(command.get(), &Command::RunSimulation::started,
-                   [this] () {
-                     progressChart->clear();
-
-                     timeStampStarted = QDateTime::currentSecsSinceEpoch();
-                     firstProgressValue = -1;
-                     ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
-                     ui->rerunSimulation->setText(tr("Stop Simulation"));
-                     ui->simulationProgress->setEnabled(true);
-                   });
-  conns << connect(command.get(), &Command::RunSimulation::finished,
-                   [this] () {
-                     ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
-                     ui->rerunSimulation->setText(tr("Run simulation"));
-                     ui->simulationProgress->setEnabled(false);
-                     showEvent(nullptr);
-                   });
-
-  SimulationStatusChecker checker(project, simulation);
-  if (checker.hasLog())
-  {
-    if (simulation->isMinimisation())
-    {
-      progressChart->setValues(checker.getProgressValues());
-    }
-    else
-    {
-      ui->simulationProgress->setValue(checker.getProgress());
-    }
-  }
 }
 
 SimulationSetupForm::~SimulationSetupForm()
@@ -347,7 +231,6 @@ void SimulationSetupForm::updateUiForSimulationType(Config::Simulation::Type typ
   setAlgorithmsForType(type);
   setPressureAlgorithmsForType(type);
   setTemperatureAlgorithmsForType(type);
-  setProgressViewForType(type);
   enableAllSettings();
   using Config::Simulation;
   switch(type)
@@ -455,14 +338,6 @@ void SimulationSetupForm::setPressureAlgorithmsForType(Config::Simulation::Type 
   setOptions<Simulation::PressureAlgorithm>(ui->pressureAlgorithm, map, defaultValue);
 }
 
-void SimulationSetupForm::setProgressViewForType(Config::Simulation::Type type)
-{
-  const bool showChart = type == Config::Simulation::Type::Minimisation;
-  progressChart->setVisible(showChart);
-  ui->simulationProgress->setVisible(!showChart);
-  ui->assumedFinished->setVisible(!showChart);
-}
-
 void SimulationSetupForm::setTemperatureAlgorithmsForType(Config::Simulation::Type type)
 {
   using Config::Simulation;
@@ -516,24 +391,4 @@ void SimulationSetupForm::removeTemperatureCouplingGroup(
   }
 }
 
-void SimulationSetupForm::showEvent(QShowEvent*)
-{
-  SimulationStatusChecker checker(project, simulation);
-  ui->showTrajectoryButton->setEnabled(checker.hasData());
-  ui->showSmoothTrajectory->setEnabled(checker.hasTrajectory());
-  ui->showLog->setEnabled(checker.hasLog());
-  ui->showMdp->setEnabled(checker.hasMdp());
-}
 
-void SimulationSetupForm::setupProgressValueChart()
-{
-  using namespace QtCharts;
-
-  progressChart = new Gui::ProgressChart;
-
-  progressChart->setVisible(false);
-  progressChart->setMinimumWidth(180);
-  progressChart->setMaximumWidth(180);
-  progressChart->setMaximumHeight(40);
-  ui->runLayout->addWidget(progressChart);
-}

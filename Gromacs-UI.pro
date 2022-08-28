@@ -11,18 +11,7 @@ CONFIG += object_parallel_to_source
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    src/appprovider.cpp \
-    src/filecontentviewer.cpp \
-    src/gromacsconfigfilegenerator.cpp \
-    src/logforwarder.cpp \
-    src/main.cpp \
-    src/mainwindow.cpp \
-    src/pdbdownloader.cpp \
-    src/pdbinfoextractor.cpp \
-    src/projectmanager.cpp \
-    src/simulationstatuschecker.cpp \
-    src/settings.cpp \
-    src/statusmessagesetter.cpp \
+    $$files(src/*.cpp) \
     src/form/connectionhelper.cpp \
     src/form/preferencesdialog.cpp \
     src/form/progresschart.cpp \
@@ -32,20 +21,11 @@ SOURCES += \
     $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
     $$files(src/config/*.cpp) \
-    $$files(src/pipeline/*.cpp, true)
+    $$files(src/pipeline/*.cpp, true) \
+    ui/simulationstatus.cpp
 
 HEADERS += \
-    src/appprovider.h \
-    src/filecontentviewer.h \
-    src/gromacsconfigfilegenerator.h \
-    src/logforwarder.h \
-    src/mainwindow.h \
-    src/pdbdownloader.h \
-    src/pdbinfoextractor.h \
-    src/projectmanager.h \
-    src/settings.h \
-    src/simulationstatuschecker.h \
-    src/statusmessagesetter.h \
+    $$files(src/*.h) \
     src/form/connectionhelper.h \
     src/form/preferencesdialog.h \
     src/form/progresschart.h \
@@ -56,10 +36,12 @@ HEADERS += \
     $$files(src/model/*.h) \
     $$files(src/command/*.h) \
     $$files(src/config/*.h) \
-    $$files(src/pipeline/*.h, true)
+    $$files(src/pipeline/*.h, true) \
+    ui/simulationstatus.h
 
 
 FORMS += \
+    ui/simulationstatus.ui \
     ui/temperaturegroupconfigform.ui \
     ui/simulationsetupform.ui \
     ui/systemsetupform.ui \

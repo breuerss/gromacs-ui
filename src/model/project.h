@@ -61,7 +61,18 @@ public:
    *
    **/
 
-  Pipeline::StepType addStep();
+  template<typename T>
+  Pipeline::StepType addStep()
+  {
+    std::shared_ptr<Project> project;
+    project.reset(this);
+
+    auto pipelineStep = std::make_shared<T>(project);
+    pipelineSteps.push_back(pipelineStep);
+    emit stepAdded(pipelineStep, pipelineSteps.size() - 1);
+    return pipelineStep;
+  }
+
   void clearSteps();
   void removeStep(int index);
   const std::vector<Pipeline::StepType>& getSteps() const;

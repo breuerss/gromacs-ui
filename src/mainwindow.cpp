@@ -10,6 +10,7 @@
 #include "statusmessagesetter.h"
 #include "simulationstatuschecker.h"
 #include "logforwarder.h"
+#include "uiupdater.h"
 
 #include "command/queue.h"
 #include "command/runsimulation.h"
@@ -26,8 +27,10 @@
 #include <QCoreApplication>
 #include <climits>
 #include <memory>
+#include <QMenu>
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
+
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -37,7 +40,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
+  restoreState(settings.value(Settings::APP_STATE).toByteArray());
   ui->splitter->setSizes({INT_MAX, INT_MAX});
+  auto menu = ui->menuView;
+  menu->addAction(ui->configurationDock->toggleViewAction());
+  menu->addAction(ui->logDock->toggleViewAction());
+  menu->addAction(ui->statusDock->toggleViewAction());
 
   auto view = new Pipeline::View::Viewer(this);
   ui->pipelineTab->layout()->addWidget(view);
@@ -49,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionNewProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::createNewProject);
   connect(ui->actionAddStep, &QAction::triggered, [] () {
-    ProjectManager::getInstance()->getCurrentProject()->addStep();
+    ProjectManager::getInstance()->getCurrentProject()->addStep<Command::RunSimulation>();
   });
   connect(ui->actionSave, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::save);
@@ -61,15 +69,49 @@ MainWindow::MainWindow(QWidget *parent)
           queue.get(), &Command::Queue::start);
 
   // add button to add step to tab widget
-  QToolButton* addStepButton = new QToolButton(this);
-  addStepButton->setCursor(Qt::ArrowCursor);
-  addStepButton->setAutoRaise(true);
-  addStepButton->setIcon(QIcon::fromTheme("add"));
-  connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
-  ui->stepconfigurator->setCornerWidget(addStepButton);
+  //QToolButton* addStepButton = new QToolButton(this);
+  //addStepButton->setCursor(Qt::ArrowCursor);
+  //addStepButton->setAutoRaise(true);
+  //addStepButton->setIcon(QIcon::fromTheme("add"));
+  //connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
+  //ui->stepconfigurator->setCornerWidget(addStepButton);
 
   connect(LogForwarder::getInstance(), &LogForwarder::addMessage,
           ui->logOutput, &QPlainTextEdit::appendPlainText);
+
+  auto addWidgetToWidget = [] (QWidget* child, QWidget* parent)
+  {
+    auto layout = parent->layout();
+    if (!layout)
+    {
+      layout = new QVBoxLayout();
+      parent->setLayout(layout);
+    }
+    if (child == nullptr)
+    {
+      QLayoutItem *oldChild;
+      while ((oldChild = layout->takeAt(0)) != nullptr) {
+        delete oldChild->widget();
+        delete oldChild;
+      }
+    }
+    else
+    {
+      layout->addWidget(child);
+    }
+  };
+  connect(
+    UiUpdater::getInstance(), &UiUpdater::showConfigUI,
+    [this, addWidgetToWidget] (QWidget* widget)
+    {
+      addWidgetToWidget(widget, ui->configBox);
+    });
+  connect(
+    UiUpdater::getInstance(), &UiUpdater::showStatusUI,
+    [this, addWidgetToWidget] (QWidget* widget)
+    {
+      addWidgetToWidget(widget, ui->statusBox);
+    });
 
   //connect(queue.get(), &Command::Queue::stepFinished,
   //        [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
@@ -98,10 +140,10 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
           this, &MainWindow::setupUIForProject);
 
-  connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
-          [] (int index) {
-            ProjectManager::getInstance()->getCurrentProject()->removeStep(index - 1);
-          });
+  //connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
+  //        [] (int index) {
+  //          ProjectManager::getInstance()->getCurrentProject()->removeStep(index - 1);
+  //        });
 
   connect(
     ui->actionCreateDefaultSimulationSetup,
@@ -151,6 +193,7 @@ void MainWindow::openPreferencesDialog()
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
+  settings.setValue(Settings::APP_STATE, saveState());
   settings.setValue(Settings::APP_GEOMETRY, geometry());
   QMainWindow::closeEvent(event);
 }
@@ -159,14 +202,15 @@ void MainWindow::setupUIForProject()
 {
   auto project = ProjectManager::getInstance()->getCurrentProject();
 
+  return;
   if (project)
   {
-    ui->stepconfigurator->setEnabled(true);
+    //ui->stepconfigurator->setEnabled(true);
 
-    while (ui->stepconfigurator->count())
-    {
-      removeTabAt(0);
-    }
+    //while (ui->stepconfigurator->count())
+    //{
+    //  removeTabAt(0);
+    //}
     for (auto conn : conns)
     {
       disconnect(conn);
@@ -226,10 +270,10 @@ void MainWindow::setupUIForProject()
       this->setWindowTitle(title);
     });
 
-    ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
-    auto tabBar = ui->stepconfigurator->tabBar();
-    tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
-    tabBar->setTabButton(0, QTabBar::RightSide, 0);
+    //ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
+    //auto tabBar = ui->stepconfigurator->tabBar();
+    //tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
+    //tabBar->setTabButton(0, QTabBar::RightSide, 0);
     //for (auto step: project->getSteps())
     //{
     //  addTabForStep(step);
@@ -239,10 +283,10 @@ void MainWindow::setupUIForProject()
 
 void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, int at)
 {
-  if (at == -1)
-  {
-    at = ui->stepconfigurator->count() - 1;
-  }
+  //if (at == -1)
+  //{
+  //  at = ui->stepconfigurator->count() - 1;
+  //}
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
   auto command = std::make_shared<Command::RunSimulation>(project);
@@ -255,24 +299,24 @@ void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, i
   // take system setup into account for tabs
   at += 1;
 
-  connect(
-    simulation.get(),
-    &Config::Simulation::simulationTypeChanged,
-    [this, simulation, at] (Config::Simulation::Type) {
-      ui->stepconfigurator->setTabText(at, simulation->getName());
-    });
+  //connect(
+  //  simulation.get(),
+  //  &Config::Simulation::simulationTypeChanged,
+  //  [this, simulation, at] (Config::Simulation::Type) {
+  //    ui->stepconfigurator->setTabText(at, simulation->getName());
+  //  });
 
   SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
   connect(simulationForm, &SimulationSetupForm::displaySimulationData,
           this, &MainWindow::setMoleculeFile);
-  ui->stepconfigurator->insertTab(at, simulationForm, simulation->getName());
+  //ui->stepconfigurator->insertTab(at, simulationForm, simulation->getName());
 }
 
-void MainWindow::removeTabAt(int at)
+void MainWindow::removeTabAt(int)
 {
-  QWidget* widget = ui->stepconfigurator->widget(at);
-  ui->stepconfigurator->removeTab(at);
-  widget->deleteLater();
+  //QWidget* widget = ui->stepconfigurator->widget(at);
+  //ui->stepconfigurator->removeTab(at);
+  //widget->deleteLater();
 }
 
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)

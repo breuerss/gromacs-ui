@@ -3,27 +3,36 @@
 #include "port.h"
 #include "../step.h"
 #include "src/command/fileobject.h"
+#include "src/pipeline/view/clickableicon.h"
 #include <QBrush>
 #include <QDebug>
 #include <cmath>
-#include <ratio>
+#include <QIcon>
 
 namespace Pipeline { namespace View {
 
-Node::Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent)
+Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
-  , text(new QGraphicsTextItem(step->getName(), this))
-  , step(step)
+  , text(new QGraphicsTextItem(newStep->getName(), this))
+//  , settingsIcon(new ClickableIcon(
+//      QIcon::fromTheme("emblem-system"), this
+      //QIcon::fromTheme("system-run").pixmap(40, 40), this
+//      ))
+  , step(newStep)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   QPen pen(QColor(0, 0, 0, 0));
   setPen(pen);
 
-  //setHandlesChildEvents(false);
+  setFlags(QGraphicsItem::ItemIsMovable);
 
   const double indent = 30;
+  const double spacing = 10;
   const double height = 60;
-  const double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
+  double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
+  //width += settingsIcon->boundingRect().width();
+  //width += spacing;
+
   nodeBackground = new RoundedRectItem(0, 0, width, height, this);
   setRect(nodeBackground->rect());
   nodeBackground->setBrush(QBrush(Qt::darkGray));
@@ -32,7 +41,15 @@ Node::Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent)
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
   text->setZValue(10);
 
-  setFlags(QGraphicsItem::ItemIsMovable);
+  //settingsIcon->setZValue(11);
+  //auto textDim = text->boundingRect();
+  //settingsIcon->setPos(
+  //  text->x() + textDim.width() + spacing,
+  //  rect().center().y() - settingsIcon->boundingRect().height() / 2);
+  //QObject::connect(settingsIcon, &ClickableIcon::clicked, [this] () {
+  //  qDebug() << __PRETTY_FUNCTION__;
+  //  step->showConfigUI();
+  //});
 
   for (const auto& fileObject: step->getFileObjectProvider().provides())
   {
@@ -156,6 +173,28 @@ Port* Node::getInputPort(int at)
 Port* Node::getOutputPort(int at)
 {
   return outputPorts[at];
+}
+
+void Node::mousePressEvent(QGraphicsSceneMouseEvent*)
+{
+  // necessary to detect release event
+}
+
+void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
+{
+  selected = !selected;
+  const auto currentColor = nodeBackground->brush().color();
+  const unsigned factor = 150;
+  auto newColor = currentColor.lighter(factor);
+  if (selected)
+  {
+    newColor = currentColor.darker(factor);
+  }
+
+  nodeBackground->setBrush(newColor);
+  // TODO deselect all
+  step->showConfigUI(selected);
+  step->showStatusUI(selected);
 }
 
 } }

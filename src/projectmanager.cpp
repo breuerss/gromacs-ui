@@ -20,7 +20,12 @@ ProjectManager* ProjectManager::getInstance()
   return instance.get();
 }
 
-const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
+ProjectManager::~ProjectManager()
+{
+  qDebug() << currentProject.use_count();
+}
+
+std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 {
   return currentProject;
 }

@@ -8,7 +8,6 @@
 #include <QList>
 #include "../config/simulation.h"
 #include "qglobal.h"
-#include "progresschart.h"
 
 namespace Model {
 class Project;
@@ -32,7 +31,7 @@ public:
     QWidget *parent = nullptr);
   ~SimulationSetupForm();
 
-  void showEvent(QShowEvent* event);
+  SimulationSetupForm(std::shared_ptr<Config::Simulation> config);
 
 signals:
   void displaySimulationData(const QString& coords, const QString& trajectory);
@@ -45,7 +44,6 @@ private:
 
   void updateUiForSimulationType(Config::Simulation::Type type = Config::Simulation::Type::None);
   void setAlgorithmsForType(Config::Simulation::Type type);
-  void setProgressViewForType(Config::Simulation::Type type);
   void setPressureAlgorithmsForType(Config::Simulation::Type type);
   void setTemperatureAlgorithmsForType(Config::Simulation::Type type);
   void hideSettings();
@@ -54,12 +52,6 @@ private:
   void addTemperatureCouplingGroup(std::shared_ptr<Config::TemperatureCouplingGroup> couplingGroup, int at = -1);
   void removeTemperatureCouplingGroup(std::shared_ptr<Config::TemperatureCouplingGroup> couplingGroup, int at);
   QList<QMetaObject::Connection> conns;
-
-  qint64 timeStampStarted;
-  float firstProgressValue = -1;
-
-  void setupProgressValueChart();
-  Gui::ProgressChart* progressChart;
 };
 
 #endif // SIMULATIONSETUPFORM_H

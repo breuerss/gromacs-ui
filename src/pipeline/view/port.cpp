@@ -54,7 +54,10 @@ QPointF Port::getCenterInScene() const
 
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
-  setCursor(Qt::PointingHandCursor);
+  if (fileObject)
+  {
+    setCursor(Qt::PointingHandCursor);
+  }
 }
 
 void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
