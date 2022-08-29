@@ -2,7 +2,8 @@
 #define PIPELINE_VIEW_MENU_H
 
 #include "actionbutton.h"
-#include "src/pipeline/view/addnodemenu.h"
+#include "addnodemenu.h"
+#include "../step.h"
 #include <QWidget>
 #include <QMap>
 #include <QParallelAnimationGroup>
@@ -25,16 +26,14 @@ private:
   void addMoveAnimation(ActionButton* button, const QPoint& start, const QPoint& end);
 
   struct ButtonDefinition {
-    QColor color;
     QString label;
-    QString buttonType;
+    Step::Category category;
   };
 
-  typedef QPair<QString, ActionButton*> ButtonPair;
-  QList<ButtonPair> buttons;
+  QList<ActionButton*> buttons;
   ActionButton* trigger;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
-  QMap<QString, AddNodeMenu*> menus;
+  QMap<Step::Category, AddNodeMenu*> menus;
   void createShowAnimation();
 
 };

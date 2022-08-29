@@ -13,9 +13,11 @@ namespace Pipeline {
 Step::Step(
   const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
   const QList<Command::FileObject::Type> providesList,
-  Config::Type configuration
+  Config::Type configuration,
+  Category newCategory
   )
-  : fileObjectConsumer(requiresMap)
+  : category(newCategory)
+  , fileObjectConsumer(requiresMap)
   , fileObjectProvider(providesList)
   , configuration(configuration)
 {

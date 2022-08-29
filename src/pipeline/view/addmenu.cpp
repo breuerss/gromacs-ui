@@ -16,15 +16,16 @@ AddMenu::AddMenu(ActionButton* trigger)
   , trigger(trigger)
   , showAnimation(std::make_shared<QParallelAnimationGroup>())
 {
+  using Category = Step::Category;
   QList<ButtonDefinition> definitions = {
-    { Colors::Pink, "D", "addDataProvider" },
-    { Colors::Orange, "P", "addPreprocess" },
-    { Colors::Blue, "S", "addSimulation" },
-    { Colors::Violet, "V", "addViewer" },
+    { "D", Category::DataProvider },
+    { "P", Category::Preprocess },
+    { "S", Category::Simulation },
+    { "V", Category::Viewer },
   };
 
-  QMap<QString, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
-  nodeMenuDefinitions["addDataProvider"] = {
+  QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
+  nodeMenuDefinitions[Category::DataProvider] = {
     {
       "PDB Downloader",
       "pdbDownloader",
@@ -33,11 +34,11 @@ AddMenu::AddMenu(ActionButton* trigger)
     },
     { "Load From File", "fileloader", []() {} },
   };
-  nodeMenuDefinitions["addViewer"] = {
+  nodeMenuDefinitions[Category::Viewer] = {
     { "Trajectory Viewer", "trajectoryViewer", []() {} },
     { "Coordinate Viewer", "coordinateViewer", []() {} },
   };
-  nodeMenuDefinitions["addSimulation"] = {
+  nodeMenuDefinitions[Category::Simulation] = {
     { "Minimisation", "nptSimulation",
       [] () {
         ProjectManager::getInstance()->getCurrentProject()->addStep<Command::RunSimulation>();
@@ -47,21 +48,22 @@ AddMenu::AddMenu(ActionButton* trigger)
   };
   for (const auto& definition: definitions)
   {
-    auto button = new ActionButton(50, definition.color, this);
+    const auto color = Colors::getColorFor(definition.category);
+    auto button = new ActionButton(50, color, this);
     button->setText(definition.label);
-    buttons << ButtonPair({ definition.buttonType, button });
-    menus[definition.buttonType] = new AddNodeMenu(
-      nodeMenuDefinitions[definition.buttonType], definition.color, button, this);
+    buttons << button;
+    menus[definition.category] = new AddNodeMenu(
+      nodeMenuDefinitions[definition.category], color, button, this);
     connect(
       button, &QPushButton::clicked,
       [
         this,
-        buttonType = definition.buttonType
+        category = definition.category
       ] () {
-        for (const auto& currentButtonType: menus.keys())
+        for (const auto& currentCategory: menus.keys())
         {
-          auto menu = menus[currentButtonType];
-          if (currentButtonType == buttonType)
+          auto menu = menus[currentCategory];
+          if (currentCategory == category)
           {
             menu->toggle();
           }
@@ -116,14 +118,14 @@ void AddMenu::createShowAnimation()
   const unsigned buffer = 15;
   const unsigned height = buffer + trigger->height();
   auto position = QPoint(
-    (trigger->width() - buttons[0].second->width()) / 2, -height
+    (trigger->width() - buttons[0]->width()) / 2, -height
     );
   auto start = trigger->mapToParent(QPoint(position.x(), 0));
   auto end = trigger->mapToParent(position);
-  for (auto& buttonPair: buttons)
+  for (auto& button: buttons)
   {
-    addMoveAnimation(buttonPair.second, start, end);
-    position.ry() -= buttonPair.second->height() + buffer;
+    addMoveAnimation(button, start, end);
+    position.ry() -= button->height() + buffer;
     end = trigger->mapToParent(position);
   }
 }

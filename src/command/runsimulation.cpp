@@ -28,7 +28,8 @@ RunSimulation::RunSimulation(
       FileObject::Type::GRO,
       FileObject::Type::XTC
     },
-    std::make_shared<Config::Simulation>()
+    std::make_shared<Config::Simulation>(),
+    Category::Simulation
     )
   , project(project)
 {

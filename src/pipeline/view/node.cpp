@@ -4,6 +4,7 @@
 #include "../step.h"
 #include "src/command/fileobject.h"
 #include "src/pipeline/view/clickableicon.h"
+#include "src/pipeline/view/colors.h"
 #include <QBrush>
 #include <QDebug>
 #include <cmath>
@@ -35,7 +36,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
 
   nodeBackground = new RoundedRectItem(0, 0, width, height, this);
   setRect(nodeBackground->rect());
-  nodeBackground->setBrush(QBrush(Qt::darkGray));
+  nodeBackground->setBrush(Colors::getColorFor(step->category).lighter(130));
   nodeBackground->setRadiusX(height / 2);
   nodeBackground->setRadiusY(height / 2);
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
@@ -184,7 +185,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 {
   selected = !selected;
   const auto currentColor = nodeBackground->brush().color();
-  const unsigned factor = 150;
+  const unsigned factor = 125;
   auto newColor = currentColor.lighter(factor);
   if (selected)
   {
@@ -193,6 +194,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 
   nodeBackground->setBrush(newColor);
   // TODO deselect all
+  // TODO check if was dragged --> no selection state change
   step->showConfigUI(selected);
   step->showStatusUI(selected);
 }

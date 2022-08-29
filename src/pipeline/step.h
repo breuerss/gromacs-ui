@@ -14,10 +14,18 @@ namespace Pipeline {
 
 class Step : public std::enable_shared_from_this<Step> {
 public:
+  enum class Category {
+    Unknown,
+    DataProvider,
+    Preprocess,
+    Simulation,
+    Viewer,
+  };
   Step(
     const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
     const QList<Command::FileObject::Type> providesList,
-    Config::Type configuration
+    Config::Type configuration,
+    Category category
     );
   virtual QString getName() const = 0;
 
@@ -28,6 +36,8 @@ public:
 
   void showConfigUI(bool show = true);
   void showStatusUI(bool show = true);
+
+  const Category category;
 
 protected:
   Command::FileObjectConsumer fileObjectConsumer;

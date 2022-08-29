@@ -2,6 +2,7 @@
 #define PIPELINE_VIEW_COLORS_H
 
 #include <QColor>
+#include "../step.h"
 
 namespace Pipeline { namespace View { namespace Colors {
 
@@ -12,6 +13,8 @@ const QColor Orange("#de6328");
 const QColor Blue("#766be6");
 const QColor Grey("#d3dad3");
 const QColor Egg("#e0f4db");
+
+QColor getColorFor(Step::Category category);
 
 } } }
 
