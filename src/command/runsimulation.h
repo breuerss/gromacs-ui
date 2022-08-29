@@ -36,7 +36,6 @@ private:
     );
 
   std::shared_ptr<Model::Project> project;
-  std::shared_ptr<Config::Simulation> simulation;
   std::shared_ptr<SimulationStatusChecker> simulationChecker;
   QFileSystemWatcher progressChecker;
   void checkProgress();

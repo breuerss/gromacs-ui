@@ -13,6 +13,7 @@
 #include <QDebug>
 #include <QDir>
 #include <cmath>
+#include <memory>
 
 namespace Command {
 
@@ -37,7 +38,8 @@ RunSimulation::RunSimulation(
     progressChecker.removePath(simulationChecker->getLogPath());
   });
   connect(this, &RunSimulation::started, [this] () {
-    emit progress(0, simulation->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
+    auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+    progress(0, simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
   });
   connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
 }
@@ -53,13 +55,14 @@ void RunSimulation::doExecute()
     return;
   }
 
-  simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulation);
+  auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+  simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulationConfig);
   QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
 
-  GromacsConfigFileGenerator(simulation).generate(mdpFile);
+  GromacsConfigFileGenerator(simulationConfig).generate(mdpFile);
 
   QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
   QFileInfo systemPath(inputStructure);
@@ -81,9 +84,9 @@ void RunSimulation::doExecute()
   }
 
   QString command = gmx + " mdrun";
-  command += " -deffnm " + simulation->getTypeAsString();
+  command += " -deffnm " + simulationConfig->getTypeAsString();
   command += " -cpt 5";
-  if (simulation->property("resume").value<bool>())
+  if (simulationConfig->property("resume").value<bool>())
   {
     command += " -cpi";
   }
@@ -155,16 +158,17 @@ void RunSimulation::checkProgress()
     progressChecker.addPath(logPath);
   }
 
-  SimulationStatusChecker statusChecker(project, simulation);
+  auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+  SimulationStatusChecker statusChecker(project, simulationConfig);
   float progressValue = statusChecker.getProgress();
   if (std::isnan(progressValue))
   {
     return;
   }
 
-  emit progress(
+  progress(
     progressValue,
-    simulation->isMinimisation() ? ProgressType::Value : ProgressType::Percentage
+    simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage
     );
 }
 
