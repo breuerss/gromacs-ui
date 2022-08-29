@@ -15,6 +15,8 @@ const QColor Grey("#d3dad3");
 const QColor Egg("#e0f4db");
 
 QColor getColorFor(Step::Category category);
+QColor getColorFor(Command::FileObject::Category category);
+QColor getColorFor(Command::FileObject::Type type);
 
 } } }
 

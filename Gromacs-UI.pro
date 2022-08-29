@@ -22,7 +22,7 @@ SOURCES += \
     $$files(src/command/*.cpp) \
     $$files(src/config/*.cpp) \
     $$files(src/pipeline/*.cpp, true) \
-    ui/simulationstatus.cpp
+    $$files(ui/*.cpp)
 
 HEADERS += \
     $$files(src/*.h) \
@@ -37,16 +37,11 @@ HEADERS += \
     $$files(src/command/*.h) \
     $$files(src/config/*.h) \
     $$files(src/pipeline/*.h, true) \
-    ui/simulationstatus.h
+    $$files(ui/*.h)
 
 
 FORMS += \
-    ui/simulationstatus.ui \
-    ui/temperaturegroupconfigform.ui \
-    ui/simulationsetupform.ui \
-    ui/systemsetupform.ui \
-    ui/mainwindow.ui \
-    ui/preferencesdialog.ui
+    $$files(ui/*.ui)
 
 TRANSLATIONS += \
     share/Gromacs-UI_en_US.ts

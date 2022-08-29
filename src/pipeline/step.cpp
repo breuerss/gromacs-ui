@@ -5,8 +5,9 @@
 #include <QDebug>
 #include "../form/simulationsetupform.h"
 #include "../../ui/simulationstatus.h"
+#include "../../ui/pdbcode.h"
 #include "src/command/runsimulation.h"
-#include "src/config/simulation.h"
+#include "../config/supportedconfigs.h"
 
 namespace Pipeline {
 
@@ -30,7 +31,8 @@ void Step::showConfigUI(bool show)
   {
     widget = std::visit(overloaded {
       [](auto) { return nullptr; },
-      [](std::shared_ptr<Config::Simulation> config) { return new SimulationSetupForm(config); },
+      [](std::shared_ptr<Config::Simulation> config) -> QWidget* { return new SimulationSetupForm(config); },
+      [](std::shared_ptr<Config::Pdb> config) -> QWidget* { return new PdbCode(config); },
     }, configuration);
   }
   UiUpdater::getInstance()->showConfigUI(widget);
@@ -42,10 +44,10 @@ void Step::showStatusUI(bool show)
   if (show)
   {
     widget = std::visit(overloaded {
-      [](auto) { return nullptr; },
+      [](auto) -> QWidget* { return nullptr; },
       [this] (
         std::shared_ptr<Config::Simulation>
-        ) {
+        ) -> QWidget* {
         using RunSimulation = Command::RunSimulation;
         auto step = std::dynamic_pointer_cast<RunSimulation>(shared_from_this());
         qDebug() << step.get() << std::holds_alternative<std::shared_ptr<Config::Simulation>>(step->configuration);

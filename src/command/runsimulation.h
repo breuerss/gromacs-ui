@@ -6,9 +6,6 @@
 #include <QFileSystemWatcher>
 #include "../pipeline/step.h"
 
-namespace Config {
-class Simulation;
-}
 namespace Model {
 class Project;
 }

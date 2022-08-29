@@ -43,8 +43,6 @@ private:
   void arrangeInputPorts();
 
   QPointF getCirclePointForAngle(double angle) const;
-  QColor getColorFor(Command::FileObject::Category category);
-  QColor getColorFor(Command::FileObject::Type type);
 
   void arrangePortsHeights(QList<Port*> ports);
   QGraphicsTextItem* text;
