@@ -56,8 +56,6 @@ void AddNodeMenu::show()
 
 void AddNodeMenu::hide()
 {
-  qDebug() << "hide" << __PRETTY_FUNCTION__;
-
   if (showAnimation->animationCount())
   {
     showAnimation->setDirection(QAbstractAnimation::Backward);
