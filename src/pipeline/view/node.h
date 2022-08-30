@@ -54,6 +54,7 @@ private:
 
   std::shared_ptr<Pipeline::Step> step;
   bool selected = false;
+  QPointF startingPos;
 };
 
 } }

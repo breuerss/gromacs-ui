@@ -22,6 +22,9 @@ public slots:
   void hide();
   void toggle();
 
+protected:
+  void mousePressEvent(QMouseEvent *event) override;
+
 private:
   void addMoveAnimation(ActionButton* button, const QPoint& start, const QPoint& end);
 

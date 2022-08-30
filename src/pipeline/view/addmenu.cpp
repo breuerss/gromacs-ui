@@ -144,6 +144,11 @@ void AddMenu::toggle()
   }
 }
 
+void AddMenu::mousePressEvent(QMouseEvent*)
+{
+  hide();
+}
+
 void AddMenu::addMoveAnimation(
   ActionButton* button, const QPoint& start, const QPoint& end)
 {

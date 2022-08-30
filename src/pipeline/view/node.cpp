@@ -39,8 +39,9 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   nodeBackground->setBrush(Colors::getColorFor(step->category).lighter(130));
   nodeBackground->setRadiusX(height / 2);
   nodeBackground->setRadiusY(height / 2);
+  nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(105), 2));
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
-  text->setZValue(10);
+  text->setZValue(1);
 
   //settingsIcon->setZValue(11);
   //auto textDim = text->boundingRect();
@@ -154,13 +155,24 @@ Port* Node::getOutputPort(int at)
   return outputPorts[at];
 }
 
-void Node::mousePressEvent(QGraphicsSceneMouseEvent*)
+void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
   // necessary to detect release event
+  QGraphicsRectItem::mousePressEvent(event);
+  startingPos = pos();
+  setZValue(2);
 }
 
-void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
+void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
+  QGraphicsRectItem::mouseReleaseEvent(event);
+  setZValue(1);
+  // Do not select if it is moved
+  if (startingPos != pos())
+  {
+    return;
+  }
+
   selected = !selected;
   const auto currentColor = nodeBackground->brush().color();
   const unsigned factor = 125;

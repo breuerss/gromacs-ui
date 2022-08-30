@@ -13,6 +13,7 @@ void RoundedRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, 
     painter->setPen(pen);
   }
   painter->setBrush(brush());
+  painter->setPen(pen());
   painter->drawRoundedRect(this->rect(), xRadius, yRadius);
 }
 

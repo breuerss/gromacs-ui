@@ -45,7 +45,6 @@ void AddNodeMenu::show()
 {
   auto triggerCenter = trigger->geometry().center();
   QWidget::show();
-  qDebug() << geometry();
   setGeometry(childrenRect());
   move(triggerCenter - QPoint(-trigger->width(), height() / 2));
   disconnect(showAnimation.get(), 0, 0, 0);
