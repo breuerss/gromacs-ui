@@ -10,19 +10,15 @@
 
 ProjectManager* ProjectManager::getInstance()
 {
-  static std::unique_ptr<ProjectManager> instance;
-  if (!instance)
+  static ProjectManager instance;
+  static bool initiated = false;
+  if (!initiated)
   {
-    instance.reset(new ProjectManager());
-    instance->createNewProject();
+    instance.createNewProject();
+    initiated = true;
   }
 
-  return instance.get();
-}
-
-ProjectManager::~ProjectManager()
-{
-  qDebug() << currentProject.use_count();
+  return &instance;
 }
 
 std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const

@@ -35,13 +35,13 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
 
   for (auto step : project->getSteps())
   {
-    std::visit([this] (auto step) { addNode(step); }, step);
+    addNode(step);
   }
 
   conns << connect(
     project.get(), &Model::Project::stepAdded,
-    [this] (const Pipeline::StepType& step) {
-      std::visit([this] (auto step) { addNode(step); }, step);
+    [this] (const auto& step) {
+      addNode(step);
     });
 }
 

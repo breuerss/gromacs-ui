@@ -4,6 +4,7 @@
 #include "executor.h"
 #include <memory>
 #include <QFileSystemWatcher>
+#include <qwidget.h>
 #include "../pipeline/step.h"
 
 namespace Model {
@@ -14,14 +15,13 @@ class SimulationStatusChecker;
 
 namespace Command {
 
-class RunSimulation : public Executor, public Pipeline::Step
+class RunSimulation : public Executor, public std::enable_shared_from_this<RunSimulation>
 {
 public:
-  explicit RunSimulation(
-    std::shared_ptr<Model::Project> project,
-    QObject *parent = nullptr);
+  explicit RunSimulation(std::shared_ptr<Model::Project> project);
   void doExecute() override;
-  QString getName() const override;
+  bool canExecute() const override;
+  QWidget* getStatusUi() override;
 
 private:
   bool execGrompp(

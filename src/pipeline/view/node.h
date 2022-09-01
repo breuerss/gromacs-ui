@@ -46,7 +46,7 @@ private:
 
   void arrangePortsHeights(QList<Port*> ports);
   QGraphicsTextItem* text;
-  ClickableIcon* settingsIcon;
+  //ClickableIcon* settingsIcon;
   ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
   QList<Port*> inputPorts;

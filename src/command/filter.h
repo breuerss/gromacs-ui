@@ -15,9 +15,10 @@ namespace Command {
 class Filter : public Executor, public InputOutputFileLink
 {
 public:
-  explicit Filter(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
+  explicit Filter(std::shared_ptr<Model::SystemSetup> systemSetup);
 
   void doExecute() override;
+  bool canExecute() const override;
   QString getName() const override;
   QString getOutputFilename() const override;
 

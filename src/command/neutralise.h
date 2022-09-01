@@ -15,11 +15,9 @@ namespace Command {
 class Neutralise : public Executor, public InputOutputFileLink
 {
 public:
-  explicit Neutralise(
-    std::shared_ptr<Model::SystemSetup> newSystemSetup,
-    QObject *parent = nullptr
-    );
+  explicit Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup);
   void doExecute() override;
+  bool canExecute() const override;
   QString getName() const override;
   QString getOutputFilename() const override;
 

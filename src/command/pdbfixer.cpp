@@ -9,8 +9,8 @@
 
 namespace Command {
 
-PdbFixer::PdbFixer(QObject *parent)
-  : Executor(parent)
+PdbFixer::PdbFixer()
+  : Executor()
 {
 
 }
@@ -44,6 +44,10 @@ void PdbFixer::doExecute()
   process.start(command);
 }
 
+bool PdbFixer::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
+}
 
 QString PdbFixer::getName() const
 {

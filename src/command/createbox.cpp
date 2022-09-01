@@ -8,8 +8,8 @@
 
 namespace Command {
 
-CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
-  : Executor(parent)
+CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup)
+  : Executor()
     , systemSetup(newSystemSetup)
 {
 
@@ -40,6 +40,11 @@ void CreateBox::doExecute()
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
+
+bool CreateBox::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
 }
 
 QString CreateBox::getName() const

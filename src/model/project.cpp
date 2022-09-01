@@ -4,6 +4,7 @@
 #include "../config/simulation.h"
 #include "../settings.h"
 #include <QDebug>
+#include <QDir>
 #include <QStandardPaths>
 #include <memory>
 
@@ -37,7 +38,7 @@ void Project::clearSteps()
   }
 }
 
-const std::vector<Pipeline::StepType>& Project::getSteps() const
+const Project::StepPointerVector& Project::getSteps() const
 {
   return pipelineSteps;
 }
@@ -53,6 +54,12 @@ QString Project::getProjectPath()
   auto defaultPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/gromacs-ui";
   auto projectsPath = settings.value(Settings::PROJECTS_DIRECTORY, defaultPath).toString();
   return projectsPath + "/" + name;
+}
+
+bool Project::initProjectDir(const QString& subDir)
+{
+  QDir dir(getProjectPath());
+  return dir.mkpath(subDir);
 }
 
 QDataStream &operator<<(QDataStream &out, const Project &project)

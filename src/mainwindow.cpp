@@ -30,6 +30,7 @@
 #include <QMenu>
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
+#include "pipeline/simulation.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -57,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionNewProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::createNewProject);
   connect(ui->actionAddStep, &QAction::triggered, [] () {
-    ProjectManager::getInstance()->getCurrentProject()->addStep<Command::RunSimulation>();
+    ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation>();
   });
   connect(ui->actionSave, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::save);
@@ -281,7 +282,7 @@ void MainWindow::setupUIForProject()
   }
 }
 
-void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, int at)
+void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation>, int)
 {
   //if (at == -1)
   //{
@@ -289,15 +290,15 @@ void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, i
   //}
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
-  auto command = std::make_shared<Command::RunSimulation>(project);
-  connect(command.get(), &Command::RunSimulation::runningChanged,
-          [this] (bool isRunning) {
-            ui->actionRunSimulation->setEnabled(!isRunning);
-          });
-  queue->insert(at, command);
+  //auto command = std::make_shared<Command::RunSimulation>(project);
+  //connect(command.get(), &Command::RunSimulation::runningChanged,
+  //        [this] (bool isRunning) {
+   //         ui->actionRunSimulation->setEnabled(!isRunning);
+    //      });
+  //queue->insert(at, command);
 
   // take system setup into account for tabs
-  at += 1;
+  ////at += 1;
 
   //connect(
   //  simulation.get(),
@@ -306,9 +307,9 @@ void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation> simulation, i
   //    ui->stepconfigurator->setTabText(at, simulation->getName());
   //  });
 
-  SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
-  connect(simulationForm, &SimulationSetupForm::displaySimulationData,
-          this, &MainWindow::setMoleculeFile);
+  //SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
+  //connect(simulationForm, &SimulationSetupForm::displaySimulationData,
+  //        this, &MainWindow::setMoleculeFile);
   //ui->stepconfigurator->insertTab(at, simulationForm, simulation->getName());
 }
 

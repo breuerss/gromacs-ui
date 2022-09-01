@@ -11,8 +11,8 @@
 namespace Command {
 
 CreateGromacsModel::CreateGromacsModel(
-  std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
-  : Executor(parent)
+  std::shared_ptr<Model::SystemSetup> newSystemSetup)
+  : Executor()
     , systemSetup(newSystemSetup)
 {
 
@@ -44,6 +44,11 @@ void CreateGromacsModel::doExecute()
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
   process.start(command);
+}
+
+bool CreateGromacsModel::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
 }
 
 QString CreateGromacsModel::getName() const

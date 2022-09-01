@@ -7,10 +7,13 @@
 #include <QDataStream>
 #include <memory>
 #include "../misc/bimaphelper.h"
+#include "configuration.h"
 
 namespace Config {
 
 class Simulation : public Model::Serializable
+                   , public Configuration
+                   , public std::enable_shared_from_this<Simulation>
 {
   Q_OBJECT
 public:
@@ -85,6 +88,8 @@ public:
   ~Simulation();
   QString getName() const;
   QString getTypeAsString() const;
+
+  QWidget* getUI() override;
 
   bool isMinimisation() const;
   bool pmeSettingsNeeded() const;

@@ -10,8 +10,8 @@
 
 namespace Command {
 
-Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
-  : Executor(parent)
+Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup)
+  : Executor()
     , systemSetup(newSystemSetup)
 {
 
@@ -88,6 +88,11 @@ void Neutralise::doExecute()
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
 
   process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
+}
+
+bool Neutralise::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
 }
 
 QString Neutralise::getName() const

@@ -9,6 +9,7 @@
 #include "../simulationstatuschecker.h"
 #include "qfilesystemwatcher.h"
 #include "src/command/fileobject.h"
+#include "ui/simulationstatus.h"
 
 #include <QDebug>
 #include <QDir>
@@ -17,28 +18,15 @@
 
 namespace Command {
 
-RunSimulation::RunSimulation(
-  std::shared_ptr<Model::Project> project,
-  QObject *parent)
-  : Executor(parent)
-  , Step(
-    {
-      { FileObject::Category::Coordinates, { FileObject::Type::GRO } }
-    },
-    {
-      FileObject::Type::GRO,
-      FileObject::Type::XTC
-    },
-    std::make_shared<Config::Simulation>(),
-    Category::Simulation
-    )
+RunSimulation::RunSimulation(std::shared_ptr<Model::Project> project)
+  : Executor()
   , project(project)
 {
   connect(this, &RunSimulation::finished, [this] () {
     progressChecker.removePath(simulationChecker->getLogPath());
   });
   connect(this, &RunSimulation::started, [this] () {
-    auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+    auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
     progress(0, simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
   });
   connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
@@ -55,7 +43,7 @@ void RunSimulation::doExecute()
     return;
   }
 
-  auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+  auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
   simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulationConfig);
   QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
@@ -98,9 +86,9 @@ void RunSimulation::doExecute()
   checkProgress();
 }
 
-QString RunSimulation::getName() const
+bool RunSimulation::canExecute() const
 {
-  return "mdrun simulation";
+  return QFile(project->getSystemSetup()->getProcessedStructureFile()).exists();
 }
 
 bool RunSimulation::execGrompp(
@@ -158,7 +146,7 @@ void RunSimulation::checkProgress()
     progressChecker.addPath(logPath);
   }
 
-  auto simulationConfig = std::get<std::shared_ptr<Config::Simulation>>(configuration);
+  auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
   SimulationStatusChecker statusChecker(project, simulationConfig);
   float progressValue = statusChecker.getProgress();
   if (std::isnan(progressValue))
@@ -170,6 +158,13 @@ void RunSimulation::checkProgress()
     progressValue,
     simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage
     );
+}
+
+QWidget* RunSimulation::getStatusUi()
+{
+  return new SimulationStatus(
+    shared_from_this(),
+    std::dynamic_pointer_cast<Config::Simulation>(configuration));
 }
 
 }

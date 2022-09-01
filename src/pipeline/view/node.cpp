@@ -15,10 +15,9 @@ namespace Pipeline { namespace View {
 Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
-//  , settingsIcon(new ClickableIcon(
-//      QIcon::fromTheme("emblem-system"), this
-      //QIcon::fromTheme("system-run").pixmap(40, 40), this
-//      ))
+  , runIcon(new ClickableIcon(
+      QIcon::fromTheme("media-playback-start").pixmap(40, 40), this
+      ))
   , step(newStep)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
@@ -31,8 +30,8 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   const double spacing = 10;
   const double height = 60;
   double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
-  //width += settingsIcon->boundingRect().width();
-  //width += spacing;
+  width += runIcon->boundingRect().width();
+  width += spacing;
 
   nodeBackground = new RoundedRectItem(0, 0, width, height, this);
   setRect(nodeBackground->rect());
@@ -43,22 +42,22 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
   text->setZValue(1);
 
-  //settingsIcon->setZValue(11);
-  //auto textDim = text->boundingRect();
-  //settingsIcon->setPos(
-  //  text->x() + textDim.width() + spacing,
-  //  rect().center().y() - settingsIcon->boundingRect().height() / 2);
-  //QObject::connect(settingsIcon, &ClickableIcon::clicked, [this] () {
-  //  qDebug() << __PRETTY_FUNCTION__;
-  //  step->showConfigUI();
-  //});
+  runIcon->setZValue(11);
+  auto textDim = text->boundingRect();
+  runIcon->setPos(
+    text->x() + textDim.width() + spacing,
+    rect().center().y() - runIcon->boundingRect().height() / 2);
+  QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
+    qDebug() << __PRETTY_FUNCTION__;
+    step->getCommand()->exec();
+  });
 
-  for (const auto& fileObject: step->getFileObjectProvider().provides())
+  for (const auto& fileObject: step->getFileObjectProvider()->provides())
   {
     addOutputPort(fileObject, Colors::getColorFor(fileObject->type));
   }
 
-  auto inputPortConfigs = step->getFileObjectConsumer().requires();
+  auto inputPortConfigs = step->getFileObjectConsumer()->requires();
   for (const auto& category: inputPortConfigs.keys())
   {
     addInputPort(inputPortConfigs[category], Colors::getColorFor(category));
@@ -80,7 +79,7 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
   QObject::connect(
     outputPort, &Port::connectedToChanged, 
     [this] (std::shared_ptr<Command::FileObject> fileObject) {
-      step->getFileObjectConsumer().connectTo(fileObject);
+      step->getFileObjectConsumer()->connectTo(fileObject);
     });
   outputPorts << outputPort;
   arrangeOutputPorts();

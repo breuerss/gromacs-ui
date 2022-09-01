@@ -1,12 +1,13 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
 #include "../logforwarder.h"
+#include "src/command/fileobjectprovider.h"
 #include <QDebug>
 
 namespace Command {
 
-Executor::Executor(QObject *parent)
-  : QObject(parent)
+Executor::Executor()
+  : QObject(nullptr)
     , mHasRun(false)
 {
   conns << connect(
@@ -53,6 +54,10 @@ Executor::~Executor()
 
 void Executor::exec()
 {
+  if (!canExecute())
+  {
+    return;
+  }
   terminationRequested = false;
   emit runningChanged(running);
   emit started();
@@ -81,6 +86,17 @@ bool Executor::wasSuccessful() const
   return hasRun() &&
     process.exitStatus() == QProcess::NormalExit &&
     process.exitCode() == 0;
+}
+
+void Executor::setConfig(std::shared_ptr<Config::Configuration> newConfig)
+{
+  configuration = newConfig;
+}
+
+void Executor::setFileObjectProvider(
+  std::shared_ptr<Command::FileObjectProvider> newFileObjectProvider)
+{
+  fileObjectProvider = newFileObjectProvider;
 }
 
 //const FileObjectConsumer& Executor::getFileConsumer() const

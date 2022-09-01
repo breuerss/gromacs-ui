@@ -1,55 +1,45 @@
 #include "downloadpdb.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
+#include "inputfilenamegenerator.h"
 #include "../model/project.h"
-#include "../config/simulation.h"
-#include "../appprovider.h"
-#include "../logforwarder.h"
-#include "../simulationstatuschecker.h"
-#include "qfilesystemwatcher.h"
-#include "src/command/fileobject.h"
-#include "src/pdbdownloader.h"
+#include "../config/pdb.h"
+#include "../pdbdownloader.h"
 
 #include <QDebug>
-#include <QString>
-#include <QDir>
-#include <cmath>
-#include <memory>
 
 namespace Command {
 
-DownloadPdb::DownloadPdb(
-  std::shared_ptr<Model::Project> project,
-  QObject *parent)
-  : Executor(parent)
-  , Step(
-    { },
-    {
-      FileObject::Type::PDB,
-    },
-    std::make_shared<Config::Pdb>(),
-    Category::DataProvider
-    )
-  , project(project)
+DownloadPdb::DownloadPdb()
+  : Executor()
   , downloader(std::make_shared<PdbDownloader>())
 {
+  connect(downloader.get(), &PdbDownloader::downloaded, this, &Executor::finished);
 }
 
 void DownloadPdb::doExecute()
 {
   qDebug() << "Exec simulation";
 
-  auto pdbCode = std::get<std::shared_ptr<Config::Pdb>>(configuration)->property("pdbCode").toString();
+  QString pdbCode = getPdbCode();
 
-  QString fileName = project->getProjectPath();
-  fileName += QString("/input/%1.pdb").arg(pdbCode);
+  QString fileName = fileNameGenerator->getFileNameFor(FileObject::Type::PDB);
 
   downloader->download(pdbCode, fileName);
 }
 
-QString DownloadPdb::getName() const
+bool DownloadPdb::canExecute() const
 {
-  return "PDB Downloader";
+  QString pdbCode = getPdbCode();
+  return pdbCode.length() == 4;
+}
+
+QString DownloadPdb::getPdbCode() const
+{
+  return std::dynamic_pointer_cast<Config::Pdb>(configuration)->property("pdbCode").toString();
+}
+
+void DownloadPdb::setFileNameGenerator(std::shared_ptr<InputFileNameGenerator> newFileNameGenerator)
+{
+  fileNameGenerator = newFileNameGenerator;
 }
 
 }

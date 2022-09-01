@@ -1,5 +1,6 @@
 #include "simulation.h"
 #include "temperaturecouplinggroup.h"
+#include "../form/simulationsetupform.h"
 #include <QDebug>
 #include <QMetaProperty>
 #include <cstring>
@@ -52,6 +53,11 @@ QString Simulation::getName() const
 QString Simulation::getTypeAsString() const
 {
   return toString(simulationType, true);
+}
+
+QWidget* Simulation::getUI()
+{
+  return new SimulationSetupForm(shared_from_this());
 }
 
 bool Simulation::isMinimisation() const

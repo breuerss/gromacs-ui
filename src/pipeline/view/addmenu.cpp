@@ -8,7 +8,8 @@
 #include <QIcon>
 #include "../../projectmanager.h"
 #include "../../model/project.h"
-#include "../supportedsteps.h"
+#include "../pdbdownload.h"
+#include "../simulation.h"
 
 namespace Pipeline { namespace View {
 
@@ -31,7 +32,7 @@ AddMenu::AddMenu(ActionButton* trigger)
       "PDB Downloader",
       "pdbDownloader",
       [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Command::DownloadPdb>();
+        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbDownload>();
       }
     },
     { "Load From File", "fileloader", []() {} },
@@ -43,7 +44,7 @@ AddMenu::AddMenu(ActionButton* trigger)
   nodeMenuDefinitions[Category::Simulation] = {
     { "Minimisation", "nptSimulation",
       [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Command::RunSimulation>();
+        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation>();
       } },
     { "NVT Simulation", "nvtSimulation", []() {} },
     { "NPT Simulation", "nptSimulation", []() {} },

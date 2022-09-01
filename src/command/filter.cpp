@@ -12,8 +12,8 @@
 
 namespace Command {
 
-Filter::Filter(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent)
-  : Executor(parent)
+Filter::Filter(std::shared_ptr<Model::SystemSetup> systemSetup)
+  : Executor()
   , systemSetup(systemSetup)
 {
 }
@@ -61,6 +61,11 @@ void Filter::doExecute()
     qDebug() << command;
     //process.start(command);
   }
+}
+
+bool Filter::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
 }
 
 QString Filter::getName() const

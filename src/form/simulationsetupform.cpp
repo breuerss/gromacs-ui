@@ -1,10 +1,8 @@
 #include "simulationsetupform.h"
-#include "src/command/runsimulation.h"
 #include "src/form/progresschart.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
 #include "../config/simulation.h"
-#include "../model/project.h"
 #include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
 #include "../simulationstatuschecker.h"
@@ -15,23 +13,9 @@
 
 SimulationSetupForm::SimulationSetupForm(
   std::shared_ptr<Config::Simulation> newSimulation
-  ) 
-  : simulation(newSimulation)
-  , ui(new Ui::SimulationSetupForm)
-{
-  ui->setupUi(this);
-}
-
-SimulationSetupForm::SimulationSetupForm(
-  std::shared_ptr<Model::Project> newProject,
-  std::shared_ptr<Config::Simulation> newSimulation,
-  std::shared_ptr<Command::RunSimulation> newCommand,
-  QWidget *parent
   )
-  : QWidget(parent)
-  , project(newProject)
+  : QWidget(nullptr)
   , simulation(newSimulation)
-  , command(newCommand)
   , ui(new Ui::SimulationSetupForm)
 {
   ui->setupUi(this);

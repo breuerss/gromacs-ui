@@ -6,9 +6,12 @@
 #include <QString>
 
 #include "fileobjectconsumer.h"
+#include "src/config/configuration.h"
 //#include "executorfileobjectprovider.h"
 
 namespace Command {
+
+class FileObjectProvider;
 
 class Executor : public QObject
 {
@@ -18,18 +21,22 @@ public:
     Percentage,
     Value,
   };
-  explicit Executor(QObject *parent = nullptr);
+  Executor();
   ~Executor();
   virtual void doExecute() = 0;
-  virtual QString getName() const = 0;
+  virtual QString getName() const { return QString(); }
+  virtual QWidget* getStatusUi() { return nullptr; }
   void exec();
   void stop();
 
+  virtual bool canExecute() const = 0;
   bool hasRun() const;
   bool isRunning() const;
   bool wasSuccessful() const;
   //const FileObjectConsumer& getFileConsumer() const;
   //const ExecutorFileObjectProvider& getFileProvider() const;
+  void setConfig(std::shared_ptr<Config::Configuration> newConfig);
+  void setFileObjectProvider(std::shared_ptr<Command::FileObjectProvider> fileObjectProvider);
 
 signals:
   void finished();
@@ -39,6 +46,8 @@ signals:
 
 protected:
   QProcess process;
+  std::shared_ptr<Config::Configuration> configuration;
+  std::shared_ptr<Command::FileObjectProvider> fileObjectProvider;
   //FileObjectConsumer fileConsumer;
   //ExecutorFileObjectProvider fileProvider;
 

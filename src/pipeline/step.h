@@ -3,12 +3,11 @@
 
 #include "../command/fileobjectconsumer.h"
 #include "../command/fileobjectprovider.h"
-#include "../config/supportedconfigs.h"
+#include "../config/configuration.h"
+#include "../command/executor.h"
+#include "src/command/filenamegenerator.h"
 #include <QString>
-
-// helper type for the visitor #4
-template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
+#include <memory>
 
 namespace Pipeline {
 
@@ -24,15 +23,20 @@ public:
   Step(
     const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
     const QList<Command::FileObject::Type> providesList,
-    Config::Type configuration,
+    std::shared_ptr<Config::Configuration> configuration,
+    std::shared_ptr<Command::Executor> command,
+    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
     Category category
     );
   virtual QString getName() const = 0;
+  virtual ~Step() = default;
 
-  const Command::FileObjectConsumer& getFileObjectConsumer() const { return fileObjectConsumer; }
-  Command::FileObjectConsumer& getFileObjectConsumer() { return fileObjectConsumer; }
-  const Command::FileObjectProvider& getFileObjectProvider() { return fileObjectProvider; }
-  const Config::Type& getConfiguration() { return configuration; }
+  const std::shared_ptr<Command::FileObjectConsumer>& getFileObjectConsumer() const { return fileObjectConsumer; }
+  std::shared_ptr<Command::FileObjectConsumer>& getFileObjectConsumer() { return fileObjectConsumer; }
+  const std::shared_ptr<Command::FileObjectProvider>& getFileObjectProvider() { return fileObjectProvider; }
+  const std::shared_ptr<Config::Configuration>& getConfiguration() { return configuration; }
+  const std::shared_ptr<Command::Executor>& getCommand() { return command; }
+  const std::shared_ptr<Command::FileNameGenerator>& getFileNameGenerator() { return fileNameGenerator; }
 
   void showConfigUI(bool show = true);
   void showStatusUI(bool show = true);
@@ -40,9 +44,11 @@ public:
   const Category category;
 
 protected:
-  Command::FileObjectConsumer fileObjectConsumer;
-  Command::FileObjectProvider fileObjectProvider;
-  Config::Type configuration;
+  std::shared_ptr<Command::FileObjectConsumer> fileObjectConsumer;
+  std::shared_ptr<Command::FileObjectProvider> fileObjectProvider;
+  std::shared_ptr<Config::Configuration> configuration;
+  std::shared_ptr<Command::Executor> command;
+  std::shared_ptr<Command::FileNameGenerator> fileNameGenerator;
 };
 
 }

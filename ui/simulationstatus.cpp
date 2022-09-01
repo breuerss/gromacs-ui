@@ -1,5 +1,5 @@
 #include "simulationstatus.h"
-#include "src/config/simulation.h"
+#include "../src/config/simulation.h"
 #include "ui_simulationstatus.h"
 #include "../src/simulationstatuschecker.h"
 #include "../src/filecontentviewer.h"
@@ -13,11 +13,13 @@
 
 SimulationStatus::SimulationStatus(
   std::shared_ptr<Command::RunSimulation> newStep,
+  std::shared_ptr<Config::Simulation> newConfiguration,
   QWidget *parent
-  ) :
-    QWidget(parent),
-    step(newStep),
-    ui(new Ui::SimulationStatus)
+  )
+    : QWidget(parent)
+    , step(newStep)
+    , configuration(newConfiguration)
+    , ui(new Ui::SimulationStatus)
 {
   ui->setupUi(this);
   setupProgressValueChart();
@@ -26,24 +28,21 @@ SimulationStatus::SimulationStatus(
 
   conns << connect(ui->showLog, &QPushButton::clicked, [this] () {
     auto project = ProjectManager::getInstance()->getCurrentProject();
-    auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-    SimulationStatusChecker checker(project, simulation);
+    SimulationStatusChecker checker(project, configuration);
     auto viewer = new FileContentViewer(checker.getLogPath());
     viewer->show();
   });
 
   conns << connect(ui->showMdp, &QPushButton::clicked, [this] () {
     auto project = ProjectManager::getInstance()->getCurrentProject();
-    auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-    SimulationStatusChecker checker(project, simulation);
+    SimulationStatusChecker checker(project, configuration);
     auto viewer = new FileContentViewer(checker.getMdpPath());
     viewer->show();
   });
 
   conns << connect(ui->showSmoothTrajectory, &QToolButton::clicked, [this] () {
     auto project = ProjectManager::getInstance()->getCurrentProject();
-    auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-    SimulationStatusChecker checker(project, simulation);
+    SimulationStatusChecker checker(project, configuration);
     if (checker.hasTrajectory())
     {
       QProcess createInput;
@@ -61,8 +60,7 @@ SimulationStatus::SimulationStatus(
   });
   conns << connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
     auto project = ProjectManager::getInstance()->getCurrentProject();
-    auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-    SimulationStatusChecker checker(project, simulation);
+    SimulationStatusChecker checker(project, configuration);
     if (checker.hasData())
     {
       //emit displaySimulationData(checker.getInputCoordinatesPath(),
@@ -120,8 +118,7 @@ SimulationStatus::SimulationStatus(
       }
     });
 
-  auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-  conns << connectToCheckbox(ui->resume, simulation, "resume");
+  conns << connectToCheckbox(ui->resume, configuration, "resume");
 
   conns << connect(
     step.get(), &Command::RunSimulation::started,
@@ -144,10 +141,10 @@ SimulationStatus::SimulationStatus(
     });
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
-  SimulationStatusChecker checker(project, simulation);
+  SimulationStatusChecker checker(project, configuration);
   if (checker.hasLog())
   {
-    if (simulation->isMinimisation())
+    if (configuration->isMinimisation())
     {
       progressChart->setValues(checker.getProgressValues());
     }
@@ -183,9 +180,8 @@ void SimulationStatus::showEvent(QShowEvent*)
 {
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
-  auto simulation = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
 
-  SimulationStatusChecker checker(project, simulation);
+  SimulationStatusChecker checker(project, configuration);
   ui->showTrajectoryButton->setEnabled(checker.hasData());
   ui->showSmoothTrajectory->setEnabled(checker.hasTrajectory());
   ui->showLog->setEnabled(checker.hasLog());

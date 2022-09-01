@@ -3,11 +3,12 @@
 
 
 #include <QString>
+#include <QDebug>
 #include <QDataStream>
 #include <QObject>
 #include <vector>
 #include <memory>
-#include "../pipeline/supportedsteps.h"
+#include "../pipeline/step.h"
 
 namespace Config {
 class Simulation;
@@ -17,9 +18,12 @@ namespace Model {
 
 class SystemSetup;
 
-class Project : public QObject
+class Project : public QObject, public std::enable_shared_from_this<Project>
 {
   Q_OBJECT
+  typedef std::shared_ptr<Pipeline::Step> StepPointer;
+  typedef std::vector<StepPointer> StepPointerVector;
+
 public:
   Project();
 
@@ -62,37 +66,37 @@ public:
    **/
 
   template<typename T>
-  Pipeline::StepType addStep()
+  std::shared_ptr<T> addStep()
   {
-    std::shared_ptr<Project> project;
-    project.reset(this);
+    auto step = std::make_shared<T>(shared_from_this());
 
-    auto pipelineStep = std::make_shared<T>(project);
+    auto pipelineStep = std::dynamic_pointer_cast<Pipeline::Step>(step);
     pipelineSteps.push_back(pipelineStep);
     emit stepAdded(pipelineStep, pipelineSteps.size() - 1);
-    return pipelineStep;
+    return step;
   }
 
   void clearSteps();
   void removeStep(int index);
-  const std::vector<Pipeline::StepType>& getSteps() const;
+  const StepPointerVector& getSteps() const;
 
   std::shared_ptr<SystemSetup> getSystemSetup() const;
 
   QString getProjectPath();
+  bool initProjectDir(const QString& subDir = "");
 
   Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
 signals:
-  void stepAdded(Pipeline::StepType step, int at);
-  void stepRemoved(Pipeline::StepType step, int at);
+  void stepAdded(StepPointer step, int at);
+  void stepRemoved(StepPointer step, int at);
 
   void nameChanged(const QString&);
 
 private:
   std::shared_ptr<SystemSetup> systemSetup;
 
-  std::vector<Pipeline::StepType> pipelineSteps;
+  StepPointerVector pipelineSteps;
   QString name = "";
 };
 

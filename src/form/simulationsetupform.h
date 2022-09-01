@@ -9,12 +9,6 @@
 #include "../config/simulation.h"
 #include "qglobal.h"
 
-namespace Model {
-class Project;
-}
-namespace Command {
-class RunSimulation;
-}
 namespace Ui {
 class SimulationSetupForm;
 }
@@ -24,11 +18,6 @@ class SimulationSetupForm : public QWidget
   Q_OBJECT
 
 public:
-  explicit SimulationSetupForm(
-    std::shared_ptr<Model::Project> project,
-    std::shared_ptr<Config::Simulation> simulation,
-    std::shared_ptr<Command::RunSimulation> command,
-    QWidget *parent = nullptr);
   ~SimulationSetupForm();
 
   SimulationSetupForm(std::shared_ptr<Config::Simulation> config);
@@ -37,9 +26,7 @@ signals:
   void displaySimulationData(const QString& coords, const QString& trajectory);
 
 private:
-  std::shared_ptr<Model::Project> project;
   std::shared_ptr<Config::Simulation> simulation;
-  std::shared_ptr<Command::RunSimulation> command;
   Ui::SimulationSetupForm *ui;
 
   void updateUiForSimulationType(Config::Simulation::Type type = Config::Simulation::Type::None);

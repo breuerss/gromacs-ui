@@ -5,8 +5,8 @@
 
 PdbCode::PdbCode(std::shared_ptr<Config::Pdb> config, QWidget *parent)
   : QWidget(parent)
-  , config(config)
   , ui(new Ui::PdbCode)
+  , config(config)
 {
     ui->setupUi(this);
     connectToLineEdit(ui->pdbCode, config, "pdbCode");

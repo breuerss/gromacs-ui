@@ -14,10 +14,11 @@ namespace Command {
 class PdbFixer : public Executor, public InputOutputFileLink
 {
 public:
-  explicit PdbFixer(QObject *parent = nullptr);
+  explicit PdbFixer();
   void doExecute() override;
   QString getName() const override;
   QString getOutputFilename() const override;
+  bool canExecute() const override;
 };
 
 }

@@ -11,8 +11,9 @@ namespace Command {
 class Solvate : public Executor, public InputOutputFileLink
 {
 public:
-  explicit Solvate(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent = nullptr);
+  explicit Solvate(std::shared_ptr<Model::SystemSetup> systemSetup);
   void doExecute() override;
+  bool canExecute() const override;
   QString getName() const override;
   QString getOutputFilename() const override;
 

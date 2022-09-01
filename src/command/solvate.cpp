@@ -9,9 +9,9 @@
 
 namespace Command {
 
-Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup, QObject *parent)
-  : Executor{parent}
-, systemSetup(newSystemSetup)
+Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup)
+  : Executor()
+    , systemSetup(newSystemSetup)
 {
 
 }
@@ -44,6 +44,11 @@ void Solvate::doExecute()
   process.setWorkingDirectory(inputDirectory);
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
   process.start(command);
+}
+
+bool Solvate::canExecute() const
+{
+  return QFile(getInputFilename()).exists();
 }
 
 QString Solvate::getName() const
