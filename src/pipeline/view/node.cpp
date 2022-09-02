@@ -2,6 +2,7 @@
 #include "panel.h"
 #include "port.h"
 #include "../step.h"
+#include "src/command/executor.h"
 #include "src/command/fileobject.h"
 #include "src/pipeline/view/clickableicon.h"
 #include "src/pipeline/view/colors.h"
@@ -9,6 +10,7 @@
 #include <QDebug>
 #include <cmath>
 #include <QIcon>
+#include <qnamespace.h>
 
 namespace Pipeline { namespace View {
 
@@ -47,10 +49,31 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   runIcon->setPos(
     text->x() + textDim.width() + spacing,
     rect().center().y() - runIcon->boundingRect().height() / 2);
+
+  auto command = step->getCommand().get();
+  auto enableRunIcon = [this, command] () {
+    runIcon->setEnabled(command->canExecute());
+  };
+  QObject::connect(command, &Command::Executor::canExecuteChanged, enableRunIcon);
+  enableRunIcon();
+
   QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
     qDebug() << __PRETTY_FUNCTION__;
     step->getCommand()->exec();
   });
+  QObject::connect(
+    command, &Command::Executor::runningChanged,
+    [this] (bool isRunning) {
+      qDebug() << isRunning;
+      auto icon = QIcon::fromTheme("media-playback-start");
+      if (isRunning)
+      {
+        icon = QIcon::fromTheme("media-playback-pause");
+      }
+
+      runIcon->setIcon(icon);
+  });
+
 
   for (const auto& fileObject: step->getFileObjectProvider()->provides())
   {
@@ -184,7 +207,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   nodeBackground->setBrush(newColor);
   // TODO deselect all
   // TODO check if was dragged --> no selection state change
-  step->showConfigUI(selected);
+  step->getConfiguration()->showUI(selected);
   step->showStatusUI(selected);
 }
 

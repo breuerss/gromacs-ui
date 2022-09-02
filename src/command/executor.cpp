@@ -15,8 +15,7 @@ Executor::Executor()
     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
     [this] () {
       mHasRun = true;
-      running = false;
-      emit runningChanged(running);
+      setRunning(false);
       QString command = process.program() + " " + process.arguments().join(" ");
       QString message("Error executing ");
       if (process.exitCode() == 0)
@@ -36,7 +35,7 @@ Executor::Executor()
     &process,
     &QProcess::started,
     [this] () {
-      running = true;
+      setRunning(true);
     });
   LogForwarder::getInstance()->listenTo(&process);
 }
@@ -91,6 +90,7 @@ bool Executor::wasSuccessful() const
 void Executor::setConfig(std::shared_ptr<Config::Configuration> newConfig)
 {
   configuration = newConfig;
+  configChanged(configuration);
 }
 
 void Executor::setFileObjectProvider(
@@ -99,14 +99,10 @@ void Executor::setFileObjectProvider(
   fileObjectProvider = newFileObjectProvider;
 }
 
-//const FileObjectConsumer& Executor::getFileConsumer() const
-//{
-//  return fileConsumer;
-//}
-//
-//const ExecutorFileObjectProvider& Executor::getFileProvider() const
-//{
-//  return fileProvider;
-//}
+void Executor::setRunning(bool newRunning)
+{
+  running = newRunning;
+  runningChanged(running);
+}
 
 }

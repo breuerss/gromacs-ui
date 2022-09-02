@@ -38,7 +38,6 @@ public:
   const std::shared_ptr<Command::Executor>& getCommand() { return command; }
   const std::shared_ptr<Command::FileNameGenerator>& getFileNameGenerator() { return fileNameGenerator; }
 
-  void showConfigUI(bool show = true);
   void showStatusUI(bool show = true);
 
   const Category category;

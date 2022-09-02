@@ -5,10 +5,6 @@
 #include "inputoutputfilelink.h"
 #include <memory>
 
-namespace Model {
-class SystemSetup;
-}
-
 namespace Command {
 
 class PdbFixer : public Executor, public InputOutputFileLink

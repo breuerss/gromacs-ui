@@ -8,7 +8,7 @@
 #include <QIcon>
 #include "../../projectmanager.h"
 #include "../../model/project.h"
-#include "../pdbdownload.h"
+#include "../pdbdownload/step.h"
 #include "../simulation.h"
 
 namespace Pipeline { namespace View {
@@ -32,7 +32,7 @@ AddMenu::AddMenu(ActionButton* trigger)
       "PDB Downloader",
       "pdbDownloader",
       [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbDownload>();
+        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbDownload::Step>();
       }
     },
     { "Load From File", "fileloader", []() {} },

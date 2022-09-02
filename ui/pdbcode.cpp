@@ -3,8 +3,8 @@
 #include <memory>
 #include "../src/form/connectionhelper.h"
 
-PdbCode::PdbCode(std::shared_ptr<Config::Pdb> config, QWidget *parent)
-  : QWidget(parent)
+PdbCode::PdbCode(std::shared_ptr<Pipeline::PdbDownload::Configuration> config)
+  : QWidget(nullptr)
   , ui(new Ui::PdbCode)
   , config(config)
 {

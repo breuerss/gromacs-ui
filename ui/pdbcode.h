@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <memory>
-#include "../src/config/pdb.h"
+#include "../src/pipeline/pdbdownload/configuration.h"
 
 namespace Ui {
 class PdbCode;
@@ -14,12 +14,12 @@ class PdbCode : public QWidget
     Q_OBJECT
 
 public:
-    explicit PdbCode(std::shared_ptr<Config::Pdb> config, QWidget *parent = nullptr);
+    explicit PdbCode(std::shared_ptr<Pipeline::PdbDownload::Configuration> config);
     ~PdbCode();
 
 private:
     Ui::PdbCode *ui;
-    std::shared_ptr<Config::Pdb> config;
+    std::shared_ptr<Pipeline::PdbDownload::Configuration> config;
 };
 
 #endif // PDBCODE_H

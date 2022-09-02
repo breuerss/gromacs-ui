@@ -2,15 +2,40 @@
 #include "qcursor.h"
 #include <QDebug>
 #include <QIcon>
-#include <qnamespace.h>
+#include <QPainter>
 
 namespace Pipeline { namespace View {
 
-ClickableIcon::ClickableIcon(const QIcon& icon, QGraphicsItem* parent)
+ClickableIcon::ClickableIcon(const QIcon& newIcon, QGraphicsItem* parent)
   : QObject(nullptr)
-  , QGraphicsPixmapItem(icon.pixmap(35, 35), parent)
+  , QGraphicsPixmapItem(newIcon.pixmap(35, 35), parent)
+  , icon(newIcon)
 {
   setAcceptHoverEvents(true);
+}
+
+void ClickableIcon::setIcon(const QIcon& newIcon)
+{
+  icon = newIcon;
+  setPixmap(icon.pixmap(pixmap().size()));
+}
+
+void ClickableIcon::setEnabled(bool enabled)
+{
+  QGraphicsPixmapItem::setEnabled(enabled);
+
+  if (enabled) {
+    setPixmap(icon.pixmap(pixmap().size()));
+  }
+  else
+  {
+    QPixmap disabledPixmap(pixmap().size());
+    disabledPixmap.fill(Qt::transparent);
+    QPainter p(&disabledPixmap);
+    p.setOpacity(0.3);
+    p.drawPixmap(0, 0, icon.pixmap(pixmap().size()));
+    setPixmap(disabledPixmap);
+  }
 }
 
 void ClickableIcon::mousePressEvent(QGraphicsSceneMouseEvent*)
@@ -25,7 +50,10 @@ void ClickableIcon::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
   
 void ClickableIcon::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
-  setCursor(Qt::PointingHandCursor);
+  if (isEnabled())
+  {
+    setCursor(Qt::PointingHandCursor);
+  }
 }
 
 void ClickableIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent*)

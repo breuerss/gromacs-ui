@@ -3,7 +3,6 @@
 #include <memory>
 #include <QDebug>
 #include "../../model/project.h"
-#include "src/pipeline/supportedsteps.h"
 #include "colors.h"
 
 namespace Pipeline { namespace View {

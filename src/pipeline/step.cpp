@@ -1,11 +1,7 @@
 #include "step.h"
 #include "../uiupdater.h"
-#include <memory>
 #include <QObject>
-#include <variant>
 #include <QDebug>
-#include "../form/simulationsetupform.h"
-#include "../../ui/simulationstatus.h"
 #include "../../ui/pdbcode.h"
 #include "src/command/filenamegenerator.h"
 #include "src/command/fileobjectconsumer.h"
@@ -36,16 +32,6 @@ Step::Step(
       fileObject->setFileName(fileNameGenerator->getFileNameFor(fileObject->type));
     }
   });
-}
-
-void Step::showConfigUI(bool show)
-{
-  QWidget* widget = nullptr;
-  if (show)
-  {
-    widget = configuration->getUI();
-  }
-  UiUpdater::getInstance()->showConfigUI(widget);
 }
 
 void Step::showStatusUI(bool show)

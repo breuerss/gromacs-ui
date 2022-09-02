@@ -5,9 +5,7 @@
 #include <QProcess>
 #include <QString>
 
-#include "fileobjectconsumer.h"
 #include "src/config/configuration.h"
-//#include "executorfileobjectprovider.h"
 
 namespace Command {
 
@@ -33,8 +31,7 @@ public:
   bool hasRun() const;
   bool isRunning() const;
   bool wasSuccessful() const;
-  //const FileObjectConsumer& getFileConsumer() const;
-  //const ExecutorFileObjectProvider& getFileProvider() const;
+
   void setConfig(std::shared_ptr<Config::Configuration> newConfig);
   void setFileObjectProvider(std::shared_ptr<Command::FileObjectProvider> fileObjectProvider);
 
@@ -43,18 +40,19 @@ signals:
   void started();
   void progress(float percentage, ProgressType type = ProgressType::Percentage);
   void runningChanged(bool running);
+  void canExecuteChanged(bool canExecute);
+  void configChanged(std::shared_ptr<Config::Configuration> newConfig);
 
 protected:
   QProcess process;
   std::shared_ptr<Config::Configuration> configuration;
   std::shared_ptr<Command::FileObjectProvider> fileObjectProvider;
-  //FileObjectConsumer fileConsumer;
-  //ExecutorFileObjectProvider fileProvider;
+  void setRunning(bool running);
 
 private:
   bool mHasRun = false;
-  bool running = false;
   bool terminationRequested = false;
+  bool running = false;
   QList<QMetaObject::Connection> conns;
 };
 
