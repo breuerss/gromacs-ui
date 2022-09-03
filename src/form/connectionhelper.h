@@ -77,6 +77,20 @@ QMetaObject::Connection connectToLineEdit(
   std::function<void(const QString&)>&& callback = nullptr
   );
 
+QMetaObject::Connection connectToLineEdit(
+  QLineEdit* widget,
+  QObject* model,
+  const QString& elementName,
+  std::function<void(const QString&)>&& callback = nullptr
+  );
+
+QMetaObject::Connection connectToCheckbox(
+  QCheckBox* widget,
+  QObject* model,
+  const QString& elementName,
+  std::function<void(bool)>&& callback = nullptr
+  );
+
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
   std::shared_ptr<QObject> model,

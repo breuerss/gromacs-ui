@@ -7,6 +7,16 @@ QMetaObject::Connection connectToLineEdit(
   std::function<void(const QString&)>&& callback
   )
 {
+  return connectToLineEdit(widget, model.get(), elementName, std::move(callback));
+}
+
+QMetaObject::Connection connectToLineEdit(
+  QLineEdit* widget,
+  QObject* model,
+  const QString& elementName,
+  std::function<void(const QString&)>&& callback
+  )
+{
   auto conn = QObject::connect(
     widget,
     &QLineEdit::textChanged,
@@ -26,7 +36,7 @@ QMetaObject::Connection connectToLineEdit(
 
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
-  std::shared_ptr<QObject> model,
+  QObject* model,
   const QString& elementName,
   std::function<void(bool)>&& callback
   )
@@ -47,4 +57,14 @@ QMetaObject::Connection connectToCheckbox(
   widget->setChecked(value);
 
   return conn;
+}
+
+QMetaObject::Connection connectToCheckbox(
+  QCheckBox* widget,
+  std::shared_ptr<QObject> model,
+  const QString& elementName,
+  std::function<void(bool)>&& callback
+  )
+{
+  return connectToCheckbox(widget, model.get(), elementName, std::move(callback));
 }

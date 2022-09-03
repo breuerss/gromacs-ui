@@ -21,10 +21,8 @@ public:
   explicit Command();
   void doExecute() override;
   bool canExecute() const override;
-  void setFileNameGenerator(std::shared_ptr<FileNameGenerator> newfileNameGenerator);
 
 private:
-  std::shared_ptr<FileNameGenerator> fileNameGenerator;
   std::shared_ptr<PdbDownloader> downloader;
   QString getPdbCode() const;
   QMetaObject::Connection configConnection;

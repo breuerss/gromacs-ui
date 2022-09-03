@@ -9,6 +9,7 @@
 #include "../../projectmanager.h"
 #include "../../model/project.h"
 #include "../pdbdownload/step.h"
+#include "../pdbfixer/step.h"
 #include "../simulation.h"
 
 namespace Pipeline { namespace View {
@@ -30,24 +31,32 @@ AddMenu::AddMenu(ActionButton* trigger)
   nodeMenuDefinitions[Category::DataProvider] = {
     {
       "PDB Downloader",
-      "pdbDownloader",
       [] () {
         ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbDownload::Step>();
       }
     },
-    { "Load From File", "fileloader", []() {} },
+    { "Load From File", []() {} },
+  };
+  nodeMenuDefinitions[Category::Preprocess] = {
+    {
+      "PDB Fixer",
+      [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbFixer::Step>();
+      }
+    },
   };
   nodeMenuDefinitions[Category::Viewer] = {
-    { "Trajectory Viewer", "trajectoryViewer", []() {} },
-    { "Coordinate Viewer", "coordinateViewer", []() {} },
+    { "Trajectory Viewer", []() {} },
+    { "Coordinate Viewer", []() {} },
   };
   nodeMenuDefinitions[Category::Simulation] = {
-    { "Minimisation", "nptSimulation",
+    {
+      "Minimisation",
       [] () {
         ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation>();
       } },
-    { "NVT Simulation", "nvtSimulation", []() {} },
-    { "NPT Simulation", "nptSimulation", []() {} },
+    { "NVT Simulation", []() {} },
+    { "NPT Simulation", []() {} },
   };
   for (const auto& definition: definitions)
   {

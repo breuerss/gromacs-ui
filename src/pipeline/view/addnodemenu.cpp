@@ -23,7 +23,7 @@ AddNodeMenu::AddNodeMenu(
   for (const auto& definition: definitions)
   {
     auto button = new AddNodeButton(definition.label, 30, buttonColor, this);
-    buttons << ButtonPair({ definition.buttonType, button });
+    buttons << button;
     button->move(0, (buttons.length() - 1) * (button->height() + 10));
     connect(
       button, &QPushButton::clicked,
@@ -83,9 +83,8 @@ void AddNodeMenu::createShowAnimation()
 //    );
 //  auto start = trigger->mapToParent(QPoint(position.x(), 0));
 //  auto end = trigger->mapToParent(position);
-  for (auto& buttonPair: buttons)
+  for (auto& button: buttons)
   {
-    auto button = buttonPair.second;
     addMoveAnimation(button,
                      button->pos() - QPoint(button->width(), 0),
                      QPoint(0, button->y())

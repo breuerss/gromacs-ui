@@ -2,12 +2,14 @@
 #define COMMAND_FILEOBJECT_H
 
 #include <QString>
+#include <QObject>
 
 namespace Command {
 
-class FileObject
+class FileObject : public QObject
 {
 
+  Q_OBJECT
 public:
   enum class Type {
     Unknown,
@@ -30,9 +32,13 @@ public:
   FileObject(Type newType);
   bool exists() const;
   void setFileName(const QString& fileName);
+  const QString& getFileName() const;
 
   const Type type;
   static Category getCategoryFor(Type);
+
+signals:
+  void fileNameChanged(const QString& newFileName);
 
 private:
   QString fileName;

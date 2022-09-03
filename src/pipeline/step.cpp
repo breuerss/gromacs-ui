@@ -23,15 +23,20 @@ Step::Step(
   , command(newCommand)
   , fileNameGenerator(newFileNameGenerator)
 {
-  command->setConfig(configuration);
-  command->setFileObjectProvider(fileObjectProvider);
+  command->setConfig(configuration.get());
+  command->setFileObjectConsumer(fileObjectConsumer.get());
+  command->setFileNameGenerator(fileNameGenerator.get());
+  fileNameGenerator->setConfiguration(configuration);
 
-  QObject::connect(command.get(), &Command::Executor::finished, [this] {
+  auto updateFileNames = [this] {
     for (auto fileObject: fileObjectProvider->provides())
     {
       fileObject->setFileName(fileNameGenerator->getFileNameFor(fileObject->type));
     }
-  });
+  };
+
+  QObject::connect(command.get(), &Command::Executor::finished, updateFileNames);
+  updateFileNames();
 }
 
 void Step::showStatusUI(bool show)

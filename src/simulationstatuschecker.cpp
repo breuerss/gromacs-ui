@@ -9,7 +9,7 @@
 
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
-  std::shared_ptr<Config::Simulation> simulation,
+  const Config::Simulation* simulation,
   QObject *parent
   )
   : QObject(parent)

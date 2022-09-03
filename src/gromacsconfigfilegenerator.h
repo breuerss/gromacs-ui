@@ -10,7 +10,7 @@
 class GromacsConfigFileGenerator
 {
 public:
-  GromacsConfigFileGenerator(std::shared_ptr<Config::Simulation>);
+  GromacsConfigFileGenerator(Config::Simulation*);
   void generate(const QString& fileName);
   static std::shared_ptr<Config::Simulation> createFrom(const QString& fileName);
   void setFromMdpFile(const QString& fileName);
@@ -20,13 +20,13 @@ private:
   template<typename T>
   QString getValueFromModelImpl(const QString& key, std::true_type)
   {
-    return QString::number(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+    return QString::number(configuration->property(optionsMap[key].toStdString().c_str()).value<T>());
   }
 
   template<typename T>
   QString getValueFromModelImpl(const QString& key, std::false_type)
   {
-    return toString(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+    return toString(configuration->property(optionsMap[key].toStdString().c_str()).value<T>());
   }
 
   template<typename T>
@@ -54,7 +54,7 @@ private:
   static QVariant createValueFrom(const QString& option, const QString& inputValueString);
 
 private:
-  std::shared_ptr<Config::Simulation> model;
+  Config::Simulation* configuration;
 };
 
 #endif // GROMACSCONFIGFILEGENERATOR_H

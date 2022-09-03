@@ -17,9 +17,7 @@ namespace Pipeline { namespace View {
 Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
-  , runIcon(new ClickableIcon(
-      QIcon::fromTheme("media-playback-start").pixmap(40, 40), this
-      ))
+  , runIcon(new ClickableIcon(QIcon::fromTheme("media-playback-start"), true, this))
   , step(newStep)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
@@ -37,10 +35,10 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
 
   nodeBackground = new RoundedRectItem(0, 0, width, height, this);
   setRect(nodeBackground->rect());
-  nodeBackground->setBrush(Colors::getColorFor(step->category).lighter(130));
+  nodeBackground->setBrush(Colors::getColorFor(step->category));
   nodeBackground->setRadiusX(height / 2);
   nodeBackground->setRadiusY(height / 2);
-  nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(105), 2));
+  nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
   text->setZValue(1);
 
@@ -49,6 +47,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   runIcon->setPos(
     text->x() + textDim.width() + spacing,
     rect().center().y() - runIcon->boundingRect().height() / 2);
+  runIcon->setIcon(QIcon::fromTheme("media-playback-start"), true);
 
   auto command = step->getCommand().get();
   auto enableRunIcon = [this, command] () {
@@ -58,20 +57,18 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   enableRunIcon();
 
   QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
-    qDebug() << __PRETTY_FUNCTION__;
     step->getCommand()->exec();
   });
   QObject::connect(
     command, &Command::Executor::runningChanged,
     [this] (bool isRunning) {
-      qDebug() << isRunning;
       auto icon = QIcon::fromTheme("media-playback-start");
       if (isRunning)
       {
         icon = QIcon::fromTheme("media-playback-pause");
       }
 
-      runIcon->setIcon(icon);
+      runIcon->setIcon(icon, step->getCommand()->canExecute());
   });
 
 
@@ -92,6 +89,11 @@ void Node::addInputPort(const QList<Command::FileObject::Type>& acceptedFileType
   auto inputPort = createPort(color, Port::Type::Input);
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPorts << inputPort;
+  QObject::connect(
+    inputPort, &Port::connectedToChanged, 
+    [this] (std::shared_ptr<Command::FileObject> fileObject) {
+      step->getFileObjectConsumer()->connectTo(fileObject);
+    });
   arrangeInputPorts();
 }
 
@@ -99,11 +101,6 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
 {
   auto outputPort = createPort(color, Port::Type::Output);
   outputPort->setProvidedFileObject(fileObject);
-  QObject::connect(
-    outputPort, &Port::connectedToChanged, 
-    [this] (std::shared_ptr<Command::FileObject> fileObject) {
-      step->getFileObjectConsumer()->connectTo(fileObject);
-    });
   outputPorts << outputPort;
   arrangeOutputPorts();
 }

@@ -1,22 +1,11 @@
 #include "mainwindow.h"
-#include "qgraphicsitem.h"
-#include "src/gromacsconfigfilegenerator.h"
-#include "src/pipeline/step.h"
 #include "ui_mainwindow.h"
 #include "form/preferencesdialog.h"
 #include "projectmanager.h"
-#include "form/systemsetupform.h"
-#include "form/simulationsetupform.h"
 #include "statusmessagesetter.h"
-#include "simulationstatuschecker.h"
 #include "logforwarder.h"
 #include "uiupdater.h"
 
-#include "command/queue.h"
-#include "command/runsimulation.h"
-
-#include "model/project.h"
-#include "config/simulation.h"
 #include "model/systemsetup.h"
 
 #include <QDebug>

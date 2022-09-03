@@ -44,9 +44,9 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
 };
 
 GromacsConfigFileGenerator::GromacsConfigFileGenerator(
-  std::shared_ptr<Config::Simulation> model
+  Config::Simulation* newConfiguration
   )
-  : model(model)
+  : configuration(newConfiguration)
 {
 }
 
@@ -82,12 +82,12 @@ void GromacsConfigFileGenerator::generate(
   QTextStream writer(&file);
 
   using Config::Simulation;
-  Simulation::Type simulationType = model->property("simulationType").value<Simulation::Type>();
+  Simulation::Type simulationType = configuration->property("simulationType").value<Simulation::Type>();
   if (simulationType != Simulation::Type::None)
   {
     writeLine<Simulation::Algorithm>(writer, "integrator");
-    writeLine(writer, "nsteps", QString::number(model->property("numberOfSteps").value<double>(), 'f', 0));
-    writeLine(writer, "dt", QString::number(model->property("timeStep").value<double>() / 1000));
+    writeLine(writer, "nsteps", QString::number(configuration->property("numberOfSteps").value<double>(), 'f', 0));
+    writeLine(writer, "dt", QString::number(configuration->property("timeStep").value<double>() / 1000));
 
     // output control
     writeLine<unsigned int>(writer, "nstenergy");
@@ -118,7 +118,7 @@ void GromacsConfigFileGenerator::generate(
     // pressure
     writeLine<Simulation::PressureAlgorithm>(writer, "pcoupl");
     Simulation::PressureAlgorithm pressureAlgorithm =
-      model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
+      configuration->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
     if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
     {
       writeLine<Simulation::PressureCouplingType>(writer, "pcoupltype");
@@ -129,7 +129,7 @@ void GromacsConfigFileGenerator::generate(
 
     // temperature
     Simulation::TemperatureAlgorithm temperatureAlgorithm =
-      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
+      configuration->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
     writeLine<Simulation::TemperatureAlgorithm>(writer, "tcoupl");
     if (temperatureAlgorithm != Simulation::TemperatureAlgorithm::None)
     {
@@ -137,7 +137,7 @@ void GromacsConfigFileGenerator::generate(
       QStringList temperatures;
       QStringList updateIntervals;
 
-      const auto& groups = model->getTemperatureCouplingGroups();
+      const auto& groups = configuration->getTemperatureCouplingGroups();
       for (auto group : groups)
       {
         groupNames << toString(group->property("group").value<Config::TemperatureCouplingGroup::Group>());
@@ -163,9 +163,9 @@ void GromacsConfigFileGenerator::generate(
 std::shared_ptr<Config::Simulation>
 GromacsConfigFileGenerator::createFrom(const QString& fileName)
 {
-  auto model = std::make_shared<Config::Simulation>();
-  GromacsConfigFileGenerator(model).setFromMdpFile(fileName);
-  return model;
+  auto configuration = std::make_shared<Config::Simulation>();
+  GromacsConfigFileGenerator(configuration.get()).setFromMdpFile(fileName);
+  return configuration;
 }
 
 void GromacsConfigFileGenerator::setFromMdpFile(
@@ -202,11 +202,11 @@ void GromacsConfigFileGenerator::setFromMdpFile(
       {
         QStringList groupsInputValues = inputValueString
           .split(QRegExp("\\s+"), Qt::SkipEmptyParts);
-        auto& temperatureCouplingGroups = model->getTemperatureCouplingGroups();
+        auto& temperatureCouplingGroups = configuration->getTemperatureCouplingGroups();
         for (int groupIndex = temperatureCouplingGroups.size();
              groupIndex < groupsInputValues.size(); groupIndex++)
         {
-          model->addTemperatureCouplingGroup();
+          configuration->addTemperatureCouplingGroup();
         }
 
         for (int valueIndex = 0; valueIndex < groupsInputValues.size(); valueIndex++)
@@ -231,30 +231,30 @@ void GromacsConfigFileGenerator::setFromMdpFile(
         continue;
       }
 
-      model->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
+      configuration->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
     }
     file.close();
 
     using Config::Simulation;
     auto simulationType = Simulation::Type::None;
-    if (model->isMinimisation())
+    if (configuration->isMinimisation())
     {
       simulationType = Simulation::Type::Minimisation;
     }
     else if (
-      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>() !=
+      configuration->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>() !=
       Simulation::TemperatureAlgorithm::None)
     {
       simulationType = Simulation::Type::NVT;
       if (
-        model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>() !=
+        configuration->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>() !=
         Simulation::PressureAlgorithm::None
         )
       {
         simulationType = Simulation::Type::NPT;
       }
     }
-    model->setProperty("type", QVariant::fromValue(simulationType));
+    configuration->setProperty("type", QVariant::fromValue(simulationType));
   }
   else
   {

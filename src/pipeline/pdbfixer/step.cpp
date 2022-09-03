@@ -4,27 +4,30 @@
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
 
-namespace Pipeline { namespace PdbDownload {
+namespace Pipeline { namespace PdbFixer {
 
+using FileObject = ::Command::FileObject;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : Pipeline::Step(
-    { },
     {
-      ::Command::FileObject::Type::PDB,
+      { FileObject::Category::Coordinates, { FileObject::Type::PDB } }
+    },
+    {
+      FileObject::Type::PDB,
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
     std::make_shared<FileNameGenerator>(project),
-    Category::DataProvider
+    Category::Preprocess
     )
 {
 }
 
 QString Step::getName() const
 {
-  return "PDB Downloader";
+  return "PDB Fixer";
 }
 
 } }

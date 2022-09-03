@@ -1,6 +1,7 @@
 #include "fileobjectconsumer.h"
 #include "src/command/fileobject.h"
 #include <memory>
+#include <QDebug>
 
 namespace Command {
 
@@ -23,11 +24,13 @@ bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
 
 void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject)
 {
+  qDebug() << "connectto" << __PRETTY_FUNCTION__;
   auto category = getCategoryFor(fileObject);
   if (category != FileObject::Category::Unknown)
   {
+    auto old = connectedTo[category];
     connectedTo[category] = fileObject;
-    emit connectedToChanged(fileObject);
+    emit connectedToChanged(fileObject, old);
   }
 }
 
@@ -37,8 +40,25 @@ void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject)
   if (connectedTo[category] == fileObject)
   {
     connectedTo.remove(category);
-    emit connectedToChanged(nullptr);
+    emit connectedToChanged(nullptr, fileObject);
   }
+}
+
+QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
+{
+  qDebug() << __PRETTY_FUNCTION__;
+  QString fileName;
+  for (auto object : connectedTo.values())
+  {
+    qDebug() << "loop" << object.get();
+    if (object->type == type)
+    {
+      fileName = object->getFileName();
+      break;
+    }
+  }
+
+  return fileName;
 }
 
 FileObject::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObject> fileObject)

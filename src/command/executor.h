@@ -1,15 +1,20 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
 
+#include "src/command/filenamegenerator.h"
 #include <QObject>
 #include <QProcess>
 #include <QString>
+#include <QMap>
+#include <memory>
 
-#include "src/config/configuration.h"
+namespace Config {
+class Configuration;
+}
 
 namespace Command {
 
-class FileObjectProvider;
+class FileObjectConsumer;
 
 class Executor : public QObject
 {
@@ -32,8 +37,9 @@ public:
   bool isRunning() const;
   bool wasSuccessful() const;
 
-  void setConfig(std::shared_ptr<Config::Configuration> newConfig);
-  void setFileObjectProvider(std::shared_ptr<Command::FileObjectProvider> fileObjectProvider);
+  void setConfig(Config::Configuration* newConfig);
+  void setFileObjectConsumer(const Command::FileObjectConsumer* fileObjectConsumer);
+  void setFileNameGenerator(const FileNameGenerator* newfileNameGenerator);
 
 signals:
   void finished();
@@ -41,12 +47,13 @@ signals:
   void progress(float percentage, ProgressType type = ProgressType::Percentage);
   void runningChanged(bool running);
   void canExecuteChanged(bool canExecute);
-  void configChanged(std::shared_ptr<Config::Configuration> newConfig);
+  void configChanged(const Config::Configuration* newConfig);
 
 protected:
   QProcess process;
-  std::shared_ptr<Config::Configuration> configuration;
-  std::shared_ptr<Command::FileObjectProvider> fileObjectProvider;
+  Config::Configuration* configuration;
+  const Command::FileObjectConsumer* fileObjectConsumer;
+  const FileNameGenerator* fileNameGenerator;
   void setRunning(bool running);
 
 private:
@@ -54,6 +61,8 @@ private:
   bool terminationRequested = false;
   bool running = false;
   QList<QMetaObject::Connection> conns;
+  QList<QMetaObject::Connection> fileConsumerConnections;
+  QMap<const FileObject*, QMetaObject::Connection> fileObjectConnections;
 };
 
 }

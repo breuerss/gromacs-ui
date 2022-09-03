@@ -19,7 +19,7 @@ class SimulationStatusChecker : public QObject
 public:
   explicit SimulationStatusChecker(
     std::shared_ptr<Model::Project> project,
-    std::shared_ptr<Config::Simulation> simulation,
+    const Config::Simulation* simulation,
     QObject *parent = nullptr);
 
   bool hasData() const;
@@ -44,7 +44,7 @@ private:
   QString getBasePath() const;
 
   std::shared_ptr<Model::Project> project;
-  std::shared_ptr<Config::Simulation> simulation;
+  const Config::Simulation* simulation;
 };
 
 #endif // SIMULATIONSTATUSCHECKER_H

@@ -6,36 +6,67 @@
 
 namespace Pipeline { namespace View {
 
-ClickableIcon::ClickableIcon(const QIcon& newIcon, QGraphicsItem* parent)
+ClickableIcon::ClickableIcon(
+  const QIcon& newIcon,
+  bool newGrayScale,
+  QGraphicsItem* parent)
   : QObject(nullptr)
   , QGraphicsPixmapItem(newIcon.pixmap(35, 35), parent)
   , icon(newIcon)
+  , grayScale(newGrayScale)
 {
   setAcceptHoverEvents(true);
+  repaint();
 }
 
-void ClickableIcon::setIcon(const QIcon& newIcon)
+void ClickableIcon::setIcon(const QIcon& newIcon, bool newGrayScale)
 {
   icon = newIcon;
-  setPixmap(icon.pixmap(pixmap().size()));
+  grayScale = newGrayScale;
+
+  repaint();
 }
 
-void ClickableIcon::setEnabled(bool enabled)
+void ClickableIcon::setEnabled(bool newEnabled)
 {
-  QGraphicsPixmapItem::setEnabled(enabled);
+  enabled = newEnabled;
+  repaint();
+}
+
+void ClickableIcon::repaint()
+{
+  auto pixMap = icon.pixmap(pixmap().size());
+  if (grayScale)
+  {
+    pixMap = getGrayScale(pixMap);
+  }
 
   if (enabled) {
-    setPixmap(icon.pixmap(pixmap().size()));
+    setPixmap(pixMap);
   }
   else
   {
-    QPixmap disabledPixmap(pixmap().size());
-    disabledPixmap.fill(Qt::transparent);
-    QPainter p(&disabledPixmap);
-    p.setOpacity(0.3);
+    pixMap.fill(Qt::transparent);
+    QPainter p(&pixMap);
+    p.setOpacity(0.5);
     p.drawPixmap(0, 0, icon.pixmap(pixmap().size()));
-    setPixmap(disabledPixmap);
+    setPixmap(pixMap);
   }
+}
+
+QPixmap ClickableIcon::getGrayScale(const QPixmap& pixmap) const 
+{
+  QImage im = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
+  for (int y = 0; y < im.height(); ++y) {
+    QRgb *scanLine = (QRgb*)im.scanLine(y);
+    for (int x = 0; x < im.width(); ++x) {
+      QRgb pixel = *scanLine;
+      uint ci = uint(qGray(pixel));
+      *scanLine = qRgba(ci, ci, ci, qAlpha(pixel));
+      ++scanLine;
+    }
+  }
+  return QPixmap::fromImage(im);
 }
 
 void ClickableIcon::mousePressEvent(QGraphicsSceneMouseEvent*)
@@ -60,6 +91,7 @@ void ClickableIcon::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
 }
+
 
 } }
 

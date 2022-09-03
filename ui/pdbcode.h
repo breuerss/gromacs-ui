@@ -2,7 +2,6 @@
 #define PDBCODE_H
 
 #include <QWidget>
-#include <memory>
 #include "../src/pipeline/pdbdownload/configuration.h"
 
 namespace Ui {
@@ -14,12 +13,12 @@ class PdbCode : public QWidget
     Q_OBJECT
 
 public:
-    explicit PdbCode(std::shared_ptr<Pipeline::PdbDownload::Configuration> config);
+    explicit PdbCode(Pipeline::PdbDownload::Configuration* config);
     ~PdbCode();
 
 private:
     Ui::PdbCode *ui;
-    std::shared_ptr<Pipeline::PdbDownload::Configuration> config;
+    Pipeline::PdbDownload::Configuration* config;
 };
 
 #endif // PDBCODE_H

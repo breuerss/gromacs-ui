@@ -1,21 +1,15 @@
-#include "pdbfixer.h"
+#include "command.h"
 
-#include "../appprovider.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
-#include "qfileinfo.h"
+#include "../../appprovider.h"
+#include "../../statusmessagesetter.h"
+#include "../../command/fileobject.h"
+#include "../../command/fileobjectconsumer.h"
 #include <QFileInfo>
 #include <QDebug>
 
-namespace Command {
+namespace Pipeline { namespace PdbFixer {
 
-PdbFixer::PdbFixer()
-  : Executor()
-{
-
-}
-
-void PdbFixer::doExecute()
+void Command::doExecute()
 {
   qDebug() << getName();
   QString command = AppProvider::get("pdbfixer");
@@ -44,21 +38,29 @@ void PdbFixer::doExecute()
   process.start(command);
 }
 
-bool PdbFixer::canExecute() const
+QString Command::getInputFilename() const
 {
+  using Type = ::Command::FileObject::Type;
+  qDebug() << fileObjectConsumer;
+  return fileObjectConsumer->getFileNameFor(Type::PDB);
+}
+
+bool Command::canExecute() const
+{
+  qDebug() << "can executed" << getInputFilename();
   return QFile(getInputFilename()).exists();
 }
 
-QString PdbFixer::getName() const
+QString Command::getName() const
 {
   return "pdbfixer";
 }
 
-QString PdbFixer::getOutputFilename() const
+QString Command::getOutputFilename() const
 {
   QFileInfo fileInfo(getInputFilename());
 
   return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_fixed.pdb";
 }
 
-}
+} }

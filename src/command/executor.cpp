@@ -1,8 +1,9 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
 #include "../logforwarder.h"
-#include "src/command/fileobjectprovider.h"
+#include "fileobjectconsumer.h"
 #include <QDebug>
+#include <memory>
 
 namespace Command {
 
@@ -87,22 +88,49 @@ bool Executor::wasSuccessful() const
     process.exitCode() == 0;
 }
 
-void Executor::setConfig(std::shared_ptr<Config::Configuration> newConfig)
+void Executor::setConfig(Config::Configuration* newConfig)
 {
   configuration = newConfig;
   configChanged(configuration);
 }
 
-void Executor::setFileObjectProvider(
-  std::shared_ptr<Command::FileObjectProvider> newFileObjectProvider)
+void Executor::setFileObjectConsumer(
+  const Command::FileObjectConsumer* newFileObjectConsumer)
 {
-  fileObjectProvider = newFileObjectProvider;
+  for (auto conn: fileConsumerConnections)
+  {
+    disconnect(conn);
+  }
+  fileObjectConsumer = newFileObjectConsumer;
+
+  fileConsumerConnections << connect(
+    fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
+    [this] (std::shared_ptr<FileObject> newFileObject, std::shared_ptr<FileObject> oldFileObject) {
+      qDebug() << "connected to changed";
+      if (fileObjectConnections.contains(oldFileObject.get()))
+      {
+        disconnect(fileObjectConnections[oldFileObject.get()]);
+      }
+
+      fileObjectConnections[newFileObject.get()] = connect(
+        newFileObject.get(), &FileObject::fileNameChanged,
+        [this] () {
+          qDebug() << "filename changed";
+          canExecuteChanged(canExecute());
+        });
+      canExecuteChanged(canExecute());
+  });
 }
 
 void Executor::setRunning(bool newRunning)
 {
   running = newRunning;
   runningChanged(running);
+}
+
+void Executor::setFileNameGenerator(const FileNameGenerator* newFileNameGenerator)
+{
+  fileNameGenerator = newFileNameGenerator;
 }
 
 }

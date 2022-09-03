@@ -6,7 +6,7 @@ namespace Pipeline { namespace PdbDownload {
 
 QWidget* Configuration::getUI()
 {
-  return new PdbCode(shared_from_this());
-} }
-
+  return new PdbCode(this);
 }
+
+} }

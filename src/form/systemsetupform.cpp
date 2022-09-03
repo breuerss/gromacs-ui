@@ -15,7 +15,6 @@
 #include "../command/createbox.h"
 #include "../command/solvate.h"
 #include "../command/neutralise.h"
-#include "../command/pdbfixer.h"
 #include "../command/filter.h"
 
 #include <QDir>
@@ -196,11 +195,6 @@ void SystemSetupForm::preprocess()
   queue->clear();
   ui->processingProgress->setEnabled(true);
   ui->processingProgress->setValue(0);
-
-  if (ui->usePdbFixer->isChecked())
-  {
-    queue->enqueue(std::make_shared<Command::PdbFixer>());
-  }
 
   if (ui->useFilter->isChecked())
   {

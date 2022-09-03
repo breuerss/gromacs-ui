@@ -14,7 +14,6 @@ class AddNodeMenu : public QWidget {
 public:
   struct ButtonDefinition {
     QString label;
-    QString buttonType;
     std::function<void()> callback;
   };
 
@@ -35,8 +34,7 @@ public slots:
 
 private:
   void addMoveAnimation(AddNodeButton* button, const QPoint& start, const QPoint& end);
-  typedef QPair<QString, AddNodeButton*> ButtonPair;
-  QList<ButtonPair> buttons;
+  QList<AddNodeButton*> buttons;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
   void createShowAnimation();
   QColor buttonColor;

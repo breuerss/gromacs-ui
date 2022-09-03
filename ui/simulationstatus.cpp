@@ -13,7 +13,7 @@
 
 SimulationStatus::SimulationStatus(
   std::shared_ptr<Command::RunSimulation> newStep,
-  std::shared_ptr<Config::Simulation> newConfiguration,
+  Config::Simulation* newConfiguration,
   QWidget *parent
   )
     : QWidget(parent)

@@ -19,7 +19,7 @@ class SimulationStatus : public QWidget
 public:
   explicit SimulationStatus(
     std::shared_ptr<Command::RunSimulation> step,
-    std::shared_ptr<Config::Simulation> configuration,
+    Config::Simulation* configuration,
     QWidget *parent = nullptr);
   ~SimulationStatus();
   void showEvent(QShowEvent* event);
@@ -28,7 +28,7 @@ private:
   void setProgressViewForType(Config::Simulation::Type type);
   void setupProgressValueChart();
   std::shared_ptr<Command::RunSimulation> step;
-  std::shared_ptr<Config::Simulation> configuration;
+  Config::Simulation* configuration;
   Ui::SimulationStatus *ui;
   QList<QMetaObject::Connection> conns;
   Gui::ProgressChart* progressChart;

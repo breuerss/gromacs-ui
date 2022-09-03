@@ -8,7 +8,7 @@
 
 namespace Command {
 
-class FileObjectConsumer : private QObject
+class FileObjectConsumer : public QObject
 {
   Q_OBJECT
 public:
@@ -18,9 +18,10 @@ public:
   bool accepts(std::shared_ptr<FileObject> fileObject);
   void connectTo(std::shared_ptr<FileObject> fileObject);
   void disconnectFrom(std::shared_ptr<FileObject> fileObject);
+  QString getFileNameFor(FileObject::Type type) const;
 
 signals:
-  void connectedToChanged(std::shared_ptr<FileObject> fileObject);
+  void connectedToChanged(std::shared_ptr<FileObject> fileObject, std::shared_ptr<FileObject> oldFileObject);
 
 private:
   FileObject::Category getCategoryFor(std::shared_ptr<FileObject> fileObject);

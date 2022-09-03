@@ -26,7 +26,7 @@ RunSimulation::RunSimulation(std::shared_ptr<Model::Project> project)
     progressChecker.removePath(simulationChecker->getLogPath());
   });
   connect(this, &RunSimulation::started, [this] () {
-    auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
+    auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
     progress(0, simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
   });
   connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
@@ -43,14 +43,15 @@ void RunSimulation::doExecute()
     return;
   }
 
-  auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
+  auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
   simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulationConfig);
   QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
 
-  GromacsConfigFileGenerator(simulationConfig).generate(mdpFile);
+  GromacsConfigFileGenerator(const_cast<Config::Simulation*>(simulationConfig))
+    .generate(mdpFile);
 
   QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
   QFileInfo systemPath(inputStructure);
@@ -146,7 +147,7 @@ void RunSimulation::checkProgress()
     progressChecker.addPath(logPath);
   }
 
-  auto simulationConfig = std::dynamic_pointer_cast<Config::Simulation>(configuration);
+  auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
   SimulationStatusChecker statusChecker(project, simulationConfig);
   float progressValue = statusChecker.getProgress();
   if (std::isnan(progressValue))
@@ -164,7 +165,7 @@ QWidget* RunSimulation::getStatusUi()
 {
   return new SimulationStatus(
     shared_from_this(),
-    std::dynamic_pointer_cast<Config::Simulation>(configuration));
+    dynamic_cast<Config::Simulation*>(configuration));
 }
 
 }

@@ -25,10 +25,10 @@ Command::Command()
   connect(downloader.get(), &PdbDownloader::downloaded, callback);
 
   connect(this, &Executor::configChanged, [this] (auto configuration) {
-    auto newConfig = std::dynamic_pointer_cast<Configuration>(configuration);
+    auto newConfig = dynamic_cast<const Configuration*>(configuration);
     disconnect(configConnection);
     configConnection = connect(
-      newConfig.get(), &Configuration::pdbCodeChanged,
+      newConfig, &Configuration::pdbCodeChanged,
       [this] () {
         qDebug() << "pdbcode changed";
         canExecuteChanged(canExecute());
@@ -56,12 +56,7 @@ bool Command::canExecute() const
 
 QString Command::getPdbCode() const
 {
-  return dynamic_cast<Configuration*>(configuration.get())->property("pdbCode").toString();
-}
-
-void Command::setFileNameGenerator(std::shared_ptr<FileNameGenerator> newFileNameGenerator)
-{
-  fileNameGenerator = newFileNameGenerator;
+  return dynamic_cast<const Configuration*>(configuration)->property("pdbCode").toString();
 }
 
 } }
