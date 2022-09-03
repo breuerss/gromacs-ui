@@ -1,3 +1,5 @@
+include(fix_moc.prf)
+
 QT       += core gui webenginewidgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
