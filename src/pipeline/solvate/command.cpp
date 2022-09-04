@@ -1,22 +1,17 @@
-#include "solvate.h"
+#include "command.h"
 
-#include "../appprovider.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
+#include "../../appprovider.h"
+#include "../../statusmessagesetter.h"
+#include "../../command/fileobjectconsumer.h"
+#include "configuration.h"
+#include "../creategromacsmodel/configuration.h"
 
 #include <QFileInfo>
 #include <QDebug>
 
-namespace Command {
+namespace Pipeline { namespace Solvate {
 
-//Solvate::Solvate(std::shared_ptr<Model::SystemSetup> newSystemSetup)
-//  : Executor()
-//    , systemSetup(newSystemSetup)
-//{
-//
-//}
-
-void Solvate::doExecute()
+void Command::doExecute()
 {
   qDebug() << getName();
   QString command = AppProvider::get("gmx");
@@ -30,13 +25,14 @@ void Solvate::doExecute()
   command += " solvate";
   QString inputFile = getInputFilename();
 
-  using Model::SystemSetup;
-  //auto waterModel = systemSetup->property("waterModel").value<SystemSetup::WaterModel>();
+  auto config = dynamic_cast<Configuration*>(configuration);
+  auto waterModel = config->property("waterModel")
+    .value<CreateGromacsModel::Configuration::WaterModel>();
 
   QString outputFile = getOutputFilename();
   command += " -cp " + inputFile;
   command += " -o " + outputFile;
-  //command += " -cs " + getWaterBoxFor(waterModel);
+  command += " -cs " + getWaterBoxFor(waterModel);
   command += " -p topol.top";
 
   QFileInfo fileInfo(inputFile);
@@ -46,24 +42,30 @@ void Solvate::doExecute()
   process.start(command);
 }
 
-bool Solvate::canExecute() const
+bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
 }
 
-QString Solvate::getName() const
+QString Command::getName() const
 {
   return "Solvation";
 }
 
-QString Solvate::getOutputFilename() const
+QString Command::getInputFilename() const
+{
+  using Type = ::Command::FileObject::Type;
+  return fileObjectConsumer->getFileNameFor(Type::GRO);
+}
+
+QString Command::getOutputFilename() const
 {
   QFileInfo fileInfo(getInputFilename());
   return fileInfo.absolutePath() + "/" +
     fileInfo.baseName() + "_solvated.gro";
 }
 
-QString Solvate::getWaterBoxFor(
+QString Command::getWaterBoxFor(
   const Pipeline::CreateGromacsModel::Configuration::WaterModel& solvent)
 {
   using WaterModel = Pipeline::CreateGromacsModel::Configuration::WaterModel;
@@ -80,4 +82,4 @@ QString Solvate::getWaterBoxFor(
   return waterBox;
 }
 
-}
+} }
