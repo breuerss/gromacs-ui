@@ -12,6 +12,8 @@ GromacsSystemSettings::GromacsSystemSettings(
     ui->setupUi(this);
     prepareWaterOptions();
     prepareForceFieldOptions();
+    connectToComboBox<QString>(ui->waterModel, config, "waterModel");
+    connectToComboBox<QString>(ui->forceField, config, "forceField");
 }
 
 GromacsSystemSettings::~GromacsSystemSettings()

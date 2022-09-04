@@ -40,10 +40,20 @@ AddMenu::AddMenu(ActionButton* trigger)
       step2->getFileObjectConsumer()->connectTo(
         step1->getFileObjectProvider()->provides()[0]
         );
+      auto step3 = addStepToProject<Pipeline::CreateBox::Step>();
+      step3->getFileObjectConsumer()->connectTo(
+        step2->getFileObjectProvider()->provides()[0]
+        );
 
-      addStepToProject<Pipeline::PdbFixer::Step>();
+      // TODO
+      // Filter
+      // CreateBox
+      // Solvate
+      // Neutralise
     }},
     { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
+    { "Create GROMACS Model", addStepToProject<Pipeline::CreateGromacsModel::Step> },
+    { "Create Box", addStepToProject<Pipeline::CreateBox::Step> },
   };
   nodeMenuDefinitions[Category::Viewer] = {
     //{ "Trajectory Viewer", []() {} },

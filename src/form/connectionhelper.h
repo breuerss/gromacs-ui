@@ -10,7 +10,20 @@
 #include <QMetaObject>
 
 template<typename ElementType, typename ValueType>
-QMetaObject::Connection connectToSpinBox(QWidget* container, std::shared_ptr<QObject> model, const QString& elementName)
+QMetaObject::Connection connectToSpinBox(
+  QWidget* container,
+  std::shared_ptr<QObject> model,
+  const QString& elementName
+  )
+{
+  return connectToSpinBox<ElementType, ValueType>(container, model.get(), elementName);
+}
+
+template<typename ElementType, typename ValueType>
+QMetaObject::Connection connectToSpinBox(
+  QWidget* container,
+  QObject* model,
+  const QString& elementName)
 {
   ElementType* widget = container->findChild<ElementType*>(elementName);
   if (!widget)
@@ -33,6 +46,17 @@ template<typename ValueType>
 QMetaObject::Connection connectToComboBox(
   QWidget* container,
   std::shared_ptr<QObject> model,
+  const QString& elementName,
+  std::function<void(ValueType)>&& callback = nullptr
+  )
+{
+  return connectToComboBox(container, model.get(), elementName, std::move(callback));
+}
+
+template<typename ValueType>
+QMetaObject::Connection connectToComboBox(
+  QWidget* container,
+  QObject* model,
   const QString& elementName,
   std::function<void(ValueType)>&& callback = nullptr
   )

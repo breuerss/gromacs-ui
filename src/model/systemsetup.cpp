@@ -11,15 +11,13 @@ SystemSetup::SystemSetup()
   static bool registered = false;
   if (!registered)
   {
-    qRegisterMetaType<BoxType>("SystemSetup::BoxType");
-    qRegisterMetaTypeStreamOperators<int>("SystemSetup::BoxType");
     registered = true;
   }
   connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
 //  connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
 //  connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::boxTypeChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::distanceChanged, this, &SystemSetup::evaluateConfigReady);
+  //connect(this, &SystemSetup::boxTypeChanged, this, &SystemSetup::evaluateConfigReady);
+  //connect(this, &SystemSetup::distanceChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::negativeIonChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::positiveIonChanged, this, &SystemSetup::evaluateConfigReady);
 }
@@ -82,7 +80,7 @@ const QString& SystemSetup::getProcessedStructureFile() const
 void SystemSetup::evaluateConfigReady()
 {
   qDebug() << "evaluateConfigReady"
-    << boxType
+//    << boxType
 //    << waterModel
 //    << forceField
     << processedStructureFile;
@@ -91,20 +89,9 @@ void SystemSetup::evaluateConfigReady()
 
 bool SystemSetup::configReady() const
 {
-  return (boxType != BoxType::None) &&
+  return //(boxType != BoxType::None) &&
     //(forceField != ForceField::None) &&
     !processedStructureFile.isEmpty();
-}
-
-QString toString(SystemSetup::BoxType type)
-{
-  const static QMap<SystemSetup::BoxType, QString> map = {
-    { SystemSetup::BoxType::Cubic, "cubic" },
-    { SystemSetup::BoxType::Octahedron, "octahedron" },
-    { SystemSetup::BoxType::Dodecahedron, "dodecahedron" },
-  };
-
-  return map[type];
 }
 
 }

@@ -32,8 +32,6 @@ private:
   std::shared_ptr<Model::Project> project;
   std::shared_ptr<Model::SystemSetup> systemSetup;
 
-  void prepareBoxOptions();
-
   void setIonFromModel();
   void connectIonSelectors();
 

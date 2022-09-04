@@ -11,7 +11,6 @@
 #include "../model/project.h"
 #include "../model/systemsetup.h"
 #include "../command/queue.h"
-#include "../command/createbox.h"
 #include "../command/solvate.h"
 #include "../command/neutralise.h"
 #include "../command/filter.h"
@@ -32,7 +31,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 {
   ui->setupUi(this);
 
-  prepareBoxOptions();
   setIonFromModel();
   connectIonSelectors();
 
@@ -72,7 +70,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectToComboBox<QString>(ui->waterModel, systemSetup, "waterModel");
   connectToComboBox<QString>(ui->forceField, systemSetup, "forceField");
 
-  connectToSpinBox<QDoubleSpinBox, double>(ui->distanceToEdge, systemSetup, "distance");
   connectToSpinBox<QDoubleSpinBox, double>(ui->ionConcentration, systemSetup, "ionConcentration");
 
   connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
@@ -202,7 +199,7 @@ void SystemSetupForm::preprocess()
 
   if (ui->usecreateBox->isChecked())
   {
-    queue->enqueue(std::make_shared<Command::CreateBox>(systemSetup));
+    //queue->enqueue(std::make_shared<Command::CreateBox>(systemSetup));
   }
 
   if (ui->useSolvate->isChecked())
@@ -236,19 +233,6 @@ void SystemSetupForm::stopPreprocess()
 void SystemSetupForm::showEvent(QShowEvent*)
 {
   ui->projectName->setFocus();
-}
-
-void SystemSetupForm::prepareBoxOptions()
-{
-  using Model::SystemSetup;
-  setOptions<SystemSetup::BoxType>(
-    ui->boxType,
-    {
-      { "Cubic", SystemSetup::BoxType::Cubic },
-      { "Octahedron", SystemSetup::BoxType::Octahedron },
-      { "Dodecahedron", SystemSetup::BoxType::Dodecahedron }
-    },
-    SystemSetup::BoxType::Dodecahedron);
 }
 
 void SystemSetupForm::setIonFromModel()

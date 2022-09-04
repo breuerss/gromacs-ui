@@ -42,6 +42,11 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   nodeBackground->setRadiusY(height / 2);
   nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
+  text->setDefaultTextColor("white");
+  auto font = text->font();
+  font.setPixelSize(16);
+  font.setWeight(700);
+  text->setFont(font);
   text->setZValue(1);
 
   runIcon->setZValue(11);

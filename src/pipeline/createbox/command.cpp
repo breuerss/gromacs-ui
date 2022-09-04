@@ -1,21 +1,21 @@
-#include "createbox.h"
+#include "command.h"
 
-#include "../appprovider.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
+#include "../../appprovider.h"
+#include "../../statusmessagesetter.h"
+#include "../../command/fileobjectconsumer.h"
+#include "configuration.h"
 #include <QFileInfo>
 #include <QDebug>
 
-namespace Command {
+namespace Pipeline { namespace CreateBox {
 
-CreateBox::CreateBox(std::shared_ptr<Model::SystemSetup> newSystemSetup)
+Command::Command()
   : Executor()
-    , systemSetup(newSystemSetup)
 {
 
 }
 
-void CreateBox::doExecute()
+void Command::doExecute()
 {
   qDebug() << getName();
   QString command = AppProvider::get("gmx");
@@ -32,8 +32,9 @@ void CreateBox::doExecute()
   QString outputFile = getOutputFilename();
   command += " -f " + inputFile;
   command += " -o " + outputFile;
-  command += " -d " + systemSetup->property("distance").value<QString>();
-  command += " -bt " + toString(systemSetup->property("boxType").value<Model::SystemSetup::BoxType>());
+  auto config = dynamic_cast<Configuration*>(configuration);
+  command += " -d " + config->property("distance").value<QString>();
+  command += " -bt " + toString(config->property("boxType").value<Configuration::BoxType>());
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
@@ -42,21 +43,27 @@ void CreateBox::doExecute()
   process.start(command);
 }
 
-bool CreateBox::canExecute() const
+bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
 }
 
-QString CreateBox::getName() const
+QString Command::getName() const
 {
   return "Box Creation";
 }
 
-QString CreateBox::getOutputFilename() const
+QString Command::getInputFilename() const
+{
+  using Type = ::Command::FileObject::Type;
+  return fileObjectConsumer->getFileNameFor(Type::GRO);
+}
+
+QString Command::getOutputFilename() const
 {
   QFileInfo fileInfo(getInputFilename());
 
   return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_boxed.gro";
 }
 
-}
+} }
