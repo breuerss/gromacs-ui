@@ -17,7 +17,10 @@ namespace Pipeline { namespace View {
 Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
-  , runIcon(new ClickableIcon(QIcon::fromTheme("media-playback-start"), true, this))
+  , runIcon(new ClickableIcon(
+      QIcon::fromTheme("media-playback-start"),
+      true,
+      this))
   , step(newStep)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
@@ -47,7 +50,6 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   runIcon->setPos(
     text->x() + textDim.width() + spacing,
     rect().center().y() - runIcon->boundingRect().height() / 2);
-  runIcon->setIcon(QIcon::fromTheme("media-playback-start"), true);
 
   auto command = step->getCommand().get();
   auto enableRunIcon = [this, command] () {
@@ -68,7 +70,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
         icon = QIcon::fromTheme("media-playback-pause");
       }
 
-      runIcon->setIcon(icon, step->getCommand()->canExecute());
+      runIcon->setIcon(icon, true);
   });
 
 

@@ -35,7 +35,7 @@ void ClickableIcon::setEnabled(bool newEnabled)
 
 void ClickableIcon::repaint()
 {
-  auto pixMap = icon.pixmap(pixmap().size());
+  QPixmap pixMap = icon.pixmap(pixmap().size());
   if (grayScale)
   {
     pixMap = getGrayScale(pixMap);
@@ -46,11 +46,12 @@ void ClickableIcon::repaint()
   }
   else
   {
-    pixMap.fill(Qt::transparent);
-    QPainter p(&pixMap);
+    QPixmap grayScale(pixMap.size());
+    grayScale.fill(Qt::transparent);
+    QPainter p(&grayScale);
     p.setOpacity(0.5);
-    p.drawPixmap(0, 0, icon.pixmap(pixmap().size()));
-    setPixmap(pixMap);
+    p.drawPixmap(0, 0, pixMap);
+    setPixmap(grayScale);
   }
 }
 
