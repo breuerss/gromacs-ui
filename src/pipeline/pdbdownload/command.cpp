@@ -30,7 +30,6 @@ Command::Command()
     configConnection = connect(
       newConfig, &Configuration::pdbCodeChanged,
       [this] () {
-        qDebug() << "pdbcode changed";
         canExecuteChanged(canExecute());
       });
   });
