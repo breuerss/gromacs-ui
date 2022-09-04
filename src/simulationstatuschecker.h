@@ -5,9 +5,9 @@
 #include <QList>
 #include <memory>
 
-namespace Config {
-class Simulation;
-}
+namespace Pipeline { namespace Simulation {
+class Configuration;
+} }
 
 namespace Model {
 class Project;
@@ -19,7 +19,7 @@ class SimulationStatusChecker : public QObject
 public:
   explicit SimulationStatusChecker(
     std::shared_ptr<Model::Project> project,
-    const Config::Simulation* simulation,
+    const Pipeline::Simulation::Configuration* simulation,
     QObject *parent = nullptr);
 
   bool hasData() const;
@@ -44,7 +44,7 @@ private:
   QString getBasePath() const;
 
   std::shared_ptr<Model::Project> project;
-  const Config::Simulation* simulation;
+  const Pipeline::Simulation::Configuration* simulation;
 };
 
 #endif // SIMULATIONSTATUSCHECKER_H

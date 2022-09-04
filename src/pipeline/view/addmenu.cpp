@@ -13,7 +13,7 @@
 #include "../createbox/step.h"
 #include "../solvate/step.h"
 #include "../neutralise/step.h"
-#include "../simulation.h"
+#include "../simulation/step.h"
 
 namespace Pipeline { namespace View {
 
@@ -72,7 +72,7 @@ AddMenu::AddMenu(ActionButton* trigger)
     //{ "Coordinate Viewer", []() {} },
   };
   nodeMenuDefinitions[Category::Simulation] = {
-    { "Minimisation", addStepToProject<Pipeline::Simulation> },
+    { "Minimisation", addStepToProject<Pipeline::Simulation::Step> },
     { "NVT Simulation", []() {} },
     { "NPT Simulation", []() {} },
   };

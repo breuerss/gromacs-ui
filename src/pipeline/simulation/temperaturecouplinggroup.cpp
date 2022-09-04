@@ -1,10 +1,10 @@
 #include "temperaturecouplinggroup.h"
-#include "../misc/bimaphelper.h"
+#include "../../misc/bimaphelper.h"
 #include <QDebug>
 #include <QMetaProperty>
 #include <cstring>
 
-namespace Config {
+namespace Pipeline { namespace Simulation {
 
 TemperatureCouplingGroup::TemperatureCouplingGroup()
 {
@@ -36,4 +36,4 @@ QString toString(TemperatureCouplingGroup::Group group)
   return temperatureCouplingGroupsBimap.left.at(group);
 }
 
-}
+} }

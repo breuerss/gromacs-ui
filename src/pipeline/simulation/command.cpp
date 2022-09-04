@@ -1,12 +1,11 @@
-#include "runsimulation.h"
-#include "../gromacsconfigfilegenerator.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
-#include "../model/project.h"
-#include "../config/simulation.h"
-#include "../appprovider.h"
-#include "../logforwarder.h"
-#include "../simulationstatuschecker.h"
+#include "command.h"
+#include "../../gromacsconfigfilegenerator.h"
+#include "../../statusmessagesetter.h"
+#include "../../model/project.h"
+#include "configuration.h"
+#include "../../appprovider.h"
+#include "../../logforwarder.h"
+#include "../../simulationstatuschecker.h"
 #include "qfilesystemwatcher.h"
 #include "src/command/fileobject.h"
 #include "ui/simulationstatus.h"
@@ -16,23 +15,23 @@
 #include <cmath>
 #include <memory>
 
-namespace Command {
+namespace Pipeline { namespace Simulation {
 
-RunSimulation::RunSimulation(std::shared_ptr<Model::Project> project)
+Command::Command(std::shared_ptr<Model::Project> project)
   : Executor()
   , project(project)
 {
-  connect(this, &RunSimulation::finished, [this] () {
+  connect(this, &Command::finished, [this] () {
     progressChecker.removePath(simulationChecker->getLogPath());
   });
-  connect(this, &RunSimulation::started, [this] () {
-    auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
+  connect(this, &Command::started, [this] () {
+    auto simulationConfig = dynamic_cast<const Pipeline::Simulation::Configuration*>(configuration);
     progress(0, simulationConfig->isMinimisation() ? ProgressType::Value : ProgressType::Percentage);
   });
-  connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &RunSimulation::checkProgress);
+  connect(&progressChecker, &QFileSystemWatcher::fileChanged, this, &Command::checkProgress);
 }
 
-void RunSimulation::doExecute()
+void Command::doExecute()
 {
   qDebug() << "Exec simulation";
   QString gmx = AppProvider::get("gmx");
@@ -43,17 +42,17 @@ void RunSimulation::doExecute()
     return;
   }
 
-  auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
+  auto simulationConfig = dynamic_cast<const Pipeline::Simulation::Configuration*>(configuration);
   simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulationConfig);
   QString mdpFile = simulationChecker->getMdpPath();
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
 
-  GromacsConfigFileGenerator(const_cast<Config::Simulation*>(simulationConfig))
+  GromacsConfigFileGenerator(const_cast<Pipeline::Simulation::Configuration*>(simulationConfig))
     .generate(mdpFile);
 
-  QString inputStructure = project->getSystemSetup()->getProcessedStructureFile();
+  QString inputStructure = getInputFileName();
   QFileInfo systemPath(inputStructure);
   //if (simulation->getPreviousStep())
   //{
@@ -87,12 +86,18 @@ void RunSimulation::doExecute()
   checkProgress();
 }
 
-bool RunSimulation::canExecute() const
+QString Command::getInputFileName() const
 {
-  return QFile(project->getSystemSetup()->getProcessedStructureFile()).exists();
+  using Type = ::Command::FileObject::Type;
+  return fileObjectConsumer->getFileNameFor(Type::GRO);
 }
 
-bool RunSimulation::execGrompp(
+bool Command::canExecute() const
+{
+  return QFile(getInputFileName()).exists();
+}
+
+bool Command::execGrompp(
   const QString& mdpFile,
   const QString& inputStructure,
   const QString& topology,
@@ -126,7 +131,7 @@ bool RunSimulation::execGrompp(
   return successful;
 }
 
-void RunSimulation::checkProgress()
+void Command::checkProgress()
 {
   QString logPath = simulationChecker->getLogPath();
 
@@ -147,7 +152,7 @@ void RunSimulation::checkProgress()
     progressChecker.addPath(logPath);
   }
 
-  auto simulationConfig = dynamic_cast<const Config::Simulation*>(configuration);
+  auto simulationConfig = dynamic_cast<const Pipeline::Simulation::Configuration*>(configuration);
   SimulationStatusChecker statusChecker(project, simulationConfig);
   float progressValue = statusChecker.getProgress();
   if (std::isnan(progressValue))
@@ -161,11 +166,11 @@ void RunSimulation::checkProgress()
     );
 }
 
-QWidget* RunSimulation::getStatusUi()
+QWidget* Command::getStatusUi()
 {
   return new SimulationStatus(
-    shared_from_this(),
-    dynamic_cast<Config::Simulation*>(configuration));
+    this,
+    dynamic_cast<Pipeline::Simulation::Configuration*>(configuration));
 }
 
-}
+} }

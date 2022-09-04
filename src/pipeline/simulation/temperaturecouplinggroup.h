@@ -1,11 +1,11 @@
 #ifndef TEMPERATURECOUPLINGGROUP_H
 #define TEMPERATURECOUPLINGGROUP_H
 
-#include "../model/serializable.h"
+#include "../../model/serializable.h"
 #include <QString>
 #include <QDataStream>
 
-namespace Config {
+namespace Pipeline { namespace Simulation {
 
 class TemperatureCouplingGroup : public Model::Serializable
 {
@@ -41,6 +41,6 @@ private:
 QVariant temperatureGroupFrom(const QString& group);
 QString toString(TemperatureCouplingGroup::Group group);
 
-}
+} }
 
 #endif

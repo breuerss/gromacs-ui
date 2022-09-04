@@ -11,7 +11,6 @@
 #include "../model/project.h"
 #include "../model/systemsetup.h"
 #include "../command/queue.h"
-#include "../command/solvate.h"
 #include "../command/filter.h"
 
 #include <QDir>

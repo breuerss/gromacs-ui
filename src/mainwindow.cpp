@@ -19,7 +19,7 @@
 #include <QMenu>
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
-#include "pipeline/simulation.h"
+#include "pipeline/simulation/step.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionNewProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::createNewProject);
   connect(ui->actionAddStep, &QAction::triggered, [] () {
-    ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation>();
+    ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation::Step>();
   });
   connect(ui->actionSave, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::save);

@@ -1,5 +1,6 @@
 #include "simulationstatus.h"
-#include "../src/config/simulation.h"
+#include "../src/pipeline/simulation/configuration.h"
+#include "../src/pipeline/simulation/command.h"
 #include "ui_simulationstatus.h"
 #include "../src/simulationstatuschecker.h"
 #include "../src/filecontentviewer.h"
@@ -9,11 +10,12 @@
 #include <memory>
 #include <QToolButton>
 #include <QDateTime>
+#include <QProcess>
 #include <variant>
 
 SimulationStatus::SimulationStatus(
-  std::shared_ptr<Command::RunSimulation> newStep,
-  Config::Simulation* newConfiguration,
+  Pipeline::Simulation::Command* newStep,
+  Pipeline::Simulation::Configuration* newConfiguration,
   QWidget *parent
   )
     : QWidget(parent)
@@ -83,8 +85,8 @@ SimulationStatus::SimulationStatus(
     });
 
   conns << connect(
-    step.get(),
-    &Command::RunSimulation::progress,
+    step,
+    &Pipeline::Simulation::Command::progress,
     [this] (float progress, Command::Executor::ProgressType type) {
       if (type == Command::Executor::ProgressType::Value)
       {
@@ -121,7 +123,7 @@ SimulationStatus::SimulationStatus(
   conns << connectToCheckbox(ui->resume, configuration, "resume");
 
   conns << connect(
-    step.get(), &Command::RunSimulation::started,
+    step, &Pipeline::Simulation::Command::started,
     [this] () {
       progressChart->clear();
 
@@ -132,7 +134,7 @@ SimulationStatus::SimulationStatus(
       ui->simulationProgress->setEnabled(true);
     });
   conns << connect(
-    step.get(), &Command::RunSimulation::finished,
+    step, &Pipeline::Simulation::Command::finished,
     [this] () {
       ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
       ui->rerunSimulation->setText(tr("Run simulation"));
@@ -155,9 +157,9 @@ SimulationStatus::SimulationStatus(
   }
 }
 
-void SimulationStatus::setProgressViewForType(Config::Simulation::Type type)
+void SimulationStatus::setProgressViewForType(Pipeline::Simulation::Configuration::Type type)
 {
-  const bool showChart = type == Config::Simulation::Type::Minimisation;
+  const bool showChart = type == Pipeline::Simulation::Configuration::Type::Minimisation;
   progressChart->setVisible(showChart);
   ui->simulationProgress->setVisible(!showChart);
   ui->assumedFinished->setVisible(!showChart);

@@ -1,11 +1,10 @@
-#ifndef RUNSIMULATION_H
-#define RUNSIMULATION_H
+#ifndef PIPELINE_SIMULATION_COMMAND_H
+#define PIPELINE_SIMULATION_COMMAND_H
 
-#include "executor.h"
+#include "../../command/executor.h"
 #include <memory>
 #include <QFileSystemWatcher>
 #include <qwidget.h>
-#include "../pipeline/step.h"
 
 namespace Model {
 class Project;
@@ -13,12 +12,12 @@ class Project;
 
 class SimulationStatusChecker;
 
-namespace Command {
+namespace Pipeline { namespace Simulation {
 
-class RunSimulation : public Executor, public std::enable_shared_from_this<RunSimulation>
+class Command : public ::Command::Executor
 {
 public:
-  explicit RunSimulation(std::shared_ptr<Model::Project> project);
+  explicit Command(std::shared_ptr<Model::Project> project);
   void doExecute() override;
   bool canExecute() const override;
   QWidget* getStatusUi() override;
@@ -36,8 +35,9 @@ private:
   std::shared_ptr<SimulationStatusChecker> simulationChecker;
   QFileSystemWatcher progressChecker;
   void checkProgress();
+  QString getInputFileName() const;
 };
 
-}
+} }
 
-#endif // RUNSIMULATION_H
+#endif

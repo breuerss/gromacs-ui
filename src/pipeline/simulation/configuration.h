@@ -1,19 +1,19 @@
-#ifndef STEP_H
-#define STEP_H
+#ifndef PIPELINE_SIMULATION_CONFIGURATION_H
+#define PIPELINE_SIMULATION_CONFIGURATION_H
 
-#include "../model/serializable.h"
 #include "temperaturecouplinggroup.h"
+#include "../../model/serializable.h"
+#include "../../config/configuration.h"
+#include "../../misc/bimaphelper.h"
 #include <QString>
 #include <QDataStream>
 #include <memory>
-#include "../misc/bimaphelper.h"
-#include "configuration.h"
 
-namespace Config {
+namespace Pipeline { namespace Simulation {
 
-class Simulation : public Model::Serializable
-                   , public Configuration
-                   , public std::enable_shared_from_this<Simulation>
+class Configuration
+: public Model::Serializable
+  , public Config::Configuration
 {
   Q_OBJECT
 public:
@@ -84,8 +84,8 @@ public:
   };
   Q_ENUM(VdwModifier);
 
-  Simulation();
-  ~Simulation();
+  Configuration();
+  ~Configuration();
   QString getName() const;
   QString getTypeAsString() const;
 
@@ -127,10 +127,10 @@ public:
   Q_PROPERTY(float vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
   Q_PROPERTY(double vdwEwaldRtol MEMBER vdwEwaldRtol NOTIFY vdwEwaldRtolChanged);
 
-  Q_PROPERTY(Simulation::PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
+  Q_PROPERTY(Configuration::PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
   Q_PROPERTY(float pressure MEMBER pressure NOTIFY pressureChanged);
   Q_PROPERTY(float pressureUpdateInterval MEMBER pressureUpdateInterval NOTIFY pressureUpdateIntervalChanged);
-  Q_PROPERTY(Simulation::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
+  Q_PROPERTY(Configuration::PressureCouplingType pressureCouplingType MEMBER pressureCouplingType NOTIFY pressureCouplingTypeChanged);
   Q_PROPERTY(double compressibility MEMBER compressibility NOTIFY compressibilityChanged);
 
   Q_PROPERTY(bool resume MEMBER resume NOTIFY resumeChanged);
@@ -238,24 +238,24 @@ private:
 };
 
 QVariant simulationAlgorithmFrom(const QString& value);
-QString toString(Simulation::Algorithm algorithm);
+QString toString(Configuration::Algorithm algorithm);
 QVariant pressureAlgorithmFrom(const QString& value);
-QString toString(Simulation::PressureAlgorithm alogrithm);
+QString toString(Configuration::PressureAlgorithm alogrithm);
 QVariant pressureCouplingTypeFrom(const QString& value);
-QString toString(Simulation::PressureCouplingType type);
+QString toString(Configuration::PressureCouplingType type);
 QVariant temperatureAlgorithmFrom(const QString& value);
-QString toString(Simulation::TemperatureAlgorithm algorithm);
-QString toString(Simulation::Type type, bool shortVersion = false);
+QString toString(Configuration::TemperatureAlgorithm algorithm);
+QString toString(Configuration::Type type, bool shortVersion = false);
 QVariant electrostaticAlgorithmFrom(const QString& value);
-QString toString(Simulation::ElectrostaticAlgorithm algorithm);
+QString toString(Configuration::ElectrostaticAlgorithm algorithm);
 QVariant vdwAlgorithmFrom(const QString& value);
-QString toString(Simulation::VdwAlgorithm algorithm);
+QString toString(Configuration::VdwAlgorithm algorithm);
 QVariant vdwModifierFrom(const QString& value);
-QString toString(Simulation::VdwModifier algorithm);
+QString toString(Configuration::VdwModifier algorithm);
 
-QDataStream &operator<<(QDataStream &out, const Simulation &model);
-QDataStream &operator>>(QDataStream &in, Simulation& model);
+QDataStream &operator<<(QDataStream &out, const Configuration &model);
+QDataStream &operator>>(QDataStream &in, Configuration& model);
 
-}
+} }
 
-#endif // STEP_H
+#endif

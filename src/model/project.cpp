@@ -1,7 +1,5 @@
 #include "project.h"
-#include "src/command/runsimulation.h"
 #include "systemsetup.h"
-#include "../config/simulation.h"
 #include "../settings.h"
 #include <QDebug>
 #include <QDir>

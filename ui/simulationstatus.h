@@ -3,14 +3,16 @@
 
 #include <QWidget>
 #include <QList>
-#include "../src/config/simulation.h"
-#include "src/model/project.h"
-#include "src/command/runsimulation.h"
 #include "src/form/progresschart.h"
+#include "../src/pipeline/simulation/configuration.h"
 
 namespace Ui {
 class SimulationStatus;
 }
+
+namespace Pipeline { namespace Simulation {
+class Command;
+} }
 
 class SimulationStatus : public QWidget
 {
@@ -18,17 +20,17 @@ class SimulationStatus : public QWidget
 
 public:
   explicit SimulationStatus(
-    std::shared_ptr<Command::RunSimulation> step,
-    Config::Simulation* configuration,
+    Pipeline::Simulation::Command* step,
+    Pipeline::Simulation::Configuration* configuration,
     QWidget *parent = nullptr);
   ~SimulationStatus();
   void showEvent(QShowEvent* event);
 
 private:
-  void setProgressViewForType(Config::Simulation::Type type);
+  void setProgressViewForType(Pipeline::Simulation::Configuration::Type type);
   void setupProgressValueChart();
-  std::shared_ptr<Command::RunSimulation> step;
-  Config::Simulation* configuration;
+  Pipeline::Simulation::Command* step;
+  Pipeline::Simulation::Configuration* configuration;
   Ui::SimulationStatus *ui;
   QList<QMetaObject::Connection> conns;
   Gui::ProgressChart* progressChart;

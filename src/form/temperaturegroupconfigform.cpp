@@ -1,10 +1,10 @@
 #include "temperaturegroupconfigform.h"
 #include "ui_temperaturegroupconfigform.h"
 #include "connectionhelper.h"
-#include "../config/temperaturecouplinggroup.h"
+#include "../pipeline/simulation/temperaturecouplinggroup.h"
 
 TemperatureGroupConfigForm::TemperatureGroupConfigForm(
-  std::shared_ptr<Config::TemperatureCouplingGroup> model, QWidget *parent)
+  std::shared_ptr<Pipeline::Simulation::TemperatureCouplingGroup> model, QWidget *parent)
     : QWidget(parent)
     , model(model)
     , ui(new Ui::TemperatureGroupConfigForm)
@@ -13,7 +13,7 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     connect(ui->removeTemperatureGroup, &QToolButton::clicked,
             this, &TemperatureGroupConfigForm::removeRequested);
 
-    using CouplingGroup = Config::TemperatureCouplingGroup::Group;
+    using CouplingGroup = Pipeline::Simulation::TemperatureCouplingGroup::Group;
     QList<QPair<QString, CouplingGroup>> options = {
       { "System",  CouplingGroup::System },
       { "Protein",  CouplingGroup::Protein },

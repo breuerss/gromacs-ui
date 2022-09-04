@@ -1,6 +1,6 @@
 #include "simulationstatuschecker.h"
 #include "model/project.h"
-#include "config/simulation.h"
+#include "pipeline/simulation/configuration.h"
 #include "appprovider.h"
 
 #include <QFile>
@@ -9,7 +9,7 @@
 
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
-  const Config::Simulation* simulation,
+  const Pipeline::Simulation::Configuration* simulation,
   QObject *parent
   )
   : QObject(parent)
