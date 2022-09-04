@@ -26,12 +26,19 @@ Step::Step(
   command->setConfig(configuration.get());
   command->setFileObjectConsumer(fileObjectConsumer.get());
   command->setFileNameGenerator(fileNameGenerator.get());
-  fileNameGenerator->setConfiguration(configuration);
+
+  if (fileNameGenerator)
+  {
+    fileNameGenerator->setConfiguration(configuration);
+  }
 
   auto updateFileNames = [this] {
-    for (auto fileObject: fileObjectProvider->provides())
+    if (fileNameGenerator)
     {
-      fileObject->setFileName(fileNameGenerator->getFileNameFor(fileObject->type));
+      for (auto fileObject: fileObjectProvider->provides())
+      {
+        fileObject->setFileName(fileNameGenerator->getFileNameFor(fileObject->type));
+      }
     }
   };
 

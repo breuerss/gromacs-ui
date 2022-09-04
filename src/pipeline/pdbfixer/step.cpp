@@ -1,14 +1,13 @@
 #include "step.h"
 #include "configuration.h"
 #include "command.h"
-#include "filenamegenerator.h"
 #include "../../command/fileobject.h"
 
 namespace Pipeline { namespace PdbFixer {
 
 using FileObject = ::Command::FileObject;
 Step::Step(
-    std::shared_ptr<Model::Project> project
+    std::shared_ptr<Model::Project>
   )
   : Pipeline::Step(
     {
@@ -19,7 +18,7 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
+    nullptr,
     Category::Preprocess
     )
 {
