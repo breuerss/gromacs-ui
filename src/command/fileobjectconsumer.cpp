@@ -24,13 +24,12 @@ bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
 
 void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject)
 {
-  qDebug() << "connectto" << __PRETTY_FUNCTION__;
   auto category = getCategoryFor(fileObject);
   if (category != FileObject::Category::Unknown)
   {
     auto old = connectedTo[category];
     connectedTo[category] = fileObject;
-    emit connectedToChanged(fileObject, old);
+    emit connectedToChanged(fileObject, category, old);
   }
 }
 
@@ -40,17 +39,15 @@ void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject)
   if (connectedTo[category] == fileObject)
   {
     connectedTo.remove(category);
-    emit connectedToChanged(nullptr, fileObject);
+    emit connectedToChanged(nullptr, category, fileObject);
   }
 }
 
 QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
 {
-  qDebug() << __PRETTY_FUNCTION__;
   QString fileName;
   for (auto object : connectedTo.values())
   {
-    qDebug() << "loop" << object.get();
     if (object->type == type)
     {
       fileName = object->getFileName();

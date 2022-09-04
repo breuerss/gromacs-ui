@@ -21,7 +21,11 @@ public:
   QString getFileNameFor(FileObject::Type type) const;
 
 signals:
-  void connectedToChanged(std::shared_ptr<FileObject> fileObject, std::shared_ptr<FileObject> oldFileObject);
+  void connectedToChanged(
+    std::shared_ptr<FileObject> fileObject,
+    FileObject::Category connectedToCategory,
+    std::shared_ptr<FileObject> oldFileObject
+    );
 
 private:
   FileObject::Category getCategoryFor(std::shared_ptr<FileObject> fileObject);

@@ -4,13 +4,12 @@
 #include "../step.h"
 #include "src/command/executor.h"
 #include "src/command/fileobject.h"
+#include "src/command/fileobjectconsumer.h"
 #include "src/pipeline/view/clickableicon.h"
 #include "src/pipeline/view/colors.h"
 #include <QBrush>
-#include <QDebug>
 #include <cmath>
 #include <QIcon>
-#include <qnamespace.h>
 
 namespace Pipeline { namespace View {
 
@@ -79,18 +78,33 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
     addOutputPort(fileObject, Colors::getColorFor(fileObject->type));
   }
 
-  auto inputPortConfigs = step->getFileObjectConsumer()->requires();
-  for (const auto& category: inputPortConfigs.keys())
+  auto categories = step->getFileObjectConsumer()->requires().keys();
+  for (const auto& category: categories)
   {
-    addInputPort(inputPortConfigs[category], Colors::getColorFor(category));
+    addInputPort(category, Colors::getColorFor(category));
   }
+
+  QObject::connect(
+    step->getFileObjectConsumer().get(),
+    &Command::FileObjectConsumer::connectedToChanged,
+    [this] (
+      std::shared_ptr<Command::FileObject> fileObject,
+      Command::FileObject::Category category) {
+      auto panel = dynamic_cast<Panel*>(scene());
+      auto startPort = panel->getPort(fileObject);
+      auto endPort = getInputPort(category);
+      panel->addConnector(startPort, endPort);
+      // TODO get port for category
+      // get output port from connecting node
+    });
 }
 
-void Node::addInputPort(const QList<Command::FileObject::Type>& acceptedFileTypes, const QColor& color)
+void Node::addInputPort(Command::FileObject::Category category, const QColor& color)
 {
+  const auto& acceptedFileTypes = step->getFileObjectConsumer()->requires()[category];
   auto inputPort = createPort(color, Port::Type::Input);
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
-  inputPorts << inputPort;
+  inputPorts << QPair<Command::FileObject::Category, Port*>(category, inputPort);
   QObject::connect(
     inputPort, &Port::connectedToChanged, 
     [this] (std::shared_ptr<Command::FileObject> fileObject) {
@@ -99,11 +113,17 @@ void Node::addInputPort(const QList<Command::FileObject::Type>& acceptedFileType
   arrangeInputPorts();
 }
 
+const Node::OutputPorts& Node::getOutputPorts() const
+{
+  return outputPorts;
+}
+
 void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color)
 {
   auto outputPort = createPort(color, Port::Type::Output);
   outputPort->setProvidedFileObject(fileObject);
-  outputPorts << outputPort;
+  outputPorts << QPair<std::shared_ptr<Command::FileObject>, Port*>(
+    fileObject, outputPort);
   arrangeOutputPorts();
 }
 
@@ -117,34 +137,38 @@ Port* Node::createPort(const QColor& color, Port::Type type)
 
 void Node::arrangeOutputPorts()
 {
-  arrangePortsHeights(outputPorts);
   const double steps = 45;
-  const double startAngle = 90 - steps * outputPorts.size() / 2.0 + steps / 2.0;
+  const double startAngle = 90 - (outputPorts.size() - 1) * steps / 2.0;
   const double radius = rect().height() / 2;
   const double width = rect().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
     auto port = outputPorts[index];
-    const QPointF circlePount = getCirclePointForAngle(startAngle + index * steps);
-    port->setX((width - radius) + circlePount.x() - Port::RADIUS);
-    port->setY(radius           + circlePount.y() - Port::RADIUS);
+    const QPointF circlePount = getCirclePoint(radius, startAngle + index * steps);
+    port.second->setX((width - radius) + circlePount.x() - Port::RADIUS);
+    port.second->setY(radius           + circlePount.y() - Port::RADIUS);
   }
 }
 
 void Node::arrangeInputPorts()
 {
-  arrangePortsHeights(inputPorts);
-  for (auto port: inputPorts)
+  const double steps = 45;
+  const double startAngle = -90 + (inputPorts.size() - 1) * steps / 2.0;
+  const double radius = rect().height() / 2;
+  const double x = boundingRect().topLeft().x();
+  for (int index = 0; index < inputPorts.size(); index++)
   {
-    port->setX(0. - Port::RADIUS);
+    auto port = inputPorts[index].second;
+    const QPointF circlePoint = getCirclePoint(radius, startAngle - index * steps);
+    port->setX(radius + x + circlePoint.x() - Port::RADIUS);
+    port->setY(radius +     circlePoint.y() - Port::RADIUS);
   }
 }
 
-QPointF Node::getCirclePointForAngle(double angle) const
+QPointF Node::getCirclePoint(double radius, double angle)
 {
-  const double pi = std::acos(-1);
+  static const double pi = std::acos(-1);
   const double radians = angle * pi / 180;
-  const double radius = rect().height() / 2;
 
   return QPointF(
     radius * std::sin(radians),
@@ -152,28 +176,28 @@ QPointF Node::getCirclePointForAngle(double angle) const
   );
 }
 
-void Node::arrangePortsHeights(QList<Port*> ports)
-{
-  const double portDiameter = Port::RADIUS * 2;
-  const double portDistance = 5;
-  const int noOfPorts = ports.size();
-  const double heightAllPortsWithSpace = noOfPorts * (portDiameter + portDistance) - portDistance;
-  double start = (nodeBackground->rect().height() - heightAllPortsWithSpace) / 2.;
-  for (int index = 0; index < ports.size(); index++)
-  {
-    ports[index]->setY(start + index * (portDiameter + portDistance));
-  }
-}
-
 Port* Node::getInputPort(int at)
 {
-  return inputPorts[at];
+  return inputPorts[at].second;
+}
 
+Port* Node::getInputPort(Command::FileObject::Category category)
+{
+  Port* port = nullptr;
+  for (auto& inputPort : inputPorts)
+  {
+    if (inputPort.first == category)
+    {
+      port = inputPort.second;
+      break;
+    }
+  }
+  return port;
 }
 
 Port* Node::getOutputPort(int at)
 {
-  return outputPorts[at];
+  return outputPorts[at].second;
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)

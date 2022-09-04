@@ -3,6 +3,7 @@
 
 #include "connector.h"
 #include "node.h"
+#include "src/command/fileobject.h"
 #include <QGraphicsScene>
 #include <QMetaObject>
 #include <QGraphicsSceneMouseEvent>
@@ -29,10 +30,13 @@ public:
 
   void reuseConnector(Connector* connector);
   void startConnector(Port* at);
+  void addConnector(Port* start, Port* end);
   void stopConnector();
   void connectorAccepted();
   Connector* getActiveConnector();
   QGraphicsItem* startingNode = nullptr;
+
+  Port* getPort(std::shared_ptr<Command::FileObject>);
 
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -42,7 +46,9 @@ private:
   std::shared_ptr<Model::Project> project;
   QList<QMetaObject::Connection> conns;
   void addNode(std::shared_ptr<Pipeline::Step> step);
-  std::map<std::shared_ptr<Pipeline::Step>, Node*> modelViewMap;
+  void addPort(std::shared_ptr<Command::FileObject>, Port*);
+  std::map<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
+  std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;
 };
 
 } }

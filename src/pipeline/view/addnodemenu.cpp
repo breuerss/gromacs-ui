@@ -4,7 +4,6 @@
 #include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
-#include <QDebug>
 #include <QIcon>
 #include <qpushbutton.h>
 
@@ -69,28 +68,18 @@ void AddNodeMenu::hide()
 
 void AddNodeMenu::hideEvent(QHideEvent*)
 {
-  //qDebug() << "hideEvent";
-  //showAnimation->clear();
-  //hide();
 }
 
 void AddNodeMenu::createShowAnimation()
 {
   showAnimation->clear();
 
-//  auto position = QPoint(
-//    (trigger->width() - buttons[0].second->width()) / 2, -height
-//    );
-//  auto start = trigger->mapToParent(QPoint(position.x(), 0));
-//  auto end = trigger->mapToParent(position);
   for (auto& button: buttons)
   {
     addMoveAnimation(button,
                      button->pos() - QPoint(button->width(), 0),
                      QPoint(0, button->y())
                      );
-//    position.ry() -= buttonPair.second->height() + buffer;
-//    end = trigger->mapToParent(position);
   }
 }
 

@@ -20,12 +20,16 @@ namespace View {
 class Node : public QGraphicsRectItem
 {
 public:
+  typedef QList<QPair<std::shared_ptr<Command::FileObject>, Port*>> OutputPorts;
+
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
 
   Port* getInputPort(int at);
+  Port* getInputPort(Command::FileObject::Category);
   Port* getOutputPort(int at);
+  const OutputPorts& getOutputPorts() const;
 
-  void addInputPort(const QList<Command::FileObject::Type>& acceptedFileTypes, const QColor& color);
+  void addInputPort(Command::FileObject::Category category, const QColor& color);
   void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
 
   std::shared_ptr<Pipeline::Step> getStep() const { return step ; }
@@ -42,15 +46,16 @@ private:
   void arrangeOutputPorts();
   void arrangeInputPorts();
 
-  QPointF getCirclePointForAngle(double angle) const;
+  static QPointF getCirclePoint(double radius, double angle);
 
-  void arrangePortsHeights(QList<Port*> ports);
   QGraphicsTextItem* text;
   //ClickableIcon* settingsIcon;
   ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
-  QList<Port*> inputPorts;
-  QList<Port*> outputPorts;
+
+  QList<QPair<Command::FileObject::Category, Port*>> inputPorts;
+
+  OutputPorts outputPorts;
 
   std::shared_ptr<Pipeline::Step> step;
   bool selected = false;

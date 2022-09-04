@@ -1,15 +1,19 @@
-#ifndef PIPELINE_VIEW_MENU_H
-#define PIPELINE_VIEW_MENU_H
+#ifndef PIPELINE_ADD_MENU_H
+#define PIPELINE_ADD_MENU_H
 
-#include "actionbutton.h"
-#include "addnodemenu.h"
 #include "../step.h"
+#include "../../projectmanager.h"
+#include "../../model/project.h"
 #include <QWidget>
 #include <QMap>
-#include <QParallelAnimationGroup>
 #include <memory>
 
+class QParallelAnimationGroup;
+
 namespace Pipeline { namespace View {
+
+class AddNodeMenu;
+class ActionButton;
 
 class AddMenu : public QWidget {
   Q_OBJECT
@@ -38,6 +42,11 @@ private:
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
   QMap<Step::Category, AddNodeMenu*> menus;
   void createShowAnimation();
+  template<typename T>
+  static std::shared_ptr<T> addStepToProject()
+  {
+    return ProjectManager::getInstance()->getCurrentProject()->addStep<T>();
+  }
 
 };
 

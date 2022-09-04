@@ -5,13 +5,11 @@
 #include "../../command/fileobject.h"
 #include "../../command/fileobjectconsumer.h"
 #include <QFileInfo>
-#include <QDebug>
 
 namespace Pipeline { namespace PdbFixer {
 
 void Command::doExecute()
 {
-  qDebug() << getName();
   QString command = AppProvider::get("pdbfixer");
   if (command.isEmpty())
   {
@@ -41,13 +39,11 @@ void Command::doExecute()
 QString Command::getInputFilename() const
 {
   using Type = ::Command::FileObject::Type;
-  qDebug() << fileObjectConsumer;
   return fileObjectConsumer->getFileNameFor(Type::PDB);
 }
 
 bool Command::canExecute() const
 {
-  qDebug() << "can executed" << getInputFilename();
   return QFile(getInputFilename()).exists();
 }
 

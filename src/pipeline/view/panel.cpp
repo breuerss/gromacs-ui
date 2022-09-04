@@ -20,6 +20,13 @@ void Panel::startConnector(Port* at)
   addItem(activeConnector);
 }
 
+void Panel::addConnector(Port* start, Port* end)
+{
+  auto connector = new Connector(start);
+  connector->setEndingPort(end);
+  addItem(connector);
+}
+
 void Panel::setProject(std::shared_ptr<Model::Project> newProject)
 {
   for (auto conn: conns)
@@ -27,7 +34,7 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
     disconnect(conn);
   }
 
-  modelViewMap.clear();
+  nodeMap.clear();
   clear();
 
   project = newProject;
@@ -49,11 +56,25 @@ std::shared_ptr<Model::Project> Panel::getProject() const
   return project;
 }
 
+void Panel::addPort(std::shared_ptr<Command::FileObject> fileObject, Port* port)
+{
+  portMap[fileObject] = port;
+}
+
+Port* Panel::getPort(std::shared_ptr<Command::FileObject> fileObject)
+{
+  return portMap[fileObject];
+}
+
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);
-  modelViewMap[step] = node;
+  nodeMap[step] = node;
   addItem(node);
+  for (const auto& pair : node->getOutputPorts())
+  {
+    addPort(pair.first, pair.second);
+  }
   node->setPos(itemsBoundingRect().topRight() + QPointF(20, 0));
 }
 

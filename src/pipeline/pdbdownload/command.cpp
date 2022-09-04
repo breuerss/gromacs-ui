@@ -16,7 +16,6 @@ Command::Command()
   , downloader(std::make_shared<PdbDownloader>())
 {
   auto callback = [this] () {
-    qDebug() << __PRETTY_FUNCTION__;
     setRunning(false);
     finished();
   };

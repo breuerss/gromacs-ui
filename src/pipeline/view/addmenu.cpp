@@ -29,32 +29,27 @@ AddMenu::AddMenu(ActionButton* trigger)
 
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
   nodeMenuDefinitions[Category::DataProvider] = {
-    {
-      "PDB Downloader",
-      [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbDownload::Step>();
-      }
-    },
+    { "PDB Downloader", addStepToProject<Pipeline::PdbDownload::Step> },
     { "Load From File", []() {} },
   };
   nodeMenuDefinitions[Category::Preprocess] = {
-    {
-      "PDB Fixer",
-      [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::PdbFixer::Step>();
-      }
-    },
+    { "Preparation Pipeline", [] () {
+      auto step1 = addStepToProject<Pipeline::PdbFixer::Step>();
+      auto step2 = addStepToProject<Pipeline::PdbFixer::Step>();
+      step2->getFileObjectConsumer()->connectTo(
+        step1->getFileObjectProvider()->provides()[0]
+        );
+
+      addStepToProject<Pipeline::PdbFixer::Step>();
+    }},
+    { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
   };
   nodeMenuDefinitions[Category::Viewer] = {
     { "Trajectory Viewer", []() {} },
     { "Coordinate Viewer", []() {} },
   };
   nodeMenuDefinitions[Category::Simulation] = {
-    {
-      "Minimisation",
-      [] () {
-        ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation>();
-      } },
+    { "Minimisation", addStepToProject<Pipeline::Simulation> },
     { "NVT Simulation", []() {} },
     { "NPT Simulation", []() {} },
   };

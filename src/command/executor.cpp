@@ -105,7 +105,10 @@ void Executor::setFileObjectConsumer(
 
   fileConsumerConnections << connect(
     fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
-    [this] (std::shared_ptr<FileObject> newFileObject, std::shared_ptr<FileObject> oldFileObject) {
+    [this] (
+      std::shared_ptr<FileObject> newFileObject,
+      FileObject::Category,
+      std::shared_ptr<FileObject> oldFileObject) {
       qDebug() << "connected to changed";
       if (fileObjectConnections.contains(oldFileObject.get()))
       {
