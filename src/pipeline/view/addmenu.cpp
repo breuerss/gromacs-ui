@@ -11,6 +11,7 @@
 #include "../pdbfixer/step.h"
 #include "../creategromacsmodel/step.h"
 #include "../createbox/step.h"
+#include "../neutralise/step.h"
 #include "../simulation.h"
 
 namespace Pipeline { namespace View {
@@ -45,15 +46,22 @@ AddMenu::AddMenu(ActionButton* trigger)
         step2->getFileObjectProvider()->provides()[0]
         );
 
+      //auto step4 = addStepToProject<Pipeline::Solvate::Step>();
+
+      auto step5 = addStepToProject<Pipeline::Neutralise::Step>();
+      step5->getFileObjectConsumer()->connectTo(
+        step3->getFileObjectProvider()->provides()[0]
+        );
+
       // TODO
       // Filter
-      // CreateBox
       // Solvate
-      // Neutralise
     }},
     { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
     { "Create GROMACS Model", addStepToProject<Pipeline::CreateGromacsModel::Step> },
     { "Create Box", addStepToProject<Pipeline::CreateBox::Step> },
+    //{ "Solvate", addStepToProject<Pipeline::Solvate::Step> },
+    { "Neutralise", addStepToProject<Pipeline::Neutralise::Step> },
   };
   nodeMenuDefinitions[Category::Viewer] = {
     //{ "Trajectory Viewer", []() {} },

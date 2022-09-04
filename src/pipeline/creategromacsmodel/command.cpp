@@ -11,11 +11,6 @@
 
 namespace Pipeline { namespace CreateGromacsModel {
 
-Command::Command()
-  : Executor()
-{
-}
-
 void Command::doExecute()
 {
   qDebug() << getName();

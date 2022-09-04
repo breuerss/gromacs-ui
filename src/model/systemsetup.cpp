@@ -8,18 +8,13 @@ namespace Model {
 
 SystemSetup::SystemSetup()
 {
-  static bool registered = false;
-  if (!registered)
-  {
-    registered = true;
-  }
-  connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
+  //connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
 //  connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
 //  connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
   //connect(this, &SystemSetup::boxTypeChanged, this, &SystemSetup::evaluateConfigReady);
   //connect(this, &SystemSetup::distanceChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::negativeIonChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::positiveIonChanged, this, &SystemSetup::evaluateConfigReady);
+  //connect(this, &SystemSetup::negativeIonChanged, this, &SystemSetup::evaluateConfigReady);
+  //connect(this, &SystemSetup::positiveIonChanged, this, &SystemSetup::evaluateConfigReady);
 }
 
 void SystemSetup::setSourceStructureFile(const QString &newSourceStructureFile)

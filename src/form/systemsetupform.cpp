@@ -12,7 +12,6 @@
 #include "../model/systemsetup.h"
 #include "../command/queue.h"
 #include "../command/solvate.h"
-#include "../command/neutralise.h"
 #include "../command/filter.h"
 
 #include <QDir>
@@ -30,9 +29,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   , queue(std::make_shared<Command::Queue>())
 {
   ui->setupUi(this);
-
-  setIonFromModel();
-  connectIonSelectors();
 
   connectToLineEdit(ui->projectName, project, "name");
   conns << connect(project.get(), &Model::Project::nameChanged, [this] (const QString& projectName) {
@@ -70,7 +66,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
   connectToComboBox<QString>(ui->waterModel, systemSetup, "waterModel");
   connectToComboBox<QString>(ui->forceField, systemSetup, "forceField");
 
-  connectToSpinBox<QDoubleSpinBox, double>(ui->ionConcentration, systemSetup, "ionConcentration");
 
   connectToCheckbox(ui->removeHeteroAtoms, systemSetup, "removeHeteroAtoms");
 
@@ -209,7 +204,7 @@ void SystemSetupForm::preprocess()
 
   if (ui->useNeutralise->isChecked() && ui->useNeutralise->isEnabled())
   {
-    queue->enqueue(std::make_shared<Command::Neutralise>(systemSetup));
+    //queue->enqueue(std::make_shared<Command::Neutralise>(systemSetup));
   }
 
   auto firstCommand = queue->first();
@@ -233,80 +228,6 @@ void SystemSetupForm::stopPreprocess()
 void SystemSetupForm::showEvent(QShowEvent*)
 {
   ui->projectName->setFocus();
-}
-
-void SystemSetupForm::setIonFromModel()
-{
-  QString positiveIon = systemSetup->property("positiveIon").value<QString>();
-  QString negativeIon = systemSetup->property("negativeIon").value<QString>();
-  QMap<QString, QRadioButton*> map = {
-    { "MG", ui->mgIon },
-    { "CA", ui->caIon },
-    { "LI", ui->liIon },
-    { "NA", ui->naIon },
-    { "K", ui->kIon },
-    { "RB", ui->rbIon },
-    { "CS", ui->csIon },
-    { "F", ui->fIon },
-    { "CL", ui->clIon },
-    { "BR", ui->brIon },
-    { "I", ui->iIon },
-  };
-
-  for (const auto& element : map.keys())
-  {
-    if (positiveIon == element || negativeIon == element)
-    {
-      map[element]->setChecked(true);
-    }
-  }
-
-}
-
-void SystemSetupForm::connectIonSelectors()
-{
-  QMap<QRadioButton*, QString> positiveIonMap = {
-    { ui->mgIon, "MG" },
-    { ui->caIon, "CA" },
-    { ui->liIon, "LI" },
-    { ui->naIon, "NA" },
-    { ui->kIon, "K" },
-    { ui->rbIon, "RB" },
-    { ui->csIon, "CS" },
-  };
-  for (auto button: positiveIonMap.keys())
-  {
-    QString ion = positiveIonMap[button];
-    connect(button, &QRadioButton::toggled,
-            [this, ion] (bool checked)
-            {
-              if (checked)
-              {
-                systemSetup->setProperty("positiveIon", ion);
-              }
-            });
-  }
-
-  QMap<QRadioButton*, QString> negativeIonMap = {
-    { ui->fIon, "F" },
-    { ui->clIon, "CL" },
-    { ui->brIon, "BR" },
-    { ui->iIon, "I" },
-  };
-  for (auto button: negativeIonMap.keys())
-  {
-    QString ion = negativeIonMap[button];
-    connect(
-      button,
-      &QRadioButton::toggled,
-      [this, ion] (bool checked)
-      {
-        if (checked)
-        {
-          systemSetup->setProperty("negativeIon", ion);
-        }
-      });
-  }
 }
 
 void SystemSetupForm::setGroupsEnabled(bool enabled)

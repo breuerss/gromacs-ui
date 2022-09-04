@@ -33,7 +33,6 @@ private:
   std::shared_ptr<Model::SystemSetup> systemSetup;
 
   void setIonFromModel();
-  void connectIonSelectors();
 
   void setGroupsEnabled(bool enabled);
 

@@ -26,17 +26,10 @@ public:
   const QString& getProcessedStructureFile() const;
 
   Q_PROPERTY(QString pdbCode MEMBER pdbCode NOTIFY pdbCodeChanged)
-  Q_PROPERTY(double ionConcentration MEMBER ionConcentration NOTIFY ionConcentrationChanged)
-  Q_PROPERTY(QString negativeIon MEMBER negativeIon NOTIFY negativeIonChanged)
-  Q_PROPERTY(QString positiveIon MEMBER positiveIon NOTIFY positiveIonChanged)
   Q_PROPERTY(bool removeHeteroAtoms MEMBER removeHeteroAtoms NOTIFY removeHeteroAtomsChanged)
 
 signals:
   void pdbCodeChanged(const QString&);
-  void negativeIonChanged(const QString&);
-  void positiveIonChanged(const QString&);
-
-  void ionConcentrationChanged(double);
 
   void removeHeteroAtomsChanged(bool);
 
@@ -49,9 +42,6 @@ private:
 
   QString sourceStructureFile;
   QString processedStructureFile;
-  QString positiveIon = "NA";
-  QString negativeIon = "CL";
-  double ionConcentration = 0.15;
   QStringList chains;
 
   bool removeHeteroAtoms = true;

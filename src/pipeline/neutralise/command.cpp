@@ -1,25 +1,18 @@
-#include "neutralise.h"
+#include "command.h"
 
-#include "../appprovider.h"
-#include "../statusmessagesetter.h"
-#include "../logforwarder.h"
-#include "../model/systemsetup.h"
+#include "../../appprovider.h"
+#include "../../statusmessagesetter.h"
+#include "../../logforwarder.h"
+#include "../../command/fileobjectconsumer.h"
+#include "configuration.h"
 
 #include <QDebug>
 #include <QFileInfo>
 
-namespace Command {
+namespace Pipeline { namespace Neutralise {
 
-Neutralise::Neutralise(std::shared_ptr<Model::SystemSetup> newSystemSetup)
-  : Executor()
-    , systemSetup(newSystemSetup)
+void Command::doExecute()
 {
-
-}
-
-void Neutralise::doExecute()
-{
-  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -65,10 +58,11 @@ void Neutralise::doExecute()
   QString outputFile = getOutputFilename();
   command += " -s " + ionsTprPath;
   command += " -o " + outputFile;
-  command += " -conc " + QString::number(systemSetup->property("ionConcentration").value<double>());
+  auto config = dynamic_cast<Configuration*>(configuration);
+  command += " -conc " + QString::number(config->property("ionConcentration").value<double>());
   command += " -p topol.top";
 
-  const QString& positiveIon = systemSetup->property("positiveIon").value<QString>();
+  const QString& positiveIon = config->property("positiveIon").value<QString>();
   command += " -pname " + positiveIon;
   static const QMap<QString, int> positiveIonCharge = {
     { "MG", 2 },
@@ -80,7 +74,7 @@ void Neutralise::doExecute()
     { "CS", 1 },
   };
   command += " -pq " + QString::number(positiveIonCharge[positiveIon]);
-  command += " -nname " + systemSetup->property("negativeIon").value<QString>();
+  command += " -nname " + config->property("negativeIon").value<QString>();
   command += " -nq -1";
   command += " -neutral";
 
@@ -90,22 +84,27 @@ void Neutralise::doExecute()
   process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
 }
 
-bool Neutralise::canExecute() const
+bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
 }
 
-QString Neutralise::getName() const
+QString Command::getName() const
 {
   return "Neutralisation";
 }
 
-QString Neutralise::getOutputFilename() const
+QString Command::getInputFilename() const
+{
+  using Type = ::Command::FileObject::Type;
+  return fileObjectConsumer->getFileNameFor(Type::GRO);
+}
+
+QString Command::getOutputFilename() const
 {
   QFileInfo fileInfo(getInputFilename());
 
   return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_neutralised.gro";
 }
 
-
-}
+} }
