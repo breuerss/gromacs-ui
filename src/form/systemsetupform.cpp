@@ -11,7 +11,6 @@
 #include "../model/project.h"
 #include "../model/systemsetup.h"
 #include "../command/queue.h"
-#include "../command/creategromacsmodel.h"
 #include "../command/createbox.h"
 #include "../command/solvate.h"
 #include "../command/neutralise.h"
@@ -33,8 +32,6 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
 {
   ui->setupUi(this);
 
-  prepareWaterOptions();
-  prepareForceFieldOptions();
   prepareBoxOptions();
   setIonFromModel();
   connectIonSelectors();
@@ -201,7 +198,7 @@ void SystemSetupForm::preprocess()
     queue->enqueue(std::make_shared<Command::Filter>(systemSetup));
   }
 
-  queue->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup));
+  //queue->enqueue(std::make_shared<Command::CreateGromacsModel>(systemSetup));
 
   if (ui->usecreateBox->isChecked())
   {
@@ -210,7 +207,7 @@ void SystemSetupForm::preprocess()
 
   if (ui->useSolvate->isChecked())
   {
-    queue->enqueue(std::make_shared<Command::Solvate>(systemSetup));
+    //queue->enqueue(std::make_shared<Command::Solvate>(systemSetup));
   }
 
   if (ui->useNeutralise->isChecked() && ui->useNeutralise->isEnabled())
@@ -239,31 +236,6 @@ void SystemSetupForm::stopPreprocess()
 void SystemSetupForm::showEvent(QShowEvent*)
 {
   ui->projectName->setFocus();
-}
-
-void SystemSetupForm::prepareWaterOptions()
-{
-  using Model::SystemSetup;
-  setOptions<SystemSetup::WaterModel>(
-    ui->waterModel,
-    {
-      //{ "None", SystemSetup::WaterModel::None }, // not yet properly handled
-      { "SPC", SystemSetup::WaterModel::SPC },
-      { "TIP3P", SystemSetup::WaterModel::TIP3P },
-      { "TIP4P", SystemSetup::WaterModel::TIP4P },
-      { "TIP5P", SystemSetup::WaterModel::TIP5P },
-    }, SystemSetup::WaterModel::SPC);
-}
-
-void SystemSetupForm::prepareForceFieldOptions()
-{
-  using Model::SystemSetup;
-  setOptions<SystemSetup::ForceField>(
-    ui->forceField,
-    {
-      { "CHARMM27", SystemSetup::ForceField::CHARMM27 },
-      { "OPLS-AA/L", SystemSetup::ForceField::OPLSAA }
-  }, SystemSetup::ForceField::CHARMM27);
 }
 
 void SystemSetupForm::prepareBoxOptions()

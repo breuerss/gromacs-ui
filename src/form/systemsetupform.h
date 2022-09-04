@@ -32,8 +32,6 @@ private:
   std::shared_ptr<Model::Project> project;
   std::shared_ptr<Model::SystemSetup> systemSetup;
 
-  void prepareWaterOptions();
-  void prepareForceFieldOptions();
   void prepareBoxOptions();
 
   void setIonFromModel();

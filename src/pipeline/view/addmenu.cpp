@@ -4,12 +4,13 @@
 #include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
-#include <QDebug>
 #include <QIcon>
 #include "../../projectmanager.h"
 #include "../../model/project.h"
 #include "../pdbdownload/step.h"
 #include "../pdbfixer/step.h"
+#include "../creategromacsmodel/step.h"
+#include "../createbox/step.h"
 #include "../simulation.h"
 
 namespace Pipeline { namespace View {
@@ -30,12 +31,12 @@ AddMenu::AddMenu(ActionButton* trigger)
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
   nodeMenuDefinitions[Category::DataProvider] = {
     { "PDB Downloader", addStepToProject<Pipeline::PdbDownload::Step> },
-    { "Load From File", []() {} },
+    //{ "Load From File", []() {} },
   };
   nodeMenuDefinitions[Category::Preprocess] = {
     { "Preparation Pipeline", [] () {
       auto step1 = addStepToProject<Pipeline::PdbFixer::Step>();
-      auto step2 = addStepToProject<Pipeline::PdbFixer::Step>();
+      auto step2 = addStepToProject<Pipeline::CreateGromacsModel::Step>();
       step2->getFileObjectConsumer()->connectTo(
         step1->getFileObjectProvider()->provides()[0]
         );
@@ -45,8 +46,8 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
   };
   nodeMenuDefinitions[Category::Viewer] = {
-    { "Trajectory Viewer", []() {} },
-    { "Coordinate Viewer", []() {} },
+    //{ "Trajectory Viewer", []() {} },
+    //{ "Coordinate Viewer", []() {} },
   };
   nodeMenuDefinitions[Category::Simulation] = {
     { "Minimisation", addStepToProject<Pipeline::Simulation> },

@@ -1,24 +1,22 @@
-#include "creategromacsmodel.h"
+#include "command.h"
 
-#include "../appprovider.h"
-#include "../statusmessagesetter.h"
-#include "../model/systemsetup.h"
+#include "../../appprovider.h"
+#include "../../statusmessagesetter.h"
+#include "../../command/fileobjectconsumer.h"
+#include "configuration.h"
 
 #include <QFileInfo>
 #include <QDebug>
 #include <stdexcept>
 
-namespace Command {
+namespace Pipeline { namespace CreateGromacsModel {
 
-CreateGromacsModel::CreateGromacsModel(
-  std::shared_ptr<Model::SystemSetup> newSystemSetup)
+Command::Command()
   : Executor()
-    , systemSetup(newSystemSetup)
 {
-
 }
 
-void CreateGromacsModel::doExecute()
+void Command::doExecute()
 {
   qDebug() << getName();
   QString command = AppProvider::get("gmx");
@@ -37,8 +35,12 @@ void CreateGromacsModel::doExecute()
   command += " -f " + inputFile;
   command += " -o " + outputFileName;
   command += " -ignh ";
-  command += " -water " + toString(systemSetup->property("waterModel").value<SystemSetup::WaterModel>());
-  command += " -ff " + toString(systemSetup->property("forceField").value<SystemSetup::ForceField>());
+
+  auto config = dynamic_cast<Configuration*>(configuration);
+  command += " -water " + toString(config->property("waterModel")
+                                   .value<Configuration::WaterModel>());
+  command += " -ff " + toString(config->property("forceField")
+                                .value<Configuration::ForceField>());
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
@@ -46,21 +48,27 @@ void CreateGromacsModel::doExecute()
   process.start(command);
 }
 
-bool CreateGromacsModel::canExecute() const
+QString Command::getInputFilename() const
+{
+  using Type = ::Command::FileObject::Type;
+  return fileObjectConsumer->getFileNameFor(Type::PDB);
+}
+
+bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
 }
 
-QString CreateGromacsModel::getName() const
+QString Command::getName() const
 {
   return "GROMACS model creation";
 }
 
-QString CreateGromacsModel::getOutputFilename() const
+QString Command::getOutputFilename() const
 {
   QFileInfo fileInfo(getInputFilename());
   return fileInfo.absolutePath() + "/" +
     fileInfo.baseName() + "_model.gro";
 }
 
-}
+} }

@@ -11,17 +11,13 @@ SystemSetup::SystemSetup()
   static bool registered = false;
   if (!registered)
   {
-    qRegisterMetaType<WaterModel>("SystemSetup::WaterModel");
-    qRegisterMetaTypeStreamOperators<int>("SystemSetup::WaterModel");
     qRegisterMetaType<BoxType>("SystemSetup::BoxType");
     qRegisterMetaTypeStreamOperators<int>("SystemSetup::BoxType");
-    qRegisterMetaType<ForceField>("SystemSetup::ForceField");
-    qRegisterMetaTypeStreamOperators<int>("SystemSetup::ForceField");
     registered = true;
   }
   connect(this, &SystemSetup::ionConcentrationChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
-  connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
+//  connect(this, &SystemSetup::forceFieldChanged, this, &SystemSetup::evaluateConfigReady);
+//  connect(this, &SystemSetup::waterModelChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::boxTypeChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::distanceChanged, this, &SystemSetup::evaluateConfigReady);
   connect(this, &SystemSetup::negativeIonChanged, this, &SystemSetup::evaluateConfigReady);
@@ -87,8 +83,8 @@ void SystemSetup::evaluateConfigReady()
 {
   qDebug() << "evaluateConfigReady"
     << boxType
-    << waterModel
-    << forceField
+//    << waterModel
+//    << forceField
     << processedStructureFile;
   emit configReadyChanged(configReady());
 }
@@ -96,20 +92,8 @@ void SystemSetup::evaluateConfigReady()
 bool SystemSetup::configReady() const
 {
   return (boxType != BoxType::None) &&
-    (forceField != ForceField::None) &&
+    //(forceField != ForceField::None) &&
     !processedStructureFile.isEmpty();
-}
-
-QString toString(SystemSetup::WaterModel type)
-{
-  const static QMap<SystemSetup::WaterModel, QString> map = {
-    { SystemSetup::WaterModel::SPC, "spc" },
-    { SystemSetup::WaterModel::TIP3P, "tip3p" },
-    { SystemSetup::WaterModel::TIP4P, "tip4p" },
-    { SystemSetup::WaterModel::TIP5P, "tip5p" },
-  };
-
-  return map[type];
 }
 
 QString toString(SystemSetup::BoxType type)
@@ -118,16 +102,6 @@ QString toString(SystemSetup::BoxType type)
     { SystemSetup::BoxType::Cubic, "cubic" },
     { SystemSetup::BoxType::Octahedron, "octahedron" },
     { SystemSetup::BoxType::Dodecahedron, "dodecahedron" },
-  };
-
-  return map[type];
-}
-
-QString toString(SystemSetup::ForceField type)
-{
-  const static QMap<SystemSetup::ForceField, QString> map = {
-    { SystemSetup::ForceField::CHARMM27, "charmm27" },
-    { SystemSetup::ForceField::OPLSAA, "oplsaa" },
   };
 
   return map[type];
