@@ -2,7 +2,10 @@
 #define PIPELINE_PDBDOWNLOAD_STEP_H
 
 #include "../step.h"
-#include "../../model/project.h"
+
+namespace Model {
+class Project;
+}
 
 namespace Pipeline { namespace PdbDownload {
 

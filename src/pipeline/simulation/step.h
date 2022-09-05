@@ -10,6 +10,7 @@ class Project;
 namespace Pipeline { namespace Simulation {
 
 class Step : public Pipeline::Step {
+
 public:
   Step(std::shared_ptr<Model::Project> project);
   QString getName() const override;
