@@ -57,6 +57,8 @@ protected:
   std::shared_ptr<Command::FileNameGenerator> fileNameGenerator;
 };
 
+QDataStream &operator<<(QDataStream &out, const Step::Pointer step);
+QDataStream &operator>>(QDataStream &in, Step::Pointer step);
 }
 
 #endif

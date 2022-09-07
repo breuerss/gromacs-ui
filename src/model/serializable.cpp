@@ -4,6 +4,20 @@
 
 namespace Model {
 
+QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Serializable> model)
+{
+  out << *(model.get());
+
+  return out;
+}
+
+QDataStream &operator>>(QDataStream &in, std::shared_ptr<Serializable> model)
+{
+  in >> *(model.get());
+
+  return in;
+}
+
 QDataStream &operator<<(QDataStream &out, const Serializable& model)
 {
   const QMetaObject *metaobject = model.metaObject();

@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <memory>
+#include "../pipeline/stepfactory.h"
 
 namespace Model {
 
@@ -67,10 +68,12 @@ QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Project> project
   int numberOfSteps = project->getSteps().size();
   out << numberOfSteps;
 
-  //for (auto step: project.getSteps())
-  //{
-  //  out << *(step.get());
-  //}
+  qDebug() << numberOfSteps;
+  for (auto step: project->getSteps())
+  {
+    out << step->getType();
+    out << step;
+  }
 
   return out;
 }
@@ -87,8 +90,19 @@ QDataStream &operator>>(QDataStream &in, std::shared_ptr<Project> project)
   in >> numberOfSteps;
 
   qDebug() << numberOfSteps;
+
   project->clearSteps();
 
+  for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
+  {
+    QString type;
+    in >> type;
+
+    Pipeline::Step::Pointer step = Pipeline::StepFactory::getInstance()
+      ->createFromString(type, project);
+    in >> step;
+    project->addStep(std::move(step));
+  }
 
   //for (auto step: project.getSteps())
   //{

@@ -56,5 +56,20 @@ void Step::showStatusUI(bool show)
   UiUpdater::getInstance()->showStatusUI(widget);
 }
 
+QDataStream &operator<<(QDataStream &out, const Step::Pointer step)
+{
+  out << step->getConfiguration();
+
+  return out;
+}
+
+QDataStream &operator>>(QDataStream &in, Step::Pointer step)
+{
+  in >> step->getConfiguration();
+
+  return in;
+}
+
+
 }
 
