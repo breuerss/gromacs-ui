@@ -2,10 +2,13 @@
 #define CONFIG_CONFIGURATION_H
 
 #include <QWidget>
+#include "../model/serializable.h"
 
 namespace Config {
 
-class Configuration {
+class Configuration
+: public Model::Serializable
+{
 public:
   virtual ~Configuration() = default;
   virtual QWidget* getUI() = 0;

@@ -2,7 +2,6 @@
 #define PIPELINE_SIMULATION_CONFIGURATION_H
 
 #include "temperaturecouplinggroup.h"
-#include "../../model/serializable.h"
 #include "../../config/configuration.h"
 #include "../../misc/bimaphelper.h"
 #include <QString>
@@ -12,8 +11,7 @@
 namespace Pipeline { namespace Simulation {
 
 class Configuration
-: public Model::Serializable
-  , public Config::Configuration
+: public Config::Configuration
 {
   Q_OBJECT
 public:
