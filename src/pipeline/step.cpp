@@ -46,6 +46,42 @@ Step::Step(
   updateFileNames();
 }
 
+const std::shared_ptr<Command::FileObjectConsumer>&
+Step::getFileObjectConsumer() const
+{
+  return fileObjectConsumer;
+}
+
+std::shared_ptr<Command::FileObjectConsumer>&
+Step::getFileObjectConsumer()
+{
+  return fileObjectConsumer;
+}
+
+const std::shared_ptr<Command::FileObjectProvider>&
+Step::getFileObjectProvider()
+{
+  return fileObjectProvider;
+}
+
+const std::shared_ptr<Config::Configuration>&
+Step::getConfiguration()
+{
+  return configuration;
+}
+
+const std::shared_ptr<Command::Executor>&
+Step::getCommand()
+{
+  return command;
+}
+
+const std::shared_ptr<Command::FileNameGenerator>&
+Step::getFileNameGenerator()
+{
+  return fileNameGenerator;
+}
+
 void Step::showStatusUI(bool show)
 {
   QWidget* widget = nullptr;
