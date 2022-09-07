@@ -1,7 +1,5 @@
 #include "../appprovider.h"
 #include "src/command/executor.h"
-#include "src/command/inputfilelink.h"
-#include "src/command/inputoutputfilelink.h"
 #include "systemsetupform.h"
 #include "ui_systemsetupform.h"
 #include "../pdbdownloader.h"
@@ -43,11 +41,11 @@ SystemSetupForm::SystemSetupForm(std::shared_ptr<Model::Project> newProject, QWi
     ui->processingProgress->setEnabled(false);
     if (success)
     {
-      auto link = std::dynamic_pointer_cast<Command::InputOutputFileLink>(queue->last());
-      if (link)
-      {
-        systemSetup->setProcessedStructureFile(link->getOutputFilename());
-      }
+      //auto link = std::dynamic_pointer_cast<Command::InputOutputFileLink>(queue->last());
+      //if (link)
+     // {
+      //  systemSetup->setProcessedStructureFile(link->getOutputFilename());
+      //}
     }
   });
   connect(queue.get(), &Command::Queue::stepStarted,
@@ -207,13 +205,13 @@ void SystemSetupForm::preprocess()
   }
 
   auto firstCommand = queue->first();
-  auto link = dynamic_cast<Command::InputOutputFileLink*>(firstCommand.get());
+  //auto link = dynamic_cast<Command::InputOutputFileLink*>(firstCommand.get());
 
-  if (link)
-  {
-    auto inputLink = std::make_shared<Command::InputFileLink>(systemSetup->getSourceStructureFile());
-    link->setPreviousLink(inputLink);
-  }
+  //if (link)
+  //{
+    //auto inputLink = std::make_shared<Command::InputFileLink>(systemSetup->getSourceStructureFile());
+    //link->setPreviousLink(inputLink);
+  //}
 
   queue->start();
 }

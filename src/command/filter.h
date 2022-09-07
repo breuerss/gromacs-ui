@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QStringList>
 #include "executor.h"
-#include "inputoutputfilelink.h"
 
 namespace Model {
 class SystemSetup;
@@ -12,7 +11,7 @@ class SystemSetup;
 
 namespace Command {
 
-class Filter : public Executor, public InputOutputFileLink
+class Filter : public Executor
 {
 public:
   explicit Filter(std::shared_ptr<Model::SystemSetup> systemSetup);
@@ -20,9 +19,9 @@ public:
   void doExecute() override;
   bool canExecute() const override;
   QString getName() const override;
-  QString getOutputFilename() const override;
 
 private:
+  QString getOutputFilename() const;
   const std::shared_ptr<Model::SystemSetup> systemSetup;
 };
 

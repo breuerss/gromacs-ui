@@ -4,7 +4,6 @@
 #include <QDebug>
 #include "../logforwarder.h"
 #include "executor.h"
-#include "inputoutputfilelink.h"
 
 namespace Command {
 
@@ -40,14 +39,14 @@ Queue* Queue::enqueue(std::shared_ptr<Executor> executor, bool needsPrevious)
   return this;
 }
 
-void Queue::updateLink(std::shared_ptr<Executor> prevExecutor, std::shared_ptr<Executor> executor)
+void Queue::updateLink(std::shared_ptr<Executor> , std::shared_ptr<Executor> )
 {
-  auto prevLink = std::dynamic_pointer_cast<InputOutputFileLink>(prevExecutor);
-  auto link = std::dynamic_pointer_cast<InputOutputFileLink>(executor);
-  if (link && prevLink)
-  {
-    link->setPreviousLink(prevLink);
-  }
+  //auto prevLink = std::dynamic_pointer_cast<InputOutputFileLink>(prevExecutor);
+  //auto link = std::dynamic_pointer_cast<InputOutputFileLink>(executor);
+  //if (link && prevLink)
+  //{
+  //  link->setPreviousLink(prevLink);
+  //}
 }
 
 Queue* Queue::remove(size_t at)
