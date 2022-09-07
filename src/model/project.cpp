@@ -14,6 +14,11 @@ Project::Project()
 {
 }
 
+void Project::addStep(StepPointer&& step)
+{
+  pipelineSteps.push_back(step);
+  emit stepAdded(step, pipelineSteps.size() - 1);
+}
 
 void Project::removeStep(int at)
 {

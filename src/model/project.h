@@ -53,6 +53,8 @@ public:
     return step;
   }
 
+  void addStep(StepPointer&& step);
+
   void clearSteps();
   void removeStep(int index);
   const StepPointerVector& getSteps() const;
