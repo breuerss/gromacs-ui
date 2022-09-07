@@ -30,13 +30,6 @@ public:
   /**
    * TODO
    *
-   * Introduce std::variant<Step specialisations>
-   * using StepType = std::variant<PdbDownloader, Simulation, BoxCreator, TrajectoryViewer..>;
-   * using ConfigurationType = std::variant<PdbDownloaderConfig, SimulationConfig, BoxConfig>;
-   * GetUIForConfigurtionVisitor {
-   * }
-   * using ConfigurationViewType = std::variant<UI::PdbDownloaderConfig, UI::SimulationConfig, UI::BoxConfig>;
-   *
    * Base class
    * Step {
    *    FileObjectProvider* provider
@@ -47,23 +40,7 @@ public:
    *    exec() on play click in node;
    * }
    *
-   * introduce std::vector<StepType> pipeline;
-   *
-   * looping through steps with
-   *
-   * for (auto& step: pipeline)
-   * {
-   *    std::visit([](auto&& arg) {
-   *       - use file object consumer to create input nodes
-   *       - use file object provider to create output nodes
-   *       - connect on click signal to create configuration view for configuration
-   *         object of step
-   *    }, step);
-   * }
-   *
-   * Move Model::Simulation to Configuration namespace
-   *
-   **/
+   */
 
   template<typename T>
   std::shared_ptr<T> addStep()

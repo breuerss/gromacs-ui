@@ -14,12 +14,6 @@ Project::Project()
 {
 }
 
-/**
- * TODO
- *
- *  Unify Command and Simulation
- *  Split up SystemSetup to series of Pipeline Nodes
- */
 
 void Project::removeStep(int at)
 {
