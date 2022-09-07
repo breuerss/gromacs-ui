@@ -7,7 +7,7 @@ namespace Pipeline { namespace PdbDownload {
 QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
 {
   QString fileName;
-  if (type == Command::FileObject::Type::PDB)
+  if (type == Command::FileObject::Type::PDB && project)
   {
     auto pdbCode = dynamic_cast<Configuration*>(configuration.get())
       ->property("pdbCode").toString();
