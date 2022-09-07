@@ -10,6 +10,10 @@ namespace Pipeline { namespace View {
 void Panel::reuseConnector(Connector* connector)
 {
   stopConnector();
+
+  connector->setEndingPort(nullptr);
+  startingNode = connector->getStartingPort()->parentItem();
+
   activeConnector = connector;
 }
 
@@ -22,9 +26,36 @@ void Panel::startConnector(Port* at)
 
 void Panel::addConnector(Port* start, Port* end)
 {
-  auto connector = new Connector(start);
-  connector->setEndingPort(end);
-  addItem(connector);
+  if (!connectorMap.count({start, end}))
+  {
+    auto connector = new Connector(start);
+    connector->setEndingPort(end);
+    addItem(connector);
+    connectorMap.insert({ start, end }, connector);
+  }
+}
+
+void Panel::deleteConnectorFor(Port* port)
+{
+  auto connector = getConnectorFor(port);
+  removeItem(connector);
+  delete connector;
+}
+
+Connector* Panel::getConnectorFor(Port* port)
+{
+  Connector* connector = nullptr;
+
+  for (const auto& pair : connectorMap.keys())
+  {
+    if (pair.second == port || pair.first == port)
+    {
+      connector = connectorMap.take(pair);
+      break;
+    }
+  }
+
+  return connector;
 }
 
 void Panel::setProject(std::shared_ptr<Model::Project> newProject)
@@ -34,6 +65,8 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
     disconnect(conn);
   }
 
+  portMap.clear();
+  connectorMap.clear();
   nodeMap.clear();
   clear();
 
@@ -48,6 +81,16 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
     project.get(), &Model::Project::stepAdded,
     [this] (const auto& step) {
       addNode(step);
+    });
+
+  conns << connect(
+    project.get(), &Model::Project::stepRemoved,
+    [this] (const auto& step) {
+      auto node = nodeMap[step];
+      // delete node before removal to have access
+      // to scene() inside of destructor of port
+      delete node;
+      removeItem(node);
     });
 }
 
@@ -75,7 +118,13 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
   {
     addPort(pair.first, pair.second);
   }
-  node->setPos(itemsBoundingRect().topRight() + QPointF(20, 0));
+
+  auto pos = step->location.topLeft();
+  if (!step->location.isValid())
+  {
+    pos = itemsBoundingRect().topRight() + QPointF(20, 0);
+  }
+  node->setPos(pos);
 }
 
 void Panel::stopConnector()
@@ -90,7 +139,8 @@ void Panel::stopConnector()
 
 void Panel::connectorAccepted()
 {
-  activeConnector = nullptr;
+  addConnector(activeConnector->getStartingPort(), activeConnector->getEndingPort());
+  stopConnector();
 }
 
 Panel::Panel(QObject* parent)

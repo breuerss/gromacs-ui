@@ -96,13 +96,15 @@ QDataStream &operator<<(QDataStream &out, const Step::Pointer step)
 {
   out << step->getConfiguration();
 
+  out << step->location;
+
   return out;
 }
 
 QDataStream &operator>>(QDataStream &in, Step::Pointer step)
 {
   in >> step->getConfiguration();
-
+  in >> step->location;
   return in;
 }
 

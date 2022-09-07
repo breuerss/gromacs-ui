@@ -20,7 +20,8 @@ public:
 private:
   Port* startingPort;
   Port* endingPort;
-  QMetaObject::Connection conn;
+  QMetaObject::Connection startingPortConn;
+  QMetaObject::Connection endingPortConn;
 };
 
 } }

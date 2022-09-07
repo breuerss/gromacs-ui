@@ -32,7 +32,7 @@ public:
   void addInputPort(Command::FileObject::Category category, const QColor& color);
   void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
 
-  std::shared_ptr<Pipeline::Step> getStep() const { return step ; }
+  void setPos(const QPointF& pos);
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -49,7 +49,6 @@ private:
   static QPointF getCirclePoint(double radius, double angle);
 
   QGraphicsTextItem* text;
-  //ClickableIcon* settingsIcon;
   ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
 

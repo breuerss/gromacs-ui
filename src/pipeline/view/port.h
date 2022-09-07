@@ -18,6 +18,7 @@ public:
     Output,
   };
   Port(double x, double y, Type type, QGraphicsItem* parent = nullptr);
+  virtual ~Port();
 
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
   QPointF getCenterInScene() const;

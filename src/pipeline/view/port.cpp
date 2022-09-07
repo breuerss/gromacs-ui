@@ -23,6 +23,12 @@ Port::Port(
   setAcceptHoverEvents(true);
 }
 
+Port::~Port()
+{
+  auto panel = dynamic_cast<Panel*>(scene());
+  panel->deleteConnectorFor(this);
+}
+
 void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
 {
   fileObject = newFileObject;
@@ -88,18 +94,8 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
   {
     if (connected)
     {
-      QList<QGraphicsItem*> list = panel->items();
-      for (QGraphicsItem* item: list)
-      {
-        Connector* connector = dynamic_cast<Connector*>(item);
-        if (connector && item == connector && connector->getEndingPort() == this)
-        {
-          panel->reuseConnector(connector);
-          connector->setEndingPort(nullptr);
-          panel->startingNode = connector->getStartingPort()->parentItem();
-          break;
-        }
-      }
+      Connector* connector = panel->getConnectorFor(this);
+      panel->reuseConnector(connector);
     }
   }
   else

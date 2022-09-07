@@ -118,6 +118,12 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   arrangeInputPorts();
 }
 
+void Node::setPos(const QPointF& pos)
+{
+  QGraphicsRectItem::setPos(pos);
+  step->location = QRectF(scenePos(), boundingRect().size());
+}
+
 const Node::OutputPorts& Node::getOutputPorts() const
 {
   return outputPorts;
@@ -220,6 +226,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   // Do not select if it is moved
   if (startingPos != pos())
   {
+    setPos(pos());
     return;
   }
 

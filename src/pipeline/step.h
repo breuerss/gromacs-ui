@@ -48,6 +48,7 @@ public:
   void showStatusUI(bool show = true);
 
   const Category category;
+  QRectF location;
 
 protected:
   std::shared_ptr<Command::FileObjectConsumer> fileObjectConsumer;

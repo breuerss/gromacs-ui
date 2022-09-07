@@ -12,7 +12,7 @@ Connector::Connector(Port* startingPort)
   , endingPort(nullptr)
 {
   startingPort->setConnected();
-  conn = QObject::connect(startingPort, &Port::centerPositionChanged, [this] () {
+  startingPortConn = QObject::connect(startingPort, &Port::centerPositionChanged, [this] () {
     redraw();
   });
   setFlag(QGraphicsItem::ItemStacksBehindParent);
@@ -20,7 +20,8 @@ Connector::Connector(Port* startingPort)
 
 Connector::~Connector()
 {
-  QObject::disconnect(conn);
+  QObject::disconnect(startingPortConn);
+  QObject::disconnect(endingPortConn);
 }
 
 void Connector::setEndingPort(Port* newEndingPort)
@@ -28,16 +29,18 @@ void Connector::setEndingPort(Port* newEndingPort)
   if (endingPort)
   {
     endingPort->setConnected(false);
-    QObject::disconnect(endingPort, &Port::centerPositionChanged, nullptr, nullptr);
+    QObject::disconnect(endingPortConn);
   }
 
   endingPort = newEndingPort;
   if (endingPort)
   {
     endingPort->setConnected();
-    QObject::connect(endingPort, &Port::centerPositionChanged, [this] () {
-      redraw();
-    });
+    endingPortConn = QObject::connect(
+      endingPort, &Port::centerPositionChanged,
+      [this] () {
+        redraw();
+      });
   }
   redraw();
 }

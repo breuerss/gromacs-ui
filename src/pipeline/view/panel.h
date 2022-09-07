@@ -37,6 +37,8 @@ public:
   QGraphicsItem* startingNode = nullptr;
 
   Port* getPort(std::shared_ptr<Command::FileObject>);
+  void deleteConnectorFor(Port* port);
+  Connector* getConnectorFor(Port* port);
 
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -49,6 +51,7 @@ private:
   void addPort(std::shared_ptr<Command::FileObject>, Port*);
   std::map<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;
+  QMap<QPair<Port*, Port*>, Connector*> connectorMap;
 };
 
 } }
