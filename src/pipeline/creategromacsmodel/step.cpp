@@ -33,4 +33,15 @@ QString Step::getName() const
   return "Create GROMACS Model";
 }
 
+QString Step::getType() const
+{
+  return "CreateGromacsModel";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
 } }

@@ -29,4 +29,16 @@ QString Step::getName() const
   return "PDB Fixer";
 }
 
+QString Step::getType() const
+{
+  return "PdbFixer";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
+
 } }

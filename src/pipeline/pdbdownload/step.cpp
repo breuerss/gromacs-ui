@@ -27,4 +27,15 @@ QString Step::getName() const
   return "PDB Downloader";
 }
 
+QString Step::getType() const
+{
+  return "PdbDownload";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
 } }

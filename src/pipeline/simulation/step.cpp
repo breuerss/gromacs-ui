@@ -30,4 +30,15 @@ QString Step::getName() const
   return "Simulation";
 }
 
+QString Step::getType() const
+{
+  return "Simulation";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
 } }

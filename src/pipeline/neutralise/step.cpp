@@ -34,4 +34,15 @@ QString Step::getName() const
   return "Neutralise";
 }
 
+QString Step::getType() const
+{
+  return "Neutralise";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
 } }

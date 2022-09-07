@@ -34,4 +34,15 @@ QString Step::getName() const
   return "Solvate";
 }
 
+QString Step::getType() const
+{
+  return "Solvate";
+}
+
+Step::Pointer
+Step::create(std::shared_ptr<Model::Project> project) const
+{
+  return std::make_unique<Step>(project);
+}
+
 } }

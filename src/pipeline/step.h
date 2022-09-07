@@ -9,9 +9,13 @@
 #include <QString>
 #include <memory>
 
+namespace Model {
+class Project;
+}
+
 namespace Pipeline {
 
-class Step : public std::enable_shared_from_this<Step> {
+class Step {
 public:
   enum class Category {
     Unknown,
@@ -29,6 +33,9 @@ public:
     Category category
     );
   virtual QString getName() const = 0;
+  virtual QString getType() const = 0;
+  typedef std::shared_ptr<Step> Pointer;
+  virtual Pointer create(std::shared_ptr<Model::Project>) const = 0;
   virtual ~Step() = default;
 
   const std::shared_ptr<Command::FileObjectConsumer>& getFileObjectConsumer() const { return fileObjectConsumer; }
