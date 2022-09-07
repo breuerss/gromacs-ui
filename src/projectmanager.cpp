@@ -103,7 +103,7 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
     QFile file(writeToFileName);
     file.open(QFile::WriteOnly);
     QDataStream out(&file);
-    out << *(currentProject.get());
+    out << currentProject;
     file.close();
 
     if (fileName.isEmpty())
@@ -130,7 +130,7 @@ void ProjectManager::open()
     {
       createNewProject();
     }
-    data >> *(currentProject.get());
+    data >> currentProject;
     file.close();
     currentProjectChanged(currentProject);
   }

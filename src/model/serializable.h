@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDataStream>
+#include <memory>
 
 namespace Model {
 

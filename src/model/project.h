@@ -79,8 +79,8 @@ private:
   QString name = "";
 };
 
-QDataStream &operator<<(QDataStream &out, const Project &project);
-QDataStream &operator>>(QDataStream &in, Project &project);
+QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Project> project);
+QDataStream &operator>>(QDataStream &in, std::shared_ptr<Project> project);
 
 }
 

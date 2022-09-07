@@ -59,12 +59,12 @@ bool Project::initProjectDir(const QString& subDir)
   return dir.mkpath(subDir);
 }
 
-QDataStream &operator<<(QDataStream &out, const Project &project)
+QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Project> project)
 {
-  out << project.property("name").value<QString>();
-  out << *(project.getSystemSetup().get());
+  out << project->property("name").value<QString>();
+  out << *(project->getSystemSetup().get());
 
-  int numberOfSteps = project.getSteps().size();
+  int numberOfSteps = project->getSteps().size();
   out << numberOfSteps;
 
   //for (auto step: project.getSteps())
@@ -75,26 +75,20 @@ QDataStream &operator<<(QDataStream &out, const Project &project)
   return out;
 }
 
-QDataStream &operator>>(QDataStream &in, Project &project)
+QDataStream &operator>>(QDataStream &in, std::shared_ptr<Project> project)
 {
   QString name;
   in >> name;
-  project.setProperty("name", name);
+  project->setProperty("name", name);
 
-  in >> *(project.getSystemSetup().get());
+  in >> *(project->getSystemSetup().get());
 
   int numberOfSteps;
   in >> numberOfSteps;
 
-  while (project.getSteps().size())
-  {
-    project.removeStep(project.getSteps().size() - 1);
-  }
+  qDebug() << numberOfSteps;
+  project->clearSteps();
 
-  //for (int stepIndex = 0; stepIndex < numberOfSteps; ++stepIndex)
-  //{
-  //  project.addStep();
-  //}
 
   //for (auto step: project.getSteps())
   //{
