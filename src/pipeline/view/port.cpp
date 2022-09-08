@@ -95,6 +95,8 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     if (connected)
     {
       Connector* connector = panel->getConnectorFor(this);
+      auto fileObject = connector->getStartingPort()->getFileObject();
+      connectedToChanged(nullptr, fileObject);
       panel->reuseConnector(connector);
     }
   }
@@ -136,7 +138,7 @@ void Port::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
   auto connector = panel->getActiveConnector();
   connector->setEndingPort(this);
   auto startingPort = connector->getStartingPort();
-  connectedToChanged(startingPort->getFileObject());
+  connectedToChanged(startingPort->getFileObject(), nullptr);
   panel->connectorAccepted();
 }
 

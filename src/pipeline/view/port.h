@@ -40,7 +40,10 @@ protected:
 
 signals:
   void centerPositionChanged(const QPointF& center);
-  void connectedToChanged(std::shared_ptr<Command::FileObject>);
+  void connectedToChanged(
+    std::shared_ptr<Command::FileObject> newFileObject,
+    std::shared_ptr<Command::FileObject> oldFileObject
+    );
 
 private:
   Type type;

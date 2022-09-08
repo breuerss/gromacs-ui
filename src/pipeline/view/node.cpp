@@ -95,10 +95,13 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
     [this] (
       std::shared_ptr<Command::FileObject> fileObject,
       Command::FileObject::Category category) {
-      auto panel = dynamic_cast<Panel*>(scene());
-      auto startPort = panel->getPort(fileObject);
-      auto endPort = getInputPort(category);
-      panel->addConnector(startPort, endPort);
+      if (fileObject)
+      {
+        auto panel = dynamic_cast<Panel*>(scene());
+        auto startPort = panel->getPort(fileObject);
+        auto endPort = getInputPort(category);
+        panel->addConnector(startPort, endPort);
+      }
       // TODO get port for category
       // get output port from connecting node
     });
@@ -112,8 +115,18 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   inputPorts << QPair<Command::FileObject::Category, Port*>(category, inputPort);
   QObject::connect(
     inputPort, &Port::connectedToChanged, 
-    [this] (std::shared_ptr<Command::FileObject> fileObject) {
-      step->getFileObjectConsumer()->connectTo(fileObject);
+    [this] (
+      std::shared_ptr<Command::FileObject> fileObject,
+      std::shared_ptr<Command::FileObject> oldFileObject
+      ) {
+      if (fileObject)
+      {
+        step->getFileObjectConsumer()->connectTo(fileObject);
+      }
+      else
+      {
+        step->getFileObjectConsumer()->disconnectFrom(oldFileObject);
+      }
     });
   arrangeInputPorts();
 }
