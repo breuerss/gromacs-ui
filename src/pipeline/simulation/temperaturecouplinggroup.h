@@ -3,7 +3,6 @@
 
 #include "../../model/serializable.h"
 #include <QString>
-#include <QDataStream>
 
 namespace Pipeline { namespace Simulation {
 

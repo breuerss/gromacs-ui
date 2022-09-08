@@ -2,7 +2,6 @@
 #define MODEL_SERIALIZABLE_H
 
 #include <QObject>
-#include <QDataStream>
 #include <memory>
 
 namespace Model {
@@ -13,12 +12,6 @@ class Serializable : public QObject{
 
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model);
 QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Serializable> model);
-QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Serializable> model);
-QDataStream &operator>>(QDataStream &in, std::shared_ptr<Serializable> model);
-
-QDataStream &operator<<(QDataStream &out, const Serializable &model);
-QDataStream &operator>>(QDataStream &in, Serializable& model);
-
 
 }
 

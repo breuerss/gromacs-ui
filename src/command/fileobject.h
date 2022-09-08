@@ -46,9 +46,6 @@ private:
   QString fileName;
 };
 
-QDataStream &operator<<(QDataStream &out, const FileObject::Pointer);
-QDataStream &operator>>(QDataStream &in, FileObject::Pointer step);
-
 QJsonObject &operator<<(QJsonObject &out, const FileObject::Pointer);
 QJsonObject &operator>>(QJsonObject &in, FileObject::Pointer step);
 

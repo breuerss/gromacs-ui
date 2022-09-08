@@ -61,9 +61,6 @@ protected:
   std::shared_ptr<Command::FileNameGenerator> fileNameGenerator;
 };
 
-QDataStream &operator<<(QDataStream &out, const Step::Pointer step);
-QDataStream &operator>>(QDataStream &in, Step::Pointer step);
-
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step);
 QJsonObject &operator>>(QJsonObject &in, Step::Pointer step);
 }

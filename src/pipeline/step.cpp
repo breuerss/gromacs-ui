@@ -101,35 +101,6 @@ void Step::showStatusUI(bool show)
   UiUpdater::getInstance()->showStatusUI(widget);
 }
 
-QDataStream &operator<<(QDataStream &out, const Step::Pointer step)
-{
-  out << step->getConfiguration();
-  out << step->location;
-
-  const auto& fileObjects = step->getFileObjectProvider()->provides();
-  for (const auto& fileObject : fileObjects)
-  {
-    out << fileObject;
-  }
-
-  return out;
-}
-
-QDataStream &operator>>(QDataStream &in, Step::Pointer step)
-{
-  in >> step->getConfiguration();
-  in >> step->location;
-
-  int noOfFileObjects;
-  in >> noOfFileObjects;
-  for (auto fileObject : step->getFileObjectProvider()->provides())
-  {
-    in >> fileObject;
-  }
-
-  return in;
-}
-
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
 {
   out << step->getConfiguration();

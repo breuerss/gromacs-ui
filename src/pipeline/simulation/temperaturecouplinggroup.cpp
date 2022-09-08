@@ -13,8 +13,8 @@ TemperatureCouplingGroup::TemperatureCouplingGroup()
   static bool registered = false;
   if (!registered)
   {
-    qRegisterMetaType<Group>("TemperatureCouplingGroup::Group");
-    qRegisterMetaTypeStreamOperators<int>("TemperatureCouplingGroup::Group");
+    //qRegisterMetaType<Group>("TemperatureCouplingGroup::Group");
+    //qRegisterMetaTypeStreamOperators<int>("TemperatureCouplingGroup::Group");
     registered = true;
   }
 }

@@ -5,7 +5,6 @@
 #include "../../config/configuration.h"
 #include "../../misc/bimaphelper.h"
 #include <QString>
-#include <QDataStream>
 #include <memory>
 
 namespace Pipeline { namespace Simulation {
@@ -250,9 +249,6 @@ QVariant vdwAlgorithmFrom(const QString& value);
 QString toString(Configuration::VdwAlgorithm algorithm);
 QVariant vdwModifierFrom(const QString& value);
 QString toString(Configuration::VdwModifier algorithm);
-
-QDataStream &operator<<(QDataStream &out, const Configuration &model);
-QDataStream &operator>>(QDataStream &in, Configuration& model);
 
 } }
 

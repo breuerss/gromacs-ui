@@ -23,7 +23,6 @@
 
 # Pipeline implementation
 
-1. Neutralise
 1. Filter
 1. Loading starting configuration for different simulations
 1. Save and restore pipelines

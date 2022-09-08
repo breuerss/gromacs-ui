@@ -181,41 +181,41 @@ QString toString(Configuration::PressureCouplingType type)
   return pressureCouplingTypeBimap.left.at(type);
 }
 
-QDataStream &operator<<(QDataStream &out, const Configuration &model)
-{
-  const Model::Serializable& tmp = model;
-  out << tmp;
-
-  const auto& groups = model.getTemperatureCouplingGroups();
-  int noOfGroups = groups.size();
-  out << noOfGroups;
-  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
-  {
-    out << *(groups[groupIndex]);
-  }
-
-
-  return out;
-}
-
-QDataStream &operator>>(QDataStream &in, Configuration& model)
-{
-  Model::Serializable& tmp = model;
-  in >> tmp;
-
-  int noOfGroups;
-  in >> noOfGroups;
-
-  auto& groups = model.getTemperatureCouplingGroups();
-  groups.clear();
-  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
-  {
-    auto group = model.addTemperatureCouplingGroup();
-    in >> (*group);
-  }
-
-  return in;
-}
+//QDataStream &operator<<(QDataStream &out, const Configuration &model)
+//{
+//  const Model::Serializable& tmp = model;
+//  out << tmp;
+//
+//  const auto& groups = model.getTemperatureCouplingGroups();
+//  int noOfGroups = groups.size();
+//  out << noOfGroups;
+//  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
+//  {
+//    out << *(groups[groupIndex]);
+//  }
+//
+//
+//  return out;
+//}
+//
+//QDataStream &operator>>(QDataStream &in, Configuration& model)
+//{
+//  Model::Serializable& tmp = model;
+//  in >> tmp;
+//
+//  int noOfGroups;
+//  in >> noOfGroups;
+//
+//  auto& groups = model.getTemperatureCouplingGroups();
+//  groups.clear();
+//  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
+//  {
+//    auto group = model.addTemperatureCouplingGroup();
+//    in >> (*group);
+//  }
+//
+//  return in;
+//}
 
 const static auto temperatureAlgorithmBimap =
 makeBimap<Configuration::TemperatureAlgorithm, QString>({
