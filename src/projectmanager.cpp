@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 ProjectManager* ProjectManager::getInstance()
 {
