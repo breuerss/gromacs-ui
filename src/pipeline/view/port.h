@@ -39,6 +39,7 @@ protected:
   void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
 
 signals:
+  void deleted(Port*);
   void centerPositionChanged(const QPointF& center);
   void connectedToChanged(
     std::shared_ptr<Command::FileObject> newFileObject,

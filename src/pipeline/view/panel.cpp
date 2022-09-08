@@ -7,6 +7,14 @@
 
 namespace Pipeline { namespace View {
 
+Panel::~Panel()
+{
+  for (auto conn : conns)
+  {
+    disconnect(conn);
+  }
+}
+
 void Panel::reuseConnector(Connector* connector)
 {
   stopConnector();
@@ -26,6 +34,12 @@ void Panel::startConnector(Port* at)
 
 void Panel::addConnector(Port* start, Port* end)
 {
+  auto deletePortEntry = [this] (Port* deleted) {
+    deleteConnectorFor(deleted);
+    disconnect(QObject::sender());
+  };
+  conns << connect(start, &Port::deleted, deletePortEntry);
+  conns << connect(end, &Port::deleted, deletePortEntry);
   if (!connectorMap.count({start, end}))
   {
     auto connector = new Connector(start);

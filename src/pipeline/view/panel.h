@@ -24,6 +24,7 @@ class Panel : public QGraphicsScene
 
 public:
   Panel(QObject* parent = nullptr);
+  ~Panel();
 
   void setProject(std::shared_ptr<Model::Project> newProject);
   std::shared_ptr<Model::Project> getProject() const;

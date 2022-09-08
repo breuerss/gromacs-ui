@@ -25,8 +25,7 @@ Port::Port(
 
 Port::~Port()
 {
-  auto panel = dynamic_cast<Panel*>(scene());
-  panel->deleteConnectorFor(this);
+  deleted(this);
 }
 
 void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
