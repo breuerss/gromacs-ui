@@ -82,6 +82,9 @@ private:
 QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Project> project);
 QDataStream &operator>>(QDataStream &in, std::shared_ptr<Project> project);
 
+QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Project> project);
+QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Project> project);
+
 }
 
 #endif // PROJECT_H

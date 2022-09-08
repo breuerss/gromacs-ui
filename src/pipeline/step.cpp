@@ -1,10 +1,13 @@
 #include "step.h"
 #include "../uiupdater.h"
-#include <QObject>
-#include <QDebug>
 #include "../../ui/pdbcode.h"
 #include "src/command/filenamegenerator.h"
 #include "src/command/fileobjectconsumer.h"
+
+#include <QObject>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonArray>
 
 namespace Pipeline {
 
@@ -127,6 +130,52 @@ QDataStream &operator>>(QDataStream &in, Step::Pointer step)
   return in;
 }
 
+QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
+{
+  out << step->getConfiguration();
+  const auto& location = step->location;
+  out["type"] = step->getType();
+  out["location"] = QJsonArray({
+    location.x(), location.y(), location.width(), location.height()
+  });
 
+  QJsonArray fileObjectsArray;
+  const auto& fileObjects = step->getFileObjectProvider()->provides();
+  for (const auto& fileObject : fileObjects)
+  {
+    QJsonObject fileObjectJson;
+    fileObjectJson << fileObject;
+    fileObjectsArray.append(fileObjectJson);
+  }
+
+  out["provided-files"] = fileObjectsArray;
+
+  return out;
 }
 
+QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
+{
+  in >> step->getConfiguration();
+  if (in.contains("location") && in["location"].isArray())
+  {
+    auto& location = step->location;
+    QJsonArray jsonLoc = in["location"].toArray();
+    location.setTopLeft({ jsonLoc[0].toDouble(), jsonLoc[1].toDouble() });
+    location.setSize({ jsonLoc[2].toDouble(), jsonLoc[3].toDouble() });
+  }
+
+  if (in.contains("provided-files") && in["provided-files"].isArray())
+  {
+    QJsonArray files = in["provided-files"].toArray();
+    const auto& provides = step->getFileObjectProvider()->provides();
+    for (int index = 0; index < provides.size(); index++)
+    {
+      QJsonObject fileObjectJson = files[index].toObject();
+      fileObjectJson >> provides[index];
+    }
+  }
+
+  return in;
+}
+
+}

@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QMap>
+#include <QJsonObject>
 
 namespace Command {
 
@@ -54,6 +55,26 @@ QDataStream &operator>>(QDataStream &in, FileObject::Pointer obj)
 {
   QString fileName;
   in >> fileName;
+
+  obj->setFileName(fileName);
+
+  return in;
+}
+
+QJsonObject &operator<<(QJsonObject &out, const FileObject::Pointer obj)
+{
+  out["fileName"] = obj->getFileName();
+
+  return out;
+}
+
+QJsonObject &operator>>(QJsonObject &in, FileObject::Pointer obj)
+{
+  QString fileName;
+  if (in.contains("fileName") && in["fileName"].isString())
+  {
+    fileName = in["fileName"].toString();
+  }
 
   obj->setFileName(fileName);
 

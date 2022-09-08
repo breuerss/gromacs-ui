@@ -102,8 +102,9 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
   {
     QFile file(writeToFileName);
     file.open(QFile::WriteOnly);
-    QDataStream out(&file);
-    out << currentProject;
+    QJsonObject data;
+    data << currentProject;
+    file.write(QJsonDocument(data).toJson());
     file.close();
 
     if (fileName.isEmpty())
@@ -125,12 +126,17 @@ void ProjectManager::open()
   {
     QFile file(fileName);
     file.open(QFile::ReadOnly);
-    QDataStream data(&file);
+
+    QByteArray saveData = file.readAll();
+
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     if (!currentProject)
     {
       createNewProject();
     }
-    data >> currentProject;
+
+    QJsonObject obj = loadDoc.object();
+    obj >> currentProject;
     file.close();
     currentProjectChanged(currentProject);
   }
