@@ -12,6 +12,7 @@ class FileObjectProvider
 public:
   FileObjectProvider(const QList<FileObject::Type>& fileTypes);
   const QList<std::shared_ptr<FileObject>>& provides() const;
+  QList<std::shared_ptr<FileObject>>& provides();
 
 private:
    QList<std::shared_ptr<FileObject>> providesList;

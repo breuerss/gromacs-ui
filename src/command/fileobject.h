@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QObject>
+#include <memory>
 
 namespace Command {
 
@@ -11,6 +12,7 @@ class FileObject : public QObject
 
   Q_OBJECT
 public:
+  typedef std::shared_ptr<FileObject> Pointer;
   enum class Type {
     Unknown,
     GRO,
@@ -43,6 +45,10 @@ signals:
 private:
   QString fileName;
 };
+
+QDataStream &operator<<(QDataStream &out, const FileObject::Pointer);
+QDataStream &operator>>(QDataStream &in, FileObject::Pointer step);
+
 
 }
 

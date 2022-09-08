@@ -43,6 +43,23 @@ FileObject::Category FileObject::getCategoryFor(FileObject::Type type)
   return categoryMap[type];
 }
 
+QDataStream &operator<<(QDataStream &out, const FileObject::Pointer obj)
+{
+  out << obj->getFileName();
+
+  return out;
+}
+
+QDataStream &operator>>(QDataStream &in, FileObject::Pointer obj)
+{
+  QString fileName;
+  in >> fileName;
+
+  obj->setFileName(fileName);
+
+  return in;
+}
+
 }
 
 

@@ -59,6 +59,12 @@ Step::getFileObjectConsumer()
 }
 
 const std::shared_ptr<Command::FileObjectProvider>&
+Step::getFileObjectProvider() const
+{
+  return fileObjectProvider;
+}
+
+std::shared_ptr<Command::FileObjectProvider>&
 Step::getFileObjectProvider()
 {
   return fileObjectProvider;
@@ -95,8 +101,13 @@ void Step::showStatusUI(bool show)
 QDataStream &operator<<(QDataStream &out, const Step::Pointer step)
 {
   out << step->getConfiguration();
-
   out << step->location;
+
+  const auto& fileObjects = step->getFileObjectProvider()->provides();
+  for (const auto& fileObject : fileObjects)
+  {
+    out << fileObject;
+  }
 
   return out;
 }
@@ -105,6 +116,14 @@ QDataStream &operator>>(QDataStream &in, Step::Pointer step)
 {
   in >> step->getConfiguration();
   in >> step->location;
+
+  int noOfFileObjects;
+  in >> noOfFileObjects;
+  for (auto fileObject : step->getFileObjectProvider()->provides())
+  {
+    in >> fileObject;
+  }
+
   return in;
 }
 

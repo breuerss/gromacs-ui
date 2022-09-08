@@ -69,11 +69,34 @@ QDataStream &operator<<(QDataStream &out, const std::shared_ptr<Project> project
   out << numberOfSteps;
 
   qDebug() << numberOfSteps;
-  for (auto step: project->getSteps())
+
+  QList<QList<int>> connections;
+
+  const auto& steps = project->getSteps();
+  for (int stepIndex = 0; stepIndex < steps.size(); stepIndex++)
   {
+    const auto& step = steps[stepIndex];
     out << step->getType();
     out << step;
+
+    for (const auto& fileObject : step->getFileObjectConsumer()->getConnectedTo().values())
+    {
+
+      for (int sourceNodeIndex = 0; sourceNodeIndex < steps.size(); sourceNodeIndex++)
+      {
+        const auto& sourceStep = steps[sourceNodeIndex];
+        int found = sourceStep->getFileObjectProvider()->provides().indexOf(fileObject);
+        if (found > -1)
+        {
+          auto triple = QList({stepIndex, sourceNodeIndex, found});
+          connections << triple;
+          break;
+        }
+      }
+    }
   }
+
+  out << connections;
 
   return out;
 }
@@ -104,11 +127,20 @@ QDataStream &operator>>(QDataStream &in, std::shared_ptr<Project> project)
     project->addStep(std::move(step));
   }
 
-  //for (auto step: project.getSteps())
-  //{
-    //qDebug() << "reading step";
-    //in >> *(step.get());
-  //}
+  QList<QList<int>> connections;
+  in >> connections;
+
+  for (const auto& conn: connections)
+  {
+    const int targetIndex = conn[0];
+    const int sourceIndex = conn[1];
+    const int sourcePort = conn[2];
+
+    auto& steps = project->getSteps();
+    steps[targetIndex]->getFileObjectConsumer()
+      ->connectTo(steps[sourceIndex]->getFileObjectProvider()->provides()[sourcePort]);
+
+  }
 
   return in;
 }

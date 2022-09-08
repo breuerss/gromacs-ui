@@ -75,4 +75,11 @@ FileObject::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObje
   return category;
 }
 
+const QMap<FileObject::Category, std::shared_ptr<FileObject>>
+FileObjectConsumer::getConnectedTo() const
+{
+  return connectedTo;
+}
+
+
 }

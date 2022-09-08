@@ -14,6 +14,8 @@ class FileObjectConsumer : public QObject
 public:
   FileObjectConsumer(const QMap<FileObject::Category, QList<FileObject::Type>>& requiresMap);
   const QMap<FileObject::Category, QList<FileObject::Type>>& requires() const;
+  const QMap<FileObject::Category, std::shared_ptr<FileObject>>
+  getConnectedTo() const;
 
   bool accepts(std::shared_ptr<FileObject> fileObject);
   void connectTo(std::shared_ptr<FileObject> fileObject);

@@ -16,4 +16,9 @@ const QList<std::shared_ptr<FileObject>>& FileObjectProvider::provides() const
   return providesList;
 }
 
+QList<std::shared_ptr<FileObject>>& FileObjectProvider::provides()
+{
+  return providesList;
+}
+
 }
