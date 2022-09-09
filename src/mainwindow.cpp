@@ -7,6 +7,7 @@
 #include "uiupdater.h"
 
 #include "model/systemsetup.h"
+#include "model/project.h"
 
 #include <QDebug>
 #include <QWebEngineSettings>
@@ -19,6 +20,7 @@
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
 #include "pipeline/simulation/step.h"
+
 
 
 MainWindow::MainWindow(QWidget *parent)

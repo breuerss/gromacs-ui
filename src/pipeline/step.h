@@ -1,16 +1,24 @@
 #ifndef PIPELINE_STEP_H
 #define PIPELINE_STEP_H
 
-#include "../command/fileobjectconsumer.h"
-#include "../command/fileobjectprovider.h"
 #include "../config/configuration.h"
-#include "../command/executor.h"
-#include "src/command/filenamegenerator.h"
+#include "../command/fileobject.h"
 #include <QString>
 #include <memory>
 
+namespace config {
+class Configuration;
+}
+
 namespace Model {
 class Project;
+}
+
+namespace Command {
+class FileObjectProvider;
+class FileObjectConsumer;
+class FileNameGenerator;
+class Executor;
 }
 
 namespace Pipeline {

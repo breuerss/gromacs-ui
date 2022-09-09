@@ -2,8 +2,6 @@
 #define PIPELINE_SOLVATE_CONFIGURATION_H
 
 #include "../../config/configuration.h"
-#include <QString>
-#include <memory>
 
 namespace Pipeline { namespace Solvate {
 

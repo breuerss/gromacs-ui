@@ -4,7 +4,6 @@
 #include "../../command/executor.h"
 #include <memory>
 #include <QFileSystemWatcher>
-#include <qwidget.h>
 
 namespace Model {
 class Project;

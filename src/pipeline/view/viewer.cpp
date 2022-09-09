@@ -2,6 +2,7 @@
 
 #include "panel.h"
 #include "node.h"
+#include "actionbutton.h"
 #include "../../model/project.h"
 #include "src/pipeline/view/addmenu.h"
 #include <QWheelEvent>

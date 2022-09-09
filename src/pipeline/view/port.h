@@ -1,10 +1,9 @@
 #ifndef PIPELINE_PORT_H
 #define PIPELINE_PORT_H
 
-#include <QGraphicsEllipseItem>
-#include <algorithm>
-#include <memory>
 #include "../../command/fileobject.h"
+#include <QGraphicsEllipseItem>
+#include <memory>
 
 namespace Pipeline { namespace View {
 

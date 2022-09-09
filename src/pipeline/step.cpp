@@ -3,6 +3,8 @@
 #include "../../ui/pdbcode.h"
 #include "src/command/filenamegenerator.h"
 #include "src/command/fileobjectconsumer.h"
+#include "src/command/fileobjectprovider.h"
+#include "src/command/executor.h"
 
 #include <QObject>
 #include <QDebug>

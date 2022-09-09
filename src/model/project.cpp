@@ -8,6 +8,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include "../pipeline/stepfactory.h"
+#include "../command/fileobjectconsumer.h"
+#include "../command/fileobjectprovider.h"
 
 namespace Model {
 

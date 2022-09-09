@@ -26,7 +26,6 @@ void Command::doExecute()
   QString inputFile = getInputFilename();
 
   const QString outputFileName(getOutputFilename());
-  using Model::SystemSetup;
   command += " -f " + inputFile;
   command += " -o " + outputFileName;
   command += " -ignh ";

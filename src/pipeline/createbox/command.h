@@ -2,7 +2,6 @@
 #define PIPELINE_CREATEBOX_COMMAND_H
 
 #include "../../command/executor.h"
-#include <memory>
 
 namespace Pipeline { namespace CreateBox {
 

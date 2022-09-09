@@ -1,10 +1,9 @@
 #ifndef PIPELINE_PANEL_H
 #define PIPELINE_PANEL_H
 
-#include "connector.h"
-#include "node.h"
 #include "src/command/fileobject.h"
 #include <QGraphicsScene>
+#include <QMap>
 #include <QMetaObject>
 #include <QGraphicsSceneMouseEvent>
 #include <memory>
@@ -18,6 +17,10 @@ class Project;
 }
 
 namespace Pipeline { namespace View {
+
+class Node;
+class Connector;
+class Port;
 
 class Panel : public QGraphicsScene
 {

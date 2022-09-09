@@ -2,8 +2,6 @@
 #define PIPELINE_CREATEBOX_CONFIGURATION_H
 
 #include "../../config/configuration.h"
-#include <QString>
-#include <memory>
 
 namespace Pipeline { namespace CreateBox {
 

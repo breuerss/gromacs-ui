@@ -8,6 +8,7 @@
 #include "../../simulationstatuschecker.h"
 #include "qfilesystemwatcher.h"
 #include "src/command/fileobject.h"
+#include "src/command/fileobjectconsumer.h"
 #include "ui/simulationstatus.h"
 
 #include <QDebug>

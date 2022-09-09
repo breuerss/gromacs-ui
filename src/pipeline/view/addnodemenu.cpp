@@ -4,6 +4,7 @@
 #include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QIcon>
 #include <qpushbutton.h>
 

@@ -3,7 +3,6 @@
 
 #include "../../command/executor.h"
 #include <memory>
-#include <qobjectdefs.h>
 
 class PdbDownloader;
 namespace Model {

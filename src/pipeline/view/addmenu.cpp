@@ -4,7 +4,10 @@
 #include "colors.h"
 #include <memory>
 #include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QIcon>
+#include "../../command/fileobjectprovider.h"
+#include "../../command/fileobjectconsumer.h"
 #include "../../projectmanager.h"
 #include "../../model/project.h"
 #include "../pdbdownload/step.h"

@@ -3,7 +3,6 @@
 
 #include "../../config/configuration.h"
 #include <QString>
-#include <memory>
 
 namespace Pipeline { namespace Neutralise {
 

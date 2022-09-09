@@ -2,7 +2,6 @@
 #define SIMULATIONSETUPFORM_H
 
 #include <QWidget>
-#include <QComboBox>
 #include <memory>
 #include <QMetaObject>
 #include <QList>

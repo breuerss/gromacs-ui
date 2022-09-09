@@ -2,11 +2,11 @@
 #define PIPELINE_VIEW_H
 
 #include <QGraphicsView>
-#include <memory>
-#include "actionbutton.h"
-#include "addmenu.h"
 
 namespace Pipeline { namespace View {
+
+class ActionButton;
+class AddMenu;
 
 class Viewer: public QGraphicsView
 {

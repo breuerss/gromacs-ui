@@ -1,7 +1,6 @@
 #ifndef PIPELINE_STEPFACTORY_H
 #define PIPELINE_STEPFACTORY_H
 
-#include "step.h"
 #include <memory>
 #include <QString>
 #include <map>
@@ -11,6 +10,8 @@ class Project;
 }
 
 namespace Pipeline {
+
+class Step;
 
 class StepFactory
 {

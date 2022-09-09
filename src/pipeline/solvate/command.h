@@ -2,9 +2,7 @@
 #define PIPELINE_SOLVATE_COMMAND_H
 
 #include "../src/command/executor.h"
-#include "configuration.h"
 #include "../creategromacsmodel/configuration.h"
-#include <memory>
 
 namespace Pipeline { namespace Solvate {
 

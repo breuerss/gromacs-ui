@@ -2,11 +2,6 @@
 #define PIPELINE_CREATEGROMACSMODEL_COMMAND_H
 
 #include "../../command/executor.h"
-#include <memory>
-
-namespace Model {
-  class SystemSetup;
-}
 
 namespace Pipeline { namespace CreateGromacsModel {
 

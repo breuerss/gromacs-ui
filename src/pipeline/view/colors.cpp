@@ -1,4 +1,5 @@
 #include "colors.h"
+#include <QMap>
 
 namespace Pipeline { namespace View { namespace Colors {
 

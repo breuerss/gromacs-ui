@@ -1,15 +1,14 @@
 #ifndef PIPELINE_NODE_H
 #define PIPELINE_NODE_H
 
-#include <QGraphicsRectItem>
-#include <QObject>
-#include <QList>
-#include <QGraphicsEllipseItem>
-#include <memory>
 #include "roundedrectitem.h"
 #include "port.h"
 #include "../../command/fileobject.h"
 #include "clickableicon.h"
+
+#include <QGraphicsRectItem>
+#include <QList>
+#include <memory>
 
 namespace Pipeline {
 

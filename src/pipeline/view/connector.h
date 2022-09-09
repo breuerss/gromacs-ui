@@ -1,8 +1,8 @@
 #ifndef PIPELINE_CONNECTOR_H
 #define PIPELINE_CONNECTOR_H
 
-#include <QGraphicsPathItem>
 #include "port.h"
+#include <QGraphicsPathItem>
 
 namespace Pipeline { namespace View {
 

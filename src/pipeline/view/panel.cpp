@@ -1,9 +1,11 @@
 #include "panel.h"
-#include "qgraphicssceneevent.h"
+#include "colors.h"
+#include "connector.h"
+#include "node.h"
+#include "../../model/project.h"
+
 #include <memory>
 #include <QDebug>
-#include "../../model/project.h"
-#include "colors.h"
 
 namespace Pipeline { namespace View {
 

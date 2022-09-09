@@ -1,13 +1,14 @@
 #ifndef PIPELINE_VIEW_ADDNODEMENU_H
 #define PIPELINE_VIEW_ADDNODEMENU_H
 
-#include "addnodebutton.h"
-#include <QWidget>
-#include <QParallelAnimationGroup>
 #include <functional>
-#include <memory>
+#include <QWidget>
+
+class QParallelAnimationGroup;
 
 namespace Pipeline { namespace View {
+
+class AddNodeButton;
 
 class AddNodeMenu : public QWidget {
   Q_OBJECT

@@ -2,14 +2,11 @@
 #define PIPELINE_CREATEGROMACSMODEL_CONFIGURATION_H
 
 #include "../../config/configuration.h"
-#include <QString>
-#include <memory>
 
 namespace Pipeline { namespace CreateGromacsModel {
 
 class Configuration
 : public Config::Configuration
-, public std::enable_shared_from_this<Configuration>
 {
   Q_OBJECT
 public:

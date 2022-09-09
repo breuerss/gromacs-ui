@@ -5,6 +5,7 @@
 #include "src/command/executor.h"
 #include "src/command/fileobject.h"
 #include "src/command/fileobjectconsumer.h"
+#include "src/command/fileobjectprovider.h"
 #include "src/pipeline/view/clickableicon.h"
 #include "src/pipeline/view/colors.h"
 #include <QBrush>
