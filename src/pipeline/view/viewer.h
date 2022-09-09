@@ -12,6 +12,7 @@ class Viewer: public QGraphicsView
 {
 public:
   Viewer(QWidget* parent = nullptr);
+  void center();
 
 protected slots:
   void wheelEvent(QWheelEvent *event);

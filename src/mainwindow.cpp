@@ -129,8 +129,12 @@ MainWindow::MainWindow(QWidget *parent)
           });
 
   setupUIForProject();
-  connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
-          this, &MainWindow::setupUIForProject);
+  connect(
+    ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
+    [this, view] () {
+      view->center();
+      setupUIForProject();
+    });
 
   //connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
   //        [] (int index) {

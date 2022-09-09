@@ -50,10 +50,15 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 {
   if(event->key() == Qt::Key_Home)
   {
-    resetTransform();
-    const auto& rect = scene()->itemsBoundingRect();
-    fitInView(rect + QMargins(10, 10, 10, 10), Qt::KeepAspectRatio);
+    center();
   }
+}
+
+void Viewer::center()
+{
+  resetTransform();
+  const auto& rect = scene()->itemsBoundingRect();
+  fitInView(rect + QMargins(10, 10, 10, 10), Qt::KeepAspectRatio);
 }
 
 void Viewer::drawForeground(QPainter *painter, const QRectF &rect)
