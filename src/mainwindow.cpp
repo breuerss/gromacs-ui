@@ -49,12 +49,14 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionAddStep, &QAction::triggered, [] () {
     ProjectManager::getInstance()->getCurrentProject()->addStep<Pipeline::Simulation::Step>();
   });
-  connect(ui->actionSave, &QAction::triggered,
-          ProjectManager::getInstance(), &ProjectManager::save);
+  connect(ui->actionSave, &QAction::triggered, [] () {
+    ProjectManager::getInstance()->save();
+  });
   connect(ui->actionSaveProjectAs, &QAction::triggered,
           ProjectManager::getInstance(), QOverload<>::of(&ProjectManager::saveAs));
-  connect(ui->actionOpenProject, &QAction::triggered,
-          ProjectManager::getInstance(), &ProjectManager::open);
+  connect(ui->actionOpenProject, &QAction::triggered, [] () {
+    ProjectManager::getInstance()->open();
+  });
   connect(ui->actionRunSimulation, &QAction::triggered,
           queue.get(), &Command::Queue::start);
 

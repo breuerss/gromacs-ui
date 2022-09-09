@@ -50,7 +50,7 @@ void ProjectManager::createNewProject()
   }
 }
 
-void ProjectManager::save()
+void ProjectManager::save(const QString& saveToFileName)
 {
   if (fileName.isEmpty())
   {
@@ -58,7 +58,17 @@ void ProjectManager::save()
   }
   else
   {
-    saveAs(fileName);
+    QString writeToFileName = saveToFileName;
+    if (writeToFileName.isEmpty())
+    {
+      writeToFileName = fileName;
+    }
+    QFile file(writeToFileName);
+    file.open(QFile::WriteOnly);
+    QJsonObject data;
+    data << currentProject;
+    file.write(QJsonDocument(data).toJson());
+    file.close();
   }
 }
 
@@ -100,46 +110,42 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
     }
   }
 
-  if (!writeToFileName.isEmpty())
+  save(writeToFileName);
+  if (!writeToFileName.isEmpty() && fileName.isEmpty())
   {
-    QFile file(writeToFileName);
-    file.open(QFile::WriteOnly);
-    QJsonObject data;
-    data << currentProject;
-    file.write(QJsonDocument(data).toJson());
-    file.close();
-
-    if (fileName.isEmpty())
-    {
-      fileName = writeToFileName;
-    }
+    fileName = writeToFileName;
   }
 }
 
-void ProjectManager::open()
+void ProjectManager::open(const QString& newFileName)
 {
-  fileName = QFileDialog::getOpenFileName(
-    nullptr,
-    tr("Open Gromacs Simulation Project"),
-    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-    "*.groproj"
-    );
-  if (!fileName.isEmpty())
+  QString fileNameToOpen = newFileName;
+
+  if (fileNameToOpen.isEmpty())
   {
-    QFile file(fileName);
-    file.open(QFile::ReadOnly);
+    fileNameToOpen = QFileDialog::getOpenFileName(
+      nullptr,
+      tr("Open Gromacs Simulation Project"),
+      QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+      "*.groproj"
+      );
+  }
 
+  QFile file(fileNameToOpen);
+  if (file.exists() && file.open(QFile::ReadOnly))
+  {
     QByteArray saveData = file.readAll();
+    file.close();
 
-    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     if (!currentProject)
     {
       createNewProject();
     }
 
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     QJsonObject obj = loadDoc.object();
     obj >> currentProject;
-    file.close();
     currentProjectChanged(currentProject);
+    fileName = fileNameToOpen;
   }
 }
