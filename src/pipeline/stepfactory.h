@@ -1,11 +1,14 @@
 #ifndef PIPELINE_STEPFACTORY_H
 #define PIPELINE_STEPFACTORY_H
 
-#include "src/model/project.h"
 #include "step.h"
 #include <memory>
 #include <QString>
 #include <map>
+
+namespace Model {
+class Project;
+}
 
 namespace Pipeline {
 
