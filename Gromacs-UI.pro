@@ -18,7 +18,6 @@ SOURCES += \
     src/form/preferencesdialog.cpp \
     src/form/progresschart.cpp \
     src/form/simulationsetupform.cpp \
-    src/form/systemsetupform.cpp \
     src/form/temperaturegroupconfigform.cpp \
     $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
@@ -32,7 +31,6 @@ HEADERS += \
     src/form/preferencesdialog.h \
     src/form/progresschart.h \
     src/form/simulationsetupform.h \
-    src/form/systemsetupform.h \
     src/form/temperaturegroupconfigform.h \
     src/misc/bimaphelper.h \
     $$files(src/model/*.h) \

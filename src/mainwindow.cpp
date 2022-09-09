@@ -14,7 +14,6 @@
 #include <QDir>
 #include <QToolButton>
 #include <QCoreApplication>
-#include <climits>
 #include <memory>
 #include <QMenu>
 #include "pipeline/view/viewer.h"
@@ -26,7 +25,6 @@ MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
 , ui(new Ui::MainWindow)
   , preferencesDialog(new PreferencesDialog(this))
-  , queue(std::make_shared<Command::Queue>())
 {
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
@@ -57,8 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->actionOpenProject, &QAction::triggered, [] () {
     ProjectManager::getInstance()->open();
   });
-  connect(ui->actionRunSimulation, &QAction::triggered,
-          queue.get(), &Command::Queue::start);
 
   // add button to add step to tab widget
   //QToolButton* addStepButton = new QToolButton(this);
