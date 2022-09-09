@@ -12,6 +12,7 @@ const QColor Violet("#9945ba");
 const QColor Orange("#de6328");
 const QColor Blue("#766be6");
 const QColor Grey("#d3dad3");
+const QColor DarkGrey("#333339");
 const QColor Egg("#e0f4db");
 
 QColor getColorFor(Step::Category category);

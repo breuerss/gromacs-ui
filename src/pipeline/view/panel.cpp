@@ -7,6 +7,12 @@
 
 namespace Pipeline { namespace View {
 
+Panel::Panel(QObject* parent)
+  : QGraphicsScene(parent)
+{
+  setBackgroundBrush(QBrush(Colors::DarkGrey));
+}
+
 Panel::~Panel()
 {
   for (auto conn : conns)
@@ -155,12 +161,6 @@ void Panel::connectorAccepted()
 {
   addConnector(activeConnector->getStartingPort(), activeConnector->getEndingPort());
   stopConnector();
-}
-
-Panel::Panel(QObject* parent)
-  : QGraphicsScene(parent)
-{
-  setBackgroundBrush(QBrush(Colors::Egg));
 }
 
 void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
