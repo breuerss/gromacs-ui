@@ -25,9 +25,7 @@
 
 1. Filter
 1. Loading starting configuration for different simulations
-1. Save and restore pipelines
 1. Show few settings options in node
-1. save location of nodes
 1. alignment options
 1. execution of whole pipeline
 1. detect if node can be executed
