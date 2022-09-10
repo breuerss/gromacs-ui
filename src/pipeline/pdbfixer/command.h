@@ -15,7 +15,6 @@ public:
 
 private:
   QString getInputFilename() const;
-  QString getOutputFilename() const;
 };
 
 } }

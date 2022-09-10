@@ -12,4 +12,10 @@ void FileNameGenerator::setConfiguration(std::shared_ptr<Config::Configuration> 
 {
   configuration = newConfig;
 }
+
+void FileNameGenerator::setFileObjectConsumer(std::shared_ptr<FileObjectConsumer> newConsumer)
+{
+  fileObjectConsumer = newConsumer;
+}
+
 }

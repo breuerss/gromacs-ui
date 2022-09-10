@@ -1,15 +1,13 @@
 #include "step.h"
 #include "configuration.h"
 #include "command.h"
+#include "filenamegenerator.h"
 #include <memory>
-#include "../../command/fileobject.h"
 
 namespace Pipeline { namespace Neutralise {
 
 using FileObject = ::Command::FileObject;
-Step::Step(
-    std::shared_ptr<Model::Project>
-  )
+Step::Step(std::shared_ptr<Model::Project> project)
   : Pipeline::Step(
     {
       { FileObject::Category::Coordinates,
@@ -23,7 +21,7 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    nullptr,
+    std::make_shared<FileNameGenerator>(project),
     Category::Preprocess
     )
 {

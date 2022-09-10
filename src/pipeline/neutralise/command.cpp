@@ -55,7 +55,8 @@ void Command::doExecute()
 
   command += " genion";
 
-  QString outputFile = getOutputFilename();
+  QString outputFile = fileNameGenerator
+    ->getFileNameFor(::Command::FileObject::Type::GRO);
   command += " -s " + ionsTprPath;
   command += " -o " + outputFile;
   auto config = dynamic_cast<Configuration*>(configuration);
@@ -98,13 +99,6 @@ QString Command::getInputFilename() const
 {
   using Type = ::Command::FileObject::Type;
   return fileObjectConsumer->getFileNameFor(Type::GRO);
-}
-
-QString Command::getOutputFilename() const
-{
-  QFileInfo fileInfo(getInputFilename());
-
-  return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_neutralised.gro";
 }
 
 } }

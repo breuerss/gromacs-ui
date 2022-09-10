@@ -20,7 +20,8 @@ void Command::doExecute()
 
   QString inputFile = getInputFilename();
 
-  QString outputFile = getOutputFilename();
+  QString outputFile = fileNameGenerator
+    ->getFileNameFor(::Command::FileObject::Type::PDB);
   command += " " + inputFile;
   command += " --output=" + outputFile;
   command += " --replace-nonstandard";
@@ -50,13 +51,6 @@ bool Command::canExecute() const
 QString Command::getName() const
 {
   return "pdbfixer";
-}
-
-QString Command::getOutputFilename() const
-{
-  QFileInfo fileInfo(getInputFilename());
-
-  return fileInfo.absolutePath() + "/" + fileInfo.baseName() + "_fixed.pdb";
 }
 
 } }

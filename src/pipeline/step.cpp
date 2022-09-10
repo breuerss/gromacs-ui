@@ -35,6 +35,7 @@ Step::Step(
   if (fileNameGenerator)
   {
     fileNameGenerator->setConfiguration(configuration);
+    fileNameGenerator->setFileObjectConsumer(fileObjectConsumer);
   }
 
   auto updateFileNames = [this] {

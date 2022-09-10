@@ -15,7 +15,6 @@ public:
   QString getName() const override;
 
 private:
-  QString getOutputFilename() const;
   QString getInputFilename() const;
   static QString getWaterBoxFor(
     const Pipeline::CreateGromacsModel::Configuration::WaterModel& solvent);

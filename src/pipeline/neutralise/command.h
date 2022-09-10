@@ -14,7 +14,6 @@ public:
   QString getName() const override;
 
 private:
-  QString getOutputFilename() const;
   QString getInputFilename() const;
 };
 

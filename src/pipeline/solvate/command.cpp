@@ -29,7 +29,8 @@ void Command::doExecute()
   auto waterModel = config->property("waterModel")
     .value<CreateGromacsModel::Configuration::WaterModel>();
 
-  QString outputFile = getOutputFilename();
+  QString outputFile = fileNameGenerator->getFileNameFor(
+    ::Command::FileObject::Type::GRO);
   command += " -cp " + inputFile;
   command += " -o " + outputFile;
   command += " -cs " + getWaterBoxFor(waterModel);
@@ -56,13 +57,6 @@ QString Command::getInputFilename() const
 {
   using Type = ::Command::FileObject::Type;
   return fileObjectConsumer->getFileNameFor(Type::GRO);
-}
-
-QString Command::getOutputFilename() const
-{
-  QFileInfo fileInfo(getInputFilename());
-  return fileInfo.absolutePath() + "/" +
-    fileInfo.baseName() + "_solvated.gro";
 }
 
 QString Command::getWaterBoxFor(

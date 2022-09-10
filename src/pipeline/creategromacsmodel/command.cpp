@@ -3,6 +3,7 @@
 #include "../../appprovider.h"
 #include "../../statusmessagesetter.h"
 #include "../../command/fileobjectconsumer.h"
+#include "../../command/fileobject.h"
 #include "configuration.h"
 
 #include <QFileInfo>
@@ -25,7 +26,8 @@ void Command::doExecute()
   command += " pdb2gmx";
   QString inputFile = getInputFilename();
 
-  const QString outputFileName(getOutputFilename());
+  const QString outputFileName =
+    fileNameGenerator->getFileNameFor(::Command::FileObject::Type::GRO);
   command += " -f " + inputFile;
   command += " -o " + outputFileName;
   command += " -ignh ";
@@ -56,13 +58,6 @@ bool Command::canExecute() const
 QString Command::getName() const
 {
   return "GROMACS model creation";
-}
-
-QString Command::getOutputFilename() const
-{
-  QFileInfo fileInfo(getInputFilename());
-  return fileInfo.absolutePath() + "/" +
-    fileInfo.baseName() + "_model.gro";
 }
 
 } }
