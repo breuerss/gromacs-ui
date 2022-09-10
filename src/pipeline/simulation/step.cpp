@@ -1,8 +1,8 @@
 #include "step.h"
-#include "../../model/project.h"
-#include "../../command/fileobject.h"
 #include "command.h"
 #include "configuration.h"
+#include "filenamegenerator.h"
+#include "../../model/project.h"
 
 namespace Pipeline { namespace Simulation {
 
@@ -19,7 +19,7 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),
-    nullptr, // TODO filename generator for simulation
+    std::make_shared<FileNameGenerator>(project),
     Category::Simulation
     )
 {

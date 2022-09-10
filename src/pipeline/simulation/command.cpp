@@ -1,14 +1,13 @@
 #include "command.h"
+#include "configuration.h"
 #include "../../gromacsconfigfilegenerator.h"
 #include "../../statusmessagesetter.h"
 #include "../../model/project.h"
-#include "configuration.h"
+#include "../../command/fileobjectconsumer.h"
 #include "../../appprovider.h"
 #include "../../logforwarder.h"
 #include "../../simulationstatuschecker.h"
-#include "qfilesystemwatcher.h"
 #include "src/command/fileobject.h"
-#include "src/command/fileobjectconsumer.h"
 #include "ui/simulationstatus.h"
 
 #include <QDebug>
@@ -23,7 +22,9 @@ Command::Command(std::shared_ptr<Model::Project> project)
   , project(project)
 {
   connect(this, &Command::finished, [this] () {
-    progressChecker.removePath(simulationChecker->getLogPath());
+    progressChecker.removePath(
+      fileNameGenerator->getFileNameFor(::Command::FileObject::Type::LOG)
+      );
   });
   connect(this, &Command::started, [this] () {
     auto simulationConfig = dynamic_cast<const Pipeline::Simulation::Configuration*>(configuration);
@@ -45,7 +46,8 @@ void Command::doExecute()
 
   auto simulationConfig = dynamic_cast<const Pipeline::Simulation::Configuration*>(configuration);
   simulationChecker = std::make_shared<SimulationStatusChecker>(project, simulationConfig);
-  QString mdpFile = simulationChecker->getMdpPath();
+  QString mdpFile = fileNameGenerator
+    ->getFileNameFor(::Command::FileObject::Type::MDP);
   QFileInfo fi(mdpFile);
   QDir dir(fi.absolutePath());
   dir.mkpath(".");
@@ -55,11 +57,6 @@ void Command::doExecute()
 
   QString inputStructure = getInputFileName();
   QFileInfo systemPath(inputStructure);
-  //if (simulation->getPreviousStep())
-  //{
-  //  SimulationStatusChecker prevSimChecker(project, simulation->getPreviousStep());
-  //  inputStructure = prevSimChecker.getCoordinatesPath();
-  //}
 
   if (!execGrompp(
       mdpFile,
@@ -95,7 +92,9 @@ QString Command::getInputFileName() const
 
 bool Command::canExecute() const
 {
-  return QFile(getInputFileName()).exists();
+  QString simulationType = dynamic_cast<const Configuration*>(configuration)
+    ->getTypeAsString();
+  return !simulationType.isEmpty() && QFile(getInputFileName()).exists();
 }
 
 bool Command::execGrompp(
@@ -134,7 +133,9 @@ bool Command::execGrompp(
 
 void Command::checkProgress()
 {
-  QString logPath = simulationChecker->getLogPath();
+  QString logPath = fileNameGenerator->getFileNameFor(
+    ::Command::FileObject::Type::LOG
+    );
 
   QFile logFile(logPath);
   if (!logFile.exists())

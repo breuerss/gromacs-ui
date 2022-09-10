@@ -20,6 +20,9 @@ public:
     XTC,
     TRR,
     EDR,
+    LOG,
+    TPR,
+    MDP,
   };
 
   enum class Category {
