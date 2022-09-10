@@ -17,6 +17,7 @@
 #include "../solvate/step.h"
 #include "../neutralise/step.h"
 #include "../simulation/step.h"
+#include "../simulation/configuration.h"
 
 namespace Pipeline { namespace View {
 
@@ -74,10 +75,21 @@ AddMenu::AddMenu(ActionButton* trigger)
     //{ "Trajectory Viewer", []() {} },
     //{ "Coordinate Viewer", []() {} },
   };
+
+  using SimulationType = Pipeline::Simulation::Configuration::Type;
   nodeMenuDefinitions[Category::Simulation] = {
-    { "Minimisation", addStepToProject<Pipeline::Simulation::Step> },
-    { "NVT Simulation", []() {} },
-    { "NPT Simulation", []() {} },
+    { "Minimisation",
+      [] () {
+        addSimulationToProject(SimulationType::Minimisation);
+      } },
+    { "NVT Simulation",
+      [] () {
+        addSimulationToProject(SimulationType::NVT);
+      } },
+    { "NPT Simulation",
+      [] () {
+        addSimulationToProject(SimulationType::NPT);
+      } },
   };
   for (const auto& definition: definitions)
   {

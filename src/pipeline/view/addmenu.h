@@ -4,6 +4,8 @@
 #include "../step.h"
 #include "../../projectmanager.h"
 #include "../../model/project.h"
+#include "../../pipeline/simulation/step.h"
+#include "src/pipeline/simulation/configuration.h"
 #include <QWidget>
 #include <QMap>
 #include <memory>
@@ -46,6 +48,15 @@ private:
   static std::shared_ptr<T> addStepToProject()
   {
     return ProjectManager::getInstance()->getCurrentProject()->addStep<T>();
+  }
+
+  static std::shared_ptr<Pipeline::Simulation::Step>
+  addSimulationToProject(Pipeline::Simulation::Configuration::Type type)
+  {
+    auto step = addStepToProject<Pipeline::Simulation::Step>();
+    step->getConfiguration()
+      ->setProperty("simulationType", QVariant::fromValue(type));
+    return step;
   }
 
 };
