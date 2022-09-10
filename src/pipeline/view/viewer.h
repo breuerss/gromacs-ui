@@ -23,7 +23,6 @@ private:
   void createAddButton();
   ActionButton* addButton;
   AddMenu* addMenu;
-
 };
 
 } }

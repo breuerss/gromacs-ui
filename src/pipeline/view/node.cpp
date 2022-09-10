@@ -11,6 +11,7 @@
 #include <QBrush>
 #include <cmath>
 #include <QIcon>
+#include <memory>
 
 namespace Pipeline { namespace View {
 
@@ -258,6 +259,16 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   // TODO check if was dragged --> no selection state change
   step->getConfiguration()->showUI(selected);
   step->showStatusUI(selected);
+}
+
+bool Node::isSelected() const
+{
+  return selected;
+}
+
+std::shared_ptr<Pipeline::Step> Node::getStep() const
+{
+  return step;
 }
 
 } }

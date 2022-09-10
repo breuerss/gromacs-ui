@@ -131,6 +131,17 @@ Port* Panel::getPort(std::shared_ptr<Command::FileObject> fileObject)
   return portMap[fileObject];
 }
 
+void Panel::deleteSelectedNodes()
+{
+  for (auto node: nodeMap.values())
+  {
+    if (node->isSelected())
+    {
+      project->removeStep(node->getStep());
+    }
+  }
+}
+
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);

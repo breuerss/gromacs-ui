@@ -56,6 +56,7 @@ public:
 
   void clearSteps();
   void removeStep(int index);
+  void removeStep(std::shared_ptr<Pipeline::Step> step);
   const StepPointerVector& getSteps() const;
 
   std::shared_ptr<SystemSetup> getSystemSetup() const;

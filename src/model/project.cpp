@@ -32,6 +32,14 @@ void Project::removeStep(int at)
   emit stepRemoved(step, at);
 }
 
+void Project::removeStep(std::shared_ptr<Pipeline::Step> step)
+{
+  auto it = std::remove(pipelineSteps.begin(), pipelineSteps.end(), step);
+  int at = std::distance(pipelineSteps.begin(), it);
+  pipelineSteps.erase(it, pipelineSteps.end());
+  emit stepRemoved(step, at);
+}
+
 void Project::clearSteps()
 {
   while (pipelineSteps.size())

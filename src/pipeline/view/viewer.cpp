@@ -49,9 +49,14 @@ void Viewer::wheelEvent(QWheelEvent *event)
 
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
-  if(event->key() == Qt::Key_Home)
+  switch(event->key())
   {
-    center();
+    case Qt::Key_Home:
+      center();
+      break;
+    case Qt::Key_X:
+      dynamic_cast<Pipeline::View::Panel*>(scene())->deleteSelectedNodes();
+      break;
   }
 }
 
