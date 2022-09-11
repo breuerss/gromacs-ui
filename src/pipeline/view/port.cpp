@@ -31,6 +31,13 @@ Port::~Port()
 void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
 {
   fileObject = newFileObject;
+
+  QString tooltip;
+  if (fileObject)
+  {
+    tooltip = fileObject->getFileName();
+  }
+  setToolTip(tooltip);
 }
 
 void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)
