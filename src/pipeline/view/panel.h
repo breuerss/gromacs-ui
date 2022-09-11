@@ -69,7 +69,9 @@ public:
     std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>)> callback);
 
 protected:
-  void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+  void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
+  void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
+  void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
   Connector* activeConnector = nullptr;
 
 private:
@@ -81,6 +83,7 @@ private:
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;
   QMap<QPair<Port*, Port*>, Connector*> connectorMap;
+  QPointF startingPos;
 };
 
 } }

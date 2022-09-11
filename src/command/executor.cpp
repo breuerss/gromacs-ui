@@ -117,7 +117,6 @@ void Executor::setFileObjectConsumer(
       fileObjectConnections[newFileObject.get()] = connect(
         newFileObject.get(), &FileObject::fileNameChanged,
         [this] () {
-          qDebug() << "filename changed";
           canExecuteChanged(canExecute());
         });
       canExecuteChanged(canExecute());

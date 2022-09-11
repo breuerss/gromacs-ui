@@ -310,6 +310,24 @@ void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
   QGraphicsScene::dragMoveEvent(event);
 }
 
+void Panel::mousePressEvent(QGraphicsSceneMouseEvent* event)
+{
+  QGraphicsScene::mousePressEvent(event);
+  startingPos = event->screenPos();
+}
+
+void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+  if (
+    event->modifiers() != Qt::ShiftModifier &&
+    startingPos == event->screenPos()
+    )
+  {
+    setAllNodesSelected(false);
+  }
+  QGraphicsScene::mouseReleaseEvent(event);
+}
+
 Connector* Panel::getActiveConnector()
 {
   return activeConnector;
