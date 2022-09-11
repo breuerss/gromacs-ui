@@ -15,7 +15,6 @@ namespace Model {
 
 Project::Project()
   : QObject(nullptr)
-  , systemSetup(new SystemSetup())
 {
 }
 
@@ -51,11 +50,6 @@ void Project::clearSteps()
 const Project::StepPointerVector& Project::getSteps() const
 {
   return pipelineSteps;
-}
-
-std::shared_ptr<SystemSetup> Project::getSystemSetup() const
-{
-  return systemSetup;
 }
 
 QString Project::getProjectPath()

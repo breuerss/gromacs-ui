@@ -43,8 +43,6 @@ public:
   void removeStep(std::shared_ptr<Pipeline::Step> step);
   const StepPointerVector& getSteps() const;
 
-  std::shared_ptr<SystemSetup> getSystemSetup() const;
-
   QString getProjectPath();
   bool initProjectDir(const QString& subDir = "");
 
@@ -57,8 +55,6 @@ signals:
   void nameChanged(const QString&);
 
 private:
-  std::shared_ptr<SystemSetup> systemSetup;
-
   StepPointerVector pipelineSteps;
   QString name = "";
 };

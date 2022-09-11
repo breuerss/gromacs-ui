@@ -211,35 +211,6 @@ void MainWindow::setupUIForProject()
 
     //conns << connect(project.get(),
     //        &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
-    Model::SystemSetup* systemSetup = project->getSystemSetup().get();
-    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged,
-            ui->actionRunSimulation, &QAction::setEnabled);
-    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged,
-            ui->actionCreateDefaultSimulationSetup, &QAction::setEnabled);
-    conns << connect(systemSetup, &Model::SystemSetup::configReadyChanged, [this] (bool ready) {
-      int tabIndex = 0;
-      if (!ready)
-      {
-        tabIndex = 2;
-        ui->logOutput->setPlainText("");
-      }
-      ui->tabWidget->setCurrentIndex(tabIndex);
-    });
-    qDebug() << "structureReady"  << project->getSystemSetup()->configReady();
-    project->getSystemSetup()->configReadyChanged(project->getSystemSetup()->configReady());
-
-    auto setCoordsFile = [this] (const QString& fileName) {
-      setMoleculeFile(fileName);
-    };
-    conns << connect(
-      systemSetup,
-      &Model::SystemSetup::sourceStructureFileChanged,
-      setCoordsFile);
-
-    conns << connect(
-      systemSetup,
-      &Model::SystemSetup::processedStructureFileChanged,
-      setCoordsFile);
 
     QWebEngineSettings* settings = ui->molpreview->page()->settings();
     settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
