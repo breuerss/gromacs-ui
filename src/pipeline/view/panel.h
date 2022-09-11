@@ -35,6 +35,11 @@ public:
     Bottom,
     Middle,
   };
+  enum class Distribution {
+    Unknown = 0,
+    Horizontal,
+    Vertical,
+  };
   Panel(QObject* parent = nullptr);
   ~Panel();
 
@@ -55,9 +60,13 @@ public:
   QList<Node*> getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
+  void distributeSelectedNodes(Distribution alignment);
   void moveSelectedNodesHorizontal(int x);
   void moveSelectedNodesVertical(int x);
   void setAllNodesSelected(bool selected);
+
+  void execOnSelectedNodesGroup(
+    std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>)> callback);
 
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event);

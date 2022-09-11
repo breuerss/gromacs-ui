@@ -161,6 +161,17 @@ QList<Node*> Panel::getSelectedNodes() const
     }
   }
 
+  std::sort(
+    selectedNodes.begin(), selectedNodes.end(),
+    [] (Node* first, Node* second) {
+      return first->x() < second->x();
+    });
+  std::sort(
+    selectedNodes.begin(), selectedNodes.end(),
+    [] (Node* first, Node* second) {
+      return first->y() < second->y();
+    });
+
   return selectedNodes;
 }
 
@@ -182,7 +193,29 @@ void Panel::moveSelectedNodesHorizontal(int x)
   }
 }
 
-void Panel::alignSelectedNodes(Panel::Alignment alignment)
+void Panel::distributeSelectedNodes(Distribution alignment)
+{
+  execOnSelectedNodesGroup([alignment] (auto node, auto group, int index, auto selectedNodes) {
+    QRectF box = group->boundingRect();
+    if (alignment == Distribution::Horizontal)
+    {
+      const auto stepSize = (box.width() -
+                             selectedNodes[selectedNodes.size() - 1]->boundingRect().width()) /
+        (selectedNodes.size() - 1);
+      node->setX(box.x() + stepSize * index);
+    }
+    else
+    {
+      const auto stepSize = (box.height() -
+                             selectedNodes[selectedNodes.size() - 1]->boundingRect().height()) /
+        (selectedNodes.size() - 1);
+      node->setY(box.y() + stepSize * index);
+    }
+  });
+}
+
+void Panel::execOnSelectedNodesGroup(
+  std::function<void(Node*, QGraphicsItemGroup* group, int, const QList<Node*>)> callback)
 {
   QList<Node*> selectedNodes = getSelectedNodes();
 
@@ -192,9 +225,21 @@ void Panel::alignSelectedNodes(Panel::Alignment alignment)
     group->addToGroup(node);
   }
 
-  QRectF box = group->boundingRect();
+  for (int index = 0; index < selectedNodes.size(); index++)
+  {
+    callback(selectedNodes[index], group, index, selectedNodes);
+  }
+
   for (auto node: selectedNodes)
   {
+    addItem(node);
+  }
+}
+
+void Panel::alignSelectedNodes(Panel::Alignment alignment)
+{
+  execOnSelectedNodesGroup([alignment] (auto node, auto group, int, auto) {
+    QRectF box = group->boundingRect();
     switch(alignment)
     {
       case Alignment::Left:
@@ -218,12 +263,8 @@ void Panel::alignSelectedNodes(Panel::Alignment alignment)
       default:
         break;
     }
-  }
+  });
 
-  for (auto node: selectedNodes)
-  {
-    addItem(node);
-  }
 }
 
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)

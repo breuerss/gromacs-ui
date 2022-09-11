@@ -61,6 +61,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
   using Alignment = Panel::Alignment;
+  using Distribution = Panel::Distribution;
   auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
 
   double scale = 1;
@@ -100,6 +101,13 @@ void Viewer::keyPressEvent(QKeyEvent *event)
       break;
     case Qt::Key_B:
       panel->alignSelectedNodes(Alignment::Bottom);
+      break;
+
+    case Qt::Key_H:
+      panel->distributeSelectedNodes(Distribution::Horizontal);
+      break;
+    case Qt::Key_V:
+      panel->distributeSelectedNodes(Distribution::Vertical);
       break;
 
     case Qt::Key_Left:
