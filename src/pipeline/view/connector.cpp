@@ -1,6 +1,5 @@
 #include "connector.h"
-#include "qcolor.h"
-#include "qnamespace.h"
+#include "colors.h"
 #include <QDebug>
 #include <QPainter>
 #include <QPainterPath>
@@ -66,7 +65,7 @@ void Connector::redraw(const QPointF& endingPointOverride)
   painterPath.cubicTo(startingPoint, startingPoint + buffer, midPoint);
   painterPath.cubicTo(midPoint, endingPoint - buffer, endingPoint);
 
-  QPen pen(QColorConstants::Svg::darkslategray);
+  QPen pen(Colors::Grey);
   pen.setWidth(2);
   setPen(pen);
   setPath(painterPath);
