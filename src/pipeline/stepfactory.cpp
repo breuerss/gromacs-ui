@@ -48,7 +48,6 @@ std::shared_ptr<Step> StepFactory::createFromString(
   std::shared_ptr<Model::Project> project
   )
 {
-  qDebug() << type << project.get();
   return factoryMap[type]->create(project);
 }
 

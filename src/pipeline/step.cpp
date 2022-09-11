@@ -43,12 +43,19 @@ Step::Step(
     {
       for (auto fileObject: fileObjectProvider->provides())
       {
-        fileObject->setFileName(fileNameGenerator->getFileNameFor(fileObject->type));
+        QString fileName = fileNameGenerator->getFileNameFor(fileObject->type);
+        fileName = fileName.split("/", Qt::SkipEmptyParts).join("/");
+        if (!fileName.isEmpty())
+        {
+          fileName = "/" + fileName;
+        }
+        fileObject->setFileName(fileName);
       }
     }
   };
 
-  QObject::connect(command.get(), &Command::Executor::finished, updateFileNames);
+  QObject::connect(configuration.get(), &Config::Configuration::anyChanged, updateFileNames);
+  QObject::connect(fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged, updateFileNames);
   updateFileNames();
 }
 

@@ -6,8 +6,13 @@
 
 namespace Model {
 
-class Serializable : public QObject{
+class Serializable : public QObject
+{
   Q_OBJECT
+protected:
+  void connectAllSignals();
+signals:
+  void anyChanged();
 };
 
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model);

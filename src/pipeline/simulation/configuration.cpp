@@ -38,6 +38,8 @@ Configuration::Configuration()
   connect(this, &Configuration::vdwAlgorithmChanged, this, &Configuration::pmeSettingsNeededChanged);
   connect(this, &Configuration::electrostaticAlgorithmChanged,
           this, &Configuration::pmeSettingsNeededChanged);
+
+  connectAllSignals();
 }
 
 Configuration::~Configuration()

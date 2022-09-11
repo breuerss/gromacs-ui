@@ -5,6 +5,27 @@
 
 namespace Model {
 
+void Serializable::connectAllSignals()
+{
+  const QMetaObject* metaObj = metaObject();
+  if (metaObj)
+  {
+    int numMethods = metaObj->methodCount();
+    int firstMethod = metaObj->methodOffset();
+    int anyChangedMethodIndex = metaObj->indexOfMethod("anyChanged()");
+    auto anyChangedMethod = metaObj->method(anyChangedMethodIndex);
+    for (int i = firstMethod; i < numMethods; i++)
+    {
+      QMetaMethod mm = metaObj->method(i);
+      if (mm.methodType() == QMetaMethod::Signal &&
+          anyChangedMethodIndex != i)
+      {
+        connect(this, mm, this, anyChangedMethod);
+      }
+    }
+  }
+}
+
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model)
 {
   const QMetaObject *metaobject = model->metaObject();

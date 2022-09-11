@@ -4,6 +4,11 @@
 
 namespace Pipeline { namespace PdbDownload {
 
+Configuration::Configuration()
+{
+  connectAllSignals();
+}
+
 QWidget* Configuration::getUI()
 {
   return new PdbCode(this);

@@ -16,6 +16,8 @@ Configuration::Configuration()
     qRegisterMetaTypeStreamOperators<int>("Configuration::ForceField");
     registered = true;
   }
+
+  connectAllSignals();
 }
 
 QWidget* Configuration::getUI()

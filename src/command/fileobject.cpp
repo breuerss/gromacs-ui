@@ -52,15 +52,15 @@ QJsonObject &operator<<(QJsonObject &out, const FileObject::Pointer obj)
   return out;
 }
 
-QJsonObject &operator>>(QJsonObject &in, FileObject::Pointer obj)
+QJsonObject &operator>>(QJsonObject& in, FileObject::Pointer)
 {
-  QString fileName;
-  if (in.contains("fileName") && in["fileName"].isString())
-  {
-    fileName = in["fileName"].toString();
-  }
-
-  obj->setFileName(fileName);
+  //QString fileName;
+  //if (in.contains("fileName") && in["fileName"].isString())
+  //{
+  //  fileName = in["fileName"].toString();
+  //}
+  //
+  //obj->setFileName(fileName);
 
   return in;
 }

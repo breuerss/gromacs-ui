@@ -14,6 +14,8 @@ Configuration::Configuration()
     qRegisterMetaTypeStreamOperators<int>("Configuration::BoxType");
     registered = true;
   }
+
+  connectAllSignals();
 }
 
 QWidget* Configuration::getUI()

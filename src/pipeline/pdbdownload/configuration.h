@@ -13,7 +13,7 @@ class Configuration
 {
   Q_OBJECT
 public:
-  Configuration() = default;
+  Configuration();
 
   Q_PROPERTY(QString pdbCode MEMBER pdbCode NOTIFY pdbCodeChanged);
   QWidget* getUI() override;

@@ -9,6 +9,7 @@
 #include <QDrag>
 #include <QMimeData>
 #include <QWidget>
+#include <QObject>
 
 namespace Pipeline { namespace View {
 
@@ -32,12 +33,22 @@ void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObj
 {
   fileObject = newFileObject;
 
-  QString tooltip;
+  QObject::disconnect(conn);
+
+  auto setTooltipCallback = [this] (const QString& tooltip)
+  {
+    setToolTip(tooltip);
+  };
+
+  setTooltipCallback("");
   if (fileObject)
   {
-    tooltip = fileObject->getFileName();
+    conn = QObject::connect(
+      fileObject.get(), &Command::FileObject::fileNameChanged,
+      setTooltipCallback
+      );
+    setTooltipCallback(fileObject->getFileName());
   }
-  setToolTip(tooltip);
 }
 
 void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)
