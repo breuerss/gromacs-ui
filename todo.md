@@ -34,4 +34,9 @@
 1. Coloring of ports to be clear about the accepted file types
 1. show information of selected options in short form
 1. multiple selection should reset configuration view
-1. simulation status should be shown
+1. stopping node execution
+1. trajectory viewer node
+1. postprocessing nodes
+1. loading file data on start from configuration settings
+1. Neutralise blocks user interface
+1. add tooltip to port containing file
