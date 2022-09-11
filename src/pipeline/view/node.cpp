@@ -25,10 +25,9 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   , step(newStep)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
+  setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   QPen pen(QColor(0, 0, 0, 0));
   setPen(pen);
-
-  setFlags(QGraphicsItem::ItemIsMovable);
 
   const double indent = 30;
   const double spacing = 10;
@@ -133,10 +132,14 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   arrangeInputPorts();
 }
 
-void Node::setPos(const QPointF& pos)
+QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
 {
-  QGraphicsRectItem::setPos(pos);
-  step->location = QRectF(scenePos(), boundingRect().size());
+  if (change == QGraphicsItem::ItemPositionHasChanged)
+  {
+    step->location = QRectF(scenePos(), boundingRect().size());
+  }
+
+  return QGraphicsItem::itemChange(change, value);
 }
 
 const Node::OutputPorts& Node::getOutputPorts() const

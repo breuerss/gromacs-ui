@@ -31,9 +31,9 @@ public:
   void addInputPort(Command::FileObject::Category category, const QColor& color);
   void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
 
-  void setPos(const QPointF& pos);
   bool isSelected() const;
   std::shared_ptr<Pipeline::Step> getStep() const;
+  QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
