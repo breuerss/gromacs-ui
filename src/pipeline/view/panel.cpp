@@ -142,6 +142,82 @@ void Panel::deleteSelectedNodes()
   }
 }
 
+QList<Node*> Panel::getSelectedNodes() const
+{
+  QList<Node*> selectedNodes;
+  for (auto node: nodeMap.values())
+  {
+    if (node->isSelected())
+    {
+      selectedNodes << node;
+    }
+  }
+
+  return selectedNodes;
+}
+
+void Panel::moveSelectedNodesVertical(int y)
+{
+  QList<Node*> selectedNodes = getSelectedNodes();
+  for (auto node: selectedNodes)
+  {
+    node->setY(node->y() + y);
+  }
+}
+
+void Panel::moveSelectedNodesHorizontal(int x)
+{
+  QList<Node*> selectedNodes = getSelectedNodes();
+  for (auto node: selectedNodes)
+  {
+    node->setX(node->x() + x);
+  }
+}
+
+void Panel::alignSelectedNodes(Panel::Alignment alignment)
+{
+  QList<Node*> selectedNodes = getSelectedNodes();
+
+  auto group = new QGraphicsItemGroup();
+  for (auto node: selectedNodes)
+  {
+    group->addToGroup(node);
+  }
+
+  QRectF box = group->boundingRect();
+  for (auto node: selectedNodes)
+  {
+    switch(alignment)
+    {
+      case Alignment::Left:
+        node->setX(box.x());
+        break;
+      case Alignment::Center:
+        node->setX(box.center().x() - node->boundingRect().width() / 2);
+        break;
+      case Alignment::Right:
+        node->setX(box.x() + box.width() - node->boundingRect().width());
+        break;
+      case Alignment::Top:
+        node->setY(box.y());
+        break;
+      case Alignment::Middle:
+        node->setY(box.center().y() - node->boundingRect().height() / 2);
+        break;
+      case Alignment::Bottom:
+        node->setY(box.y() + box.height() - node->boundingRect().height());
+        break;
+      default:
+        break;
+    }
+  }
+
+  for (auto node: selectedNodes)
+  {
+    addItem(node);
+  }
+}
+
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);

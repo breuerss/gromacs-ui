@@ -60,14 +60,58 @@ void Viewer::wheelEvent(QWheelEvent *event)
 
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
+  using Alignment = Panel::Alignment;
+  auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
+
+  double scale = 1;
+  if (event->modifiers() == Qt::ShiftModifier)
+  {
+    scale = 10;
+  }
+  else if (event->modifiers() == Qt::AltModifier)
+  {
+    scale = 0.1;
+  }
   switch(event->key())
   {
     case Qt::Key_Home:
       center();
       break;
     case Qt::Key_X:
-      dynamic_cast<Pipeline::View::Panel*>(scene())->deleteSelectedNodes();
+      panel->deleteSelectedNodes();
       break;
+    case Qt::Key_L:
+      panel->alignSelectedNodes(Alignment::Left);
+      break;
+    case Qt::Key_R:
+      panel->alignSelectedNodes(Alignment::Right);
+      break;
+    case Qt::Key_C:
+      panel->alignSelectedNodes(Alignment::Center);
+      break;
+    case Qt::Key_M:
+      panel->alignSelectedNodes(Alignment::Middle);
+      break;
+    case Qt::Key_T:
+      panel->alignSelectedNodes(Alignment::Top);
+      break;
+    case Qt::Key_B:
+      panel->alignSelectedNodes(Alignment::Bottom);
+      break;
+
+    case Qt::Key_Left:
+      panel->moveSelectedNodesHorizontal(-10 * scale);
+      break;
+    case Qt::Key_Right:
+      panel->moveSelectedNodesHorizontal(10 * scale);
+      break;
+    case Qt::Key_Up:
+      panel->moveSelectedNodesVertical(-10 * scale);
+      break;
+    case Qt::Key_Down:
+      panel->moveSelectedNodesVertical(10 * scale);
+      break;
+
   }
 }
 

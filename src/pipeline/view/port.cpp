@@ -40,7 +40,7 @@ void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAccep
 
 QVariant Port::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
 {
-  if (change == QGraphicsItem::ItemScenePositionHasChanged)
+  if (change == QGraphicsItem::ItemScenePositionHasChanged || change == QGraphicsItem::ItemSceneHasChanged)
   {
     emit centerPositionChanged(getCenterInScene());
   }
