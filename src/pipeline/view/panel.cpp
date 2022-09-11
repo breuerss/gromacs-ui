@@ -319,7 +319,7 @@ void Panel::mousePressEvent(QGraphicsSceneMouseEvent* event)
 void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
   if (
-    event->modifiers() != Qt::ShiftModifier &&
+    !event->modifiers().testFlag(Qt::ShiftModifier) &&
     startingPos == event->screenPos()
     )
   {

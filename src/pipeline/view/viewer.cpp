@@ -65,11 +65,11 @@ void Viewer::keyPressEvent(QKeyEvent *event)
   auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
 
   double scale = 1;
-  if (event->modifiers() == Qt::ShiftModifier)
+  if (event->modifiers().testFlag(Qt::ShiftModifier))
   {
     scale = 10;
   }
-  else if (event->modifiers() == Qt::AltModifier)
+  else if (event->modifiers().testFlag(Qt::AltModifier))
   {
     scale = 0.1;
   }
