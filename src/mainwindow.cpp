@@ -77,15 +77,14 @@ MainWindow::MainWindow(QWidget *parent)
       layout = new QVBoxLayout();
       parent->setLayout(layout);
     }
-    if (child == nullptr)
-    {
-      QLayoutItem *oldChild;
-      while ((oldChild = layout->takeAt(0)) != nullptr) {
-        delete oldChild->widget();
-        delete oldChild;
-      }
+
+    QLayoutItem *oldChild;
+    while ((oldChild = layout->takeAt(0)) != nullptr) {
+      delete oldChild->widget();
+      delete oldChild;
     }
-    else
+
+    if (child != nullptr)
     {
       layout->addWidget(child);
     }
