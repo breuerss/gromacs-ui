@@ -27,6 +27,21 @@ QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
     case Command::FileObject::Type::MDP:
       fileName += ".mdp";
       break;
+    case Command::FileObject::Type::GRO:
+      fileName += ".gro";
+      break;
+    case Command::FileObject::Type::XTC:
+      fileName += ".xtc";
+      break;
+    case Command::FileObject::Type::TRR:
+      fileName += ".trr";
+      break;
+    case Command::FileObject::Type::TPR:
+      fileName += ".tpr";
+      break;
+    case Command::FileObject::Type::TOP:
+      fileName += ".top";
+      break;
     default:
       fileName = "";
   }

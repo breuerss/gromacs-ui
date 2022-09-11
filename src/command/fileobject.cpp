@@ -39,6 +39,7 @@ FileObject::Category FileObject::getCategoryFor(FileObject::Type type)
     { Type::PDB, Category::Coordinates },
     { Type::XTC, Category::Trajectory },
     { Type::TRR, Category::Trajectory },
+    { Type::TOP, Category::Topology },
   };
 
   return categoryMap[type];

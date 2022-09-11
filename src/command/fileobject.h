@@ -23,6 +23,7 @@ public:
     LOG,
     TPR,
     MDP,
+    TOP,
   };
 
   enum class Category {
@@ -32,6 +33,7 @@ public:
     Energy,
     Velocities,
     Forces,
+    Topology,
   };
 
   FileObject(Type newType);

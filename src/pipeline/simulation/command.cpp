@@ -55,14 +55,16 @@ void Command::doExecute()
   GromacsConfigFileGenerator(const_cast<Pipeline::Simulation::Configuration*>(simulationConfig))
     .generate(mdpFile);
 
+  using Type = ::Command::FileObject::Type;
   QString inputStructure = getInputFileName();
+  QString topology = fileObjectConsumer->getFileNameFor(Type::TOP);
   QFileInfo systemPath(inputStructure);
 
   if (!execGrompp(
       mdpFile,
       inputStructure,
-      systemPath.absolutePath() + "/topol.top",
-      simulationChecker->getTprPath(),
+      topology,
+      fileNameGenerator->getFileNameFor(Type::TPR),
       dir.absolutePath()
       ))
   {
@@ -94,7 +96,11 @@ bool Command::canExecute() const
 {
   QString simulationType = dynamic_cast<const Configuration*>(configuration)
     ->getTypeAsString();
-  return !simulationType.isEmpty() && QFile(getInputFileName()).exists();
+  using Type = ::Command::FileObject::Type;
+  auto topology =  fileObjectConsumer->getFileNameFor(Type::TOP);
+  return !simulationType.isEmpty() &&
+    QFile(getInputFileName()).exists() &&
+    QFile(topology).exists();
 }
 
 bool Command::execGrompp(

@@ -6,16 +6,19 @@
 
 namespace Pipeline { namespace Simulation {
 
+using FileObject = ::Command::FileObject;
+
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : Pipeline::Step(
     {
-      { ::Command::FileObject::Category::Coordinates, { ::Command::FileObject::Type::GRO } }
+      { FileObject::Category::Coordinates, { FileObject::Type::GRO } },
+      { FileObject::Category::Topology, { FileObject::Type::TOP } },
     },
     {
-      ::Command::FileObject::Type::GRO,
-      ::Command::FileObject::Type::XTC
+      FileObject::Type::GRO,
+      FileObject::Type::XTC
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),

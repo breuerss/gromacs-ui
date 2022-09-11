@@ -9,15 +9,26 @@ namespace Pipeline { namespace CreateGromacsModel {
 QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
 {
   QString fileName;
-  using Type = Command::FileObject::Type;
-  if (type == Type::GRO && project)
+  if (!project)
   {
-    QString inputFileName = fileObjectConsumer
-      ->getFileNameFor(Type::PDB);
+    return fileName;
+  }
 
-    QFileInfo fileInfo(inputFileName);
-    fileName = fileInfo.absolutePath() + "/" +
-      fileInfo.baseName() + "_model.gro";
+  using Type = Command::FileObject::Type;
+  QString inputFileName = fileObjectConsumer
+    ->getFileNameFor(Type::PDB);
+  QFileInfo fileInfo(inputFileName);
+  switch(type)
+  {
+    case Type::GRO:
+      fileName = fileInfo.absolutePath() + "/" +
+        fileInfo.baseName() + "_model.gro";
+      break;
+    case Type::TOP:
+      fileName = fileInfo.absolutePath() + "/topol.top";
+      break;
+    default:
+      fileName = "";
   }
 
   return fileName;

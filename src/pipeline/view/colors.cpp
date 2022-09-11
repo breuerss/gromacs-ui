@@ -24,6 +24,7 @@ QColor getColorFor(Command::FileObject::Category category)
     { Category::Trajectory, 0xffe7911d },
     { Category::Energy, 0xffc0c753 },
     { Category::Forces, 0xff9974aa },
+    { Category::Topology, 0xff00740a },
 
     //0xffc1584f
   };
