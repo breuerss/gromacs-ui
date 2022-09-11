@@ -49,6 +49,7 @@ private:
   Type type;
   bool connected = false;
   std::shared_ptr<Command::FileObject> fileObject;
+  QMetaObject::Connection conn;
   QList<Command::FileObject::Type> acceptedFileTypes;
 };
 
