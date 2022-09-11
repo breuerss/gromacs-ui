@@ -108,7 +108,7 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
   conns << connect(
     project.get(), &Model::Project::stepRemoved,
     [this] (const auto& step) {
-      auto node = nodeMap[step];
+      auto node = nodeMap.take(step);
       // delete node before removal to have access
       // to scene() inside of destructor of port
       delete node;
