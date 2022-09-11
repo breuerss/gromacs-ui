@@ -160,6 +160,15 @@ SimulationStatus::SimulationStatus(
   }
 }
 
+SimulationStatus::~SimulationStatus()
+{
+  for (auto conn: conns)
+  {
+    disconnect(conn);
+  }
+
+  delete ui;
+}
 void SimulationStatus::setProgressViewForType(Pipeline::Simulation::Configuration::Type type)
 {
   const bool showChart = type == Pipeline::Simulation::Configuration::Type::Minimisation;
@@ -192,7 +201,4 @@ void SimulationStatus::showEvent(QShowEvent*)
   ui->showLog->setEnabled(checker.hasLog());
   ui->showMdp->setEnabled(checker.hasMdp());
 }
-SimulationStatus::~SimulationStatus()
-{
-    delete ui;
-}
+
