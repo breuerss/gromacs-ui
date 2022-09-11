@@ -54,7 +54,10 @@ Step::Step(
     }
   };
 
-  QObject::connect(configuration.get(), &Config::Configuration::anyChanged, updateFileNames);
+  if (configuration)
+  {
+    QObject::connect(configuration.get(), &Config::Configuration::anyChanged, updateFileNames);
+  }
   QObject::connect(fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged, updateFileNames);
   updateFileNames();
 }
@@ -113,7 +116,10 @@ void Step::showStatusUI(bool show)
 
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
 {
-  out << step->getConfiguration();
+  if (step->getConfiguration())
+  {
+    out << step->getConfiguration();
+  }
   const auto& location = step->location;
   out["type"] = step->getType();
   out["location"] = QJsonArray({
@@ -136,7 +142,10 @@ QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
 
 QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
 {
-  in >> step->getConfiguration();
+  if (step->getConfiguration())
+  {
+    in >> step->getConfiguration();
+  }
   if (in.contains("location") && in["location"].isArray())
   {
     auto& location = step->location;

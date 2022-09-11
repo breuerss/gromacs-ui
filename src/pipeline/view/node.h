@@ -44,6 +44,7 @@ private:
   Port* createPort(
     const QColor& color,
     Port::Type type);
+  QString getCoordinatesPath();
 
   void arrangeOutputPorts();
   void arrangeInputPorts();

@@ -7,6 +7,7 @@
 #include "creategromacsmodel/step.h"
 #include "neutralise/step.h"
 #include "solvate/step.h"
+#include "smoothtrajectory/step.h"
 #include "src/model/project.h"
 #include <memory>
 
@@ -41,6 +42,9 @@ StepFactory::StepFactory()
 
   auto neutralisePrototype = std::make_unique<Neutralise::Step>();
   factoryMap[neutralisePrototype->getType()] = std::move(neutralisePrototype);
+
+  auto smoothTrajectoryPrototype = std::make_unique<SmoothTrajectory::Step>();
+  factoryMap[smoothTrajectoryPrototype->getType()] = std::move(smoothTrajectoryPrototype);
 }
 
 std::shared_ptr<Step> StepFactory::createFromString(

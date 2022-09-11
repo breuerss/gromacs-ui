@@ -88,15 +88,20 @@ void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
   unsetCursor();
 }
 
-void Port::mousePressEvent(QGraphicsSceneMouseEvent* /*event*/)
+void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
   setCursor(Qt::ClosedHandCursor);
+  startingPos = event->scenePos();
 }
 
-void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent* /*event*/)
+void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
   dynamic_cast<Panel*>(scene())->stopConnector();
   unsetCursor();
+  if (event->scenePos() == startingPos)
+  {
+    clicked();
+  }
 }
 
 void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)

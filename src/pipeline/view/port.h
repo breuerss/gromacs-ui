@@ -44,6 +44,7 @@ signals:
     std::shared_ptr<Command::FileObject> newFileObject,
     std::shared_ptr<Command::FileObject> oldFileObject
     );
+  void clicked();
 
 private:
   Type type;
@@ -51,6 +52,7 @@ private:
   std::shared_ptr<Command::FileObject> fileObject;
   QMetaObject::Connection conn;
   QList<Command::FileObject::Type> acceptedFileTypes;
+  QPointF startingPos;
 };
 
 } }

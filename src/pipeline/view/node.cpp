@@ -2,6 +2,7 @@
 #include "panel.h"
 #include "port.h"
 #include "../step.h"
+#include "../../uiupdater.h"
 #include "src/command/executor.h"
 #include "src/command/fileobject.h"
 #include "src/command/fileobjectconsumer.h"
@@ -153,7 +154,53 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
   outputPort->setProvidedFileObject(fileObject);
   outputPorts << QPair<std::shared_ptr<Command::FileObject>, Port*>(
     fileObject, outputPort);
+  QObject::connect(outputPort, &Port::clicked, [this, fileObject] () {
+    using FileObject = Command::FileObject;
+    using Category = FileObject::Category;
+    switch (FileObject::getCategoryFor(fileObject->type))
+    {
+      case Category::Coordinates:
+        UiUpdater::getInstance()->showCoordinates(fileObject->getFileName());
+        break;
+      case Category::Trajectory:
+        UiUpdater::getInstance()->showTrajectory(
+          getCoordinatesPath(),
+          fileObject->getFileName());
+        break;
+      default:
+        break;
+    }
+  });
   arrangeOutputPorts();
+}
+
+QString Node::getCoordinatesPath()
+{
+  QString coordinatesPath;
+
+  using FileObject = Command::FileObject;
+  for (auto port : outputPorts)
+  {
+    auto fileObject = port.first;
+    if (FileObject::getCategoryFor(fileObject->type)
+        == FileObject::Category::Coordinates &&
+        fileObject->exists())
+    {
+      coordinatesPath = fileObject->getFileName();
+    }
+  }
+
+  if (coordinatesPath.isEmpty())
+  {
+    auto fileObject = step->getFileObjectConsumer()
+      ->getConnectedTo()[FileObject::Category::Coordinates];
+    if (fileObject->exists())
+    {
+      coordinatesPath = fileObject->getFileName();
+    }
+  }
+
+  return coordinatesPath;
 }
 
 Port* Node::createPort(const QColor& color, Port::Type type)

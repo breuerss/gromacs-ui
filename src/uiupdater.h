@@ -11,6 +11,8 @@ public:
 signals:
   void showConfigUI(QWidget*);
   void showStatusUI(QWidget*);
+  void showTrajectory(const QString& coords, const QString& trajectory);
+  void showCoordinates(const QString& coords);
 
 private:
   UiUpdater() = default;

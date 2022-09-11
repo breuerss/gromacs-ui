@@ -102,6 +102,20 @@ MainWindow::MainWindow(QWidget *parent)
       addWidgetToWidget(widget, ui->statusBox);
     });
 
+  connect(
+    UiUpdater::getInstance(), &UiUpdater::showTrajectory,
+    [this] (const QString& coordinates, const QString& trajectory)
+    {
+      setMoleculeFile(coordinates, trajectory);
+    });
+
+  connect(
+    UiUpdater::getInstance(), &UiUpdater::showCoordinates,
+    [this] (const QString& coordinates)
+    {
+      setMoleculeFile(coordinates);
+    });
+
   //connect(queue.get(), &Command::Queue::stepFinished,
   //        [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
   //          if (success)

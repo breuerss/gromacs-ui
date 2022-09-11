@@ -17,6 +17,7 @@
 #include "../solvate/step.h"
 #include "../neutralise/step.h"
 #include "../simulation/step.h"
+#include "../smoothtrajectory/step.h"
 #include "../simulation/configuration.h"
 
 namespace Pipeline { namespace View {
@@ -92,6 +93,11 @@ AddMenu::AddMenu(ActionButton* trigger)
         addSimulationToProject(SimulationType::NPT);
       } },
   };
+
+  nodeMenuDefinitions[Category::PostProcess] = {
+    { "Smooth Trajectory", addStepToProject<Pipeline::SmoothTrajectory::Step> }
+  };
+
   for (const auto& definition: definitions)
   {
     const auto color = Colors::getColorFor(definition.category);
