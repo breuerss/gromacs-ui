@@ -41,10 +41,21 @@ void Viewer::createAddButton()
 
 void Viewer::wheelEvent(QWheelEvent *event)
 {
+  const auto scaleFactor = transform().m11();
   if(event->angleDelta().y() > 0)
-    scale(1.25, 1.25);
+  {
+    if (scaleFactor < 5)
+    {
+      scale(1.25, 1.25);
+    }
+  }
   else
-    scale(0.8, 0.8);
+  {
+    if (scaleFactor > 0.3)
+    {
+      scale(0.8, 0.8);
+    }
+  }
 }
 
 void Viewer::keyPressEvent(QKeyEvent *event)
