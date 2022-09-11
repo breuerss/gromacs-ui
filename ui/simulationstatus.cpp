@@ -26,7 +26,10 @@ SimulationStatus::SimulationStatus(
   ui->setupUi(this);
   setupProgressValueChart();
 
-  //setProgressViewForType(type);
+  auto type = newConfiguration
+    ->property("simulationType")
+    .value<Pipeline::Simulation::Configuration::Type>();
+  setProgressViewForType(type);
 
   conns << connect(ui->showLog, &QPushButton::clicked, [this] () {
     auto project = ProjectManager::getInstance()->getCurrentProject();
