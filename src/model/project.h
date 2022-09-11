@@ -26,29 +26,13 @@ class Project : public QObject, public std::enable_shared_from_this<Project>
 public:
   Project();
 
-  /**
-   * TODO
-   *
-   * Base class
-   * Step {
-   *    FileObjectProvider* provider
-   *    FileObjectConsumer* consumer
-   *    ConfigurationType* config
-   *    std::string name = pure virtual
-   *    showConfigUI() on click;
-   *    exec() on play click in node;
-   * }
-   *
-   */
-
   template<typename T>
   std::shared_ptr<T> addStep()
   {
     auto step = std::make_shared<T>(shared_from_this());
 
     auto pipelineStep = std::dynamic_pointer_cast<Pipeline::Step>(step);
-    pipelineSteps.push_back(pipelineStep);
-    emit stepAdded(pipelineStep, pipelineSteps.size() - 1);
+    addStep(std::move(pipelineStep));
     return step;
   }
 
