@@ -7,7 +7,8 @@
 
 #include <QDebug>
 #include <memory>
-#include <qobject.h>
+#include <QFileInfo>
+#include <QDir>
 
 namespace Pipeline { namespace PdbDownload {
 
@@ -43,6 +44,11 @@ void Command::doExecute()
   QString fileName = fileNameGenerator->getFileNameFor(::Command::FileObject::Type::PDB);
 
   setRunning(true);
+  QFileInfo fileInfo(fileName);
+
+  QDir dir(fileInfo.absolutePath());
+  dir.mkpath(".");
+
   downloader->download(pdbCode, fileName);
 }
 
