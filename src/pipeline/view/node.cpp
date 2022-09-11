@@ -164,30 +164,32 @@ Port* Node::createPort(const QColor& color, Port::Type type)
 void Node::arrangeOutputPorts()
 {
   const double steps = 45;
-  const double startAngle = 90 - (outputPorts.size() - 1) * steps / 2.0;
+  const double startAngle = (outputPorts.size() - 1) * steps / 2.0;
   const double radius = rect().height() / 2;
   const double width = rect().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
-    auto port = outputPorts[index];
-    const QPointF circlePount = getCirclePoint(radius, startAngle + index * steps);
-    port.second->setX((width - radius) + circlePount.x() - Port::RADIUS);
-    port.second->setY(radius           + circlePount.y() - Port::RADIUS);
+    const auto port = outputPorts[index];
+    const auto angle = startAngle - (outputPorts.size() - 1 - index) * steps;
+    const QPointF circlePoint = getCirclePoint(radius, angle);
+    port.second->setX((width - radius) + circlePoint.x() - Port::RADIUS);
+    port.second->setY(radius           + circlePoint.y() - Port::RADIUS);
   }
 }
 
 void Node::arrangeInputPorts()
 {
   const double steps = 45;
-  const double startAngle = -90 + (inputPorts.size() - 1) * steps / 2.0;
+  const double startAngle = 180 - (inputPorts.size() - 1) * steps / 2.0;
   const double radius = rect().height() / 2;
   const double x = boundingRect().topLeft().x();
   for (int index = 0; index < inputPorts.size(); index++)
   {
-    auto port = inputPorts[index].second;
-    const QPointF circlePoint = getCirclePoint(radius, startAngle - index * steps);
+    const auto port = inputPorts[index].second;
+    const auto angle = startAngle + index * steps;
+    const QPointF circlePoint = getCirclePoint(radius, angle);
     port->setX(radius + x + circlePoint.x() - Port::RADIUS);
-    port->setY(radius +     circlePoint.y() - Port::RADIUS);
+    port->setY(radius -     circlePoint.y() - Port::RADIUS);
   }
 }
 
@@ -197,8 +199,8 @@ QPointF Node::getCirclePoint(double radius, double angle)
   const double radians = angle * pi / 180;
 
   return QPointF(
-    radius * std::sin(radians),
-    radius * std::cos(radians)
+    radius * std::cos(radians),
+    radius * std::sin(radians)
   );
 }
 
