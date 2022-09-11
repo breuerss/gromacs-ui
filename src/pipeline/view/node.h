@@ -32,6 +32,7 @@ public:
   void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
 
   bool isSelected() const;
+  void setSelected(bool newSelected);
   std::shared_ptr<Pipeline::Step> getStep() const;
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
 

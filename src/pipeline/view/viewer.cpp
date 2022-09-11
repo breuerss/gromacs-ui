@@ -77,6 +77,9 @@ void Viewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Home:
       center();
       break;
+    case Qt::Key_A:
+      panel->setAllNodesSelected(panel->getSelectedNodes().size() == 0);
+      break;
     case Qt::Key_X:
       panel->deleteSelectedNodes();
       break;

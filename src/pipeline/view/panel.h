@@ -52,10 +52,12 @@ public:
   Port* getPort(std::shared_ptr<Command::FileObject>);
   void deleteConnectorFor(Port* port);
   Connector* getConnectorFor(Port* port);
+  QList<Node*> getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
   void moveSelectedNodesHorizontal(int x);
   void moveSelectedNodesVertical(int x);
+  void setAllNodesSelected(bool selected);
 
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
@@ -66,7 +68,6 @@ private:
   QList<QMetaObject::Connection> conns;
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void addPort(std::shared_ptr<Command::FileObject>, Port*);
-  QList<Node*> getSelectedNodes() const;
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;

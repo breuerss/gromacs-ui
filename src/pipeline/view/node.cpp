@@ -250,16 +250,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  selected = !selected;
-  const auto currentColor = nodeBackground->brush().color();
-  const unsigned factor = 125;
-  auto newColor = currentColor.lighter(factor);
-  if (selected)
-  {
-    newColor = currentColor.darker(factor);
-  }
-
-  nodeBackground->setBrush(newColor);
+  setSelected(!selected);
   // TODO deselect all
   // TODO check if was dragged --> no selection state change
   step->getConfiguration()->showUI(selected);
@@ -269,6 +260,24 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 bool Node::isSelected() const
 {
   return selected;
+}
+
+void Node::setSelected(bool newSelected)
+{
+  const bool changed = selected != newSelected;
+  selected = newSelected;
+
+  if (changed)
+  {
+    const unsigned factor = 125;
+    const auto currentColor = nodeBackground->brush().color();
+    auto newColor = currentColor.lighter(factor);
+    if (selected)
+    {
+      newColor = currentColor.darker(factor);
+    }
+    nodeBackground->setBrush(newColor);
+  }
 }
 
 std::shared_ptr<Pipeline::Step> Node::getStep() const

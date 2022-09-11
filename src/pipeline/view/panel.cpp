@@ -142,6 +142,14 @@ void Panel::deleteSelectedNodes()
   }
 }
 
+void Panel::setAllNodesSelected(bool selected)
+{
+  for (auto node: nodeMap.values())
+  {
+    node->setSelected(selected);
+  }
+}
+
 QList<Node*> Panel::getSelectedNodes() const
 {
   QList<Node*> selectedNodes;
