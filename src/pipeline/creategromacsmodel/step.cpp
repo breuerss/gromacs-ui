@@ -23,7 +23,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
     std::make_shared<FileNameGenerator>(project),
-    Category::Preprocess
+    Category::PreProcess
     )
 {
 }

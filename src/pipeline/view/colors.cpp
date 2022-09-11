@@ -8,9 +8,10 @@ QColor getColorFor(Step::Category category)
   using Category = Step::Category;
   const static QMap<Category, QColor> categoryColorMap = {
     { Category::DataProvider, Colors::Pink },
-    { Category::Preprocess, Colors::Orange },
+    { Category::PreProcess, Colors::Orange },
     { Category::Simulation, Colors::Blue },
     { Category::Viewer, Colors::Violet },
+    { Category::PostProcess, Colors::Yellow },
   };
 
   return categoryColorMap[category];

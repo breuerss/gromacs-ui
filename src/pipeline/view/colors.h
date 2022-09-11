@@ -14,6 +14,7 @@ const QColor Blue("#766be6");
 const QColor Grey("#d3dad3");
 const QColor DarkGrey("#333339");
 const QColor Egg("#e0f4db");
+const QColor Yellow("#f0b92d");
 
 QColor getColorFor(Step::Category category);
 QColor getColorFor(Command::FileObject::Category category);

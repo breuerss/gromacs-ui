@@ -29,9 +29,10 @@ AddMenu::AddMenu(ActionButton* trigger)
   using Category = Step::Category;
   QList<ButtonDefinition> definitions = {
     { "D", Category::DataProvider },
-    { "P", Category::Preprocess },
+    { "Pre", Category::PreProcess },
     { "S", Category::Simulation },
     { "V", Category::Viewer },
+    { "P", Category::PostProcess },
   };
 
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
@@ -39,7 +40,7 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "PDB Downloader", addStepToProject<Pipeline::PdbDownload::Step> },
     //{ "Load From File", []() {} },
   };
-  nodeMenuDefinitions[Category::Preprocess] = {
+  nodeMenuDefinitions[Category::PreProcess] = {
     { "Preparation Pipeline", [] () {
       auto step1 = addStepToProject<Pipeline::PdbFixer::Step>();
       auto step2 = addStepToProject<Pipeline::CreateGromacsModel::Step>();

@@ -28,7 +28,8 @@ public:
   enum class Category {
     Unknown,
     DataProvider,
-    Preprocess,
+    PreProcess,
+    PostProcess,
     Simulation,
     Viewer,
   };
