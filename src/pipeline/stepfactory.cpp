@@ -8,6 +8,7 @@
 #include "neutralise/step.h"
 #include "solvate/step.h"
 #include "smoothtrajectory/step.h"
+#include "centerprotein/step.h"
 #include "src/model/project.h"
 #include <memory>
 
@@ -45,6 +46,9 @@ StepFactory::StepFactory()
 
   auto smoothTrajectoryPrototype = std::make_unique<SmoothTrajectory::Step>();
   factoryMap[smoothTrajectoryPrototype->getType()] = std::move(smoothTrajectoryPrototype);
+
+  auto centerProteinPrototype = std::make_unique<CenterProtein::Step>();
+  factoryMap[centerProteinPrototype->getType()] = std::move(centerProteinPrototype);
 }
 
 std::shared_ptr<Step> StepFactory::createFromString(

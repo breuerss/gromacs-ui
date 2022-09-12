@@ -18,6 +18,7 @@
 #include "../neutralise/step.h"
 #include "../simulation/step.h"
 #include "../smoothtrajectory/step.h"
+#include "../centerprotein/step.h"
 #include "../simulation/configuration.h"
 
 namespace Pipeline { namespace View {
@@ -95,7 +96,8 @@ AddMenu::AddMenu(ActionButton* trigger)
   };
 
   nodeMenuDefinitions[Category::PostProcess] = {
-    { "Smooth Trajectory", addStepToProject<Pipeline::SmoothTrajectory::Step> }
+    { "Smooth Trajectory", addStepToProject<Pipeline::SmoothTrajectory::Step> },
+    { "Center Protein", addStepToProject<Pipeline::CenterProtein::Step> },
   };
 
   for (const auto& definition: definitions)

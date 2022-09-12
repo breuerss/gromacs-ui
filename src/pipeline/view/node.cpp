@@ -65,7 +65,15 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   enableRunIcon();
 
   QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
-    step->getCommand()->exec();
+    auto command = step->getCommand();
+    if (command->isRunning())
+    {
+      command->stop();
+    }
+    else
+    {
+      command->exec();
+    }
   });
   QObject::connect(
     command, &Command::Executor::runningChanged,
@@ -300,7 +308,10 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   setSelected(!selected);
   // TODO deselect all
   // TODO check if was dragged --> no selection state change
-  step->getConfiguration()->showUI(selected);
+  if (step->getConfiguration())
+  {
+    step->getConfiguration()->showUI(selected);
+  }
   step->showStatusUI(selected);
 }
 
