@@ -58,6 +58,7 @@ public:
   const std::shared_ptr<Command::FileNameGenerator>& getFileNameGenerator();
 
   void showStatusUI(bool show = true);
+  void showUI(bool show = true);
 
   const Category category;
   QRectF location;

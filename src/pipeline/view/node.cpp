@@ -308,10 +308,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   setSelected(!selected);
   // TODO deselect all
   // TODO check if was dragged --> no selection state change
-  if (step->getConfiguration())
-  {
-    step->getConfiguration()->showUI(selected);
-  }
+  step->showUI(selected);
   step->showStatusUI(selected);
 }
 

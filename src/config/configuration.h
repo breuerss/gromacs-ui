@@ -12,7 +12,6 @@ class Configuration
 public:
   virtual ~Configuration() = default;
   virtual QWidget* getUI() = 0;
-  void showUI(bool show = true);
 };
 
 }

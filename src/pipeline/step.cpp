@@ -168,4 +168,15 @@ QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
   return in;
 }
 
+void Step::showUI(bool show)
+{
+  QWidget* widget = nullptr;
+  if (show && configuration)
+  {
+    widget = configuration->getUI();
+  }
+  UiUpdater::getInstance()->showConfigUI(widget);
+}
+
+
 }
