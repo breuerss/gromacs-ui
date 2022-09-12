@@ -125,25 +125,32 @@ SimulationStatus::SimulationStatus(
 
   conns << connectToCheckbox(ui->resume, configuration, "resume");
 
-  conns << connect(
-    step, &Pipeline::Simulation::Command::started,
-    [this] () {
-      progressChart->clear();
+  auto runningCallback = [this] () {
+    progressChart->clear();
 
-      timeStampStarted = QDateTime::currentSecsSinceEpoch();
-      firstProgressValue = -1;
-      ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
-      ui->rerunSimulation->setText(tr("Stop Simulation"));
-      ui->simulationProgress->setEnabled(true);
-    });
+    timeStampStarted = QDateTime::currentSecsSinceEpoch();
+    firstProgressValue = -1;
+    ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
+    ui->rerunSimulation->setText(tr("Stop Simulation"));
+    ui->simulationProgress->setEnabled(true);
+  };
   conns << connect(
-    step, &Pipeline::Simulation::Command::finished,
-    [this] () {
-      ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
-      ui->rerunSimulation->setText(tr("Run simulation"));
-      ui->simulationProgress->setEnabled(false);
-      showEvent(nullptr);
-    });
+    step, &Pipeline::Simulation::Command::started, runningCallback
+    );
+  auto stoppedCallback = [this] () {
+    ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
+    ui->rerunSimulation->setText(tr("Run simulation"));
+    ui->simulationProgress->setEnabled(false);
+    showEvent(nullptr);
+  };
+  conns << connect(
+    step, &Pipeline::Simulation::Command::finished, stoppedCallback
+    );
+
+  if (step->isRunning())
+  {
+    runningCallback();
+  }
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
   SimulationStatusChecker checker(project, configuration);
