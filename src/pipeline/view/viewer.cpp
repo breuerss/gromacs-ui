@@ -41,21 +41,29 @@ void Viewer::createAddButton()
 
 void Viewer::wheelEvent(QWheelEvent *event)
 {
-  const auto scaleFactor = transform().m11();
+  const auto currentScaleFactor = transform().m11();
+
+  float scaleByPercent = -20;
   if(event->angleDelta().y() > 0)
   {
-    if (scaleFactor < 5)
-    {
-      scale(1.25, 1.25);
-    }
+    scaleByPercent = 25;
   }
-  else
+
+  if (
+    (scaleByPercent < 0 && currentScaleFactor < 0.3) ||
+    (scaleByPercent >= 0 && currentScaleFactor > 5)
+     )
   {
-    if (scaleFactor > 0.3)
-    {
-      scale(0.8, 0.8);
-    }
+    scaleByPercent = 0;
   }
+
+  if (event->modifiers().testFlag(Qt::ControlModifier) && scaleByPercent != 0)
+  {
+    scaleByPercent /= 10;
+  }
+
+  const float scaleFactor = 1 + (scaleByPercent / 100);
+  scale(scaleFactor, scaleFactor);
 }
 
 void Viewer::keyPressEvent(QKeyEvent *event)
