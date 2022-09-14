@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
   QWebEngineSettings* settings = ui->molpreview->page()->settings();
   settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
   settings->setAttribute(QWebEngineSettings::ShowScrollBars, false);
+  setMoleculeFile();
   auto panel = new Pipeline::View::Panel(this);
   view->setScene(panel);
   panel->setProject(ProjectManager::getInstance()->getCurrentProject());
