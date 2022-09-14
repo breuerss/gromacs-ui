@@ -26,16 +26,12 @@
 1. Filter
 1. Loading starting configuration for different simulations
 1. Show few settings options in node
-1. alignment options
 1. execution of whole pipeline
 1. improve connectors path
-1. cleanup pionter handling, use naked pointers where memory management is not a factor
 1. Coloring of ports to be clear about the accepted file types
 1. show information of selected options in short form
-1. trajectory viewer node
-1. postprocessing nodes
 1. loading file data on start from configuration settings
 1. Neutralise blocks user interface
-1. show log file via port
-1. show mdp file via port
 1. add alignment buttons to user interface
+1. tooltip for ports, including file type, location/filename, explanation
+1. cleanup pointer handling, use naked pointers where memory management is not a factor
