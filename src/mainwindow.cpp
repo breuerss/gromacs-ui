@@ -17,6 +17,7 @@
 #include <QCoreApplication>
 #include <memory>
 #include <QMenu>
+#include <QBoxLayout>
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
 #include "pipeline/simulation/step.h"
@@ -31,14 +32,21 @@ MainWindow::MainWindow(QWidget *parent)
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
   restoreState(settings.value(Settings::APP_STATE).toByteArray());
-  ui->splitter->setSizes({INT_MAX, INT_MAX});
   auto menu = ui->menuView;
   menu->addAction(ui->configurationDock->toggleViewAction());
   menu->addAction(ui->logDock->toggleViewAction());
   menu->addAction(ui->statusDock->toggleViewAction());
 
   auto view = new Pipeline::View::Viewer(this);
+  if (!ui->pipelineTab->layout())
+  {
+    auto layout = new QHBoxLayout;
+    ui->pipelineTab->setLayout(layout);
+  }
   ui->pipelineTab->layout()->addWidget(view);
+  QWebEngineSettings* settings = ui->molpreview->page()->settings();
+  settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
+  settings->setAttribute(QWebEngineSettings::ShowScrollBars, false);
   auto panel = new Pipeline::View::Panel(this);
   view->setScene(panel);
   panel->setProject(ProjectManager::getInstance()->getCurrentProject());
@@ -226,8 +234,6 @@ void MainWindow::setupUIForProject()
     //conns << connect(project.get(),
     //        &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
 
-    QWebEngineSettings* settings = ui->molpreview->page()->settings();
-    settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
     //conns << connect(
     //  project.get(),
     //  &Model::Project::stepRemoved,
@@ -316,5 +322,6 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
   }
 
   ui->molpreview->setUrl(url);
-  ui->tabWidget->setCurrentIndex(0);
+  ui->moleculeDock->setVisible(true);
+  ui->moleculeDock->raise();
 }
