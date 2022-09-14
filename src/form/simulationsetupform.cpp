@@ -6,7 +6,6 @@
 #include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
 #include "../simulationstatuschecker.h"
-#include "../filecontentviewer.h"
 #include <algorithm>
 #include <QDateTime>
 #include "../appprovider.h"

@@ -3,7 +3,6 @@
 #include "../src/pipeline/simulation/command.h"
 #include "ui_simulationstatus.h"
 #include "../src/simulationstatuschecker.h"
-#include "../src/filecontentviewer.h"
 #include "../src/projectmanager.h"
 #include "../src/appprovider.h"
 #include "../src/form/connectionhelper.h"
@@ -30,48 +29,6 @@ SimulationStatus::SimulationStatus(
     ->property("simulationType")
     .value<Pipeline::Simulation::Configuration::Type>();
   setProgressViewForType(type);
-
-  conns << connect(ui->showLog, &QPushButton::clicked, [this] () {
-    auto project = ProjectManager::getInstance()->getCurrentProject();
-    SimulationStatusChecker checker(project, configuration);
-    auto viewer = new FileContentViewer(checker.getLogPath());
-    viewer->show();
-  });
-
-  conns << connect(ui->showMdp, &QPushButton::clicked, [this] () {
-    auto project = ProjectManager::getInstance()->getCurrentProject();
-    SimulationStatusChecker checker(project, configuration);
-    auto viewer = new FileContentViewer(checker.getMdpPath());
-    viewer->show();
-  });
-
-  conns << connect(ui->showSmoothTrajectory, &QToolButton::clicked, [this] () {
-    auto project = ProjectManager::getInstance()->getCurrentProject();
-    SimulationStatusChecker checker(project, configuration);
-    if (checker.hasTrajectory())
-    {
-      QProcess createInput;
-      QString command = AppProvider::get("gmx");
-      command += " filter";
-      command += " -s " + checker.getTprPath();
-      command += " -f " + checker.getTrajectoryPath();
-      command += " -ol " + checker.getSmoothTrajectoryPath();
-      command += " -all -nojump -nf 5";
-      createInput.start(command);
-      createInput.waitForFinished();
-      //emit displaySimulationData(checker.getInputCoordinatesPath(),
-      //                           checker.getSmoothTrajectoryPath());
-    }
-  });
-  conns << connect(ui->showTrajectoryButton, &QToolButton::clicked, [this] () {
-    auto project = ProjectManager::getInstance()->getCurrentProject();
-    SimulationStatusChecker checker(project, configuration);
-    if (checker.hasData())
-    {
-      //emit displaySimulationData(checker.getInputCoordinatesPath(),
-      //                           checker.hasTrajectory() ? checker.getTrajectoryPath() : "");
-    }
-  });
 
   conns << connect(
     ui->rerunSimulation,
@@ -203,9 +160,5 @@ void SimulationStatus::showEvent(QShowEvent*)
   auto project = ProjectManager::getInstance()->getCurrentProject();
 
   SimulationStatusChecker checker(project, configuration);
-  ui->showTrajectoryButton->setEnabled(checker.hasData());
-  ui->showSmoothTrajectory->setEnabled(checker.hasTrajectory());
-  ui->showLog->setEnabled(checker.hasLog());
-  ui->showMdp->setEnabled(checker.hasMdp());
 }
 
