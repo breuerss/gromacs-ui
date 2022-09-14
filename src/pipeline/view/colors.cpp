@@ -26,6 +26,7 @@ QColor getColorFor(Command::FileObject::Category category)
     { Category::Energy, 0xffc0c753 },
     { Category::Forces, 0xff9974aa },
     { Category::Topology, 0xff00740a },
+    { Category::Text, Colors::Grey },
 
     //0xffc1584f
   };

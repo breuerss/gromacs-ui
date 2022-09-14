@@ -37,6 +37,7 @@ private:
   void setupUIForProject();
   Settings settings;
   void setMoleculeFile(const QString& file = "", const QString& traj = "");
+  void setTextFile(const QString& fileName);
   void removeTabAt(int index);
   QList<QMetaObject::Connection> conns;
 };

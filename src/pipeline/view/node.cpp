@@ -175,6 +175,9 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
           getCoordinatesPath(),
           fileObject->getFileName());
         break;
+      case Category::Text:
+        UiUpdater::getInstance()->showTextFile(fileObject->getFileName());
+        break;
       default:
         break;
     }

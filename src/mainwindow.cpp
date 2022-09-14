@@ -118,6 +118,13 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
   connect(
+    UiUpdater::getInstance(), &UiUpdater::showTextFile,
+    [this] (const QString& textFile)
+    {
+      setTextFile(textFile);
+    });
+
+  connect(
     UiUpdater::getInstance(), &UiUpdater::showCoordinates,
     [this] (const QString& coordinates)
     {
@@ -194,6 +201,17 @@ MainWindow::MainWindow(QWidget *parent)
 
       manager->currentProjectChanged(project);
     });
+
+  QFont font;
+  font.setFamily("Courier");
+  font.setStyleHint(QFont::Monospace);
+  font.setFixedPitch(true);
+  font.setPointSize(12);
+
+  ui->textView->setFont(font);
+
+  QFontMetrics metrics(font);
+  ui->textView->setTabStopDistance(4 * metrics.horizontalAdvance(' '));
 }
 
 MainWindow::~MainWindow()
@@ -211,6 +229,17 @@ void MainWindow::closeEvent(QCloseEvent* event)
   settings.setValue(Settings::APP_STATE, saveState());
   settings.setValue(Settings::APP_GEOMETRY, geometry());
   QMainWindow::closeEvent(event);
+}
+
+void MainWindow::setTextFile(const QString& fileName)
+{
+  QFile file(fileName);
+  file.open(QFile::ReadOnly);
+  ui->textView->setText(file.readAll());
+  file.close();
+
+  ui->textViewDock->setWindowTitle(fileName);
+  ui->textViewDock->raise();
 }
 
 void MainWindow::setupUIForProject()

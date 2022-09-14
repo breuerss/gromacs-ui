@@ -13,6 +13,7 @@ signals:
   void showStatusUI(QWidget*);
   void showTrajectory(const QString& coords, const QString& trajectory);
   void showCoordinates(const QString& coords);
+  void showTextFile(const QString& textFile);
 
 private:
   UiUpdater() = default;

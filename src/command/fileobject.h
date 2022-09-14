@@ -34,6 +34,7 @@ public:
     Velocities,
     Forces,
     Topology,
+    Text,
   };
 
   FileObject(Type newType);
