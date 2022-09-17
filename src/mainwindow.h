@@ -29,7 +29,6 @@ protected:
 
 private slots:
   void openPreferencesDialog();
-  void addTabForStep(std::shared_ptr<Config::Simulation> step, int at = -1);
 
 private:
   Ui::MainWindow* ui;
@@ -38,7 +37,6 @@ private:
   Settings settings;
   void setMoleculeFile(const QString& file = "", const QString& traj = "");
   void setTextFile(const QString& fileName);
-  void removeTabAt(int index);
   QList<QMetaObject::Connection> conns;
 };
 #endif // MAINWINDOW_H

@@ -67,14 +67,6 @@ MainWindow::MainWindow(QWidget *parent)
     ProjectManager::getInstance()->open();
   });
 
-  // add button to add step to tab widget
-  //QToolButton* addStepButton = new QToolButton(this);
-  //addStepButton->setCursor(Qt::ArrowCursor);
-  //addStepButton->setAutoRaise(true);
-  //addStepButton->setIcon(QIcon::fromTheme("add"));
-  //connect(addStepButton, &QToolButton::clicked, ui->actionAddStep, &QAction::trigger);
-  //ui->stepconfigurator->setCornerWidget(addStepButton);
-
   connect(LogForwarder::getInstance(), &LogForwarder::addMessage,
           ui->logOutput, &QPlainTextEdit::appendPlainText);
 
@@ -133,24 +125,6 @@ MainWindow::MainWindow(QWidget *parent)
       setMoleculeFile(coordinates);
     });
 
-  //connect(queue.get(), &Command::Queue::stepFinished,
-  //        [this] (int stepIndex, std::shared_ptr<Command::Executor>, bool success) {
-  //          if (success)
-  //          {
-              //auto project = ProjectManager::getInstance()->getCurrentProject();
-              //SimulationStatusChecker checker(project, project->getSteps()[stepIndex]);
-
-              //QString trajectory;
-              //if (checker.hasTrajectory())
-              //{
-                //trajectory = checker.getTrajectoryPath();
-              //}
-
-              //QString coordinates = checker.getCoordinatesPath();
-              //setMoleculeFile(coordinates, trajectory);
-   //         }
-   //       });
-
   connect(StatusMessageSetter::getInstance(), &StatusMessageSetter::messageChanged,
           [this] (const QString& message) {
             ui->statusbar->showMessage(message);
@@ -164,11 +138,6 @@ MainWindow::MainWindow(QWidget *parent)
       setupUIForProject();
     });
 
-  //connect(ui->stepconfigurator, &QTabWidget::tabCloseRequested,
-  //        [] (int index) {
-  //          ProjectManager::getInstance()->getCurrentProject()->removeStep(index - 1);
-  //        });
-
   connect(
     ui->actionCreateDefaultSimulationSetup,
     &QAction::triggered,
@@ -178,28 +147,6 @@ MainWindow::MainWindow(QWidget *parent)
       auto manager = ProjectManager::getInstance();
       auto project = manager->getCurrentProject();
       project->clearSteps();
-      //auto step = std::get<std::shared_ptr<Command::RunSimulation>>(project->addStep());
-      //auto config = std::get<std::shared_ptr<Config::Simulation>>(step->getConfiguration());
-      //config->setProperty("simulationType", QVariant::fromValue(Simulation::Type::Minimisation));
-      //step->setProperty("algorithm", "steep");
-      //step = project->addStep();
-      //step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NVT));
-      //step->setProperty("numberOfSteps", 10000);
-      //step->setProperty("algorithm", "md");
-      //step = project->addStep();
-      //step->setProperty("simulationType", QVariant::fromValue(Simulation::Type::NPT));
-      //step->setProperty("numberOfSteps", 10000);
-      //step->setProperty("algorithm", "md");
-
-      // import the existing definitions
-      //for (auto step: project->getSteps())
-      //{
-      //  SimulationStatusChecker checker(project, step);
-      //  if (checker.hasMdp())
-      //  {
-      //    GromacsConfigFileGenerator(step).setFromMdpFile(checker.getMdpPath());
-      //  }
-      //}
 
       manager->currentProjectChanged(project);
     });
@@ -213,7 +160,6 @@ MainWindow::MainWindow(QWidget *parent)
   ui->textView->setFont(font);
 
   QFontMetrics metrics(font);
-  ui->textView->setTabStopDistance(4 * metrics.horizontalAdvance(' '));
 }
 
 MainWindow::~MainWindow()
@@ -251,28 +197,10 @@ void MainWindow::setupUIForProject()
   return;
   if (project)
   {
-    //ui->stepconfigurator->setEnabled(true);
-
-    //while (ui->stepconfigurator->count())
-    //{
-    //  removeTabAt(0);
-    //}
     for (auto conn : conns)
     {
       disconnect(conn);
     }
-
-    //conns << connect(project.get(),
-    //        &Model::Project::stepAdded, this, &MainWindow::addTabForStep);
-
-    //conns << connect(
-    //  project.get(),
-    //  &Model::Project::stepRemoved,
-    //  [this] (std::shared_ptr<Config::Simulation>, int at) {
-    //    queue->remove(at);
-    //    removeTabAt(at + 1);
-    //  });
-
 
     conns << connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
       QString title = "GROMACS UI | " + newName;
@@ -284,54 +212,7 @@ void MainWindow::setupUIForProject()
       }
       this->setWindowTitle(title);
     });
-
-    //ui->stepconfigurator->addTab(new SystemSetupForm(project), tr("System Setup"));
-    //auto tabBar = ui->stepconfigurator->tabBar();
-    //tabBar->tabButton(0, QTabBar::RightSide)->deleteLater();
-    //tabBar->setTabButton(0, QTabBar::RightSide, 0);
-    //for (auto step: project->getSteps())
-    //{
-    //  addTabForStep(step);
-    //}
   }
-}
-
-void MainWindow::addTabForStep(std::shared_ptr<Config::Simulation>, int)
-{
-  //if (at == -1)
-  //{
-  //  at = ui->stepconfigurator->count() - 1;
-  //}
-
-  auto project = ProjectManager::getInstance()->getCurrentProject();
-  //auto command = std::make_shared<Command::RunSimulation>(project);
-  //connect(command.get(), &Command::RunSimulation::runningChanged,
-  //        [this] (bool isRunning) {
-   //         ui->actionRunSimulation->setEnabled(!isRunning);
-    //      });
-  //queue->insert(at, command);
-
-  // take system setup into account for tabs
-  ////at += 1;
-
-  //connect(
-  //  simulation.get(),
-  //  &Config::Simulation::simulationTypeChanged,
-  //  [this, simulation, at] (Config::Simulation::Type) {
-  //    ui->stepconfigurator->setTabText(at, simulation->getName());
-  //  });
-
-  //SimulationSetupForm* simulationForm = new SimulationSetupForm(project, simulation, command);
-  //connect(simulationForm, &SimulationSetupForm::displaySimulationData,
-  //        this, &MainWindow::setMoleculeFile);
-  //ui->stepconfigurator->insertTab(at, simulationForm, simulation->getName());
-}
-
-void MainWindow::removeTabAt(int)
-{
-  //QWidget* widget = ui->stepconfigurator->widget(at);
-  //ui->stepconfigurator->removeTab(at);
-  //widget->deleteLater();
 }
 
 void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
