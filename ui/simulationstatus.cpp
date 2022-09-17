@@ -31,20 +31,6 @@ SimulationStatus::SimulationStatus(
   setProgressViewForType(type);
 
   conns << connect(
-    ui->rerunSimulation,
-    &QPushButton::clicked,
-    [this] () {
-      if (step->isRunning())
-      {
-        step->stop();
-      }
-      else
-      {
-        step->exec();
-      }
-    });
-
-  conns << connect(
     step,
     &Pipeline::Simulation::Command::progress,
     [this] (float progress, Command::Executor::ProgressType type) {
@@ -80,23 +66,17 @@ SimulationStatus::SimulationStatus(
       }
     });
 
-  conns << connectToCheckbox(ui->resume, configuration, "resume");
-
   auto runningCallback = [this] () {
     progressChart->clear();
 
     timeStampStarted = QDateTime::currentSecsSinceEpoch();
     firstProgressValue = -1;
-    ui->rerunSimulation->setIcon(QIcon::fromTheme("media-playback-stop"));
-    ui->rerunSimulation->setText(tr("Stop Simulation"));
     ui->simulationProgress->setEnabled(true);
   };
   conns << connect(
     step, &Pipeline::Simulation::Command::started, runningCallback
     );
   auto stoppedCallback = [this] () {
-    ui->rerunSimulation->setIcon(QIcon::fromTheme("reload"));
-    ui->rerunSimulation->setText(tr("Run simulation"));
     ui->simulationProgress->setEnabled(false);
     showEvent(nullptr);
   };

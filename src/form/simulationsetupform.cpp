@@ -19,6 +19,8 @@ SimulationSetupForm::SimulationSetupForm(
 {
   ui->setupUi(this);
 
+  conns << connectToCheckbox(ui->resume, configuration, "resume");
+
   using Type = Pipeline::Simulation::Configuration::Type;
 
   connect(

@@ -13,7 +13,17 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_31">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="resume">
+     <property name="text">
+      <string>Resume if possible</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item>
     <widget class="QWidget" name="settingsWidget" native="true">
      <layout class="QGridLayout" name="gridLayout_3">
