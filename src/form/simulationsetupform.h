@@ -27,7 +27,7 @@ signals:
 private:
   Ui::SimulationSetupForm *ui;
   using SimConfiguration = Pipeline::Simulation::Configuration;
-  SimConfiguration* simulation;
+  SimConfiguration* configuration;
 
   void updateUiForSimulationType(SimConfiguration::Type type = SimConfiguration::Type::None);
   void setAlgorithmsForType(SimConfiguration::Type type);
