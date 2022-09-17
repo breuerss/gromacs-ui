@@ -1,6 +1,6 @@
 #include "gromacssystemsettings.h"
 #include "ui_gromacssystemsettings.h"
-#include "../src/form/connectionhelper.h"
+#include "connectionhelper.h"
 
 GromacsSystemSettings::GromacsSystemSettings(
   Pipeline::CreateGromacsModel::Configuration* newConfig

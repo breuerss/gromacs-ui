@@ -1,7 +1,7 @@
 #include "temperaturegroupconfigform.h"
 #include "ui_temperaturegroupconfigform.h"
 #include "connectionhelper.h"
-#include "../pipeline/simulation/temperaturecouplinggroup.h"
+#include "../src/pipeline/simulation/temperaturecouplinggroup.h"
 
 TemperatureGroupConfigForm::TemperatureGroupConfigForm(
   std::shared_ptr<Pipeline::Simulation::TemperatureCouplingGroup> model, QWidget *parent)

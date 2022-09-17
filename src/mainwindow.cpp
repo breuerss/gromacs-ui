@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "form/preferencesdialog.h"
+#include "ui/preferencesdialog.h"
 #include "projectmanager.h"
 #include "statusmessagesetter.h"
 #include "logforwarder.h"

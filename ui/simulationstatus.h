@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QList>
-#include "src/form/progresschart.h"
+#include "progresschart.h"
 #include "../src/pipeline/simulation/configuration.h"
 
 namespace Ui {

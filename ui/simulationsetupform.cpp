@@ -1,14 +1,16 @@
 #include "simulationsetupform.h"
-#include "src/form/progresschart.h"
+#include "progresschart.h"
 #include "ui_simulationsetupform.h"
 #include "temperaturegroupconfigform.h"
-#include "../pipeline/simulation/configuration.h"
-#include "../gromacsconfigfilegenerator.h"
 #include "connectionhelper.h"
-#include "../simulationstatuschecker.h"
+
+#include "../src/pipeline/simulation/configuration.h"
+#include "../src/gromacsconfigfilegenerator.h"
+#include "../src/simulationstatuschecker.h"
+#include "../src/appprovider.h"
+
 #include <algorithm>
 #include <QDateTime>
-#include "../appprovider.h"
 
 SimulationSetupForm::SimulationSetupForm(
   Pipeline::Simulation::Configuration* newConfiguration

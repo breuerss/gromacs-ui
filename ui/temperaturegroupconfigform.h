@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <memory>
-#include "../pipeline/simulation/temperaturecouplinggroup.h"
+#include "../src/pipeline/simulation/temperaturecouplinggroup.h"
 
 namespace Model {
 class TemperatureCouplingGroup;

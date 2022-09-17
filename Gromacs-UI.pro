@@ -14,11 +14,6 @@ CONFIG += object_parallel_to_source
 
 SOURCES += \
     $$files(src/*.cpp) \
-    src/form/connectionhelper.cpp \
-    src/form/preferencesdialog.cpp \
-    src/form/progresschart.cpp \
-    src/form/simulationsetupform.cpp \
-    src/form/temperaturegroupconfigform.cpp \
     $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
     $$files(src/config/*.cpp) \
@@ -27,11 +22,6 @@ SOURCES += \
 
 HEADERS += \
     $$files(src/*.h) \
-    src/form/connectionhelper.h \
-    src/form/preferencesdialog.h \
-    src/form/progresschart.h \
-    src/form/simulationsetupform.h \
-    src/form/temperaturegroupconfigform.h \
     src/misc/bimaphelper.h \
     $$files(src/model/*.h) \
     $$files(src/command/*.h) \

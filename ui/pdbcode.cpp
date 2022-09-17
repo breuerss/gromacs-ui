@@ -1,7 +1,7 @@
 #include "pdbcode.h"
 #include "ui_pdbcode.h"
 #include <memory>
-#include "../src/form/connectionhelper.h"
+#include "connectionhelper.h"
 
 PdbCode::PdbCode(Pipeline::PdbDownload::Configuration* config)
   : QWidget(nullptr)

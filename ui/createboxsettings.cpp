@@ -1,6 +1,6 @@
 #include "createboxsettings.h"
 #include "ui_createboxsettings.h"
-#include "../src/form/connectionhelper.h"
+#include "connectionhelper.h"
 
 CreateBoxSettings::CreateBoxSettings(Pipeline::CreateBox::Configuration* newConfig)
   : QWidget(nullptr)

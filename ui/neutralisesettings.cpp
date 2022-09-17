@@ -1,7 +1,7 @@
 #include "neutralisesettings.h"
 #include "ui_neutralisesettings.h"
 #include "../src/pipeline/neutralise/configuration.h"
-#include "../src/form/connectionhelper.h"
+#include "connectionhelper.h"
 
 NeutraliseSettings::NeutraliseSettings(Pipeline::Neutralise::Configuration* newConfig)
   : QWidget(nullptr)

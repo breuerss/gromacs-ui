@@ -5,8 +5,8 @@
 #include <memory>
 #include <QMetaObject>
 #include <QList>
-#include "../pipeline/simulation/configuration.h"
-#include "../pipeline/simulation/temperaturecouplinggroup.h"
+#include "../src/pipeline/simulation/configuration.h"
+#include "../src/pipeline/simulation/temperaturecouplinggroup.h"
 
 namespace Ui {
 class SimulationSetupForm;

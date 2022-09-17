@@ -1,11 +1,12 @@
 #include "simulationstatus.h"
+#include "ui_simulationstatus.h"
+#include "connectionhelper.h"
+
 #include "../src/pipeline/simulation/configuration.h"
 #include "../src/pipeline/simulation/command.h"
-#include "ui_simulationstatus.h"
 #include "../src/simulationstatuschecker.h"
 #include "../src/projectmanager.h"
 #include "../src/appprovider.h"
-#include "../src/form/connectionhelper.h"
 #include <memory>
 #include <QToolButton>
 #include <QDateTime>
