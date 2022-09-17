@@ -29,16 +29,6 @@ SimulationSetupForm::SimulationSetupForm(
     //{ toString(Configuration::Type::NVE), Configuration::Type::NVE },
   };
 
-  setOptions<Type>(ui->simulationType, typeOptions);
-  conns << connectToComboBox<Type>(
-    ui->simulationType,
-    simulation,
-    "simulationType",
-    [this] (Type type) {
-      updateUiForSimulationType(type);
-    });
-  updateUiForSimulationType(simulation->property("simulationType").value<Type>());
-
   using PressureCouplingType = Pipeline::Simulation::Configuration::PressureCouplingType;
   QList<QPair<QString, PressureCouplingType>> pressureCouplingTypeOptions = {
     { "Isotropic", PressureCouplingType::Isotropic },
