@@ -44,7 +44,6 @@
      <string>File</string>
     </property>
     <addaction name="actionNewProject"/>
-    <addaction name="actionOpenProject"/>
     <addaction name="actionSaveProjectAs"/>
     <addaction name="actionSave"/>
    </widget>
@@ -57,12 +56,11 @@
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
-     <string>Workflow</string>
+     <string>Simulation Pipeline</string>
     </property>
     <addaction name="actionRunSimulation"/>
     <addaction name="separator"/>
     <addaction name="actionCreateDefaultSimulationSetup"/>
-    <addaction name="actionAddStep"/>
     <addaction name="actionAdd_Post_Processing"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -87,11 +85,11 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionNewProject"/>
+   <addaction name="actionOpenProject"/>
    <addaction name="actionSave"/>
    <addaction name="actionSaveProjectAs"/>
    <addaction name="separator"/>
    <addaction name="actionCreateDefaultSimulationSetup"/>
-   <addaction name="actionAddStep"/>
    <addaction name="separator"/>
    <addaction name="actionRunSimulation"/>
   </widget>
@@ -190,7 +188,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>185</width>
+          <width>68</width>
           <height>147</height>
          </rect>
         </property>
@@ -222,7 +220,7 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>185</width>
+          <width>68</width>
           <height>146</height>
          </rect>
         </property>
@@ -324,6 +322,9 @@
    </property>
   </action>
   <action name="actionOpenProject">
+   <property name="icon">
+    <iconset theme="folder-open"/>
+   </property>
    <property name="text">
     <string>Open Project...</string>
    </property>
@@ -361,7 +362,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Run Workflow</string>
+    <string>Run Pipeline</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -373,7 +374,7 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Create Default Workflow</string>
+    <string>Create Default Pipeline</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
