@@ -8,8 +8,6 @@
 
 1. system setup template names should be defined in system setup, regenerate signal should be used instead of value set
 
-1. visualisation presets do not allow to filter out molecule groups
-
 1. reset output on new project
 
 1. notify user if project name is already in use in project dir to avoid overwriting?
@@ -25,7 +23,6 @@
 
 1. Filter
 1. Loading starting configuration for different simulations
-1. Show few settings options in node
 1. execution of whole pipeline
 1. improve connectors path
 1. Coloring of ports to be clear about the accepted file types
@@ -35,3 +32,4 @@
 1. add alignment buttons to user interface
 1. tooltip for ports, including file type, location/filename, explanation
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
+1. undo/redo stack
