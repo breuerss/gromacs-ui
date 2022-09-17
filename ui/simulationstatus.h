@@ -24,7 +24,6 @@ public:
     Pipeline::Simulation::Configuration* configuration,
     QWidget *parent = nullptr);
   ~SimulationStatus();
-  void showEvent(QShowEvent* event);
 
 private:
   void setProgressViewForType(Pipeline::Simulation::Configuration::Type type);

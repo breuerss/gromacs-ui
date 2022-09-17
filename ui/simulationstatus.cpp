@@ -153,12 +153,3 @@ void SimulationStatus::setupProgressValueChart()
   progressChart->setMaximumHeight(40);
   ui->runLayout->addWidget(progressChart);
 }
-
-void SimulationStatus::showEvent(QShowEvent*)
-{
-
-  auto project = ProjectManager::getInstance()->getCurrentProject();
-
-  SimulationStatusChecker checker(project, configuration);
-}
-
