@@ -95,7 +95,10 @@ MainWindow::MainWindow(QWidget *parent)
     [this, addWidgetToWidget] (QWidget* widget)
     {
       addWidgetToWidget(widget, ui->configBox);
-      ui->configurationDock->raise();
+      if (widget)
+      {
+        ui->configurationDock->raise();
+      }
     });
   connect(
     UiUpdater::getInstance(), &UiUpdater::showStatusUI,
