@@ -21,6 +21,13 @@ SimulationSetupForm::SimulationSetupForm(
 
   using Type = Pipeline::Simulation::Configuration::Type;
 
+  connect(
+    simulation, &Pipeline::Simulation::Configuration::simulationTypeChanged,
+    [this] (Type type) {
+      updateUiForSimulationType(type);
+    });
+  updateUiForSimulationType(simulation->property("simulationType").value<Type>());
+
   QList<QPair<QString, Type>> typeOptions = {
     { toString(Type::None), Type::None },
     { toString(Type::Minimisation), Type::Minimisation },
