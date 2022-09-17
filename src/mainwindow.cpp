@@ -5,6 +5,7 @@
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 #include "uiupdater.h"
+#include "pipelinerunner.h"
 
 #include "model/systemsetup.h"
 #include "model/project.h"
@@ -156,14 +157,18 @@ MainWindow::MainWindow(QWidget *parent)
       manager->currentProjectChanged(project);
     });
 
+  connect(
+    ui->actionRunSimulation, &QAction::triggered,
+    [] () {
+      PipelineRunner::getInstance()->startPipeline();
+    });
+
   QFont font;
   font.setFamily("Courier");
   font.setStyleHint(QFont::Monospace);
   font.setFixedPitch(true);
   font.setPointSize(12);
-
   ui->textView->setFont(font);
-
   QFontMetrics metrics(font);
 }
 
