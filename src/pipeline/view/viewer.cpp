@@ -132,6 +132,8 @@ void Viewer::keyPressEvent(QKeyEvent *event)
       break;
 
   }
+
+  QGraphicsView::keyPressEvent(event);
 }
 
 void Viewer::center()

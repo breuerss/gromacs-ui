@@ -3,11 +3,13 @@
 
 #include <QGraphicsRectItem>
 #include <QPainter>
+#include <QObject>
 
 namespace Pipeline { namespace View {
 
-class RoundedRectItem : public QGraphicsRectItem {
+class RoundedRectItem : public QObject, public QGraphicsRectItem {
 
+  Q_OBJECT
 public:
   using QGraphicsRectItem::QGraphicsRectItem;
 
@@ -27,7 +29,10 @@ public:
 
   ///Set the rounded rect
   void setRoundedRect(const QRectF rect, const double radius_x, const double radius_y);
+  void setSize(const QSizeF& size);
+  QSizeF getSize() const;
   
+  Q_PROPERTY(QSizeF size READ getSize WRITE setSize);
 private:
   ///The rounded rect corner x radius
   double xRadius;

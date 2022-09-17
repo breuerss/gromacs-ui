@@ -1,6 +1,7 @@
 #include "node.h"
 #include "panel.h"
 #include "port.h"
+#include "styling.h"
 #include "../step.h"
 #include "../../uiupdater.h"
 #include "src/command/executor.h"
@@ -13,6 +14,11 @@
 #include <cmath>
 #include <QIcon>
 #include <memory>
+#include <QGraphicsProxyWidget>
+#include <QPropertyAnimation>
+#include <QLayout>
+#include <QDebug>
+#include <QVBoxLayout>
 
 namespace Pipeline { namespace View {
 
@@ -30,9 +36,25 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   QPen pen(QColor(0, 0, 0, 0));
   setPen(pen);
 
-  const double indent = 30;
-  const double spacing = 10;
-  const double height = 60;
+  setupBackground();
+  setupText();
+  setupRunIcon();
+  setupPorts();
+
+  auto config = step->getConfiguration();
+  if (config)
+  {
+    auto ui = config->getUI();
+    if (ui)
+    {
+      setupResizeAnimation();
+      setupSettingsWidget();
+    }
+  }
+}
+
+void Node::setupBackground()
+{
   double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
   width += runIcon->boundingRect().width();
   width += spacing;
@@ -43,6 +65,10 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   nodeBackground->setRadiusX(height / 2);
   nodeBackground->setRadiusY(height / 2);
   nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
+}
+
+void Node::setupText()
+{
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
   text->setDefaultTextColor("white");
   auto font = text->font();
@@ -50,7 +76,10 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   font.setWeight(700);
   text->setFont(font);
   text->setZValue(1);
+}
 
+void Node::setupRunIcon()
+{
   runIcon->setZValue(11);
   auto textDim = text->boundingRect();
   runIcon->setPos(
@@ -86,8 +115,10 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
 
       runIcon->setIcon(icon, true);
   });
+}
 
-
+void Node::setupPorts()
+{
   for (const auto& fileObject: step->getFileObjectProvider()->provides())
   {
     addOutputPort(fileObject, Colors::getColorFor(fileObject->type));
@@ -141,19 +172,80 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   arrangeInputPorts();
 }
 
-QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
-{
-  if (change == QGraphicsItem::ItemPositionHasChanged)
-  {
-    step->location = QRectF(scenePos(), boundingRect().size());
-  }
-
-  return QGraphicsItem::itemChange(change, value);
-}
-
 const Node::OutputPorts& Node::getOutputPorts() const
 {
   return outputPorts;
+}
+
+void Node::setupSettingsWidget()
+{
+  auto ui = step->getConfiguration()->getUI();
+  auto children = ui->findChildren<QWidget*>(QString(), Qt::FindChildrenRecursively);
+  if (children.size() > 30)
+  {
+    return;
+  }
+
+  proxySettingsWidget = new QGraphicsProxyWidget(this);
+  QPointF settingsPos = text->pos();
+  settingsPos.ry() += text->boundingRect().size().height();
+  auto transform = proxySettingsWidget->transform();
+  proxySettingsWidget->setTransform(transform.translate(settingsPos.x(), settingsPos.y()));
+  children = ui->findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly);
+  auto layout = new QVBoxLayout;
+  double minWidth = 0;
+  for (auto child : children)
+  {
+    layout->addWidget(child);
+    minWidth = std::max<double>(minWidth, child->sizeHint().width());
+  }
+  QSizeF minimumSize = text->boundingRect().size() + runIcon->boundingRect().size();
+
+  auto widget = new QWidget();
+  widget->setLayout(layout);
+  widget->setStyleSheet(stylesheet);
+
+  QSizeF newSize = nodeBackground->getSize();
+  if (minimumSize.width() > minWidth)
+  {
+    widget->setFixedWidth(minimumSize.width());
+  }
+  else
+  {
+    newSize.rwidth() = minWidth + 80;
+  }
+
+  proxySettingsWidget->setWidget(widget);
+  proxySettingsWidget->setZValue(10);
+  widget->hide();
+  newSize.rheight() += widget->size().height();
+  resizeAnimation->setEndValue(newSize);
+}
+
+void Node::setupResizeAnimation()
+{
+  resizeAnimation = new QPropertyAnimation(nodeBackground, "size");
+  resizeAnimation->setDuration(200);
+  resizeAnimation->setStartValue(nodeBackground->boundingRect().size());
+  resizeAnimation->setEasingCurve(QEasingCurve::OutQuad);
+
+  QObject::connect(
+    resizeAnimation, &QPropertyAnimation::stateChanged,
+    [this] (QAbstractAnimation::State newState) {
+    if (newState == QAbstractAnimation::Running)
+    {
+      proxySettingsWidget->hide();
+    }
+  });
+  QObject::connect(resizeAnimation, &QPropertyAnimation::finished, [this] () {
+    if (resizeAnimation->direction() == QAbstractAnimation::Forward)
+    {
+      proxySettingsWidget->show();
+    }
+  });
+  QObject::connect(resizeAnimation, &QPropertyAnimation::valueChanged, [this] () {
+    arrangeOutputPorts();
+  });
 }
 
 void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color)
@@ -227,7 +319,7 @@ void Node::arrangeOutputPorts()
   const double steps = 45;
   const double startAngle = (outputPorts.size() - 1) * steps / 2.0;
   const double radius = rect().height() / 2;
-  const double width = rect().width();
+  const double width = nodeBackground->boundingRect().size().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
     const auto port = outputPorts[index];
@@ -279,6 +371,16 @@ Port* Node::getInputPort(Command::FileObject::Category category)
   return port;
 }
 
+QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
+{
+  if (change == QGraphicsItem::ItemPositionHasChanged)
+  {
+    step->location = QRectF(scenePos(), boundingRect().size());
+  }
+
+  return QGraphicsItem::itemChange(change, value);
+}
+
 // necessary to detect release event
 void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
@@ -299,10 +401,35 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   }
 
   setSelected(!selected);
-  // TODO deselect all
-  // TODO check if was dragged --> no selection state change
-  step->showUI(selected);
+
+  if (!toggleSettings())
+  {
+    step->showUI(selected);
+  }
+
   step->showStatusUI(selected);
+}
+
+bool Node::toggleSettings()
+{
+  if (!proxySettingsWidget)
+  {
+    return false;
+  }
+
+  auto direction = QAbstractAnimation::Forward;
+  int zValue = 2;
+  if (proxySettingsWidget->isVisible())
+  {
+    zValue = 1;
+    direction = QAbstractAnimation::Backward;
+  }
+
+  setZValue(zValue);
+  resizeAnimation->setDirection(direction);
+  resizeAnimation->start();
+
+  return true;
 }
 
 bool Node::isSelected() const

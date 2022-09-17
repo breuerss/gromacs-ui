@@ -10,6 +10,9 @@
 #include <QList>
 #include <memory>
 
+class QPropertyAnimation;
+class QGraphicsProxyWidget;
+
 namespace Pipeline {
 
 class Step;
@@ -46,20 +49,34 @@ private:
 
   void arrangeOutputPorts();
   void arrangeInputPorts();
-
   static QPointF getCirclePoint(double radius, double angle);
+
+  void setupBackground();
+  void setupText();
+  void setupRunIcon();
+  void setupPorts();
+  void setupSettingsWidget();
+  void setupResizeAnimation();
+
+  bool toggleSettings();
 
   QGraphicsTextItem* text;
   ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
 
   QList<QPair<Command::FileObject::Category, Port*>> inputPorts;
-
   OutputPorts outputPorts;
 
   std::shared_ptr<Pipeline::Step> step;
   bool selected = false;
   QPointF startingPos;
+
+  const double indent = 30;
+  const double spacing = 10;
+  const double height = 60;
+
+  QGraphicsProxyWidget* proxySettingsWidget = nullptr;
+  QPropertyAnimation* resizeAnimation = nullptr;
 };
 
 } }

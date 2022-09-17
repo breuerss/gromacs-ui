@@ -6,7 +6,7 @@ namespace Pipeline { namespace View {
 
 void RoundedRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
-  if (this->isSelected())
+  if (isSelected())
   {
     QPen pen;
     pen.setStyle(Qt::DashLine);
@@ -14,14 +14,28 @@ void RoundedRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, 
   }
   painter->setBrush(brush());
   painter->setPen(pen());
-  painter->drawRoundedRect(this->rect(), xRadius, yRadius);
+  painter->drawRoundedRect(rect(), xRadius, yRadius);
 }
 
 void RoundedRectItem::setRoundedRect(const QRectF rect, const double radius_x, const double radius_y)
 {
-  this->setRect(rect);
-  this->setRadiusX(radius_x);
-  this->setRadiusY(radius_y);
+  setRect(rect);
+  setRadiusX(radius_x);
+  setRadiusY(radius_y);
+  update();
+}
+
+QSizeF RoundedRectItem::getSize() const
+{
+  return rect().size();
+}
+
+void RoundedRectItem::setSize(const QSizeF& size)
+{
+  QRectF newRect = rect();
+  newRect.setSize(size);
+  setRect(newRect);
+  update();
 }
 
 } }
