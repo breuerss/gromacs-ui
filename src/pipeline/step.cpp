@@ -62,44 +62,32 @@ Step::Step(
   updateFileNames();
 }
 
-const std::shared_ptr<Command::FileObjectConsumer>&
+std::shared_ptr<Command::FileObjectConsumer>
 Step::getFileObjectConsumer() const
 {
   return fileObjectConsumer;
 }
 
-std::shared_ptr<Command::FileObjectConsumer>&
-Step::getFileObjectConsumer()
-{
-  return fileObjectConsumer;
-}
-
-const std::shared_ptr<Command::FileObjectProvider>&
+std::shared_ptr<Command::FileObjectProvider>
 Step::getFileObjectProvider() const
 {
   return fileObjectProvider;
 }
 
-std::shared_ptr<Command::FileObjectProvider>&
-Step::getFileObjectProvider()
-{
-  return fileObjectProvider;
-}
-
-const std::shared_ptr<Config::Configuration>&
-Step::getConfiguration()
+const std::shared_ptr<Config::Configuration>
+Step::getConfiguration() const
 {
   return configuration;
 }
 
-const std::shared_ptr<Command::Executor>&
-Step::getCommand()
+const std::shared_ptr<Command::Executor>
+Step::getCommand() const
 {
   return command;
 }
 
-const std::shared_ptr<Command::FileNameGenerator>&
-Step::getFileNameGenerator()
+const std::shared_ptr<Command::FileNameGenerator>
+Step::getFileNameGenerator() const
 {
   return fileNameGenerator;
 }

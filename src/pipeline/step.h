@@ -47,15 +47,12 @@ public:
   virtual Pointer create(std::shared_ptr<Model::Project>) const = 0;
   virtual ~Step() = default;
 
-  const std::shared_ptr<Command::FileObjectConsumer>& getFileObjectConsumer() const;
-  std::shared_ptr<Command::FileObjectConsumer>& getFileObjectConsumer();
+  std::shared_ptr<Command::FileObjectConsumer> getFileObjectConsumer() const;
+  std::shared_ptr<Command::FileObjectProvider> getFileObjectProvider() const;
 
-  const std::shared_ptr<Command::FileObjectProvider>& getFileObjectProvider() const;
-  std::shared_ptr<Command::FileObjectProvider>& getFileObjectProvider();
-
-  const std::shared_ptr<Config::Configuration>& getConfiguration();
-  const std::shared_ptr<Command::Executor>& getCommand();
-  const std::shared_ptr<Command::FileNameGenerator>& getFileNameGenerator();
+  const std::shared_ptr<Config::Configuration> getConfiguration() const;
+  const std::shared_ptr<Command::Executor> getCommand() const;
+  const std::shared_ptr<Command::FileNameGenerator> getFileNameGenerator() const;
 
   void showStatusUI(bool show = true);
   void showUI(bool show = true);
