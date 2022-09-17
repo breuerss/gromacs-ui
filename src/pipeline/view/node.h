@@ -23,9 +23,7 @@ public:
 
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
 
-  Port* getInputPort(int at);
   Port* getInputPort(Command::FileObject::Category);
-  Port* getOutputPort(int at);
   const OutputPorts& getOutputPorts() const;
 
   void addInputPort(Command::FileObject::Category category, const QColor& color);

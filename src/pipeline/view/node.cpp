@@ -265,11 +265,6 @@ QPointF Node::getCirclePoint(double radius, double angle)
   );
 }
 
-Port* Node::getInputPort(int at)
-{
-  return inputPorts[at].second;
-}
-
 Port* Node::getInputPort(Command::FileObject::Category category)
 {
   Port* port = nullptr;
@@ -284,14 +279,9 @@ Port* Node::getInputPort(Command::FileObject::Category category)
   return port;
 }
 
-Port* Node::getOutputPort(int at)
-{
-  return outputPorts[at].second;
-}
-
+// necessary to detect release event
 void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
-  // necessary to detect release event
   QGraphicsRectItem::mousePressEvent(event);
   startingPos = pos();
   setZValue(2);
