@@ -26,7 +26,6 @@
 1. improve connectors path
 1. Coloring of ports to be clear about the accepted file types
 1. show information of selected options in short form
-1. loading file data on start from configuration settings
 1. Neutralise blocks user interface
 1. add alignment buttons to user interface
 1. tooltip for ports, including file type, location/filename, explanation

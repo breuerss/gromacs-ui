@@ -129,15 +129,18 @@ QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Project> project)
   {
     auto& steps = project->getSteps();
     QJsonArray connections = in["connections"].toArray();
-    for (int index = 0; index < connections.size(); index++)
+    for (int times = 0; times < 2; times ++)
     {
-      QJsonArray connection = connections[index].toArray();
-      const int targetIndex = connection[0].toInt();
-      const int sourceIndex = connection[1].toInt();
-      const int sourcePort = connection[2].toInt();
+      for (int index = 0; index < connections.size(); index++)
+      {
+        QJsonArray connection = connections[index].toArray();
+        const int targetIndex = connection[0].toInt();
+        const int sourceIndex = connection[1].toInt();
+        const int sourcePort = connection[2].toInt();
 
-      steps[targetIndex]->getFileObjectConsumer()
-        ->connectTo(steps[sourceIndex]->getFileObjectProvider()->provides()[sourcePort]);
+        steps[targetIndex]->getFileObjectConsumer()
+          ->connectTo(steps[sourceIndex]->getFileObjectProvider()->provides()[sourcePort]);
+      }
     }
   }
 
