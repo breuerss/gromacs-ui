@@ -65,7 +65,7 @@ void Connector::redraw(const QPointF& endingPointOverride)
   auto buffer = QPointF(60, 0);
   if (diff.x() < 0)
   {
-    buffer = QPointF(std::max<double>(60, std::abs(diff.x())), std::abs(diff.y()) / 4);
+    buffer = QPointF(std::max<double>(60, std::abs(diff.x())), diff.y() / 4);
   }
   painterPath.cubicTo(startingPoint, startingPoint + buffer, midPoint);
   painterPath.cubicTo(midPoint, endingPoint - buffer, endingPoint);
