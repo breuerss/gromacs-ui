@@ -56,7 +56,7 @@
    </widget>
    <widget class="QMenu" name="menuSimulation">
     <property name="title">
-     <string>Simulation Pipeline</string>
+     <string>Pipeline</string>
     </property>
     <addaction name="actionRunSimulation"/>
     <addaction name="separator"/>
