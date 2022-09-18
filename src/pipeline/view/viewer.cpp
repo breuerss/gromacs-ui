@@ -3,8 +3,8 @@
 #include "panel.h"
 #include "node.h"
 #include "actionbutton.h"
+#include "addmenu.h"
 #include "../../model/project.h"
-#include "src/pipeline/view/addmenu.h"
 #include <QWheelEvent>
 #include <QMargins>
 #include <QDebug>

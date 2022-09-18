@@ -323,7 +323,8 @@
   </action>
   <action name="actionOpenProject">
    <property name="icon">
-    <iconset theme="folder-open"/>
+    <iconset theme="folder-open">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open Project...</string>
