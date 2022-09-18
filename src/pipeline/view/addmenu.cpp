@@ -33,7 +33,6 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "D", Category::DataProvider },
     { "Pre", Category::PreProcess },
     { "S", Category::Simulation },
-    { "V", Category::Viewer },
     { "P", Category::PostProcess },
   };
 

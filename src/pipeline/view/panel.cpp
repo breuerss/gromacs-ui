@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <QDebug>
+#include <QMarginsF>
 
 namespace Pipeline { namespace View {
 
@@ -13,6 +14,7 @@ Panel::Panel(QObject* parent)
   : QGraphicsScene(parent)
 {
   setBackgroundBrush(QBrush(Colors::DarkGrey));
+  setSceneRect(itemsBoundingRect() + QMarginsF(1, 1, 1, 1) * 5000);
 }
 
 Panel::~Panel()
