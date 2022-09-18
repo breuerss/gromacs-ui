@@ -2,9 +2,11 @@
 #define PIPELINE_PORT_H
 
 #include "../../command/fileobject.h"
+#include "roundedrectitem.h"
 #include "porttooltip.h"
 #include <QGraphicsEllipseItem>
 #include <memory>
+#include <qpropertyanimation.h>
 
 namespace Pipeline { namespace View {
 
@@ -30,6 +32,10 @@ public:
   void setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes);
   const QList<Command::FileObject::Type>& getAcceptedFileTypes() const { return acceptedFileTypes; }
 
+  QSizeF getSize() const;
+  void setSize(const QSizeF& newSize);
+
+  Q_PROPERTY(QSizeF size READ getSize WRITE setSize NOTIFY sizeChanged);
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
@@ -47,6 +53,7 @@ signals:
     std::shared_ptr<Command::FileObject> oldFileObject
     );
   void clicked();
+  void sizeChanged();
 
 private:
   Type type;
@@ -57,6 +64,7 @@ private:
   QPointF startingPos;
   void setupTooltip();
   PortTooltip* tooltipBox;
+  QPropertyAnimation* increaseSize;
 };
 
 } }

@@ -12,6 +12,8 @@
 #include <QMimeData>
 #include <QWidget>
 #include <QObject>
+#include <qabstractanimation.h>
+#include <qpropertyanimation.h>
 
 namespace Pipeline { namespace View {
 
@@ -26,6 +28,12 @@ Port::Port(
   setAcceptHoverEvents(true);
 
   setupTooltip();
+
+  increaseSize = new QPropertyAnimation(this, "size");
+  increaseSize->setStartValue(QSize(2 * RADIUS, 2 * RADIUS));
+  increaseSize->setEndValue(QSize(2.4 * RADIUS, 2.4 * RADIUS));
+  increaseSize->setDuration(200);
+  increaseSize->setEasingCurve(QEasingCurve::OutQuad);
 }
 
 Port::~Port()
@@ -36,6 +44,27 @@ Port::~Port()
 void Port::setupTooltip()
 {
   tooltipBox = new PortTooltip();
+}
+
+void Port::setSize(const QSizeF& newSize)
+{
+  auto currentDim = rect();
+  auto oldWidth = currentDim.width();
+  auto oldHeight = currentDim.height();
+  currentDim.setWidth(newSize.width());
+  currentDim.setHeight(newSize.height());
+
+  double newX = currentDim.x() + ((oldWidth - currentDim.width()) / 2);
+  currentDim.setX(newX);
+  double newY = currentDim.y() + ((oldHeight - currentDim.height()) / 2);
+  currentDim.setY(newY);
+
+  setRect(currentDim);
+}
+
+QSizeF Port::getSize() const
+{
+  return rect().size();
 }
 
 void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
@@ -92,7 +121,7 @@ QPointF Port::getCenterInScene() const
   return mapToScene(rect().center());
 }
 
-void Port::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
+void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
   if (fileObject)
   {
@@ -101,17 +130,24 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 
   scene()->addItem(tooltipBox);
   tooltipBox->show();
-  tooltipBox->setPos(mapToScene(event->pos()));
+  tooltipBox->setPos(mapToScene(rect().bottomRight()));
 
   auto viewer = scene()->views()[0];
   QRectF viewport = viewer->viewport()->rect();
   auto tooFarRight = viewer->mapToScene(viewport.toRect().bottomRight()) -
-    mapToScene(tooltipBox->boundingRect().bottomRight());
+    tooltipBox->mapToScene(tooltipBox->rect().bottomRight());
   if (tooFarRight.x() < 0)
   {
     auto tooltipPos = tooltipBox->pos();
-    tooltipPos.rx() += tooFarRight.x() - 10;
+    qDebug() << tooltipPos;
+    tooltipPos.rx() += tooFarRight.x() - 20;
     tooltipBox->setPos(tooltipPos);
+  }
+
+  if (fileObject && !fileObject->getFileName().isEmpty())
+  {
+    increaseSize->setDirection(QAbstractAnimation::Forward);
+    increaseSize->start();
   }
 }
 
@@ -119,6 +155,11 @@ void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
   tooltipBox->hide();
+  if (fileObject && !fileObject->getFileName().isEmpty())
+  {
+    increaseSize->setDirection(QAbstractAnimation::Backward);
+    increaseSize->start();
+  }
 }
 
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)

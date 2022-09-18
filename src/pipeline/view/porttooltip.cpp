@@ -31,6 +31,16 @@ PortTooltip::PortTooltip(QGraphicsItem* parent)
   fileNameText->setPos(
     categoryAndTypeText->mapToParent(categoryAndTypeText->boundingRect().bottomLeft())
     );
+
+  fileNameLegend = new QGraphicsTextItem(tr("(Click to open)"), this);
+  fileNameLegend->setDefaultTextColor(Colors::White);
+  font = fileNameLegend->font();
+  font.setPixelSize(11);
+  font.setWeight(QFont::Medium);
+  fileNameLegend->setFont(font);
+  fileNameLegend->setPos(
+    fileNameText->mapToParent(fileNameText->boundingRect().bottomLeft())
+    );
   update();
 }
 
@@ -82,11 +92,9 @@ void PortTooltip::update()
   if (fileName.isEmpty())
   {
     parent = nullptr;
-    qDebug() << "no filename unset parent";
-    qDebug() << childrenBoundingRect().size();
   }
   fileNameText->setParentItem(parent);
-    qDebug() << childrenBoundingRect().size() << childItems().size();
+  fileNameLegend->setParentItem(parent);
 
   setSize(childrenBoundingRect().size() + QSize(2 * indent, 2 * indent));
 }

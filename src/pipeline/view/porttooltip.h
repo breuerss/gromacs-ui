@@ -27,6 +27,7 @@ private:
   const int indent = 5;
   QGraphicsTextItem* categoryAndTypeText;
   QGraphicsTextItem* fileNameText;
+  QGraphicsTextItem* fileNameLegend;
 };
 } }
 
