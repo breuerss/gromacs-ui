@@ -1,6 +1,7 @@
 #include "node.h"
 #include "panel.h"
 #include "port.h"
+#include "colors.h"
 #include "styling.h"
 #include "../step.h"
 #include "../../uiupdater.h"
@@ -70,10 +71,10 @@ void Node::setupBackground()
 void Node::setupText()
 {
   text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
-  text->setDefaultTextColor("white");
+  text->setDefaultTextColor(Colors::White);
   auto font = text->font();
   font.setPixelSize(16);
-  font.setWeight(700);
+  font.setWeight(QFont::Bold);
   text->setFont(font);
   text->setZValue(1);
 }
@@ -153,6 +154,7 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   const auto& acceptedFileTypes = step->getFileObjectConsumer()->requires()[category];
   auto inputPort = createPort(color, Port::Type::Input);
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
+  inputPort->setCategory(category);
   inputPorts << QPair<Command::FileObject::Category, Port*>(category, inputPort);
   QObject::connect(
     inputPort, &Port::connectedToChanged, 

@@ -47,6 +47,40 @@ FileObject::Category FileObject::getCategoryFor(FileObject::Type type)
   return categoryMap[type];
 }
 
+QString FileObject::toString(Type type)
+{
+  const static QMap<Type, QString> map = {
+    { Type::Unknown, "" },
+    { Type::GRO, "gro" },
+    { Type::PDB, "pdb" },
+    { Type::XTC, "xtc" },
+    { Type::TRR, "trr" },
+    { Type::EDR, "edr" },
+    { Type::LOG, "log" },
+    { Type::TPR, "tpr" },
+    { Type::MDP, "mdp" },
+    { Type::TOP, "top" },
+  };
+
+  return map[type];
+}
+
+QString FileObject::toString(Category category)
+{
+  const static QMap<Category, QString> map = {
+    { Category::Unknown, "Unknown" },
+    { Category::Coordinates, "Coordinates" },
+    { Category::Trajectory, "Trajectory" },
+    { Category::Energy, "Energy" },
+    { Category::Velocities, "Velocities" },
+    { Category::Forces, "Forces" },
+    { Category::Topology, "Topology" },
+    { Category::Text, "Text" },
+  };
+
+  return map[category];
+}
+
 QJsonObject &operator<<(QJsonObject &out, const FileObject::Pointer obj)
 {
   out["fileName"] = obj->getFileName();

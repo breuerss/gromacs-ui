@@ -1,7 +1,9 @@
 #include "port.h"
 #include "connector.h"
-#include "qgraphicsitem.h"
+#include "colors.h"
+#include "porttooltip.h"
 #include "panel.h"
+#include <QGraphicsView>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QCursor>
@@ -22,11 +24,18 @@ Port::Port(
   setAcceptedMouseButtons(Qt::LeftButton);
   setAcceptDrops(type == Type::Input);
   setAcceptHoverEvents(true);
+
+  setupTooltip();
 }
 
 Port::~Port()
 {
   deleted(this);
+}
+
+void Port::setupTooltip()
+{
+  tooltipBox = new PortTooltip();
 }
 
 void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
@@ -35,9 +44,11 @@ void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObj
 
   QObject::disconnect(conn);
 
+  setCategory(Command::FileObject::getCategoryFor(fileObject->type));
+  tooltipBox->setFileTypes({ fileObject->type });
   auto setTooltipCallback = [this] (const QString& tooltip)
   {
-    setToolTip(tooltip);
+    tooltipBox->setFileName(tooltip);
   };
 
   setTooltipCallback("");
@@ -54,6 +65,12 @@ void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObj
 void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)
 {
   acceptedFileTypes = newAcceptedFileTypes;
+  tooltipBox->setFileTypes(acceptedFileTypes);
+}
+
+void Port::setCategory(Command::FileObject::Category category)
+{
+  tooltipBox->setCategory(category);
 }
 
 QVariant Port::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value)
@@ -75,17 +92,33 @@ QPointF Port::getCenterInScene() const
   return mapToScene(rect().center());
 }
 
-void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
+void Port::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
 {
   if (fileObject)
   {
     setCursor(Qt::PointingHandCursor);
+  }
+
+  scene()->addItem(tooltipBox);
+  tooltipBox->show();
+  tooltipBox->setPos(mapToScene(event->pos()));
+
+  auto viewer = scene()->views()[0];
+  QRectF viewport = viewer->viewport()->rect();
+  auto tooFarRight = viewer->mapToScene(viewport.toRect().bottomRight()) -
+    mapToScene(tooltipBox->boundingRect().bottomRight());
+  if (tooFarRight.x() < 0)
+  {
+    auto tooltipPos = tooltipBox->pos();
+    tooltipPos.rx() += tooFarRight.x() - 10;
+    tooltipBox->setPos(tooltipPos);
   }
 }
 
 void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
+  tooltipBox->hide();
 }
 
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)

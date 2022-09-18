@@ -17,6 +17,12 @@ void RoundedRectItem::paint(QPainter* painter, const QStyleOptionGraphicsItem*, 
   painter->drawRoundedRect(rect(), xRadius, yRadius);
 }
 
+void RoundedRectItem::setRadius(const double radius)
+{
+  setRadiusX(radius);
+  setRadiusY(radius);
+}
+
 void RoundedRectItem::setRoundedRect(const QRectF rect, const double radius_x, const double radius_y)
 {
   setRect(rect);

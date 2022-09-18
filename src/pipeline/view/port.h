@@ -2,6 +2,7 @@
 #define PIPELINE_PORT_H
 
 #include "../../command/fileobject.h"
+#include "porttooltip.h"
 #include <QGraphicsEllipseItem>
 #include <memory>
 
@@ -25,6 +26,7 @@ public:
 
   std::shared_ptr<Command::FileObject> getFileObject() const { return fileObject; }
   void setProvidedFileObject(std::shared_ptr<Command::FileObject> fileObject);
+  void setCategory(Command::FileObject::Category category);
   void setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes);
   const QList<Command::FileObject::Type>& getAcceptedFileTypes() const { return acceptedFileTypes; }
 
@@ -53,6 +55,8 @@ private:
   QMetaObject::Connection conn;
   QList<Command::FileObject::Type> acceptedFileTypes;
   QPointF startingPos;
+  void setupTooltip();
+  PortTooltip* tooltipBox;
 };
 
 } }

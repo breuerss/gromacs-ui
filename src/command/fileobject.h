@@ -44,6 +44,8 @@ public:
 
   const Type type;
   static Category getCategoryFor(Type);
+  static QString toString(Type);
+  static QString toString(Category);
 
 signals:
   void fileNameChanged(const QString& newFileName);

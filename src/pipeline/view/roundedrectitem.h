@@ -29,6 +29,7 @@ public:
 
   ///Set the rounded rect
   void setRoundedRect(const QRectF rect, const double radius_x, const double radius_y);
+  void setRadius(const double radius);
   void setSize(const QSizeF& size);
   QSizeF getSize() const;
   
