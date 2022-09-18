@@ -148,11 +148,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->actionCreateDefaultSimulationSetup,
     &QAction::triggered,
     [] () {
-
-      using Config::Simulation;
       auto manager = ProjectManager::getInstance();
       auto project = manager->getCurrentProject();
-      project->clearSteps();
+      project->createDefaultSimulationSetup();
 
       manager->currentProjectChanged(project);
     });

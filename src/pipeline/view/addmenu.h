@@ -50,15 +50,8 @@ private:
     return ProjectManager::getInstance()->getCurrentProject()->addStep<T>();
   }
 
-  static std::shared_ptr<Pipeline::Simulation::Step>
-  addSimulationToProject(Pipeline::Simulation::Configuration::Type type)
-  {
-    auto step = addStepToProject<Pipeline::Simulation::Step>();
-    step->getConfiguration()
-      ->setProperty("simulationType", QVariant::fromValue(type));
-    return step;
-  }
-
+  std::shared_ptr<Pipeline::Simulation::Step>
+  addSimulationToProject(Pipeline::Simulation::Configuration::Type type);
 };
 
 } }

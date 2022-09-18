@@ -10,16 +10,7 @@
 #include "../../command/fileobjectconsumer.h"
 #include "../../projectmanager.h"
 #include "../../model/project.h"
-#include "../pdbdownload/step.h"
-#include "../pdbfixer/step.h"
-#include "../creategromacsmodel/step.h"
-#include "../createbox/step.h"
-#include "../solvate/step.h"
-#include "../neutralise/step.h"
-#include "../simulation/step.h"
-#include "../smoothtrajectory/step.h"
-#include "../centerprotein/step.h"
-#include "../simulation/configuration.h"
+#include "../steps.h"
 
 namespace Pipeline { namespace View {
 
@@ -42,30 +33,12 @@ AddMenu::AddMenu(ActionButton* trigger)
     //{ "Load From File", []() {} },
   };
   nodeMenuDefinitions[Category::PreProcess] = {
-    { "Preparation Pipeline", [] () {
-      auto step1 = addStepToProject<Pipeline::PdbFixer::Step>();
-      auto step2 = addStepToProject<Pipeline::CreateGromacsModel::Step>();
-      step2->getFileObjectConsumer()->connectTo(
-        step1->getFileObjectProvider()->provides()[0]
-        );
-      auto step3 = addStepToProject<Pipeline::CreateBox::Step>();
-      step3->getFileObjectConsumer()->connectTo(
-        step2->getFileObjectProvider()->provides()[0]
-        );
-
-      auto step4 = addStepToProject<Pipeline::Solvate::Step>();
-      step4->getFileObjectConsumer()->connectTo(
-        step3->getFileObjectProvider()->provides()[0]
-        );
-
-      auto step5 = addStepToProject<Pipeline::Neutralise::Step>();
-      step5->getFileObjectConsumer()->connectTo(
-        step4->getFileObjectProvider()->provides()[0]
-        );
+    { "Preparation Pipeline",
+      [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addPreparationPipeline();
 
       // TODO
       // Filter
-      // Solvate
     }},
     { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
     { "Create GROMACS Model", addStepToProject<Pipeline::CreateGromacsModel::Step> },
@@ -80,16 +53,20 @@ AddMenu::AddMenu(ActionButton* trigger)
 
   using SimulationType = Pipeline::Simulation::Configuration::Type;
   nodeMenuDefinitions[Category::Simulation] = {
-    { "Minimisation",
+    { "Simulation Pipeline",
       [] () {
+        ProjectManager::getInstance()->getCurrentProject()->addSimulationPipeline();
+      } },
+    { "Minimisation",
+      [this] () {
         addSimulationToProject(SimulationType::Minimisation);
       } },
     { "NVT Simulation",
-      [] () {
+      [this] () {
         addSimulationToProject(SimulationType::NVT);
       } },
     { "NPT Simulation",
-      [] () {
+      [this] () {
         addSimulationToProject(SimulationType::NPT);
       } },
   };
@@ -133,6 +110,12 @@ AddMenu::AddMenu(ActionButton* trigger)
   setStyleSheet("background-color: red");
   stackUnder(trigger);
   QWidget::hide();
+}
+
+std::shared_ptr<Pipeline::Simulation::Step>
+AddMenu::addSimulationToProject(Pipeline::Simulation::Configuration::Type type)
+{
+  return ProjectManager::getInstance()->getCurrentProject()->addSimulation(type);
 }
 
 QSize AddMenu::sizeHint() const

@@ -8,6 +8,8 @@
 #include <vector>
 #include <memory>
 #include "../pipeline/step.h"
+#include "../pipeline/simulation/step.h"
+#include "../pipeline/simulation/configuration.h"
 
 namespace Config {
 class Simulation;
@@ -45,6 +47,13 @@ public:
 
   QString getProjectPath();
   bool initProjectDir(const QString& subDir = "");
+
+  void createDefaultSimulationSetup();
+  QList<std::shared_ptr<Pipeline::Step>> addPreparationPipeline();
+  QList<std::shared_ptr<Pipeline::Step>> addSimulationPipeline();
+
+  std::shared_ptr<Pipeline::Simulation::Step>
+  addSimulation(Pipeline::Simulation::Configuration::Type type);
 
   Q_PROPERTY(QString name MEMBER name NOTIFY nameChanged);
 
