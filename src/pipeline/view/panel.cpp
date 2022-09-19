@@ -7,6 +7,7 @@
 #include <memory>
 #include <QDebug>
 #include <QMarginsF>
+#include <numeric>
 
 namespace Pipeline { namespace View {
 
@@ -189,51 +190,59 @@ void Panel::moveSelectedNodesHorizontal(int x)
   }
 }
 
-void Panel::distributeSelectedNodes(Distribution alignment)
-{
-  execOnSelectedNodesGroup([alignment] (auto node, auto group, int index, auto selectedNodes) {
-    QRectF box = group->boundingRect();
-    if (alignment == Distribution::Horizontal)
-    {
-      const auto stepSize = (box.width() -
-                             selectedNodes[selectedNodes.size() - 1]->boundingRect().width()) /
-        (selectedNodes.size() - 1);
-      node->setX(box.x() + stepSize * index);
-    }
-    else
-    {
-      const auto stepSize = (box.height() -
-                             selectedNodes[selectedNodes.size() - 1]->boundingRect().height()) /
-        (selectedNodes.size() - 1);
-      node->setY(box.y() + stepSize * index);
-    }
-  });
-}
-
 void Panel::execOnSelectedNodesGroup(
-  std::function<void(Node*, QGraphicsItemGroup* group, int, const QList<Node*>&)> callback)
+  std::function<void(Node*, int, const QList<Node*>&)> callback)
 {
-  auto group = new QGraphicsItemGroup();
-  for (auto node: nodeSelection)
-  {
-    group->addToGroup(node);
-  }
-
   auto sortedNodes = getSortedSelectedNodes();
   for (int index = 0; index < sortedNodes.size(); index++)
   {
-    callback(sortedNodes[index], group, index, sortedNodes);
+    callback(sortedNodes[index], index, sortedNodes);
   }
+}
 
-  for (auto node: nodeSelection)
-  {
-    addItem(node);
-  }
+void Panel::distributeSelectedNodes(Distribution alignment)
+{
+  execOnSelectedNodesGroup(
+    [this, alignment] (Node* node, int index, const QList<Node*>& sortedNodes) {
+      auto firstNode = sortedNodes.first();
+      if (node == firstNode)
+      {
+        return;
+      }
+
+      auto firstNodeInScene = firstNode->mapRectToScene(firstNode->rect());
+      auto lastNode = sortedNodes.last();
+      auto lastNodeInScene = lastNode->mapRectToScene(lastNode->rect());
+      auto prevNode = sortedNodes[index - 1];
+      auto prevNodeInScene = prevNode->mapRectToScene(prevNode->rect());
+      if (alignment == Distribution::Horizontal)
+      {
+        auto firstNodeLeft = firstNodeInScene.left();
+        auto lastNodeRight = lastNodeInScene.right();
+        double sumWidth = 0;
+        for (auto sortedNode : sortedNodes)
+        {
+          sumWidth += sortedNode->rect().width();
+        }
+        const auto stepSize = (lastNodeRight - firstNodeLeft - sumWidth) /
+          (nodeSelection.size() - 1);
+        node->setX(prevNodeInScene.right() + stepSize);
+      }
+      else
+      {
+        auto firstNodeTop = firstNodeInScene.top();
+        auto lastNodeBottom = lastNodeInScene.bottom();
+        auto nodeHeight = firstNode->rect().height();
+        const double stepSize = (lastNodeBottom - firstNodeTop - nodeSelection.size() * nodeHeight) /
+          (nodeSelection.size() - 1);
+        node->setY(prevNodeInScene.bottom() + stepSize);
+      }
+    });
 }
 
 void Panel::alignSelectedNodes(Panel::Alignment alignment)
 {
-  execOnSelectedNodesGroup([this, alignment] (Node* node, QGraphicsItemGroup*, int, QList<Node*>) {
+  execOnSelectedNodesGroup([this, alignment] (Node* node, int, QList<Node*>) {
     auto firstNode = nodeSelection[0];
     if (node == firstNode)
     {
@@ -241,7 +250,7 @@ void Panel::alignSelectedNodes(Panel::Alignment alignment)
     }
 
     auto firstNodeInScene = firstNode->mapRectToScene(firstNode->rect()).toRect();
-    auto nodeRect = node->boundingRect().toRect();
+    auto nodeRect = node->rect().toRect();
     switch(alignment)
     {
       case Alignment::Left:

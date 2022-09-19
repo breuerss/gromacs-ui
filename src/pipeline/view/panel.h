@@ -67,7 +67,7 @@ public:
   void setAllNodesSelected(bool selected);
 
   void execOnSelectedNodesGroup(
-    std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>&)> callback);
+    std::function<void(Node*, int, const QList<Node*>&)> callback);
 
 signals:
   void selectedNodesChanged(QList<Node*>);
