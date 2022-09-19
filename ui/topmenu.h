@@ -2,6 +2,7 @@
 #define TOPMENU_H
 
 #include <QWidget>
+#include <QMetaObject>
 
 namespace Ui {
 class TopMenu;
@@ -30,6 +31,7 @@ signals:
 
 private:
   Ui::TopMenu *ui;
+  QMetaObject::Connection projectConn;
 };
 
 #endif // TOPMENU_H

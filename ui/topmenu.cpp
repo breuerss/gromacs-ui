@@ -1,5 +1,8 @@
 #include "topmenu.h"
 #include "ui_topmenu.h"
+#include "connectionhelper.h"
+#include "../src/projectmanager.h"
+#include "../src/model/project.h"
 #include <QPushButton>
 
 TopMenu::TopMenu(QWidget *parent) :
@@ -46,6 +49,15 @@ TopMenu::TopMenu(QWidget *parent) :
     "}"
     );
   ui->projectName->setContextMenuPolicy(Qt::PreventContextMenu);
+
+
+  auto connectProjectName = [this] (auto newProject) {
+    disconnect(projectConn);
+    projectConn = connectToLineEdit(ui->projectName, newProject, "name");
+  };
+  connectProjectName(ProjectManager::getInstance()->getCurrentProject());
+  connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
+          connectProjectName);
 
   connect(ui->alignBottom, &QPushButton::clicked, this, &TopMenu::alignBottomClicked);
   connect(ui->alignTop, &QPushButton::clicked, this, &TopMenu::alignTopClicked);
