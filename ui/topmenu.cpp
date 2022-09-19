@@ -3,6 +3,7 @@
 #include "connectionhelper.h"
 #include "../src/projectmanager.h"
 #include "../src/model/project.h"
+#include "../src/undostack.h"
 #include <QPushButton>
 
 TopMenu::TopMenu(QWidget *parent) :
@@ -71,6 +72,11 @@ TopMenu::TopMenu(QWidget *parent) :
 
   setAlignmentButtonsEnabled(false);
   setDistributionButtonsEnabled(false);
+
+  connect(UndoStack::getInstance(), &QUndoStack::canUndoChanged, ui->undoButton, &QPushButton::setEnabled);
+  connect(UndoStack::getInstance(), &QUndoStack::canRedoChanged, ui->redoButton, &QPushButton::setEnabled);
+  ui->redoButton->setEnabled(UndoStack::getInstance()->canRedo());
+  ui->undoButton->setEnabled(UndoStack::getInstance()->canUndo());
 }
 
 void TopMenu::setAlignmentButtonsEnabled(bool enabled)

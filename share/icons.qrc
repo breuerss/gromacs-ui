@@ -8,5 +8,7 @@
         <file>icons/align-top-light.svg</file>
         <file>icons/dots-three-outline-light.svg</file>
         <file>icons/dots-three-outline-vertical-light.svg</file>
+        <file>icons/arrow-arc-left-light.svg</file>
+        <file>icons/arrow-arc-right-light.svg</file>
     </qresource>
 </RCC>
