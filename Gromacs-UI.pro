@@ -56,3 +56,6 @@ molviewer.files += molstar/build/viewer/molstar.js
 molviewer.files += molstar/build/viewer/molstar.css
 DEFINES += MOLVIEWER=\\\"$${molviewer.path}/$${molviewerhtml}\\\"
 INSTALLS += molviewer
+
+RESOURCES += \
+    share/icons.qrc

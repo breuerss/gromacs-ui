@@ -2,6 +2,9 @@
 #define PIPELINE_VIEW_H
 
 #include <QGraphicsView>
+#include "panel.h"
+
+class TopMenu;
 
 namespace Pipeline { namespace View {
 
@@ -14,6 +17,8 @@ public:
   Viewer(QWidget* parent = nullptr);
   void center();
 
+  void setScene(View::Panel* scene);
+
 protected slots:
   void wheelEvent(QWheelEvent *event);
   void keyPressEvent(QKeyEvent *event);
@@ -21,8 +26,10 @@ protected slots:
 
 private:
   void createAddButton();
+  void createTopMenu();
   ActionButton* addButton;
   AddMenu* addMenu;
+  TopMenu* topMenu;
 };
 
 } }

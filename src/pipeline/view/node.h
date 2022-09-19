@@ -19,8 +19,9 @@ class Step;
 
 namespace View {
 
-class Node : public QGraphicsRectItem
+class Node : public QObject, public QGraphicsRectItem
 {
+  Q_OBJECT
 public:
   typedef QList<QPair<std::shared_ptr<Command::FileObject>, Port*>> OutputPorts;
 
@@ -36,6 +37,9 @@ public:
   void setSelected(bool newSelected);
   std::shared_ptr<Pipeline::Step> getStep() const;
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
+
+signals:
+  void selectedChanged();
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

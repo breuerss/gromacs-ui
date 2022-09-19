@@ -454,6 +454,8 @@ void Node::setSelected(bool newSelected)
       newColor = currentColor.darker(factor);
     }
     nodeBackground->setBrush(newColor);
+
+    selectedChanged();
   }
 }
 

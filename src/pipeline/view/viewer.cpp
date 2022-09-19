@@ -4,6 +4,7 @@
 #include "node.h"
 #include "actionbutton.h"
 #include "addmenu.h"
+#include "../../../ui/topmenu.h"
 #include "../../model/project.h"
 #include <QWheelEvent>
 #include <QMargins>
@@ -22,19 +23,69 @@ Viewer::Viewer(QWidget* parent)
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+  auto layout = new QGridLayout(this);
+  layout->setRowStretch(0, 1);
+  layout->setRowStretch(1, 1);
+  layout->setColumnStretch(0, 1);
+  layout->setContentsMargins(QMargins());
+
+  createTopMenu();
   createAddButton();
+}
+
+void Viewer::createTopMenu()
+{
+  auto gridLayout = dynamic_cast<QGridLayout*>(layout());
+  topMenu = new TopMenu(this);
+  gridLayout->addWidget(topMenu, 0, 0);
+  gridLayout->setAlignment(topMenu, Qt::AlignTop);
+
+  auto setAlignment = [this] (Panel::Alignment alignment) {
+    auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
+    panel->alignSelectedNodes(alignment);
+  };
+  connect(topMenu, &TopMenu::alignBottomClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Bottom);
+  });
+  connect(topMenu, &TopMenu::alignTopClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Top);
+  });
+  connect(topMenu, &TopMenu::alignHCenterClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Center);
+  });
+  connect(topMenu, &TopMenu::alignLeftClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Left);
+  });
+  connect(topMenu, &TopMenu::alignRightClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Right);
+  });
+  connect(topMenu, &TopMenu::alignVCenterClicked, [setAlignment] () {
+    setAlignment(Panel::Alignment::Middle);
+  });
+
+  auto distribute = [this] (Panel::Distribution direction) {
+    auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
+    panel->distributeSelectedNodes(direction);
+  };
+  connect(topMenu, &TopMenu::distributeHorizontallyClicked, [distribute] () {
+    distribute(Panel::Distribution::Horizontal);
+  });
+  connect(topMenu, &TopMenu::distributeVerticallyClicked, [distribute] () {
+    distribute(Panel::Distribution::Vertical);
+  });
 }
 
 void Viewer::createAddButton()
 {
-  auto layout = new QGridLayout(this);
-  layout->setContentsMargins(20, 20, 20, 20);
-  layout->setRowStretch(0, 1);
-  layout->setColumnStretch(0, 1);
+  auto gridLayout = dynamic_cast<QGridLayout*>(layout());
+  auto containerLayout = new QHBoxLayout(this);
+  containerLayout->setContentsMargins(20, 20, 20, 20);
+  containerLayout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
+  gridLayout->addItem(containerLayout, 1, 0);
+  gridLayout->setAlignment(containerLayout, Qt::AlignBottom | Qt::AlignLeft);
   addButton = new ActionButton(this);
   addButton->setText("+");
-  layout->addWidget(addButton);
-  layout->setAlignment(addButton, Qt::AlignBottom | Qt::AlignLeft);
+  containerLayout->addWidget(addButton);
   addMenu = new AddMenu(addButton);
   connect(addButton, &QPushButton::clicked, addMenu, &AddMenu::toggle);
 }
@@ -134,6 +185,24 @@ void Viewer::keyPressEvent(QKeyEvent *event)
   }
 
   QGraphicsView::keyPressEvent(event);
+}
+
+void Viewer::setScene(View::Panel* newScene)
+{
+  auto oldPanel = dynamic_cast<View::Panel*>(scene());
+  if (oldPanel)
+  {
+    disconnect(oldPanel);
+  }
+
+  connect(
+    newScene, &View::Panel::selectedNodesChanged,
+    [this] (QList<Node*> selectedNodes) {
+      topMenu->setAlignmentButtonsEnabled(selectedNodes.size() > 1);
+      topMenu->setDistributionButtonsEnabled(selectedNodes.size() > 2);
+    });
+
+  QGraphicsView::setScene(newScene);
 }
 
 void Viewer::center()

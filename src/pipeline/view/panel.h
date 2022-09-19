@@ -24,7 +24,7 @@ class Port;
 
 class Panel : public QGraphicsScene
 {
-
+  Q_OBJECT
 public:
   enum class Alignment {
     Unknown = 0,
@@ -68,6 +68,9 @@ public:
   void execOnSelectedNodesGroup(
     std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>)> callback);
 
+signals:
+  void selectedNodesChanged(QList<Node*>);
+
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -78,6 +81,7 @@ private:
   std::shared_ptr<Model::Project> project;
   QList<QMetaObject::Connection> conns;
   void addNode(std::shared_ptr<Pipeline::Step> step);
+  void removeNode(std::shared_ptr<Pipeline::Step> step);
   void addPort(std::shared_ptr<Command::FileObject>, Port*);
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;

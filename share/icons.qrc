@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>icons/align-bottom-light.svg</file>
+        <file>icons/align-center-horizontal-light.svg</file>
+        <file>icons/align-center-vertical-light.svg</file>
+        <file>icons/align-left-light.svg</file>
+        <file>icons/align-right-light.svg</file>
+        <file>icons/align-top-light.svg</file>
+        <file>icons/dots-three-outline-light.svg</file>
+        <file>icons/dots-three-outline-vertical-light.svg</file>
+    </qresource>
+</RCC>

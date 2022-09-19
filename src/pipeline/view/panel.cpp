@@ -110,11 +110,7 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
   conns << connect(
     project.get(), &Model::Project::stepRemoved,
     [this] (const auto& step) {
-      auto node = nodeMap.take(step);
-      // delete node before removal to have access
-      // to scene() inside of destructor of port
-      delete node;
-      removeItem(node);
+      removeNode(step);
     });
 }
 
@@ -142,6 +138,8 @@ void Panel::deleteSelectedNodes()
       project->removeStep(node->getStep());
     }
   }
+
+  selectedNodesChanged(getSelectedNodes());
 }
 
 void Panel::setAllNodesSelected(bool selected)
@@ -269,10 +267,27 @@ void Panel::alignSelectedNodes(Panel::Alignment alignment)
 
 }
 
+void Panel::removeNode(std::shared_ptr<Pipeline::Step> step)
+{
+  auto node = nodeMap.take(step);
+
+  if (node)
+  {
+    // delete node before removal to have access
+    // to scene() inside of destructor of port
+    disconnect(node);
+    delete node;
+    removeItem(node);
+  }
+}
+
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);
   nodeMap[step] = node;
+  connect(node, &Node::selectedChanged, [this] () {
+    selectedNodesChanged(getSelectedNodes());
+  });
   addItem(node);
   for (const auto& pair : node->getOutputPorts())
   {
