@@ -1,9 +1,10 @@
 #ifndef PIPELINE_PANEL_H
 #define PIPELINE_PANEL_H
 
-#include "src/command/fileobject.h"
+#include "../../command/fileobject.h"
 #include <QGraphicsScene>
 #include <QMap>
+#include <QList>
 #include <QMetaObject>
 #include <QGraphicsSceneMouseEvent>
 #include <memory>
@@ -57,7 +58,7 @@ public:
   Port* getPort(std::shared_ptr<Command::FileObject>);
   void deleteConnectorFor(Port* port);
   Connector* getConnectorFor(Port* port);
-  QList<Node*> getSelectedNodes() const;
+  const QList<Node*>& getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
   void distributeSelectedNodes(Distribution alignment);
@@ -66,7 +67,7 @@ public:
   void setAllNodesSelected(bool selected);
 
   void execOnSelectedNodesGroup(
-    std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>)> callback);
+    std::function<void(Node*, QGraphicsItemGroup*, int, const QList<Node*>&)> callback);
 
 signals:
   void selectedNodesChanged(QList<Node*>);
@@ -83,10 +84,12 @@ private:
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void removeNode(std::shared_ptr<Pipeline::Step> step);
   void addPort(std::shared_ptr<Command::FileObject>, Port*);
+  QList<Node*> getSortedSelectedNodes() const;
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;
   QMap<QPair<Port*, Port*>, Connector*> connectorMap;
+  QList<Node*> nodeSelection;
   QPointF startingPos;
 };
 

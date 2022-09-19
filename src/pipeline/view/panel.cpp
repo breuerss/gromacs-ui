@@ -131,13 +131,11 @@ Port* Panel::getPort(std::shared_ptr<Command::FileObject> fileObject)
 
 void Panel::deleteSelectedNodes()
 {
-  for (auto node: nodeMap.values())
+  for (auto node: nodeSelection)
   {
-    if (node->isSelected())
-    {
-      project->removeStep(node->getStep());
-    }
+    project->removeStep(node->getStep());
   }
+  nodeSelection.clear();
 
   selectedNodesChanged(getSelectedNodes());
 }
@@ -150,16 +148,14 @@ void Panel::setAllNodesSelected(bool selected)
   }
 }
 
-QList<Node*> Panel::getSelectedNodes() const
+const QList<Node*>& Panel::getSelectedNodes() const
 {
-  QList<Node*> selectedNodes;
-  for (auto node: nodeMap.values())
-  {
-    if (node->isSelected())
-    {
-      selectedNodes << node;
-    }
-  }
+  return nodeSelection;
+}
+
+QList<Node*> Panel::getSortedSelectedNodes() const
+{
+  auto selectedNodes = getSelectedNodes();
 
   std::sort(
     selectedNodes.begin(), selectedNodes.end(),
@@ -215,22 +211,21 @@ void Panel::distributeSelectedNodes(Distribution alignment)
 }
 
 void Panel::execOnSelectedNodesGroup(
-  std::function<void(Node*, QGraphicsItemGroup* group, int, const QList<Node*>)> callback)
+  std::function<void(Node*, QGraphicsItemGroup* group, int, const QList<Node*>&)> callback)
 {
-  QList<Node*> selectedNodes = getSelectedNodes();
-
   auto group = new QGraphicsItemGroup();
-  for (auto node: selectedNodes)
+  for (auto node: nodeSelection)
   {
     group->addToGroup(node);
   }
 
-  for (int index = 0; index < selectedNodes.size(); index++)
+  auto sortedNodes = getSortedSelectedNodes();
+  for (int index = 0; index < sortedNodes.size(); index++)
   {
-    callback(selectedNodes[index], group, index, selectedNodes);
+    callback(sortedNodes[index], group, index, sortedNodes);
   }
 
-  for (auto node: selectedNodes)
+  for (auto node: nodeSelection)
   {
     addItem(node);
   }
@@ -238,28 +233,47 @@ void Panel::execOnSelectedNodesGroup(
 
 void Panel::alignSelectedNodes(Panel::Alignment alignment)
 {
-  execOnSelectedNodesGroup([alignment] (auto node, auto group, int, auto) {
-    QRectF box = group->boundingRect();
+  execOnSelectedNodesGroup([this, alignment] (Node* node, QGraphicsItemGroup*, int, QList<Node*>) {
+    auto firstNode = nodeSelection[0];
+    if (node == firstNode)
+    {
+      return;
+    }
+
+    auto firstNodeInScene = firstNode->mapRectToScene(firstNode->rect()).toRect();
+    auto nodeRect = node->boundingRect().toRect();
     switch(alignment)
     {
       case Alignment::Left:
-        node->setX(box.x());
+        node->setX(firstNode->x());
         break;
       case Alignment::Center:
-        node->setX(box.center().x() - node->boundingRect().width() / 2);
-        break;
+        {
+          auto center = firstNodeInScene.center();
+          node->setX(center.x() - std::floor(nodeRect.width() / 2.));
+          break;
+        }
       case Alignment::Right:
-        node->setX(box.x() + box.width() - node->boundingRect().width());
-        break;
+        {
+          auto right = firstNodeInScene.right();
+          node->setX(right - nodeRect.width());
+          break;
+        }
       case Alignment::Top:
-        node->setY(box.y());
+        node->setY(firstNodeInScene.top());
         break;
       case Alignment::Middle:
-        node->setY(box.center().y() - node->boundingRect().height() / 2);
-        break;
+        {
+          auto center = firstNodeInScene.center();
+          node->setY(center.y() - std::floor(nodeRect.height() / 2.));
+          break;
+        }
       case Alignment::Bottom:
-        node->setY(box.y() + box.height() - node->boundingRect().height());
-        break;
+        {
+          auto bottom = firstNodeInScene.bottom();
+          node->setY(bottom - nodeRect.height());
+          break;
+        }
       default:
         break;
     }
@@ -285,7 +299,15 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);
   nodeMap[step] = node;
-  connect(node, &Node::selectedChanged, [this] () {
+  connect(node, &Node::selectedChanged, [this, node] () {
+    if (node->isSelected())
+    {
+      nodeSelection << node;
+    }
+    else
+    {
+      nodeSelection.removeOne(node);
+    }
     selectedNodesChanged(getSelectedNodes());
   });
   addItem(node);
