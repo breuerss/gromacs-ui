@@ -404,12 +404,16 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
   setSelected(!selected);
 
-  if (!toggleSettings())
+  auto modifiers = event->modifiers();
+  if (!modifiers.testFlag(Qt::ControlModifier) && !modifiers.testFlag(Qt::ControlModifier))
   {
-    step->showUI(selected);
+    if (!toggleSettings())
+    {
+      step->showUI(selected);
+    }
+    step->showStatusUI(selected);
   }
 
-  step->showStatusUI(selected);
 }
 
 bool Node::toggleSettings()
