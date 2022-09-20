@@ -1,5 +1,6 @@
 #include "project.h"
 #include "../pipeline/simulation/configuration.h"
+#include "../undoredo/stack.h"
 #include "systemsetup.h"
 #include "../settings.h"
 #include <QDebug>
@@ -22,8 +23,10 @@ Project::Project()
 
 void Project::addStep(StepPointer&& step)
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Add Step");
   pipelineSteps.push_back(step);
   emit stepAdded(step, pipelineSteps.size() - 1);
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Project::removeStep(int at)

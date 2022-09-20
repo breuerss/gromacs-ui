@@ -3,6 +3,7 @@
 #include "connector.h"
 #include "node.h"
 #include "../../model/project.h"
+#include "../../undoredo/stack.h"
 
 #include <memory>
 #include <QDebug>
@@ -174,30 +175,43 @@ QList<Node*> Panel::getSortedSelectedNodes() const
 
 void Panel::moveSelectedNodesVertical(int y)
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Move vertically");
   QList<Node*> selectedNodes = getSelectedNodes();
   for (auto node: selectedNodes)
   {
+    auto oldPos = node->pos();
     node->setY(node->y() + y);
+    nodeMoved(node, oldPos);
   }
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Panel::moveSelectedNodesHorizontal(int x)
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Move horizontally");
   QList<Node*> selectedNodes = getSelectedNodes();
   for (auto node: selectedNodes)
   {
+    auto oldPos = node->pos();
     node->setX(node->x() + x);
+    nodeMoved(node, oldPos);
   }
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Panel::execOnSelectedNodesGroup(
   std::function<void(Node*, int, const QList<Node*>&)> callback)
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Align nodes");
   auto sortedNodes = getSortedSelectedNodes();
   for (int index = 0; index < sortedNodes.size(); index++)
   {
-    callback(sortedNodes[index], index, sortedNodes);
+    auto node = sortedNodes[index];
+    auto oldPos = node->pos();
+    callback(node, index, sortedNodes);
+    nodeMoved(node, oldPos);
   }
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Panel::distributeSelectedNodes(Distribution alignment)
@@ -215,6 +229,7 @@ void Panel::distributeSelectedNodes(Distribution alignment)
       auto lastNodeInScene = lastNode->mapRectToScene(lastNode->rect());
       auto prevNode = sortedNodes[index - 1];
       auto prevNodeInScene = prevNode->mapRectToScene(prevNode->rect());
+      auto newPos = node->pos();
       if (alignment == Distribution::Horizontal)
       {
         auto firstNodeLeft = firstNodeInScene.left();
@@ -226,7 +241,7 @@ void Panel::distributeSelectedNodes(Distribution alignment)
         }
         const auto stepSize = (lastNodeRight - firstNodeLeft - sumWidth) /
           (nodeSelection.size() - 1);
-        node->setX(prevNodeInScene.right() + stepSize);
+        newPos.setX(prevNodeInScene.right() + stepSize);
       }
       else
       {
@@ -235,8 +250,9 @@ void Panel::distributeSelectedNodes(Distribution alignment)
         auto nodeHeight = firstNode->rect().height();
         const double stepSize = (lastNodeBottom - firstNodeTop - nodeSelection.size() * nodeHeight) /
           (nodeSelection.size() - 1);
-        node->setY(prevNodeInScene.bottom() + stepSize);
+        newPos.setY(prevNodeInScene.bottom() + stepSize);
       }
+      node->setPos(newPos);
     });
 }
 
@@ -251,41 +267,44 @@ void Panel::alignSelectedNodes(Panel::Alignment alignment)
 
     auto firstNodeInScene = firstNode->mapRectToScene(firstNode->rect()).toRect();
     auto nodeRect = node->rect().toRect();
+    auto newPos = node->pos();
     switch(alignment)
     {
       case Alignment::Left:
-        node->setX(firstNode->x());
+        newPos.setX(firstNode->x());
         break;
       case Alignment::Center:
         {
           auto center = firstNodeInScene.center();
-          node->setX(center.x() - std::floor(nodeRect.width() / 2.));
+          newPos.setX(center.x() - std::floor(nodeRect.width() / 2.));
           break;
         }
       case Alignment::Right:
         {
           auto right = firstNodeInScene.right();
-          node->setX(right - nodeRect.width());
+          newPos.setX(right - nodeRect.width());
           break;
         }
       case Alignment::Top:
-        node->setY(firstNodeInScene.top());
+        newPos.setY(firstNodeInScene.top());
         break;
       case Alignment::Middle:
         {
           auto center = firstNodeInScene.center();
-          node->setY(center.y() - std::floor(nodeRect.height() / 2.));
+          newPos.setY(center.y() - std::floor(nodeRect.height() / 2.));
           break;
         }
       case Alignment::Bottom:
         {
           auto bottom = firstNodeInScene.bottom();
-          node->setY(bottom - nodeRect.height());
+          newPos.setY(bottom - nodeRect.height());
           break;
         }
       default:
         break;
     }
+
+    node->setPos(newPos);
   });
 
 }
@@ -361,7 +380,16 @@ void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 void Panel::mousePressEvent(QGraphicsSceneMouseEvent* event)
 {
   QGraphicsScene::mousePressEvent(event);
-  startingPos = event->screenPos();
+  startingPos = event->scenePos();
+
+  const QList<QGraphicsItem*> itemList = items(startingPos,
+                                               Qt::IntersectsItemShape,
+                                               Qt::AscendingOrder);
+  movingNode = dynamic_cast<Node*>(itemList.isEmpty() ? nullptr : itemList.first());
+  if (movingNode)
+  {
+    nodePos = movingNode->pos();
+  }
 }
 
 void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
@@ -369,11 +397,17 @@ void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
   if (
     !event->modifiers().testFlag(Qt::ShiftModifier) &&
     !event->modifiers().testFlag(Qt::ControlModifier) &&
-    startingPos == event->screenPos()
+    startingPos == event->scenePos()
     )
   {
     setAllNodesSelected(false);
   }
+
+  if (startingPos != event->scenePos())
+  {
+    nodeMoved(movingNode, nodePos);
+  }
+
   QGraphicsScene::mouseReleaseEvent(event);
 }
 

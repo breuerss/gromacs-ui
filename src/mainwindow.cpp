@@ -1,14 +1,18 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "ui/preferencesdialog.h"
 #include "projectmanager.h"
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 #include "uiupdater.h"
 #include "pipelinerunner.h"
-
+#include "undoredo/movecommand.h"
+#include "undoredo/stack.h"
+#include "ui/preferencesdialog.h"
 #include "model/systemsetup.h"
 #include "model/project.h"
+#include "pipeline/view/viewer.h"
+#include "pipeline/view/panel.h"
+#include "pipeline/simulation/step.h"
 
 #include <QDebug>
 #include <QWebEngineSettings>
@@ -19,11 +23,6 @@
 #include <memory>
 #include <QMenu>
 #include <QBoxLayout>
-#include "pipeline/view/viewer.h"
-#include "pipeline/view/panel.h"
-#include "pipeline/simulation/step.h"
-
-
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -54,6 +53,10 @@ MainWindow::MainWindow(QWidget *parent)
   auto panel = new Pipeline::View::Panel(this);
   view->setScene(panel);
   panel->setProject(ProjectManager::getInstance()->getCurrentProject());
+
+  connect(panel, &Pipeline::View::Panel::nodeMoved, [] (Pipeline::View::Node *node, const QPointF oldPosition) {
+    UndoRedo::Stack::getInstance()->push(new UndoRedo::MoveCommand(node, oldPosition));
+  });
 
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,

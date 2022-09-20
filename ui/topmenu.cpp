@@ -3,7 +3,7 @@
 #include "connectionhelper.h"
 #include "../src/projectmanager.h"
 #include "../src/model/project.h"
-#include "../src/undostack.h"
+#include "../src/undoredo/stack.h"
 #include <QPushButton>
 
 TopMenu::TopMenu(QWidget *parent) :
@@ -51,32 +51,33 @@ TopMenu::TopMenu(QWidget *parent) :
     );
   ui->projectName->setContextMenuPolicy(Qt::PreventContextMenu);
 
-
   auto connectProjectName = [this] (auto newProject) {
     disconnect(projectConn);
     projectConn = connectToLineEdit(ui->projectName, newProject, "name");
   };
   connectProjectName(ProjectManager::getInstance()->getCurrentProject());
-  connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
+  conns << connect(ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
           connectProjectName);
 
-  connect(ui->alignBottom, &QPushButton::clicked, this, &TopMenu::alignBottomClicked);
-  connect(ui->alignTop, &QPushButton::clicked, this, &TopMenu::alignTopClicked);
-  connect(ui->alignVCenter, &QPushButton::clicked, this, &TopMenu::alignVCenterClicked);
-  connect(ui->alignLeft, &QPushButton::clicked, this, &TopMenu::alignLeftClicked);
-  connect(ui->alignRight, &QPushButton::clicked, this, &TopMenu::alignRightClicked);
-  connect(ui->alignHCenter, &QPushButton::clicked, this, &TopMenu::alignHCenterClicked);
+  conns << connect(ui->alignBottom, &QPushButton::clicked, this, &TopMenu::alignBottomClicked);
+  conns << connect(ui->alignTop, &QPushButton::clicked, this, &TopMenu::alignTopClicked);
+  conns << connect(ui->alignVCenter, &QPushButton::clicked, this, &TopMenu::alignVCenterClicked);
+  conns << connect(ui->alignLeft, &QPushButton::clicked, this, &TopMenu::alignLeftClicked);
+  conns << connect(ui->alignRight, &QPushButton::clicked, this, &TopMenu::alignRightClicked);
+  conns << connect(ui->alignHCenter, &QPushButton::clicked, this, &TopMenu::alignHCenterClicked);
 
-  connect(ui->distributeHorizontally, &QPushButton::clicked, this, &TopMenu::distributeHorizontallyClicked);
-  connect(ui->distributeVertically, &QPushButton::clicked, this, &TopMenu::distributeVerticallyClicked);
+  conns << connect(ui->distributeHorizontally, &QPushButton::clicked, this, &TopMenu::distributeHorizontallyClicked);
+  conns << connect(ui->distributeVertically, &QPushButton::clicked, this, &TopMenu::distributeVerticallyClicked);
 
   setAlignmentButtonsEnabled(false);
   setDistributionButtonsEnabled(false);
 
-  connect(UndoStack::getInstance(), &QUndoStack::canUndoChanged, ui->undoButton, &QPushButton::setEnabled);
-  connect(UndoStack::getInstance(), &QUndoStack::canRedoChanged, ui->redoButton, &QPushButton::setEnabled);
-  ui->redoButton->setEnabled(UndoStack::getInstance()->canRedo());
-  ui->undoButton->setEnabled(UndoStack::getInstance()->canUndo());
+  conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::canUndoChanged, ui->undoButton, &QPushButton::setEnabled);
+  connect(UndoRedo::Stack::getInstance(), &QUndoStack::canRedoChanged, ui->redoButton, &QPushButton::setEnabled);
+  ui->redoButton->setEnabled(UndoRedo::Stack::getInstance()->canRedo());
+  ui->undoButton->setEnabled(UndoRedo::Stack::getInstance()->canUndo());
+  conns << connect(ui->undoButton, &QPushButton::clicked, UndoRedo::Stack::getInstance(), &QUndoStack::undo);
+  conns << connect(ui->redoButton, &QPushButton::clicked, UndoRedo::Stack::getInstance(), &QUndoStack::redo);
 }
 
 void TopMenu::setAlignmentButtonsEnabled(bool enabled)
@@ -97,5 +98,9 @@ void TopMenu::setDistributionButtonsEnabled(bool enabled)
 
 TopMenu::~TopMenu()
 {
+  for (auto conn : conns)
+  {
+    disconnect(conn);
+  }
   delete ui;
 }

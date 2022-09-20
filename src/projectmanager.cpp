@@ -1,5 +1,6 @@
 #include "projectmanager.h"
 #include "model/project.h"
+#include "src/undoredo/stack.h"
 
 #include <memory>
 #include <exception>
@@ -148,4 +149,6 @@ void ProjectManager::open(const QString& newFileName)
     currentProjectChanged(currentProject);
     fileName = fileNameToOpen;
   }
+
+  UndoRedo::Stack::getInstance()->clear();
 }

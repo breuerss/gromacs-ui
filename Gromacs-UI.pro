@@ -16,6 +16,7 @@ SOURCES += \
     $$files(src/*.cpp) \
     $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
+    $$files(src/undoredo/*.cpp) \
     $$files(src/config/*.cpp) \
     $$files(src/pipeline/*.cpp, true) \
     $$files(ui/*.cpp)
@@ -25,6 +26,7 @@ HEADERS += \
     src/misc/bimaphelper.h \
     $$files(src/model/*.h) \
     $$files(src/command/*.h) \
+    $$files(src/undoredo/*.h) \
     $$files(src/config/*.h) \
     $$files(src/pipeline/*.h, true) \
     $$files(ui/*.h)

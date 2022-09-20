@@ -6,6 +6,7 @@
 #include "addmenu.h"
 #include "../../../ui/topmenu.h"
 #include "../../model/project.h"
+#include "../../undoredo/stack.h"
 #include <QWheelEvent>
 #include <QMargins>
 #include <QDebug>
@@ -181,6 +182,22 @@ void Viewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Down:
       panel->moveSelectedNodesVertical(10 * scale);
       break;
+
+    case Qt::Key_Z:
+      {
+        auto modifiers = event->modifiers();
+        if (modifiers.testFlag(Qt::ControlModifier))
+        {
+          if (modifiers.testFlag(Qt::ShiftModifier))
+          {
+            UndoRedo::Stack::getInstance()->redo();
+          }
+          else
+          {
+            UndoRedo::Stack::getInstance()->undo();
+          }
+        }
+      }
 
   }
 

@@ -71,6 +71,7 @@ public:
 
 signals:
   void selectedNodesChanged(QList<Node*>);
+  void nodeMoved(Node* node, const QPointF oldPosition);
 
 protected:
   void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
@@ -91,6 +92,8 @@ private:
   QMap<QPair<Port*, Port*>, Connector*> connectorMap;
   QList<Node*> nodeSelection;
   QPointF startingPos;
+  Node* movingNode = nullptr;
+  QPointF nodePos;
 };
 
 } }

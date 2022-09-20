@@ -32,6 +32,7 @@ signals:
 private:
   Ui::TopMenu *ui;
   QMetaObject::Connection projectConn;
+  QList<QMetaObject::Connection> conns;
 };
 
 #endif // TOPMENU_H
