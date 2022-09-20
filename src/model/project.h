@@ -2,14 +2,16 @@
 #define PROJECT_H
 
 
+#include "stepvector.h"
+#include "../pipeline/step.h"
+#include "../pipeline/simulation/step.h"
+#include "../pipeline/simulation/configuration.h"
+
 #include <QString>
 #include <QDebug>
 #include <QObject>
 #include <vector>
 #include <memory>
-#include "../pipeline/step.h"
-#include "../pipeline/simulation/step.h"
-#include "../pipeline/simulation/configuration.h"
 
 namespace Config {
 class Simulation;
@@ -23,7 +25,7 @@ class Project : public QObject, public std::enable_shared_from_this<Project>
 {
   Q_OBJECT
   typedef std::shared_ptr<Pipeline::Step> StepPointer;
-  typedef std::vector<StepPointer> StepPointerVector;
+  typedef StepVector StepPointerVector;
 
 public:
   Project();
@@ -44,6 +46,7 @@ public:
   void removeStep(int index);
   void removeStep(std::shared_ptr<Pipeline::Step> step);
   const StepPointerVector& getSteps() const;
+  StepPointerVector& getSteps();
 
   QString getProjectPath();
   bool initProjectDir(const QString& subDir = "");

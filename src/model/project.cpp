@@ -1,6 +1,9 @@
 #include "project.h"
 #include "../pipeline/simulation/configuration.h"
 #include "../undoredo/stack.h"
+#include "../undoredo/addstepcommand.h"
+#include "../undoredo/removestepcommand.h"
+#include "src/model/stepvector.h"
 #include "systemsetup.h"
 #include "../settings.h"
 #include <QDebug>
@@ -19,40 +22,47 @@ namespace Model {
 Project::Project()
   : QObject(nullptr)
 {
+  connect(&pipelineSteps, &StepVector::stepAdded, this, &Project::stepAdded);
+  connect(&pipelineSteps, &StepVector::stepRemoved, this, &Project::stepRemoved);
 }
 
 void Project::addStep(StepPointer&& step)
 {
   UndoRedo::Stack::getInstance()->beginMacro("Add Step");
-  pipelineSteps.push_back(step);
-  emit stepAdded(step, pipelineSteps.size() - 1);
+  UndoRedo::Stack::getInstance()->push(new UndoRedo::AddStepCommand(std::move(step), this));
   UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Project::removeStep(int at)
 {
-  auto step = pipelineSteps[at];
-  pipelineSteps.erase(pipelineSteps.begin() + at);
-  emit stepRemoved(step, at);
+  UndoRedo::Stack::getInstance()->beginMacro("Remove Step");
+  auto step = pipelineSteps.takeAt(at);
+  UndoRedo::Stack::getInstance()->push(new UndoRedo::RemoveStepCommand(std::move(step), this));
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 void Project::removeStep(std::shared_ptr<Pipeline::Step> step)
 {
-  auto it = std::remove(pipelineSteps.begin(), pipelineSteps.end(), step);
-  int at = std::distance(pipelineSteps.begin(), it);
-  pipelineSteps.erase(it, pipelineSteps.end());
-  emit stepRemoved(step, at);
+  int at = pipelineSteps.indexOf(step);
+  removeStep(at);
 }
 
 void Project::clearSteps()
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Clear all steps");
   while (pipelineSteps.size())
   {
     removeStep(0);
   }
+  UndoRedo::Stack::getInstance()->endMacro();
 }
 
 const Project::StepPointerVector& Project::getSteps() const
+{
+  return pipelineSteps;
+}
+
+Project::StepPointerVector& Project::getSteps()
 {
   return pipelineSteps;
 }
@@ -168,7 +178,7 @@ QJsonObject &operator<<(QJsonObject& out, const std::shared_ptr<Project> project
   QJsonArray connections;
   QJsonArray stepsArray;
   const auto& steps = project->getSteps();
-  for (size_t stepIndex = 0; stepIndex < steps.size(); stepIndex++)
+  for (int stepIndex = 0; stepIndex < steps.size(); stepIndex++)
   {
     const auto& step = steps[stepIndex];
     QJsonObject stepObject;
@@ -177,14 +187,14 @@ QJsonObject &operator<<(QJsonObject& out, const std::shared_ptr<Project> project
 
     for (const auto& fileObject : step->getFileObjectConsumer()->getConnectedTo().values())
     {
-      for (size_t sourceNodeIndex = 0; sourceNodeIndex < steps.size(); sourceNodeIndex++)
+      for (int sourceNodeIndex = 0; sourceNodeIndex < steps.size(); sourceNodeIndex++)
       {
         const auto& sourceStep = steps[sourceNodeIndex];
         int found = sourceStep->getFileObjectProvider()->provides().indexOf(fileObject);
         if (found > -1)
         {
           auto triple = QJsonArray({
-            (int)stepIndex, (int)sourceNodeIndex, found
+            stepIndex, sourceNodeIndex, found
           });
           connections.append(triple);
           break;

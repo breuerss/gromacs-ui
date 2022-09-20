@@ -16,10 +16,8 @@ MoveCommand::MoveCommand(QGraphicsItem* newNode, const QPointF& newOldPos,
 
 void MoveCommand::undo()
 {
-  qDebug() << "undo" << oldPos << "currentPos" << node->pos();
   node->setPos(oldPos);
   node->scene()->update();
-  qDebug() << dynamic_cast<Node*>(node)->pos();
 }
 
 void MoveCommand::redo()
