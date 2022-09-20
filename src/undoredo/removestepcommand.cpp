@@ -1,8 +1,5 @@
 #include "removestepcommand.h"
 
-#include <QGraphicsScene>
-#include <QDebug>
-
 namespace UndoRedo {
 
 RemoveStepCommand::RemoveStepCommand(

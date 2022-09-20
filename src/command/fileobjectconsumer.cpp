@@ -1,5 +1,8 @@
 #include "fileobjectconsumer.h"
 #include "src/command/fileobject.h"
+#include "../undoredo/addconnectioncommand.h"
+#include "../undoredo/removeconnectioncommand.h"
+#include "../undoredo/stack.h"
 #include <memory>
 #include <QDebug>
 
@@ -22,24 +25,39 @@ bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
   return getCategoryFor(fileObject) != FileObject::Category::Unknown;
 }
 
-void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject)
+void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
 {
-  auto category = getCategoryFor(fileObject);
-  if (category != FileObject::Category::Unknown)
+  if (createUndoRedo)
   {
-    auto old = connectedTo[category];
-    connectedTo[category] = fileObject;
-    emit connectedToChanged(fileObject, category, old);
+    UndoRedo::Stack::getInstance()
+      ->push(new UndoRedo::AddConnectionCommand(fileObject, this));
+  }
+  else
+  {
+    auto category = getCategoryFor(fileObject);
+    if (category != FileObject::Category::Unknown)
+    {
+      auto old = connectedTo[category];
+      connectedTo[category] = fileObject;
+      emit connectedToChanged(fileObject, category, old);
+    }
   }
 }
 
-void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject)
+void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
 {
-  auto category = getCategoryFor(fileObject);
-  if (connectedTo[category] == fileObject)
+  if (createUndoRedo)
   {
-    connectedTo.remove(category);
-    emit connectedToChanged(nullptr, category, fileObject);
+    UndoRedo::Stack::getInstance()
+      ->push(new UndoRedo::RemoveConnectionCommand(fileObject, this));
+  }
+  else {
+    auto category = getCategoryFor(fileObject);
+    if (connectedTo[category] == fileObject)
+    {
+      connectedTo.remove(category);
+      emit connectedToChanged(nullptr, category, fileObject);
+    }
   }
 }
 

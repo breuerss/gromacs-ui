@@ -136,16 +136,21 @@ void Node::setupPorts()
     &Command::FileObjectConsumer::connectedToChanged,
     [this] (
       std::shared_ptr<Command::FileObject> fileObject,
-      Command::FileObject::Category category) {
+      Command::FileObject::Category category,
+      std::shared_ptr<Command::FileObject> oldFileObject
+      ) {
+      auto panel = dynamic_cast<Panel*>(scene());
       if (fileObject)
       {
-        auto panel = dynamic_cast<Panel*>(scene());
         auto startPort = panel->getPort(fileObject);
         auto endPort = getInputPort(category);
         panel->addConnector(startPort, endPort);
       }
-      // TODO get port for category
-      // get output port from connecting node
+      else
+      {
+        auto port = panel->getPort(oldFileObject);
+        panel->deleteConnectorFor(port);
+      }
     });
 }
 

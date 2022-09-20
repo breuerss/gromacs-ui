@@ -114,11 +114,14 @@ void Executor::setFileObjectConsumer(
         disconnect(fileObjectConnections[oldFileObject.get()]);
       }
 
-      fileObjectConnections[newFileObject.get()] = connect(
-        newFileObject.get(), &FileObject::fileNameChanged,
-        [this] () {
-          canExecuteChanged(canExecute());
-        });
+      if (newFileObject)
+      {
+        fileObjectConnections[newFileObject.get()] = connect(
+          newFileObject.get(), &FileObject::fileNameChanged,
+          [this] () {
+            canExecuteChanged(canExecute());
+          });
+      }
       canExecuteChanged(canExecute());
   });
 }
