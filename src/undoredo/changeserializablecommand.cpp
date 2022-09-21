@@ -19,13 +19,11 @@ ChangeSerializableCommand::ChangeSerializableCommand(
 
 void ChangeSerializableCommand::undo()
 {
-  qDebug() << "undo" << oldValue;
   model->setProperty(name.toStdString().c_str(), oldValue, false);
 }
 
 void ChangeSerializableCommand::redo()
 {
-  qDebug() << "redo" << value;
   model->setProperty(name.toStdString().c_str(), value, false);
 }
 

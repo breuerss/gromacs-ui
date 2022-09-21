@@ -52,8 +52,6 @@ QMetaObject::Connection connectToSpinBox(
     model->getSignalStringForProperty(elementName).toStdString().c_str(),
     widget, SLOT(setValue(double)));
 
-  //qDebug() << model->getSignalForProperty(elementName.toStdString().c_str());
-
   ValueType value = model->property(elementName.toStdString().c_str()).value<ValueType>();
   widget->setValue(value);
   return conn;
