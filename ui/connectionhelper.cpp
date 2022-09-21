@@ -2,7 +2,7 @@
 
 QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback
   )
@@ -12,7 +12,7 @@ QMetaObject::Connection connectToLineEdit(
 
 QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
-  QObject* model,
+  Model::Serializable* model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback
   )
@@ -36,7 +36,7 @@ QMetaObject::Connection connectToLineEdit(
 
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
-  QObject* model,
+  Model::Serializable* model,
   const QString& elementName,
   std::function<void(bool)>&& callback
   )
@@ -61,7 +61,7 @@ QMetaObject::Connection connectToCheckbox(
 
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName,
   std::function<void(bool)>&& callback
   )

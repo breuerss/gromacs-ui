@@ -33,8 +33,8 @@ public:
   QWidget* getUI() override;
 
 signals:
-  void waterModelChanged(const WaterModel&);
-  void forceFieldChanged(const ForceField&);
+  void waterModelChanged(WaterModel);
+  void forceFieldChanged(ForceField);
 
 private:
   WaterModel waterModel = WaterModel::SPC;

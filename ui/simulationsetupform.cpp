@@ -51,15 +51,16 @@ SimulationSetupForm::SimulationSetupForm(
 
   setOptions<PressureCouplingType>(ui->pressureCouplingType, pressureCouplingTypeOptions);
 
-  conns << connectToComboBox<PressureCouplingType>(
+  conns << connectToComboBox<PressureCouplingType, Configuration>(
     ui->pressureCouplingType,
     configuration,
-    "pressureCouplingType"
+    "pressureCouplingType",
+    &Configuration::pressureCouplingTypeChanged
     );
 
   using Simulation = Pipeline::Simulation::Configuration;
   QWidget* container = ui->settingsWidget;
-  conns << connectToComboBox<Simulation::Algorithm>(container, configuration, "algorithm");
+  conns << connectToComboBox<Simulation::Algorithm>(container, configuration, "algorithm", &Configuration::algorithmChanged);
 
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->numberOfSteps, configuration, "numberOfSteps");
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, configuration, "timeStep");
@@ -74,21 +75,18 @@ SimulationSetupForm::SimulationSetupForm(
 
   // pressure
   conns << connectToComboBox<Simulation::PressureAlgorithm>(
-              ui->pressureAlgorithm, configuration, "pressureAlgorithm"
+              ui->pressureAlgorithm, configuration, "pressureAlgorithm", &Configuration::pressureAlgorithmChanged
               );
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, configuration, "pressure");
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, configuration, "pressureUpdateInterval");
-  conns << connectToComboBox<Simulation::PressureCouplingType>(
-              ui->pressureCouplingType, configuration, "pressureCouplingType"
-              );
 
   // temperature
   conns << connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
     configuration->addTemperatureCouplingGroup();
   });
   conns << connectToComboBox<Simulation::TemperatureAlgorithm>(
-              ui->temperatureAlgorithm, configuration, "temperatureAlgorithm"
-              );
+    ui->temperatureAlgorithm, configuration, "temperatureAlgorithm", &Configuration::temperatureAlgorithmChanged
+    );
 
   // electrostatics
   setOptions<Simulation::ElectrostaticAlgorithm>(ui->electrostaticAlgorithm, {
@@ -106,7 +104,8 @@ SimulationSetupForm::SimulationSetupForm(
         algorithm == Simulation::ElectrostaticAlgorithm::Ewald;
       ui->electrostaticEwaldRtol->setEnabled(needsPme);
       ui->electrostaticEwaldRtolLabel->setEnabled(needsPme);
-    });
+    }, &Configuration::electrostaticAlgorithmChanged
+    );
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, configuration, "electrostaticCutoffRadius");
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticEwaldRtol, configuration, "electrostaticEwaldRtol");
 
@@ -126,7 +125,7 @@ SimulationSetupForm::SimulationSetupForm(
       const bool needsPme = algorithm == Simulation::VdwAlgorithm::PME;
       ui->vdwEwaldRtol->setEnabled(needsPme);
       ui->vdwEwaldRtolLabel->setEnabled(needsPme);
-    });
+    }, &Configuration::vdwAlgorithmChanged);
   conns << connectToSpinBox<QDoubleSpinBox, double>(ui->vdwEwaldRtol, configuration, "vdwEwaldRtol");
   setOptions<Simulation::VdwModifier>(ui->vdwModifier, {
      {"None", Simulation::VdwModifier::None },
@@ -141,7 +140,7 @@ SimulationSetupForm::SimulationSetupForm(
         modifier == Simulation::VdwModifier::ForceSwitch;
       ui->vdwSwitchRadius->setEnabled(switchRadiusNeeded);
       ui->vdwSwitchRadiusLabel->setEnabled(switchRadiusNeeded);
-    });
+    }, &Configuration::vdwModifierChanged);
   conns << connectToSpinBox<QDoubleSpinBox, double>(
     ui->vdwCutoffRadius, configuration, "vdwCutoffRadius");
 

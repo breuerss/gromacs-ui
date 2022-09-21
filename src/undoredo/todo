@@ -1,12 +1,6 @@
 Create commands for
 
-add step
-remove step
+restore connections when restoring node
 
-add node
-remove node
-
-add connection
-remove connection
 
 change settings of serializable

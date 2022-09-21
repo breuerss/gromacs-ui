@@ -9,6 +9,11 @@ namespace Model {
 class Serializable : public QObject
 {
   Q_OBJECT
+public:
+  bool setProperty(const char* name, const QVariant& value, bool createUndoRedo = true);
+  QString getSignalStringForProperty(const QString& name);
+  QMetaMethod getSignalForProperty(const QString& name);
+
 protected:
   void connectAllSignals();
 signals:

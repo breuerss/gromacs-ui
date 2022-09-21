@@ -9,7 +9,7 @@ CreateBoxSettings::CreateBoxSettings(Pipeline::CreateBox::Configuration* newConf
 {
   ui->setupUi(this);
   prepareBoxOptions();
-  connectToComboBox<QString>(ui->boxType, config, "boxType");
+  connectToComboBox(ui->boxType, config, "boxType", &Pipeline::CreateBox::Configuration::boxTypeChanged);
   connectToSpinBox<QDoubleSpinBox, double>(ui->distanceToEdge, config, "distance");
 }
 

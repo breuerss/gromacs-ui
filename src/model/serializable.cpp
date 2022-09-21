@@ -1,4 +1,6 @@
 #include "serializable.h"
+#include "../undoredo/stack.h"
+#include "../undoredo/changeserializablecommand.h"
 #include <QMetaObject>
 #include <QMetaProperty>
 #include <QJsonObject>
@@ -24,6 +26,46 @@ void Serializable::connectAllSignals()
       }
     }
   }
+}
+
+bool Serializable::setProperty(const char* name, const QVariant& value, bool createUndoRedo)
+{
+  auto oldValue = property(name);
+  if (createUndoRedo && oldValue != value)
+  {
+    qDebug() << "creating undo command" << value << oldValue;
+    UndoRedo::Stack::getInstance()->push(new UndoRedo::ChangeSerializableCommand(
+        this, name, value, oldValue));
+  }
+  else
+  {
+    return QObject::setProperty(name, value);
+  }
+  return true;
+}
+
+QString Serializable::getSignalStringForProperty(const QString& name)
+{
+  const QMetaMethod s = getSignalForProperty(name);
+
+  QString signal = QString("2") + s.methodSignature();
+
+  return signal;
+}
+
+QMetaMethod Serializable::getSignalForProperty(const QString& name)
+{
+  QMetaMethod signal;
+  const auto senderMeta = metaObject();
+  const int index = senderMeta->indexOfProperty(name.toStdString().c_str());
+  if (index != -1) {
+    const auto p = senderMeta->property(index);
+    if ( p.hasNotifySignal() ) {
+      signal = p.notifySignal();
+    }
+  }
+
+  return signal;
 }
 
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model)

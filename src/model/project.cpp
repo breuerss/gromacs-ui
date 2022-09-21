@@ -20,7 +20,7 @@
 namespace Model {
 
 Project::Project()
-  : QObject(nullptr)
+  : Serializable()
 {
   connect(&pipelineSteps, &StepVector::stepAdded, this, &Project::stepAdded);
   connect(&pipelineSteps, &StepVector::stepRemoved, this, &Project::stepRemoved);

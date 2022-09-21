@@ -26,7 +26,7 @@ public:
   QWidget* getUI() override;
 
 signals:
-  void boxTypeChanged(const BoxType&);
+  void boxTypeChanged(BoxType);
   void distanceChanged(double);
 
 private:

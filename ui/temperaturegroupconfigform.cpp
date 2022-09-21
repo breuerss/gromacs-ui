@@ -13,7 +13,8 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     connect(ui->removeTemperatureGroup, &QToolButton::clicked,
             this, &TemperatureGroupConfigForm::removeRequested);
 
-    using CouplingGroup = Pipeline::Simulation::TemperatureCouplingGroup::Group;
+    using TemperatureCouplingGroup = Pipeline::Simulation::TemperatureCouplingGroup;
+    using CouplingGroup = TemperatureCouplingGroup::Group;
     QList<QPair<QString, CouplingGroup>> options = {
       { "System",  CouplingGroup::System },
       { "Protein",  CouplingGroup::Protein },
@@ -21,8 +22,10 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     };
     setOptions<CouplingGroup>(
       ui->temperatureCouplingGroup, options);
-    connectToComboBox<CouplingGroup>(
-      ui->temperatureCouplingGroup, model, "group");
+    connectToComboBox(
+      ui->temperatureCouplingGroup, model.get(), "group",
+      &TemperatureCouplingGroup::groupChanged
+      );
     connectToSpinBox<QDoubleSpinBox, double>(
       ui->temperature, model, "temperature");
     connectToSpinBox<QDoubleSpinBox, double>(

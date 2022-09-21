@@ -1,6 +1,7 @@
 #ifndef UICONNECTIONHELPER_H
 #define UICONNECTIONHELPER_H
 
+#include "src/model/serializable.h"
 #include <QComboBox>
 #include <QLineEdit>
 #include <QCheckBox>
@@ -8,11 +9,13 @@
 #include <functional>
 #include <QDebug>
 #include <QMetaObject>
+#include <QMetaMethod>
+#include <optional>
 
 template<typename ElementType, typename ValueType>
 QMetaObject::Connection connectToSpinBox(
   QWidget* container,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName
   )
 {
@@ -22,7 +25,7 @@ QMetaObject::Connection connectToSpinBox(
 template<typename ElementType, typename ValueType>
 QMetaObject::Connection connectToSpinBox(
   QWidget* container,
-  QObject* model,
+  Model::Serializable* model,
   const QString& elementName)
 {
   ElementType* widget = container->findChild<ElementType*>(elementName);
@@ -34,8 +37,22 @@ QMetaObject::Connection connectToSpinBox(
     widget,
     QOverload<ValueType>::of(&ElementType::valueChanged),
     [model, elementName] (ValueType value) {
-      model->setProperty(elementName.toStdString().c_str(), value);
+      if (value != model->property(elementName.toStdString().c_str()))
+      {
+        model->setProperty(elementName.toStdString().c_str(), value);
+      }
     });
+
+  QObject::connect(
+    model,
+    model->getSignalStringForProperty(elementName).toStdString().c_str(),
+    widget, SLOT(setValue(int)));
+  QObject::connect(
+    model,
+    model->getSignalStringForProperty(elementName).toStdString().c_str(),
+    widget, SLOT(setValue(double)));
+
+  //qDebug() << model->getSignalForProperty(elementName.toStdString().c_str());
 
   ValueType value = model->property(elementName.toStdString().c_str()).value<ValueType>();
   widget->setValue(value);
@@ -45,7 +62,7 @@ QMetaObject::Connection connectToSpinBox(
 template<typename ValueType>
 QMetaObject::Connection connectToComboBox(
   QWidget* container,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName,
   std::function<void(ValueType)>&& callback = nullptr
   )
@@ -56,7 +73,19 @@ QMetaObject::Connection connectToComboBox(
 template<typename ValueType>
 QMetaObject::Connection connectToComboBox(
   QWidget* container,
-  QObject* model,
+  std::shared_ptr<Model::Serializable> model,
+  const QString& elementName,
+  std::function<void(ValueType)>&& callback,
+  void(*changed)(ValueType) = nullptr
+  )
+{
+  return connectToComboBox(container, model.get(), elementName, std::move(callback), changed);
+}
+
+template<typename ValueType>
+QMetaObject::Connection connectToComboBox(
+  QWidget* container,
+  Model::Serializable* model,
   const QString& elementName,
   std::function<void(ValueType)>&& callback = nullptr
   )
@@ -88,36 +117,77 @@ QMetaObject::Connection connectToComboBox(
     index = 0;
   }
 
-  widget->setCurrentIndex(-1);
+  //widget->setCurrentIndex(-1);
   widget->setCurrentIndex(index);
+
+  QObject::connect(
+    model,
+    model->getSignalStringForProperty(elementName).toStdString().c_str(),
+    widget, SLOT(setCurrentText(QString)));
 
   return conn;
 }
 
+template<typename ValueType, typename ConfigType>
+QMetaObject::Connection connectToComboBox(
+  QWidget* container,
+  ConfigType* model,
+  const QString& elementName,
+  std::function<void(ValueType)>&& callback,
+  void(ConfigType::*changed)(ValueType)
+  )
+{
+  QComboBox* widget = container->findChild<QComboBox*>(elementName);
+  if (!widget)
+  {
+    widget = dynamic_cast<QComboBox*>(container);
+  }
+
+  QObject::connect(
+    model, changed, [widget, model, elementName] (ValueType currentValue) {
+      qDebug() << "callback for model change" << (int)currentValue;
+      int index = widget->findData(QVariant::fromValue(currentValue));
+      widget->setCurrentIndex(index);
+    });
+
+  return connectToComboBox(container, model, elementName, std::move(callback));
+}
+
+template<typename ValueType, typename ConfigType>
+QMetaObject::Connection connectToComboBox(
+  QWidget* container,
+  ConfigType* model,
+  const QString& elementName,
+  void(ConfigType::*changed)(ValueType)
+  )
+{
+  return connectToComboBox<ValueType, ConfigType>(container, model, elementName, [] (ValueType) {}, changed);
+}
+
 QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback = nullptr
   );
 
 QMetaObject::Connection connectToLineEdit(
   QLineEdit* widget,
-  QObject* model,
+  Model::Serializable* model,
   const QString& elementName,
   std::function<void(const QString&)>&& callback = nullptr
   );
 
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
-  QObject* model,
+  Model::Serializable* model,
   const QString& elementName,
   std::function<void(bool)>&& callback = nullptr
   );
 
 QMetaObject::Connection connectToCheckbox(
   QCheckBox* widget,
-  std::shared_ptr<QObject> model,
+  std::shared_ptr<Model::Serializable> model,
   const QString& elementName,
   std::function<void(bool)>&& callback = nullptr
   );

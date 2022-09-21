@@ -21,7 +21,7 @@ namespace Model {
 
 class SystemSetup;
 
-class Project : public QObject, public std::enable_shared_from_this<Project>
+class Project : public Serializable, public std::enable_shared_from_this<Project>
 {
   Q_OBJECT
   typedef std::shared_ptr<Pipeline::Step> StepPointer;
