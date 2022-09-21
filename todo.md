@@ -23,8 +23,7 @@
 
 1. Filter
 1. Loading starting configuration for different simulations
-1. improve connectors path
 1. Coloring of ports to be clear about the accepted file types
 1. show information of selected options in short form
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
-1. undo/redo stack
+1. restore connections when restoring node
