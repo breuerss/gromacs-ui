@@ -44,6 +44,7 @@
      <string>File</string>
     </property>
     <addaction name="actionNewProject"/>
+    <addaction name="actionOpenProject"/>
     <addaction name="actionSaveProjectAs"/>
     <addaction name="actionSave"/>
    </widget>
@@ -89,7 +90,6 @@
    <addaction name="actionNewProject"/>
    <addaction name="actionOpenProject"/>
    <addaction name="actionSave"/>
-   <addaction name="actionSaveProjectAs"/>
    <addaction name="separator"/>
    <addaction name="actionCreateDefaultSimulationSetup"/>
    <addaction name="separator"/>
@@ -293,8 +293,8 @@
   </widget>
   <action name="actionNewProject">
    <property name="icon">
-    <iconset theme="folder-new">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/folder-notch-plus-light.svg</normaloff>:/icons/icons/folder-notch-plus-light.svg</iconset>
    </property>
    <property name="text">
     <string>New Project</string>
@@ -325,8 +325,8 @@
   </action>
   <action name="actionOpenProject">
    <property name="icon">
-    <iconset theme="folder-open">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/folder-notch-open-light.svg</normaloff>:/icons/icons/folder-notch-open-light.svg</iconset>
    </property>
    <property name="text">
     <string>Open Project...</string>
@@ -336,10 +336,6 @@
    </property>
   </action>
   <action name="actionSaveProjectAs">
-   <property name="icon">
-    <iconset theme="document-save-as">
-     <normaloff>.</normaloff>.</iconset>
-   </property>
    <property name="text">
     <string>Save Project As...</string>
    </property>
@@ -349,8 +345,8 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset theme="document-save">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/floppy-disk-light.svg</normaloff>:/icons/icons/floppy-disk-light.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -361,8 +357,8 @@
   </action>
   <action name="actionRunSimulation">
    <property name="icon">
-    <iconset theme="media-playback-start">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/play-light.svg</normaloff>:/icons/icons/play-light.svg</iconset>
    </property>
    <property name="text">
     <string>Run Pipeline</string>
@@ -373,8 +369,8 @@
   </action>
   <action name="actionCreateDefaultSimulationSetup">
    <property name="icon">
-    <iconset theme="edit-select-all">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/tree-structure-light.svg</normaloff>:/icons/icons/tree-structure-light.svg</iconset>
    </property>
    <property name="text">
     <string>Create Default Pipeline</string>

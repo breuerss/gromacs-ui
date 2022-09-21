@@ -10,5 +10,16 @@
         <file>icons/dots-three-outline-vertical-light.svg</file>
         <file>icons/arrow-arc-left-light.svg</file>
         <file>icons/arrow-arc-right-light.svg</file>
+        <file>icons/atom-light.svg</file>
+        <file>icons/chart-line-light.svg</file>
+        <file>icons/crosshair-light.svg</file>
+        <file>icons/database-light.svg</file>
+        <file>icons/floppy-disk-light.svg</file>
+        <file>icons/folder-notch-open-light.svg</file>
+        <file>icons/folder-notch-plus-light.svg</file>
+        <file>icons/folder-open-light.svg</file>
+        <file>icons/pause-light.svg</file>
+        <file>icons/play-light.svg</file>
+        <file>icons/tree-structure-light.svg</file>
     </qresource>
 </RCC>

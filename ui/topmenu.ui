@@ -85,7 +85,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="projectName"/>
+       <widget class="QLineEdit" name="projectName">
+        <property name="focusPolicy">
+         <enum>Qt::ClickFocus</enum>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
