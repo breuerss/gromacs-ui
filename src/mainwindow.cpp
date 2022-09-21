@@ -58,6 +58,11 @@ MainWindow::MainWindow(QWidget *parent)
     UndoRedo::Stack::getInstance()->push(new UndoRedo::MoveCommand(node, oldPosition));
   });
 
+  connect(UndoRedo::Stack::getInstance(), &QUndoStack::canUndoChanged, ui->actionUndo, &QAction::setEnabled);
+  connect(UndoRedo::Stack::getInstance(), &QUndoStack::canRedoChanged, ui->actionRedo, &QAction::setEnabled);
+  connect(ui->actionUndo, &QAction::triggered, UndoRedo::Stack::getInstance(), &QUndoStack::undo);
+  connect(ui->actionRedo, &QAction::triggered, UndoRedo::Stack::getInstance(), &QUndoStack::redo);
+
   connect(ui->actionPreferences, &QAction::triggered, this, &MainWindow::openPreferencesDialog);
   connect(ui->actionNewProject, &QAction::triggered,
           ProjectManager::getInstance(), &ProjectManager::createNewProject);

@@ -51,6 +51,8 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
     <addaction name="separator"/>
     <addaction name="actionPreferences"/>
    </widget>
@@ -394,6 +396,36 @@
     <string>Docks</string>
    </property>
   </action>
+  <action name="actionUndo">
+   <property name="icon">
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/arrow-arc-left-light.svg</normaloff>:/icons/icons/arrow-arc-left-light.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="icon">
+    <iconset resource="../share/icons.qrc">
+     <normaloff>:/icons/icons/arrow-arc-right-light.svg</normaloff>:/icons/icons/arrow-arc-right-light.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -402,6 +434,8 @@
    <header location="global">QtWebEngineWidgets/QWebEngineView</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../share/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
