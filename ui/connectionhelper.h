@@ -118,11 +118,6 @@ QMetaObject::Connection connectToComboBox(
   //widget->setCurrentIndex(-1);
   widget->setCurrentIndex(index);
 
-  QObject::connect(
-    model,
-    model->getSignalStringForProperty(elementName).toStdString().c_str(),
-    widget, SLOT(setCurrentText(QString)));
-
   return conn;
 }
 
