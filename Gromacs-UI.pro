@@ -60,4 +60,4 @@ DEFINES += MOLVIEWER=\\\"$${molviewer.path}/$${molviewerhtml}\\\"
 INSTALLS += molviewer
 
 RESOURCES += \
-    share/icons.qrc
+    share/icons/resource.qrc

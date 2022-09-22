@@ -1,0 +1,47 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>align-bottom-light.svg</file>
+        <file>align-center-horizontal-light.svg</file>
+        <file>align-center-vertical-light.svg</file>
+        <file>align-left-light.svg</file>
+        <file>align-right-light.svg</file>
+        <file>align-top-light.svg</file>
+        <file>dots-three-outline-light.svg</file>
+        <file>dots-three-outline-vertical-light.svg</file>
+        <file>arrow-arc-left-light.svg</file>
+        <file>arrow-arc-right-light.svg</file>
+        <file>atom-light.svg</file>
+        <file>chart-line-light.svg</file>
+        <file>crosshair-light.svg</file>
+        <file>database-light.svg</file>
+        <file>floppy-disk-light.svg</file>
+        <file>folder-notch-open-light.svg</file>
+        <file>folder-notch-plus-light.svg</file>
+        <file>folder-open-light.svg</file>
+        <file>pause-light.svg</file>
+        <file>play-light.svg</file>
+        <file>tree-structure-light.svg</file>
+
+        <file>align-bottom.svg</file>
+        <file>align-center-horizontal.svg</file>
+        <file>align-center-vertical.svg</file>
+        <file>align-left.svg</file>
+        <file>align-right.svg</file>
+        <file>align-top.svg</file>
+        <file>dots-three-outline.svg</file>
+        <file>dots-three-outline-vertical.svg</file>
+        <file>arrow-arc-left.svg</file>
+        <file>arrow-arc-right.svg</file>
+        <file>atom.svg</file>
+        <file>chart-line.svg</file>
+        <file>crosshair.svg</file>
+        <file>database.svg</file>
+        <file>floppy-disk.svg</file>
+        <file>folder-notch-open.svg</file>
+        <file>folder-notch-plus.svg</file>
+        <file>folder-open.svg</file>
+        <file>pause.svg</file>
+        <file>play.svg</file>
+        <file>tree-structure.svg</file>
+    </qresource>
+</RCC>

@@ -45,7 +45,7 @@
        </property>
        <property name="icon">
         <iconset resource="../share/icons.qrc">
-         <normaloff>:/icons/icons/arrow-arc-left-light.svg</normaloff>:/icons/icons/arrow-arc-left-light.svg</iconset>
+         <normaloff>:/icons/arrow-arc-left-light.svg</normaloff>:/icons/arrow-arc-left-light.svg</iconset>
        </property>
       </widget>
      </item>
@@ -53,7 +53,7 @@
       <widget class="QPushButton" name="redoButton">
        <property name="icon">
         <iconset resource="../share/icons.qrc">
-         <normaloff>:/icons/icons/arrow-arc-right-light.svg</normaloff>:/icons/icons/arrow-arc-right-light.svg</iconset>
+         <normaloff>:/icons/arrow-arc-right-light.svg</normaloff>:/icons/arrow-arc-right-light.svg</iconset>
        </property>
       </widget>
      </item>
@@ -111,7 +111,7 @@
          </property>
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-left-light.svg</normaloff>:/icons/icons/align-left-light.svg</iconset>
+           <normaloff>:/icons/align-left-light.svg</normaloff>:/icons/align-left-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -125,7 +125,7 @@
         <widget class="QPushButton" name="alignHCenter">
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-center-horizontal-light.svg</normaloff>:/icons/icons/align-center-horizontal-light.svg</iconset>
+           <normaloff>:/icons/align-center-horizontal-light.svg</normaloff>:/icons/align-center-horizontal-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -139,7 +139,7 @@
         <widget class="QPushButton" name="alignRight">
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-right-light.svg</normaloff>:/icons/icons/align-right-light.svg</iconset>
+           <normaloff>:/icons/align-right-light.svg</normaloff>:/icons/align-right-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -160,7 +160,7 @@
         <widget class="QPushButton" name="alignTop">
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-top-light.svg</normaloff>:/icons/icons/align-top-light.svg</iconset>
+           <normaloff>:/icons/align-top-light.svg</normaloff>:/icons/align-top-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -174,7 +174,7 @@
         <widget class="QPushButton" name="alignVCenter">
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-center-vertical-light.svg</normaloff>:/icons/icons/align-center-vertical-light.svg</iconset>
+           <normaloff>:/icons/align-center-vertical-light.svg</normaloff>:/icons/align-center-vertical-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -191,7 +191,7 @@
          </property>
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/align-bottom-light.svg</normaloff>:/icons/icons/align-bottom-light.svg</iconset>
+           <normaloff>:/icons/align-bottom-light.svg</normaloff>:/icons/align-bottom-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -215,7 +215,7 @@
          </property>
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/dots-three-outline-vertical-light.svg</normaloff>:/icons/icons/dots-three-outline-vertical-light.svg</iconset>
+           <normaloff>:/icons/dots-three-outline-vertical-light.svg</normaloff>:/icons/dots-three-outline-vertical-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -229,7 +229,7 @@
         <widget class="QPushButton" name="distributeHorizontally">
          <property name="icon">
           <iconset resource="../share/icons.qrc">
-           <normaloff>:/icons/icons/dots-three-outline-light.svg</normaloff>:/icons/icons/dots-three-outline-light.svg</iconset>
+           <normaloff>:/icons/dots-three-outline-light.svg</normaloff>:/icons/dots-three-outline-light.svg</iconset>
          </property>
          <property name="iconSize">
           <size>

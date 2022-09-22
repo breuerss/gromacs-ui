@@ -293,8 +293,8 @@
   </widget>
   <action name="actionNewProject">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/folder-notch-plus.svg</normaloff>:/icons/icons/folder-notch-plus.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/folder-notch-plus.svg</normaloff>:/icons/folder-notch-plus.svg</iconset>
    </property>
    <property name="text">
     <string>New Project</string>
@@ -325,8 +325,8 @@
   </action>
   <action name="actionOpenProject">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/folder-notch-open.svg</normaloff>:/icons/icons/folder-notch-open.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/folder-notch-open.svg</normaloff>:/icons/folder-notch-open.svg</iconset>
    </property>
    <property name="text">
     <string>Open Project...</string>
@@ -345,8 +345,8 @@
   </action>
   <action name="actionSave">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/floppy-disk.svg</normaloff>:/icons/icons/floppy-disk.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/floppy-disk.svg</normaloff>:/icons/floppy-disk.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -357,8 +357,8 @@
   </action>
   <action name="actionRunSimulation">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/play.svg</normaloff>:/icons/icons/play.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/play.svg</normaloff>:/icons/play.svg</iconset>
    </property>
    <property name="text">
     <string>Run Pipeline</string>
@@ -369,8 +369,8 @@
   </action>
   <action name="actionCreateDefaultSimulationSetup">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/tree-structure.svg</normaloff>:/icons/icons/tree-structure.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/tree-structure.svg</normaloff>:/icons/tree-structure.svg</iconset>
    </property>
    <property name="text">
     <string>Create Default Pipeline</string>
@@ -394,8 +394,8 @@
   </action>
   <action name="actionUndo">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/arrow-arc-left.svg</normaloff>:/icons/icons/arrow-arc-left.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/arrow-arc-left.svg</normaloff>:/icons/arrow-arc-left.svg</iconset>
    </property>
    <property name="text">
     <string>Undo</string>
@@ -409,8 +409,8 @@
   </action>
   <action name="actionRedo">
    <property name="icon">
-    <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/arrow-arc-right.svg</normaloff>:/icons/icons/arrow-arc-right.svg</iconset>
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/arrow-arc-right.svg</normaloff>:/icons/arrow-arc-right.svg</iconset>
    </property>
    <property name="text">
     <string>Redo</string>
@@ -431,7 +431,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../share/icons.qrc"/>
+  <include location="../share/icons/resource.qrc"/>
  </resources>
  <connections/>
 </ui>
