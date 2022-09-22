@@ -294,7 +294,7 @@
   <action name="actionNewProject">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/folder-notch-plus-light.svg</normaloff>:/icons/icons/folder-notch-plus-light.svg</iconset>
+     <normaloff>:/icons/icons/folder-notch-plus.svg</normaloff>:/icons/icons/folder-notch-plus.svg</iconset>
    </property>
    <property name="text">
     <string>New Project</string>
@@ -326,7 +326,7 @@
   <action name="actionOpenProject">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/folder-notch-open-light.svg</normaloff>:/icons/icons/folder-notch-open-light.svg</iconset>
+     <normaloff>:/icons/icons/folder-notch-open.svg</normaloff>:/icons/icons/folder-notch-open.svg</iconset>
    </property>
    <property name="text">
     <string>Open Project...</string>
@@ -346,7 +346,7 @@
   <action name="actionSave">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/floppy-disk-light.svg</normaloff>:/icons/icons/floppy-disk-light.svg</iconset>
+     <normaloff>:/icons/icons/floppy-disk.svg</normaloff>:/icons/icons/floppy-disk.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -358,7 +358,7 @@
   <action name="actionRunSimulation">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/play-light.svg</normaloff>:/icons/icons/play-light.svg</iconset>
+     <normaloff>:/icons/icons/play.svg</normaloff>:/icons/icons/play.svg</iconset>
    </property>
    <property name="text">
     <string>Run Pipeline</string>
@@ -370,7 +370,7 @@
   <action name="actionCreateDefaultSimulationSetup">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/tree-structure-light.svg</normaloff>:/icons/icons/tree-structure-light.svg</iconset>
+     <normaloff>:/icons/icons/tree-structure.svg</normaloff>:/icons/icons/tree-structure.svg</iconset>
    </property>
    <property name="text">
     <string>Create Default Pipeline</string>
@@ -395,7 +395,7 @@
   <action name="actionUndo">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/arrow-arc-left-light.svg</normaloff>:/icons/icons/arrow-arc-left-light.svg</iconset>
+     <normaloff>:/icons/icons/arrow-arc-left.svg</normaloff>:/icons/icons/arrow-arc-left.svg</iconset>
    </property>
    <property name="text">
     <string>Undo</string>
@@ -410,7 +410,7 @@
   <action name="actionRedo">
    <property name="icon">
     <iconset resource="../share/icons.qrc">
-     <normaloff>:/icons/icons/arrow-arc-right-light.svg</normaloff>:/icons/icons/arrow-arc-right-light.svg</iconset>
+     <normaloff>:/icons/icons/arrow-arc-right.svg</normaloff>:/icons/icons/arrow-arc-right.svg</iconset>
    </property>
    <property name="text">
     <string>Redo</string>
