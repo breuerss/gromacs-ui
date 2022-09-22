@@ -48,6 +48,9 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="distanceToEdge">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
          <property name="value">
           <double>1.000000000000000</double>
          </property>

@@ -10,6 +10,9 @@
     <height>741</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -47,6 +50,9 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="numberOfSteps">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="decimals">
               <number>0</number>
              </property>
@@ -74,6 +80,9 @@
            </item>
            <item>
             <widget class="QDoubleSpinBox" name="timeStep">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="decimals">
               <number>1</number>
              </property>
@@ -148,6 +157,9 @@
            </item>
            <item>
             <widget class="QSpinBox" name="energyOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="maximum">
               <number>99999</number>
              </property>
@@ -172,6 +184,9 @@
            </item>
            <item>
             <widget class="QSpinBox" name="compressedPositionOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="maximum">
               <number>999999999</number>
              </property>
@@ -196,6 +211,9 @@
            </item>
            <item>
             <widget class="QSpinBox" name="positionOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="maximum">
               <number>99999999</number>
              </property>
@@ -219,7 +237,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="velocityOutputFrequency"/>
+            <widget class="QSpinBox" name="velocityOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -236,7 +258,11 @@
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="forceOutputFrequency"/>
+            <widget class="QSpinBox" name="forceOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -254,6 +280,9 @@
            </item>
            <item>
             <widget class="QSpinBox" name="logOutputFrequency">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
              <property name="maximum">
               <number>999999999</number>
              </property>
@@ -289,6 +318,9 @@
              </item>
              <item>
               <widget class="QDoubleSpinBox" name="minimisationMaximumForce">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
                <property name="decimals">
                 <number>1</number>
                </property>
@@ -316,6 +348,9 @@
              </item>
              <item>
               <widget class="QDoubleSpinBox" name="minimisationStepSize">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
                <property name="value">
                 <double>0.010000000000000</double>
                </property>
@@ -470,6 +505,9 @@
              </item>
              <item>
               <widget class="QDoubleSpinBox" name="pressureUpdateInterval">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
                <property name="maximum">
                 <double>9999999.000000000000000</double>
                </property>
@@ -511,6 +549,9 @@
              </item>
              <item>
               <widget class="QDoubleSpinBox" name="pressure">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
                <property name="value">
                 <double>1.000000000000000</double>
                </property>
@@ -578,6 +619,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="electrostaticCutoffRadius">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="maximum">
              <double>99999999.000000000000000</double>
             </property>
@@ -599,6 +643,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="electrostaticEwaldRtol">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="decimals">
              <number>6</number>
             </property>
@@ -666,6 +713,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="vdwCutoffRadius">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="maximum">
              <double>99999999.000000000000000</double>
             </property>
@@ -689,7 +739,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QDoubleSpinBox" name="vdwSwitchRadius"/>
+           <widget class="QDoubleSpinBox" name="vdwSwitchRadius">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
+            </widget>
           </item>
          </layout>
         </item>
@@ -704,6 +758,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="vdwEwaldRtol">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="decimals">
              <number>5</number>
             </property>
@@ -737,6 +794,9 @@
           </item>
           <item>
            <widget class="QDoubleSpinBox" name="fourierSpacing">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="decimals">
              <number>3</number>
             </property>
@@ -758,6 +818,9 @@
           </item>
           <item>
            <widget class="QSpinBox" name="pmeOrder">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
             <property name="minimum">
              <number>4</number>
             </property>

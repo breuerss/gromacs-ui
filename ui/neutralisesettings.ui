@@ -31,6 +31,9 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="ionConcentration">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
        <property name="singleStep">
         <double>0.010000000000000</double>
        </property>

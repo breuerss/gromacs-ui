@@ -66,6 +66,9 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="temperature">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
        <property name="maximum">
         <double>99999999.000000000000000</double>
        </property>
@@ -87,6 +90,9 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="temperatureUpdateInterval">
+             <property name="buttonSymbols">
+              <enum>QAbstractSpinBox::PlusMinus</enum>
+             </property>
        <property name="maximum">
         <double>9999999999.000000000000000</double>
        </property>
