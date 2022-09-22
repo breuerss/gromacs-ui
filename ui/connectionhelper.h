@@ -12,21 +12,24 @@
 #include <QMetaMethod>
 #include <optional>
 
-template<typename ElementType, typename ValueType>
+template<typename ElementType, typename ConfigType, typename ValueType>
 QMetaObject::Connection connectToSpinBox(
   QWidget* container,
-  std::shared_ptr<Model::Serializable> model,
-  const QString& elementName
+  std::shared_ptr<ConfigType> model,
+  const QString& elementName,
+  void(ConfigType::*changed)(ValueType)
   )
 {
-  return connectToSpinBox<ElementType, ValueType>(container, model.get(), elementName);
+  return connectToSpinBox<ElementType, ConfigType, ValueType>(container, model.get(), elementName, changed);
 }
 
-template<typename ElementType, typename ValueType>
+template<typename ElementType, typename ConfigType, typename ValueType>
 QMetaObject::Connection connectToSpinBox(
   QWidget* container,
-  Model::Serializable* model,
-  const QString& elementName)
+  ConfigType* model,
+  const QString& elementName,
+  void(ConfigType::*changed)(ValueType)
+  )
 {
   ElementType* widget = container->findChild<ElementType*>(elementName);
   if (!widget)
@@ -45,14 +48,11 @@ QMetaObject::Connection connectToSpinBox(
 
   QObject::connect(
     model,
-    model->getSignalStringForProperty(elementName).toStdString().c_str(),
-    widget, SLOT(setValue(int)));
-  QObject::connect(
-    model,
-    model->getSignalStringForProperty(elementName).toStdString().c_str(),
-    widget, SLOT(setValue(double)));
+    changed,
+    widget,
+    &ElementType::setValue);
 
-  ValueType value = model->property(elementName.toStdString().c_str()).value<ValueType>();
+  ValueType value = model->property(elementName.toStdString().c_str()).template value<ValueType>();
   widget->setValue(value);
   return conn;
 }

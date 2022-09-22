@@ -11,7 +11,7 @@ NeutraliseSettings::NeutraliseSettings(Pipeline::Neutralise::Configuration* newC
   ui->setupUi(this);
   setIonFromModel();
   connectIonSelectors();
-  connectToSpinBox<QDoubleSpinBox, double>(ui->ionConcentration, config, "ionConcentration");
+  connectToSpinBox<QDoubleSpinBox>(ui->ionConcentration, config, "ionConcentration", &Pipeline::Neutralise::Configuration::ionConcentrationChanged);
 }
 
 NeutraliseSettings::~NeutraliseSettings()

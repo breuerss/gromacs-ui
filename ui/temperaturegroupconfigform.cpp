@@ -26,10 +26,10 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
       ui->temperatureCouplingGroup, model.get(), "group",
       &TemperatureCouplingGroup::groupChanged
       );
-    connectToSpinBox<QDoubleSpinBox, double>(
-      ui->temperature, model, "temperature");
-    connectToSpinBox<QDoubleSpinBox, double>(
-      ui->temperatureUpdateInterval, model, "updateInterval");
+    connectToSpinBox<QDoubleSpinBox>(
+      ui->temperature, model, "temperature", &TemperatureCouplingGroup::temperatureChanged);
+    connectToSpinBox<QDoubleSpinBox>(
+      ui->temperatureUpdateInterval, model, "updateInterval", &TemperatureCouplingGroup::updateIntervalChanged);
 }
 
 TemperatureGroupConfigForm::~TemperatureGroupConfigForm()

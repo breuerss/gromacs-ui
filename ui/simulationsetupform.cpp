@@ -62,23 +62,23 @@ SimulationSetupForm::SimulationSetupForm(
   QWidget* container = ui->settingsWidget;
   conns << connectToComboBox<Simulation::Algorithm>(container, configuration, "algorithm", &Configuration::algorithmChanged);
 
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->numberOfSteps, configuration, "numberOfSteps");
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->timeStep, configuration, "timeStep");
-  conns << connectToSpinBox<QDoubleSpinBox, double>(container, configuration, "minimisationStepSize");
-  conns << connectToSpinBox<QDoubleSpinBox, double>(container, configuration, "minimisationMaximumForce");
-  conns << connectToSpinBox<QSpinBox, int>(container, configuration, "energyOutputFrequency");
-  conns << connectToSpinBox<QSpinBox, int>(container, configuration, "positionOutputFrequency");
-  conns << connectToSpinBox<QSpinBox, int>(container, configuration, "velocityOutputFrequency");
-  conns << connectToSpinBox<QSpinBox, int>(container, configuration, "forceOutputFrequency");
-  conns << connectToSpinBox<QSpinBox, int>(ui->compressedPositionOutputFrequency, configuration, "compressedPositionOutputFrequency");
-  conns << connectToSpinBox<QSpinBox, int>(ui->logOutputFrequency, configuration, "logOutputFrequency");
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->numberOfSteps, configuration, "numberOfSteps", &Simulation::numberOfStepsChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->timeStep, configuration, "timeStep", &Simulation::timeStepChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(container, configuration, "minimisationStepSize", &Simulation::minimisationStepSizeChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(container, configuration, "minimisationMaximumForce", &Simulation::minimisationMaximumForceChanged);
+  conns << connectToSpinBox<QSpinBox>(container, configuration, "energyOutputFrequency", &Simulation::energyOutputFrequencyChanged);
+  conns << connectToSpinBox<QSpinBox>(container, configuration, "positionOutputFrequency", &Simulation::positionOutputFrequencyChanged);
+  conns << connectToSpinBox<QSpinBox>(container, configuration, "velocityOutputFrequency", &Simulation::velocityOutputFrequencyChanged);
+  conns << connectToSpinBox<QSpinBox>(container, configuration, "forceOutputFrequency", &Simulation::forceOutputFrequencyChanged);
+  conns << connectToSpinBox<QSpinBox>(ui->compressedPositionOutputFrequency, configuration, "compressedPositionOutputFrequency", &Simulation::compressedPositionOutputFrequencyChanged);
+  conns << connectToSpinBox<QSpinBox>(ui->logOutputFrequency, configuration, "logOutputFrequency", &Simulation::logOutputFrequencyChanged);
 
   // pressure
   conns << connectToComboBox<Simulation::PressureAlgorithm>(
               ui->pressureAlgorithm, configuration, "pressureAlgorithm", &Configuration::pressureAlgorithmChanged
               );
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressure, configuration, "pressure");
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->pressureUpdateInterval, configuration, "pressureUpdateInterval");
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->pressure, configuration, "pressure", &Simulation::pressureChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->pressureUpdateInterval, configuration, "pressureUpdateInterval", &Simulation::pressureUpdateIntervalChanged);
 
   // temperature
   conns << connect(ui->addTemperatureCouplingGroup, &QToolButton::clicked, [this] () {
@@ -106,8 +106,8 @@ SimulationSetupForm::SimulationSetupForm(
       ui->electrostaticEwaldRtolLabel->setEnabled(needsPme);
     }, &Configuration::electrostaticAlgorithmChanged
     );
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticCutoffRadius, configuration, "electrostaticCutoffRadius");
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->electrostaticEwaldRtol, configuration, "electrostaticEwaldRtol");
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->electrostaticCutoffRadius, configuration, "electrostaticCutoffRadius", &Simulation::electrostaticCutoffRadiusChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->electrostaticEwaldRtol, configuration, "electrostaticEwaldRtol", &Simulation::electrostaticEwaldRtolChanged);
 
 
   // vdw
@@ -126,7 +126,7 @@ SimulationSetupForm::SimulationSetupForm(
       ui->vdwEwaldRtol->setEnabled(needsPme);
       ui->vdwEwaldRtolLabel->setEnabled(needsPme);
     }, &Configuration::vdwAlgorithmChanged);
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->vdwEwaldRtol, configuration, "vdwEwaldRtol");
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->vdwEwaldRtol, configuration, "vdwEwaldRtol", &Simulation::vdwEwaldRtolChanged);
   setOptions<Simulation::VdwModifier>(ui->vdwModifier, {
      {"None", Simulation::VdwModifier::None },
      {"Potential-Switch", Simulation::VdwModifier::PotentialSwitch },
@@ -141,16 +141,16 @@ SimulationSetupForm::SimulationSetupForm(
       ui->vdwSwitchRadius->setEnabled(switchRadiusNeeded);
       ui->vdwSwitchRadiusLabel->setEnabled(switchRadiusNeeded);
     }, &Configuration::vdwModifierChanged);
-  conns << connectToSpinBox<QDoubleSpinBox, double>(
-    ui->vdwCutoffRadius, configuration, "vdwCutoffRadius");
+  conns << connectToSpinBox<QDoubleSpinBox>(
+    ui->vdwCutoffRadius, configuration, "vdwCutoffRadius", &Simulation::vdwCutoffRadiusChanged);
 
   // PME
   conns << connect(configuration, &Simulation::pmeSettingsNeededChanged,
           [this] () {
             ui->pmeSettingsGroup->setEnabled(configuration->pmeSettingsNeeded());
           });
-  conns << connectToSpinBox<QDoubleSpinBox, double>(ui->fourierSpacing, configuration, "fourierSpacing");
-  conns << connectToSpinBox<QSpinBox, int>(ui->pmeOrder, configuration, "pmeOrder");
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->fourierSpacing, configuration, "fourierSpacing", &Simulation::fourierSpacingChanged);
+  conns << connectToSpinBox<QSpinBox>(ui->pmeOrder, configuration, "pmeOrder", &Simulation::pmeOrderChanged);
 
   conns << connect(configuration, &Simulation::temperatureCouplingGroupAdded,
           this, &SimulationSetupForm::addTemperatureCouplingGroup);
