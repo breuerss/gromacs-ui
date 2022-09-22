@@ -12,6 +12,7 @@ class Configuration
 public:
   virtual ~Configuration() = default;
   virtual QWidget* getUI() = 0;
+  virtual QString toString() { return QString(); };
 };
 
 }

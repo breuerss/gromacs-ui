@@ -17,6 +17,7 @@ public:
 
   Q_PROPERTY(QString pdbCode MEMBER pdbCode NOTIFY pdbCodeChanged);
   QWidget* getUI() override;
+  QString toString() override;
 
 signals:
   void pdbCodeChanged();

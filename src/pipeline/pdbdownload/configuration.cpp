@@ -14,4 +14,9 @@ QWidget* Configuration::getUI()
   return new PdbCode(this);
 }
 
+QString Configuration::toString()
+{
+  return tr("PDB code") + ": " + pdbCode;
+}
+
 } }

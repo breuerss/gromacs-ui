@@ -18,6 +18,7 @@ public:
   Q_PROPERTY(double ionConcentration MEMBER ionConcentration NOTIFY ionConcentrationChanged)
 
   QWidget* getUI() override;
+  QString toString() override;
 
 signals:
   void negativeIonChanged(const QString&);

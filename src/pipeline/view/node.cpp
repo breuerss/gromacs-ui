@@ -11,10 +11,11 @@
 #include "src/command/fileobjectprovider.h"
 #include "src/pipeline/view/clickableicon.h"
 #include "src/pipeline/view/colors.h"
-#include <QBrush>
 #include <cmath>
-#include <QIcon>
 #include <memory>
+#include <QIcon>
+#include <QBrush>
+#include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
 #include <QLayout>
@@ -34,6 +35,8 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+  setAcceptHoverEvents(true);
+
   QPen pen(QColor(0, 0, 0, 0));
   setPen(pen);
 
@@ -41,6 +44,13 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   setupText();
   setupRunIcon();
   setupPorts();
+  tooltipBox = new Tooltip();
+  delayedTooltip.setInterval(500);
+  delayedTooltip.setSingleShot(true);
+  QObject::connect(&delayedTooltip, &QTimer::timeout, [this] () {
+    scene()->addItem(tooltipBox);
+    tooltipBox->show();
+  });
 
   auto config = step->getConfiguration();
   if (config)
@@ -388,6 +398,46 @@ QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
   }
 
   return QGraphicsItem::itemChange(change, value);
+}
+
+void Node::hoverEnterEvent(QGraphicsSceneHoverEvent*)
+{
+  tooltipBox->setHeader(step->getName());
+  auto config = step->getConfiguration();
+  if (config)
+  {
+    tooltipBox->setText(config->toString());
+  }
+  auto sceneScale = scene()->views()[0]->transform().m11();
+  tooltipBox->setScale(1 / sceneScale);
+  delayedTooltip.start();
+
+
+  auto viewer = scene()->views()[0];
+  QRectF viewport = viewer->viewport()->rect();
+  auto tooFarRight = viewer->mapToScene(viewport.toRect().bottomRight()) -
+    tooltipBox->mapToScene(tooltipBox->rect().bottomRight());
+  if (tooFarRight.x() < 0)
+  {
+    auto tooltipPos = tooltipBox->pos();
+    tooltipPos.rx() += tooFarRight.x() - 20;
+    tooltipBox->setPos(tooltipPos);
+  }
+}
+
+void Node::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+  if (!tooltipBox->isVisible())
+  {
+    tooltipBox->setPos(event->scenePos() + QPointF(20, 20));
+  }
+}
+
+void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+  tooltipBox->setParentItem(nullptr);
+  delayedTooltip.stop();
+  tooltipBox->hide();
 }
 
 // necessary to detect release event

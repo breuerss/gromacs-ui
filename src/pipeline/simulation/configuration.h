@@ -135,6 +135,8 @@ public:
   Q_PROPERTY(TemperatureAlgorithm temperatureAlgorithm
              MEMBER temperatureAlgorithm NOTIFY temperatureAlgorithmChanged);
 
+  QString toString() override;
+
 signals:
   void nameChanged();
   void directoryChanged();

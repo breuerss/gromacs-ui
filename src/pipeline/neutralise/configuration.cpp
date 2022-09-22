@@ -9,4 +9,10 @@ QWidget* Configuration::getUI()
   return new NeutraliseSettings(this);
 }
 
+QString Configuration::toString()
+{
+  return tr("Concentration") + ": " + QString::number(ionConcentration) + "\n"
+    + positiveIon + ", " + negativeIon;
+}
+
 } }

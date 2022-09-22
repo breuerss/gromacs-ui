@@ -3,11 +3,13 @@
 
 #include "roundedrectitem.h"
 #include "port.h"
+#include "tooltip.h"
 #include "../../command/fileobject.h"
 #include "clickableicon.h"
 
 #include <QGraphicsRectItem>
 #include <QList>
+#include <QTimer>
 #include <memory>
 
 class QPropertyAnimation;
@@ -44,6 +46,9 @@ signals:
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
+  void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
+  void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
+  void hoverMoveEvent(QGraphicsSceneHoverEvent*) override;
 
 private:
   Port* createPort(
@@ -82,6 +87,8 @@ private:
 
   QGraphicsProxyWidget* proxySettingsWidget = nullptr;
   QPropertyAnimation* resizeAnimation = nullptr;
+  Tooltip* tooltipBox;
+  QTimer delayedTooltip;
 };
 
 } }

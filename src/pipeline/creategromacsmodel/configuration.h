@@ -31,6 +31,7 @@ public:
   Q_PROPERTY(ForceField forceField MEMBER forceField NOTIFY forceFieldChanged)
 
   QWidget* getUI() override;
+  QString toString() override;
 
 signals:
   void waterModelChanged(WaterModel);

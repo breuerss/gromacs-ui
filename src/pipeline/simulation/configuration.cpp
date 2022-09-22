@@ -49,12 +49,17 @@ Configuration::~Configuration()
 
 QString Configuration::getName() const
 {
-  return toString(simulationType);
+  return Simulation::toString(simulationType);
+}
+
+QString Configuration::toString()
+{
+  return getName();
 }
 
 QString Configuration::getTypeAsString() const
 {
-  return toString(simulationType, true);
+  return Simulation::toString(simulationType, true);
 }
 
 QWidget* Configuration::getUI()

@@ -24,6 +24,7 @@ public:
   Q_PROPERTY(double distance MEMBER distance NOTIFY distanceChanged)
 
   QWidget* getUI() override;
+  QString toString() override;
 
 signals:
   void boxTypeChanged(BoxType);

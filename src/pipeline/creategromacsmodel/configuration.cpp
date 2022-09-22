@@ -25,6 +25,12 @@ QWidget* Configuration::getUI()
   return new GromacsSystemSettings(this);
 }
 
+QString Configuration::toString()
+{
+  return tr("Water model") + ": " + CreateGromacsModel::toString(waterModel).toUpper() + "\n"
+    + tr("Force field") + ": " + CreateGromacsModel::toString(forceField).toUpper();
+}
+
 QString toString(Configuration::WaterModel type)
 {
   const static QMap<Configuration::WaterModel, QString> map = {

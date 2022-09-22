@@ -18,6 +18,11 @@ Configuration::Configuration()
   connectAllSignals();
 }
 
+QString Configuration::toString()
+{
+  return tr("Box") + ": " + CreateBox::toString(boxType);
+}
+
 QWidget* Configuration::getUI()
 {
   return new CreateBoxSettings(this);
