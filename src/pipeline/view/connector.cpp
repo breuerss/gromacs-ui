@@ -46,7 +46,7 @@ void Connector::setEndingPort(Port* newEndingPort)
 
 void Connector::redraw(const QPointF& endingPointOverride)
 {
-  auto startingPoint = startingPort->getCenterInScene();
+  auto startingPoint = startingPort->getCenterInScene() + QPointF(Port::RADIUS, 0);
   auto endingPoint = endingPointOverride;
   if (endingPoint.isNull())
   {
@@ -54,7 +54,7 @@ void Connector::redraw(const QPointF& endingPointOverride)
     {
       return;
     }
-    endingPoint = endingPort->getCenterInScene();
+    endingPoint = endingPort->getCenterInScene() - QPointF(Port::RADIUS, 0);
   }
   auto midPoint = (startingPoint + endingPoint) / 2;
 
