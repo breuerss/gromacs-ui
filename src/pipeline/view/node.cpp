@@ -52,6 +52,8 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
       setupSettingsWidget();
     }
   }
+
+  setColorForSelectionState();
 }
 
 void Node::setupBackground()
@@ -455,17 +457,20 @@ void Node::setSelected(bool newSelected)
 
   if (changed)
   {
-    const unsigned factor = 125;
-    const auto currentColor = nodeBackground->brush().color();
-    auto newColor = currentColor.lighter(factor);
-    if (selected)
-    {
-      newColor = currentColor.darker(factor);
-    }
-    nodeBackground->setBrush(newColor);
+    setColorForSelectionState();
 
     selectedChanged();
   }
+}
+
+void Node::setColorForSelectionState()
+{
+  float opacity = 0.75;
+  if (selected)
+  {
+    opacity = 1;
+  }
+  setOpacity(opacity);
 }
 
 std::shared_ptr<Pipeline::Step> Node::getStep() const

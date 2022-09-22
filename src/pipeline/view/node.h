@@ -61,6 +61,7 @@ private:
   void setupPorts();
   void setupSettingsWidget();
   void setupResizeAnimation();
+  void setColorForSelectionState();
 
   bool toggleSettings();
 
