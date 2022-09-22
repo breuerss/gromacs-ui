@@ -33,7 +33,6 @@ bool Serializable::setProperty(const char* name, const QVariant& value, bool cre
   auto oldValue = property(name);
   if (createUndoRedo && oldValue != value)
   {
-    qDebug() << "creating undo command" << value << oldValue;
     UndoRedo::Stack::getInstance()->push(new UndoRedo::ChangeSerializableCommand(
         this, name, value, oldValue));
   }

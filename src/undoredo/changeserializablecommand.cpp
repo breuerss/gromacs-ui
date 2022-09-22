@@ -27,4 +27,19 @@ void ChangeSerializableCommand::redo()
   model->setProperty(name.toStdString().c_str(), value, false);
 }
 
+bool ChangeSerializableCommand::mergeWith(const QUndoCommand* newCommand)
+{
+  bool canMerge = false;
+  if (newCommand->id() == id())
+  {
+    auto typedCommand = static_cast<const ChangeSerializableCommand*>(newCommand);
+    if (typedCommand->name == name)
+    {
+      value = typedCommand->value;
+      canMerge = true;
+    }
+  }
+  return canMerge;
+}
+
 }
