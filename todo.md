@@ -27,3 +27,5 @@
 1. show information of selected options in short form
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
 1. restore connections when restoring node
+1. transparency of ports
+1. todo analysis
