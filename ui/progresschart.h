@@ -21,8 +21,8 @@ public:
 
 private:
   void updateRange();
-  QtCharts::QChart* progressValueChart;
-  QtCharts::QSplineSeries* series;
+  QChart* progressValueChart;
+  QSplineSeries* series;
   float min = INFINITY;
   float max = -INFINITY;
 };
