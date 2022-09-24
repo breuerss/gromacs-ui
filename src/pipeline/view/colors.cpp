@@ -10,7 +10,7 @@ QColor getColorFor(Step::Category category)
     { Category::DataProvider, Colors::Pink },
     { Category::PreProcess, Colors::Orange },
     { Category::Simulation, Colors::Blue },
-    { Category::Viewer, Colors::Violet },
+    { Category::Analysis, Colors::Violet },
     { Category::PostProcess, Colors::Yellow },
   };
 

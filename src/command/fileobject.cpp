@@ -40,8 +40,10 @@ FileObject::Category FileObject::getCategoryFor(FileObject::Type type)
     { Type::XTC, Category::Trajectory },
     { Type::TRR, Category::Trajectory },
     { Type::TOP, Category::Topology },
+    { Type::TPR, Category::Topology },
     { Type::LOG, Category::Text },
     { Type::MDP, Category::Text },
+    { Type::XVG, Category::Graph },
   };
 
   return categoryMap[type];
@@ -60,6 +62,7 @@ QString FileObject::toString(Type type)
     { Type::TPR, "tpr" },
     { Type::MDP, "mdp" },
     { Type::TOP, "top" },
+    { Type::XVG, "xvg" },
   };
 
   return map[type];
@@ -76,6 +79,7 @@ QString FileObject::toString(Category category)
     { Category::Forces, "Forces" },
     { Category::Topology, "Topology" },
     { Category::Text, "Text" },
+    { Category::Graph, "Graph" },
   };
 
   return map[category];

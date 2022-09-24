@@ -14,21 +14,23 @@ CONFIG += object_parallel_to_source
 
 SOURCES += \
     $$files(src/*.cpp) \
-    $$files(src/model/*.cpp) \
     $$files(src/command/*.cpp) \
-    $$files(src/undoredo/*.cpp) \
     $$files(src/config/*.cpp) \
+    $$files(src/io/*.cpp) \
+    $$files(src/model/*.cpp) \
     $$files(src/pipeline/*.cpp, true) \
+    $$files(src/undoredo/*.cpp) \
     $$files(ui/*.cpp)
 
 HEADERS += \
     $$files(src/*.h) \
     src/misc/bimaphelper.h \
-    $$files(src/model/*.h) \
     $$files(src/command/*.h) \
-    $$files(src/undoredo/*.h) \
     $$files(src/config/*.h) \
+    $$files(src/io/*.h) \
+    $$files(src/model/*.h) \
     $$files(src/pipeline/*.h, true) \
+    $$files(src/undoredo/*.h) \
     $$files(ui/*.h)
 
 

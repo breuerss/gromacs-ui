@@ -1,13 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui/preferencesdialog.h"
 #include "projectmanager.h"
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 #include "uiupdater.h"
 #include "pipelinerunner.h"
+#include "io/gracereader.h"
 #include "undoredo/movecommand.h"
 #include "undoredo/stack.h"
-#include "ui/preferencesdialog.h"
 #include "model/systemsetup.h"
 #include "model/project.h"
 #include "pipeline/view/viewer.h"
@@ -23,6 +24,7 @@
 #include <memory>
 #include <QMenu>
 #include <QBoxLayout>
+#include <QSplineSeries>
 
 MainWindow::MainWindow(QWidget *parent)
 : QMainWindow(parent)
@@ -46,6 +48,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pipelineTab->setLayout(layout);
   }
   ui->pipelineTab->layout()->addWidget(view);
+
+  graphView = new QChartView();
+  if (!ui->graphDockContents->layout())
+  {
+    auto layout = new QHBoxLayout;
+    ui->graphDockContents->setLayout(layout);
+  }
+  ui->graphDockContents->layout()->addWidget(graphView);
+  graphView->setRenderHint(QPainter::Antialiasing);
+
   QWebEngineSettings* settings = ui->molpreview->page()->settings();
   settings->setAttribute(QWebEngineSettings::LocalContentCanAccessRemoteUrls, true);
   settings->setAttribute(QWebEngineSettings::ShowScrollBars, false);
@@ -123,6 +135,13 @@ MainWindow::MainWindow(QWidget *parent)
     [this] (const QString& coordinates, const QString& trajectory)
     {
       setMoleculeFile(coordinates, trajectory);
+    });
+
+  connect(
+    UiUpdater::getInstance(), &UiUpdater::showGraph,
+    [this] (const QString& graph)
+    {
+      setGraph(graph);
     });
 
   connect(
@@ -204,6 +223,37 @@ void MainWindow::setTextFile(const QString& fileName)
 
   ui->textViewDock->setWindowTitle(fileName);
   ui->textViewDock->raise();
+}
+
+void MainWindow::setGraph(const QString& graphFile)
+{
+  auto graphData = IO::GraceReader::readFile(graphFile);
+
+  auto chart = new QChart();
+  auto xSeries = graphData.data[0].entries;
+  for (int index = 1; index < graphData.data.size(); index++)
+  {
+    auto inputSeries = graphData.data[index].entries;
+    auto series = new QSplineSeries();
+    for (int valueIndex = 0; valueIndex < inputSeries.size(); valueIndex++)
+    {
+      series->append(xSeries[valueIndex], inputSeries[valueIndex]);
+    }
+    series->setName(graphData.data[index].legend);
+    chart->addSeries(series);
+  }
+  chart->setTitle(graphData.title);
+  chart->createDefaultAxes();
+
+  auto oldChart = graphView->chart();
+  graphView->setChart(chart);
+  if (oldChart)
+  {
+    delete oldChart;
+  }
+
+  ui->graphDock->setWindowTitle(graphFile);
+  ui->graphDock->raise();
 }
 
 void MainWindow::setupUIForProject()

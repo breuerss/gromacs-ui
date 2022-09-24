@@ -291,6 +291,15 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="graphDock">
+   <property name="windowTitle">
+    <string>Graph Viewer</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="graphDockContents"/>
+  </widget>
   <action name="actionNewProject">
    <property name="icon">
     <iconset resource="../share/icons/resource.qrc">

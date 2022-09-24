@@ -14,6 +14,7 @@ signals:
   void showTrajectory(const QString& coords, const QString& trajectory);
   void showCoordinates(const QString& coords);
   void showTextFile(const QString& textFile);
+  void showGraph(const QString& graphFile);
 
 private:
   UiUpdater() = default;

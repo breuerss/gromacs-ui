@@ -4,6 +4,7 @@
 #include "settings.h"
 
 #include <QMainWindow>
+#include <QChartView>
 #include <QList>
 #include <memory>
 
@@ -13,6 +14,8 @@ class MainWindow;
 namespace Config {
 class Simulation;
 }
+
+using namespace QtCharts;
 
 class PreferencesDialog;
 
@@ -37,6 +40,8 @@ private:
   Settings settings;
   void setMoleculeFile(const QString& file = "", const QString& traj = "");
   void setTextFile(const QString& fileName);
+  void setGraph(const QString& fileName);
   QList<QMetaObject::Connection> conns;
+  QChartView* graphView;
 };
 #endif // MAINWINDOW_H

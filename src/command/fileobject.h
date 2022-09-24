@@ -24,6 +24,7 @@ public:
     TPR,
     MDP,
     TOP,
+    XVG,
   };
 
   enum class Category {
@@ -35,6 +36,7 @@ public:
     Forces,
     Topology,
     Text,
+    Graph,
   };
 
   FileObject(Type newType);

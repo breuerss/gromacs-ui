@@ -46,10 +46,6 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "Solvate", addStepToProject<Pipeline::Solvate::Step> },
     { "Neutralise", addStepToProject<Pipeline::Neutralise::Step> },
   };
-  nodeMenuDefinitions[Category::Viewer] = {
-    //{ "Trajectory Viewer", []() {} },
-    //{ "Coordinate Viewer", []() {} },
-  };
 
   using SimulationType = Pipeline::Simulation::Configuration::Type;
   nodeMenuDefinitions[Category::Simulation] = {

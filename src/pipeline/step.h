@@ -31,7 +31,7 @@ public:
     PreProcess,
     PostProcess,
     Simulation,
-    Viewer,
+    Analysis,
   };
   Step(
     const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
