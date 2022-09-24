@@ -49,20 +49,17 @@ void GraceReader::readControl(GraphData& graphData, QString& line)
   QString control = elements.takeFirst();
   if (control == "title")
   {
-    graphData.title = elements.join(" ");
-    graphData.title.remove("\"");
+    graphData.title = createCleanStringFrom(elements);
   }
   else if (control == "xaxis" && elements[0] == "label")
   {
     elements.removeFirst();
-    graphData.xLabel = elements.join(" ");
-    graphData.xLabel.remove("\"");
+    graphData.xLabel = createCleanStringFrom(elements);
   }
   else if (control == "yaxis" && elements[0] == "label")
   {
     elements.removeFirst();
-    graphData.yLabel = elements.join(" ");
-    graphData.yLabel.remove("\"");
+    graphData.yLabel = createCleanStringFrom(elements);
   }
   else if (
       control.contains(QRegularExpression("^s\\d+$")) && elements[0] == "legend")
@@ -73,8 +70,16 @@ void GraceReader::readControl(GraphData& graphData, QString& line)
     {
       graphData.data.push_back(GraphData::Series());
     }
-    graphData.data[index].legend = elements.join(" ").remove("\"");
+    graphData.data[index].legend = createCleanStringFrom(elements);
   }
+}
+
+QString GraceReader::createCleanStringFrom(const QStringList& elements)
+{
+  return elements.join(" ")
+    .remove("\"")
+    .replace("\\s", "_{")
+    .replace("\\N", "}");
 }
 
 }
