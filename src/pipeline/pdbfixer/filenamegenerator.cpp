@@ -1,7 +1,6 @@
 #include "filenamegenerator.h"
 #include "../../model/project.h"
 #include "../../command/fileobjectconsumer.h"
-#include "configuration.h"
 #include <QFileInfo>
 
 namespace Pipeline { namespace PdbFixer {

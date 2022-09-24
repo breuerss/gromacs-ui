@@ -1,5 +1,4 @@
 #include "step.h"
-#include "configuration.h"
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
@@ -17,7 +16,7 @@ Step::Step(
     {
       FileObject::Type::PDB,
     },
-    std::make_shared<Configuration>(),
+    nullptr,
     std::make_shared<Command>(),
     std::make_shared<FileNameGenerator>(project),
     Category::PreProcess
