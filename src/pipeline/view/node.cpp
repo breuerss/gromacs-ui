@@ -66,6 +66,20 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   setColorForSelectionState();
 }
 
+Node::~Node()
+{
+  for (auto conn: conns)
+  {
+    QObject::disconnect(conn);
+  }
+  delete tooltipBox;
+  delete resizeAnimation;
+  delete proxySettingsWidget;
+  delete text;
+  delete runIcon;
+  delete nodeBackground;
+}
+
 void Node::setupBackground()
 {
   double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
@@ -129,15 +143,6 @@ void Node::setupRunIcon()
 
       runIcon->setIcon(icon, true);
   });
-}
-
-Node::~Node()
-{
-  for (auto conn: conns)
-  {
-    QObject::disconnect(conn);
-  }
-  delete tooltipBox;
 }
 
 void Node::setupPorts()

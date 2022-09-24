@@ -4,6 +4,7 @@
 #include "node.h"
 #include "../../model/project.h"
 #include "../../undoredo/stack.h"
+#include "src/pipeline/step.h"
 
 #include <memory>
 #include <QDebug>

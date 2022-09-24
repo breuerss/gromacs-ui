@@ -112,6 +112,19 @@ AddMenu::AddMenu(ActionButton* trigger)
   QWidget::hide();
 }
 
+AddMenu::~AddMenu()
+{
+  for (auto button : buttons)
+  {
+    delete button;
+  }
+
+  for (auto menu : menus.values())
+  {
+    delete menu;
+  }
+}
+
 std::shared_ptr<Pipeline::Simulation::Step>
 AddMenu::addSimulationToProject(Pipeline::Simulation::Configuration::Type type)
 {

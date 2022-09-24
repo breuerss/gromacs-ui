@@ -15,6 +15,7 @@ class Viewer: public QGraphicsView
 {
 public:
   Viewer(QWidget* parent = nullptr);
+  ~Viewer();
   void center();
 
   void setScene(View::Panel* scene);

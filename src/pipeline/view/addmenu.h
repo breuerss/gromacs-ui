@@ -21,6 +21,7 @@ class AddMenu : public QWidget {
   Q_OBJECT
 public:
   AddMenu(ActionButton* trigger);
+  ~AddMenu();
   QSize sizeHint() const override;
 
 public slots:

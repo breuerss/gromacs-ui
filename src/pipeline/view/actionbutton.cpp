@@ -27,6 +27,11 @@ ActionButton::ActionButton(unsigned size, const QColor& color, QWidget* parent)
   updateStyle();
 }
 
+ActionButton::~ActionButton()
+{
+  delete effect;
+}
+
 void ActionButton::setColor(const QColor& newColor)
 {
   color = newColor;

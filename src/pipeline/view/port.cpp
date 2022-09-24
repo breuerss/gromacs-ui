@@ -40,6 +40,8 @@ Port::~Port()
 {
   QObject::disconnect(conn);
   deleted(this);
+  delete increaseSize;
+  delete tooltipBox;
 }
 
 void Port::setupTooltip()

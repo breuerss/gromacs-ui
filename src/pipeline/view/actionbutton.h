@@ -16,6 +16,7 @@ public:
     unsigned size = defaultSize,
     const QColor& color = defaultColor,
     QWidget* parent = nullptr);
+  ~ActionButton();
   void setColor(const QColor& hexColor);
   void setText(const QString& text);
 

@@ -35,6 +35,12 @@ Tooltip::Tooltip(QGraphicsItem* parent)
   update();
 }
 
+Tooltip::~Tooltip()
+{
+  delete headerItem;
+  delete textItem;
+}
+
 void Tooltip::setHeader(const QString& newHeader)
 {
   header = newHeader;

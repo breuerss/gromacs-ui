@@ -24,6 +24,7 @@ public:
     QWidget* trigger,
     QWidget* parent
     );
+  ~AddNodeMenu();
 
 protected:
   void hideEvent(QHideEvent *event) override;

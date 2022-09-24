@@ -34,6 +34,13 @@ Viewer::Viewer(QWidget* parent)
   createAddButton();
 }
 
+Viewer::~Viewer()
+{
+  delete topMenu;
+  delete addMenu;
+  delete addButton;
+}
+
 void Viewer::createTopMenu()
 {
   auto gridLayout = dynamic_cast<QGridLayout*>(layout());

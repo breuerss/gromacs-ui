@@ -11,6 +11,7 @@ class PortTooltip : public RoundedRectItem {
 public:
   using RoundedRectItem::RoundedRectItem;
   PortTooltip(QGraphicsItem* parent = nullptr);
+  ~PortTooltip();
 
   void setCategory(Command::FileObject::Category category);
   void setFileName(const QString& newFileName);

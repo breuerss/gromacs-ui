@@ -41,6 +41,14 @@ AddNodeMenu::AddNodeMenu(
   createShowAnimation();
 }
 
+AddNodeMenu::~AddNodeMenu()
+{
+  for(auto button: buttons)
+  {
+    delete button;
+  }
+}
+
 void AddNodeMenu::show()
 {
   auto triggerCenter = trigger->geometry().center();

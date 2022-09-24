@@ -44,6 +44,13 @@ PortTooltip::PortTooltip(QGraphicsItem* parent)
   update();
 }
 
+PortTooltip::~PortTooltip()
+{
+  delete categoryAndTypeText;
+  delete fileNameText;
+  delete fileNameLegend;
+}
+
 void PortTooltip::setCategory(Command::FileObject::Category newCategory)
 {
   category = newCategory;
