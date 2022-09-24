@@ -38,6 +38,7 @@ Port::Port(
 
 Port::~Port()
 {
+  QObject::disconnect(conn);
   deleted(this);
 }
 

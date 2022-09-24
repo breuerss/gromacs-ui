@@ -47,7 +47,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   tooltipBox = new Tooltip();
   delayedTooltip.setInterval(500);
   delayedTooltip.setSingleShot(true);
-  QObject::connect(&delayedTooltip, &QTimer::timeout, [this] () {
+  conns << QObject::connect(&delayedTooltip, &QTimer::timeout, [this] () {
     scene()->addItem(tooltipBox);
     tooltipBox->show();
   });
@@ -101,12 +101,13 @@ void Node::setupRunIcon()
 
   auto command = step->getCommand().get();
   auto enableRunIcon = [this, command] () {
+    qDebug() << (QGraphicsItem*)runIcon;
     runIcon->setEnabled(command->canExecute());
   };
-  QObject::connect(command, &Command::Executor::canExecuteChanged, enableRunIcon);
+  conns << QObject::connect(command, &Command::Executor::canExecuteChanged, enableRunIcon);
   enableRunIcon();
 
-  QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
+  conns << QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
     auto command = step->getCommand();
     if (command->isRunning())
     {
@@ -117,7 +118,7 @@ void Node::setupRunIcon()
       command->exec();
     }
   });
-  QObject::connect(
+  conns << QObject::connect(
     command, &Command::Executor::runningChanged,
     [this] (bool isRunning) {
       auto icon = QIcon::fromTheme("media-playback-start");
@@ -128,6 +129,14 @@ void Node::setupRunIcon()
 
       runIcon->setIcon(icon, true);
   });
+}
+
+Node::~Node()
+{
+  for (auto conn: conns)
+  {
+    QObject::disconnect(conn);
+  }
 }
 
 void Node::setupPorts()
@@ -143,7 +152,7 @@ void Node::setupPorts()
     addInputPort(category, Colors::getColorFor(category));
   }
 
-  QObject::connect(
+  conns << QObject::connect(
     step->getFileObjectConsumer().get(),
     &Command::FileObjectConsumer::connectedToChanged,
     [this] (
@@ -172,7 +181,7 @@ void Node::addInputPort(Command::FileObject::Category category, const QColor& co
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPort->setCategory(category);
   inputPorts << QPair<Command::FileObject::Category, Port*>(category, inputPort);
-  QObject::connect(
+  conns << QObject::connect(
     inputPort, &Port::connectedToChanged, 
     [this] (
       std::shared_ptr<Command::FileObject> fileObject,
@@ -247,7 +256,7 @@ void Node::setupResizeAnimation()
   resizeAnimation->setStartValue(nodeBackground->boundingRect().size());
   resizeAnimation->setEasingCurve(QEasingCurve::OutQuad);
 
-  QObject::connect(
+  conns << QObject::connect(
     resizeAnimation, &QPropertyAnimation::stateChanged,
     [this] (QAbstractAnimation::State newState) {
     if (newState == QAbstractAnimation::Running)
@@ -255,13 +264,13 @@ void Node::setupResizeAnimation()
       proxySettingsWidget->hide();
     }
   });
-  QObject::connect(resizeAnimation, &QPropertyAnimation::finished, [this] () {
+  conns << QObject::connect(resizeAnimation, &QPropertyAnimation::finished, [this] () {
     if (resizeAnimation->direction() == QAbstractAnimation::Forward)
     {
       proxySettingsWidget->show();
     }
   });
-  QObject::connect(resizeAnimation, &QPropertyAnimation::valueChanged, [this] () {
+  conns << QObject::connect(resizeAnimation, &QPropertyAnimation::valueChanged, [this] () {
     arrangeOutputPorts();
   });
 }
@@ -272,7 +281,7 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
   outputPort->setProvidedFileObject(fileObject);
   outputPorts << QPair<std::shared_ptr<Command::FileObject>, Port*>(
     fileObject, outputPort);
-  QObject::connect(outputPort, &Port::clicked, [this, fileObject] () {
+  conns << QObject::connect(outputPort, &Port::clicked, [this, fileObject] () {
     using FileObject = Command::FileObject;
     using Category = FileObject::Category;
     switch (FileObject::getCategoryFor(fileObject->type))

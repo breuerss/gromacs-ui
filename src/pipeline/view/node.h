@@ -28,6 +28,7 @@ public:
   typedef QList<QPair<std::shared_ptr<Command::FileObject>, Port*>> OutputPorts;
 
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
+  ~Node();
 
   Port* getInputPort(Command::FileObject::Category);
   const OutputPorts& getOutputPorts() const;
@@ -89,6 +90,7 @@ private:
   QPropertyAnimation* resizeAnimation = nullptr;
   Tooltip* tooltipBox;
   QTimer delayedTooltip;
+  QList<QMetaObject::Connection> conns;
 };
 
 } }
