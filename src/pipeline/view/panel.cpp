@@ -41,6 +41,7 @@ void Panel::startConnector(Port* at)
 {
   stopConnector();
   activeConnector = new Connector(at);
+  startingNode = at->parentItem();
   addItem(activeConnector);
 }
 
@@ -51,6 +52,7 @@ void Panel::stopConnector()
     removeItem(activeConnector);
     delete activeConnector;
     activeConnector = nullptr;
+    startingNode = nullptr;
   }
 }
 

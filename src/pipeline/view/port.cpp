@@ -199,15 +199,15 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     if (connected)
     {
       Connector* connector = panel->getConnectorFor(this);
+      panel->reuseConnector(connector);
+
       auto fileObject = connector->getStartingPort()->getFileObject();
       connectedToChanged(nullptr, fileObject);
-      panel->reuseConnector(connector);
     }
   }
   else
   {
     panel->startConnector(this);
-    panel->startingNode = parentItem();
   }
 
   QDrag* drag = new QDrag(this);
@@ -217,7 +217,6 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
   unsetCursor();
   panel->stopConnector();
-  panel->startingNode = nullptr;
 }
 
 void Port::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
