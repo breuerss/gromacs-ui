@@ -9,6 +9,8 @@
 #include "solvate/step.h"
 #include "smoothtrajectory/step.h"
 #include "centerprotein/step.h"
+#include "gyrate/step.h"
+
 #include "src/model/project.h"
 #include <memory>
 
@@ -49,6 +51,9 @@ StepFactory::StepFactory()
 
   auto centerProteinPrototype = std::make_unique<CenterProtein::Step>();
   factoryMap[centerProteinPrototype->getType()] = std::move(centerProteinPrototype);
+
+  auto gyratePrototype = std::make_unique<Gyrate::Step>();
+  factoryMap[gyratePrototype->getType()] = std::move(gyratePrototype);
 }
 
 std::shared_ptr<Step> StepFactory::createFromString(

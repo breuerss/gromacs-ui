@@ -10,7 +10,7 @@
 #include "simulation/step.h"
 #include "smoothtrajectory/step.h"
 #include "centerprotein/step.h"
-#include "simulation/configuration.h"
+#include "gyrate/step.h"
 
 #endif
 

@@ -25,9 +25,13 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "Pre", Category::PreProcess },
     { "S", Category::Simulation },
     { "P", Category::PostProcess },
+    { "A", Category::Analysis },
   };
 
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
+  nodeMenuDefinitions[Category::Analysis] = {
+    { "Gyrate", addStepToProject<Pipeline::Gyrate::Step> },
+  };
   nodeMenuDefinitions[Category::DataProvider] = {
     { "PDB Downloader", addStepToProject<Pipeline::PdbDownload::Step> },
     //{ "Load From File", []() {} },
