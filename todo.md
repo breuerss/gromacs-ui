@@ -23,9 +23,12 @@
 
 1. Filter
 1. Loading starting configuration for different simulations
-1. Coloring of ports to be clear about the accepted file types
-1. show information of selected options in short form
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
-1. restore connections when restoring node
+
 1. transparency of ports
-1. todo analysis
+1. avoid overlapping tooltips
+1. do not show tooltip whene dragging
+
+1. restore connections when restoring node
+1. simulation type on node
+1. show information of selected options in short form for simulation
