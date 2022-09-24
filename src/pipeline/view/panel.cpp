@@ -66,7 +66,7 @@ void Panel::addConnector(Port* start, Port* end)
 {
   auto deletePortEntry = [this] (Port* deleted) {
     deleteConnectorFor(deleted);
-    disconnect(QObject::sender());
+    disconnect(deleted);
   };
   conns << connect(start, &Port::deleted, deletePortEntry);
   conns << connect(end, &Port::deleted, deletePortEntry);
