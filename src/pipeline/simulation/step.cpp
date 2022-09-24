@@ -21,6 +21,7 @@ Step::Step(
       FileObject::Type::XTC,
       FileObject::Type::LOG,
       FileObject::Type::MDP,
+      FileObject::Type::TPR,
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),
