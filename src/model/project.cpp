@@ -1,21 +1,21 @@
 #include "project.h"
+#include "stepvector.h"
+#include "systemsetup.h"
+#include "../settings.h"
 #include "../pipeline/simulation/configuration.h"
+#include "../pipeline/stepfactory.h"
+#include "../pipeline/steps.h"
 #include "../undoredo/stack.h"
 #include "../undoredo/addstepcommand.h"
 #include "../undoredo/removestepcommand.h"
-#include "src/model/stepvector.h"
-#include "systemsetup.h"
-#include "../settings.h"
+#include "../command/fileobjectconsumer.h"
+#include "../command/fileobjectprovider.h"
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
-#include <memory>
 #include <QJsonObject>
 #include <QJsonArray>
-#include "../pipeline/stepfactory.h"
-#include "../command/fileobjectconsumer.h"
-#include "../command/fileobjectprovider.h"
-#include "../pipeline/steps.h"
+#include <memory>
 
 namespace Model {
 
