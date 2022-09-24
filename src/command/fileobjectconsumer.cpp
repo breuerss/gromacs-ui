@@ -37,8 +37,13 @@ void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool 
     auto category = getCategoryFor(fileObject);
     if (category != FileObject::Category::Unknown)
     {
-      auto old = connectedTo[category];
+      std::shared_ptr<FileObject> old;
+      if (connectedTo.contains(category))
+      {
+        old = connectedTo[category];
+      }
       connectedTo[category] = fileObject;
+
       emit connectedToChanged(fileObject, category, old);
     }
   }
@@ -53,7 +58,7 @@ void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject, 
   }
   else {
     auto category = getCategoryFor(fileObject);
-    if (connectedTo[category] == fileObject)
+    if (connectedTo.contains(category) && connectedTo[category] == fileObject)
     {
       connectedTo.remove(category);
       emit connectedToChanged(nullptr, category, fileObject);
@@ -98,6 +103,5 @@ FileObjectConsumer::getConnectedTo() const
 {
   return connectedTo;
 }
-
 
 }
