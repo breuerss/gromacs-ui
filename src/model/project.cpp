@@ -1,4 +1,5 @@
 #include "project.h"
+#include "src/pipelinerunner.h"
 #include "stepvector.h"
 #include "systemsetup.h"
 #include "../settings.h"
@@ -37,6 +38,21 @@ void Project::removeStep(int at)
 {
   UndoRedo::Stack::getInstance()->beginMacro("Remove Step");
   auto step = pipelineSteps.takeAt(at);
+  for (auto fileObject : step->getFileObjectConsumer()->getConnectedTo().values())
+  {
+    step->getFileObjectConsumer()->disconnectFrom(fileObject);
+  }
+  auto nextSteps = PipelineRunner::getNextStepsFor(step, shared_from_this());
+
+  auto provides = step->getFileObjectProvider()->provides();
+  for (auto fileObject: provides)
+  {
+    for (auto nextStep : nextSteps)
+    {
+      nextStep->getFileObjectConsumer()->disconnectFrom(fileObject);
+    }
+  }
+
   UndoRedo::Stack::getInstance()->push(new UndoRedo::RemoveStepCommand(std::move(step), this));
   UndoRedo::Stack::getInstance()->endMacro();
 }

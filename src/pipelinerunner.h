@@ -11,11 +11,12 @@ class PipelineRunner : public QObject
 public:
   static PipelineRunner* getInstance();
   void startPipeline();
+  static QList<std::shared_ptr<Pipeline::Step>>
+  getNextStepsFor(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>);
+
 private:
   PipelineRunner() = default;
   QList<std::shared_ptr<Pipeline::Step>> getStartingSteps(std::shared_ptr<Model::Project>) const;
-  QList<std::shared_ptr<Pipeline::Step>>
-  getNextStepsFor(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>) const;
   void handleNextSteps(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>);
 
   QList<QMetaObject::Connection> conns;

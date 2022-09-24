@@ -74,7 +74,7 @@ QList<std::shared_ptr<Pipeline::Step>>
 PipelineRunner::getNextStepsFor(
   std::shared_ptr<Pipeline::Step> step,
   std::shared_ptr<Model::Project> project
-  ) const
+  )
 {
 
   using FileObject = Command::FileObject;
