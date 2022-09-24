@@ -44,6 +44,22 @@ void Panel::startConnector(Port* at)
   addItem(activeConnector);
 }
 
+void Panel::stopConnector()
+{
+  if (activeConnector)
+  {
+    removeItem(activeConnector);
+    delete activeConnector;
+    activeConnector = nullptr;
+  }
+}
+
+void Panel::connectorAccepted()
+{
+  addConnector(activeConnector->getStartingPort(), activeConnector->getEndingPort());
+  stopConnector();
+}
+
 void Panel::addConnector(Port* start, Port* end)
 {
   auto deletePortEntry = [this] (Port* deleted) {
@@ -64,8 +80,11 @@ void Panel::addConnector(Port* start, Port* end)
 void Panel::deleteConnectorFor(Port* port)
 {
   auto connector = getConnectorFor(port);
-  removeItem(connector);
-  delete connector;
+  if (connector)
+  {
+    removeItem(connector);
+    delete connector;
+  }
 }
 
 Connector* Panel::getConnectorFor(Port* port)
@@ -350,22 +369,6 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
     pos = itemsBoundingRect().topRight() + QPointF(20, 0);
   }
   node->setPos(pos);
-}
-
-void Panel::stopConnector()
-{
-  if (activeConnector)
-  {
-    removeItem(activeConnector);
-    delete activeConnector;
-    activeConnector = nullptr;
-  }
-}
-
-void Panel::connectorAccepted()
-{
-  addConnector(activeConnector->getStartingPort(), activeConnector->getEndingPort());
-  stopConnector();
 }
 
 void Panel::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
