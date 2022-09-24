@@ -137,6 +137,7 @@ Node::~Node()
   {
     QObject::disconnect(conn);
   }
+  delete tooltipBox;
 }
 
 void Node::setupPorts()
