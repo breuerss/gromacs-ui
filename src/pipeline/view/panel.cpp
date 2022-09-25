@@ -409,7 +409,7 @@ void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     setAllNodesSelected(false);
   }
 
-  if (startingPos != event->scenePos())
+  if (startingPos != event->scenePos() && movingNode)
   {
     nodeMoved(movingNode, nodePos);
   }
