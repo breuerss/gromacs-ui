@@ -37,7 +37,16 @@ void Runner::handleNextSteps(
     command.get(), &Command::Executor::finished,
     [this, step, project] () {
       running--;
-      auto nextSteps = getNextStepsFor(step, project);
+      auto nextSteps = getNextStepsFor(
+        step, project,
+        {
+          Type::GRO,
+          Type::PDB,
+          Type::XTC,
+          Type::TOP,
+          Type::EDR,
+          Type::TRR,
+        });
       for (auto step : nextSteps)
       {
         handleNextSteps(step, project);
@@ -75,25 +84,23 @@ Runner::getStartingSteps(std::shared_ptr<Model::Project> project) const
 QList<std::shared_ptr<Pipeline::Step>>
 Runner::getNextStepsFor(
   std::shared_ptr<Pipeline::Step> step,
-  std::shared_ptr<Model::Project> project
+  std::shared_ptr<Model::Project> project,
+  const QList<Command::FileObject::Type> relevantTypes
   )
 {
 
-  using FileObject = Command::FileObject;
-  using Type = Command::FileObject::Type;
   auto outputFiles = step->getFileObjectProvider()->provides();
-  QList<std::shared_ptr<FileObject>> relevantOutputFiles;
-  for (auto file: outputFiles)
+  using FileObject = Command::FileObject;
+  QList<std::shared_ptr<FileObject>> relevantOutputFiles = outputFiles;
+
+  if (relevantTypes.size())
   {
-    if (
-      file->type == Type::GRO ||
-      file->type == Type::PDB ||
-      file->type == Type::XTC ||
-      file->type == Type::EDR ||
-      file->type == Type::TRR
-      )
+    for (const auto& file: outputFiles)
     {
-      relevantOutputFiles << file;
+      if (!relevantTypes.contains(file->type))
+      {
+        relevantOutputFiles.removeAll(file);
+      }
     }
   }
 
