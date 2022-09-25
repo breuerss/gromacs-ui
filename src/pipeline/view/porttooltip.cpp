@@ -32,7 +32,7 @@ PortTooltip::PortTooltip(QGraphicsItem* parent)
     categoryAndTypeText->mapToParent(categoryAndTypeText->boundingRect().bottomLeft())
     );
 
-  fileNameLegend = new QGraphicsTextItem(tr("(Click to open)"), this);
+  fileNameLegend = new QGraphicsTextItem("", this);
   fileNameLegend->setDefaultTextColor(Colors::White);
   font = fileNameLegend->font();
   font.setPixelSize(11);
@@ -69,6 +69,12 @@ void PortTooltip::setFileTypes(const QList<Command::FileObject::Type>& newTypes)
   update();
 }
 
+void PortTooltip::setCanOpen(bool newCanOpen)
+{
+  canOpen = newCanOpen;
+  update();
+}
+
 void PortTooltip::update()
 {
   using FileObject = Command::FileObject;
@@ -102,6 +108,12 @@ void PortTooltip::update()
   }
   fileNameText->setParentItem(parent);
   fileNameLegend->setParentItem(parent);
+  QString legend = tr("(Not yet generated)");
+  if (canOpen)
+  {
+    legend = tr("(Click to open)");
+  }
+  fileNameLegend->setPlainText(legend);
 
   setSize(childrenBoundingRect().size() + QSize(2 * indent, 2 * indent));
 }

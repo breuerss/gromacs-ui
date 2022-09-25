@@ -16,6 +16,7 @@ public:
   void setCategory(Command::FileObject::Category category);
   void setFileName(const QString& newFileName);
   void setFileTypes(const QList<Command::FileObject::Type>& newTypes);
+  void setCanOpen(bool newCanOpen);
 
 private:
   void update();
@@ -29,6 +30,7 @@ private:
   QGraphicsTextItem* categoryAndTypeText;
   QGraphicsTextItem* fileNameText;
   QGraphicsTextItem* fileNameLegend;
+  bool canOpen = false;
 };
 } }
 

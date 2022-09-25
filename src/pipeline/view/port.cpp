@@ -158,7 +158,9 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
   tooltipBox->setPos(tooltipPos);
 
 
-  if (fileObject && !fileObject->getFileName().isEmpty())
+  bool hasFileToOpen = fileObject && fileObject->exists();
+  tooltipBox->setCanOpen(hasFileToOpen);
+  if (hasFileToOpen)
   {
     increaseSize->setDirection(QAbstractAnimation::Forward);
     increaseSize->start();
@@ -169,7 +171,7 @@ void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
   tooltipBox->hide();
-  if (fileObject && !fileObject->getFileName().isEmpty())
+  if (fileObject && fileObject->exists())
   {
     increaseSize->setDirection(QAbstractAnimation::Backward);
     increaseSize->start();
