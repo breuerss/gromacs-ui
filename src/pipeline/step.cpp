@@ -153,7 +153,7 @@ QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
   const auto& location = step->location;
   out["type"] = step->getType();
   out["location"] = QJsonArray({
-    location.x(), location.y(), location.width(), location.height()
+    location.x(), location.y()
   });
 
   QJsonArray fileObjectsArray;
@@ -178,10 +178,8 @@ QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
   }
   if (in.contains("location") && in["location"].isArray())
   {
-    auto& location = step->location;
     QJsonArray jsonLoc = in["location"].toArray();
-    location.setTopLeft({ jsonLoc[0].toDouble(), jsonLoc[1].toDouble() });
-    location.setSize({ jsonLoc[2].toDouble(), jsonLoc[3].toDouble() });
+    step->location = QPointF(jsonLoc[0].toDouble(), jsonLoc[1].toDouble());
   }
 
   if (in.contains("provided-files") && in["provided-files"].isArray())

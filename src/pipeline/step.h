@@ -5,6 +5,7 @@
 #include "../command/fileobject.h"
 #include <QString>
 #include <QMap>
+#include <QPointF>
 #include <memory>
 
 namespace config {
@@ -59,7 +60,7 @@ public:
   void showUI(bool show = true);
 
   const Category category;
-  QRectF location;
+  QPointF location;
 
 protected:
   std::shared_ptr<Model::Project> project;

@@ -413,7 +413,7 @@ QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
 {
   if (change == QGraphicsItem::ItemPositionHasChanged)
   {
-    step->location = QRectF(scenePos(), boundingRect().size());
+    step->location = scenePos();
   }
 
   return QGraphicsItem::itemChange(change, value);
