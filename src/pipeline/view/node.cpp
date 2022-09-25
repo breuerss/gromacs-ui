@@ -48,7 +48,10 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   delayedTooltip.setInterval(500);
   delayedTooltip.setSingleShot(true);
   conns << QObject::connect(&delayedTooltip, &QTimer::timeout, [this] () {
-    scene()->addItem(tooltipBox);
+    if (!tooltipBox->scene())
+    {
+      scene()->addItem(tooltipBox);
+    }
     tooltipBox->show();
   });
 
