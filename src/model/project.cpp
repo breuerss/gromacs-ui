@@ -1,11 +1,11 @@
 #include "project.h"
-#include "src/pipelinerunner.h"
 #include "stepvector.h"
 #include "systemsetup.h"
 #include "../settings.h"
 #include "../pipeline/simulation/configuration.h"
 #include "../pipeline/stepfactory.h"
 #include "../pipeline/steps.h"
+#include "../pipeline/runner.h"
 #include "../undoredo/stack.h"
 #include "../undoredo/addstepcommand.h"
 #include "../undoredo/removestepcommand.h"
@@ -42,7 +42,7 @@ void Project::removeStep(int at)
   {
     step->getFileObjectConsumer()->disconnectFrom(fileObject);
   }
-  auto nextSteps = PipelineRunner::getNextStepsFor(step, shared_from_this());
+  auto nextSteps = Pipeline::Runner::getNextStepsFor(step, shared_from_this());
 
   auto provides = step->getFileObjectProvider()->provides();
   for (auto fileObject: provides)

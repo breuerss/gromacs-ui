@@ -5,22 +5,26 @@
 #include "src/pipeline/step.h"
 #include <QObject>
 #include <memory>
-#include <qobjectdefs.h>
-class PipelineRunner : public QObject
+
+namespace Pipeline {
+
+class Runner : public QObject
 {
 public:
-  static PipelineRunner* getInstance();
+  static Runner* getInstance();
   void startPipeline();
   static QList<std::shared_ptr<Pipeline::Step>>
   getNextStepsFor(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>);
 
 private:
-  PipelineRunner() = default;
+  Runner() = default;
   QList<std::shared_ptr<Pipeline::Step>> getStartingSteps(std::shared_ptr<Model::Project>) const;
   void handleNextSteps(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>);
 
   QList<QMetaObject::Connection> conns;
   int running = 0;
 };
+
+}
 
 #endif

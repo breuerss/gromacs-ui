@@ -1,20 +1,22 @@
-#include "pipelinerunner.h"
-#include "projectmanager.h"
-#include "command/fileobjectconsumer.h"
-#include "command/fileobjectprovider.h"
-#include "command/fileobject.h"
-#include "src/command/executor.h"
+#include "runner.h"
+#include "../projectmanager.h"
+#include "../command/fileobjectconsumer.h"
+#include "../command/fileobjectprovider.h"
+#include "../command/fileobject.h"
+#include "../command/executor.h"
 #include <memory>
 #include <qdebug.h>
 
-PipelineRunner* PipelineRunner::getInstance()
+namespace Pipeline {
+
+Runner* Runner::getInstance()
 {
-  static PipelineRunner instance;
+  static Runner instance;
 
   return &instance;
 }
 
-void PipelineRunner::startPipeline()
+void Runner::startPipeline()
 {
   auto project = ProjectManager::getInstance()->getCurrentProject();
 
@@ -25,7 +27,7 @@ void PipelineRunner::startPipeline()
   }
 }
 
-void PipelineRunner::handleNextSteps(
+void Runner::handleNextSteps(
   std::shared_ptr<Pipeline::Step> step,
   std::shared_ptr<Model::Project> project
   )
@@ -56,7 +58,7 @@ void PipelineRunner::handleNextSteps(
 }
 
 QList<std::shared_ptr<Pipeline::Step>>
-PipelineRunner::getStartingSteps(std::shared_ptr<Model::Project> project) const
+Runner::getStartingSteps(std::shared_ptr<Model::Project> project) const
 {
   QList<std::shared_ptr<Pipeline::Step>> startingSteps;
   for (auto step : project->getSteps())
@@ -71,7 +73,7 @@ PipelineRunner::getStartingSteps(std::shared_ptr<Model::Project> project) const
 }
 
 QList<std::shared_ptr<Pipeline::Step>>
-PipelineRunner::getNextStepsFor(
+Runner::getNextStepsFor(
   std::shared_ptr<Pipeline::Step> step,
   std::shared_ptr<Model::Project> project
   )
@@ -112,4 +114,4 @@ PipelineRunner::getNextStepsFor(
   return nextSteps;
 }
 
-
+}

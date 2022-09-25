@@ -131,7 +131,10 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
     setCursor(Qt::PointingHandCursor);
   }
 
-  scene()->addItem(tooltipBox);
+  if (!tooltipBox->scene())
+  {
+    scene()->addItem(tooltipBox);
+  }
   tooltipBox->show();
   auto sceneScale = scene()->views()[0]->transform().m11();
   tooltipBox->setScale(1 / sceneScale);

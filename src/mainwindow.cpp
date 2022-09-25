@@ -5,7 +5,7 @@
 #include "statusmessagesetter.h"
 #include "logforwarder.h"
 #include "uiupdater.h"
-#include "pipelinerunner.h"
+#include "pipeline/runner.h"
 #include "io/gracereader.h"
 #include "undoredo/movecommand.h"
 #include "undoredo/stack.h"
@@ -185,7 +185,7 @@ MainWindow::MainWindow(QWidget *parent)
   connect(
     ui->actionRunSimulation, &QAction::triggered,
     [] () {
-      PipelineRunner::getInstance()->startPipeline();
+      Pipeline::Runner::getInstance()->startPipeline();
     });
 
   QFont font;
