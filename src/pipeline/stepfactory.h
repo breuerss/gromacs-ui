@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <QString>
-#include <map>
+#include <QMap>
 
 namespace Model {
 class Project;
@@ -16,15 +16,21 @@ class Step;
 class StepFactory
 {
 public:
+  StepFactory() = delete;
   static StepFactory* getInstance();
-  std::shared_ptr<Step> createFromString(
+
+  using CreateMethod = std::shared_ptr<Step>(*)(
+    std::shared_ptr<Model::Project>
+    );
+
+  static bool registerMethod(const QString& name, CreateMethod funcCreate);
+  static std::shared_ptr<Step> create(
     const QString& typeName,
     std::shared_ptr<Model::Project>
     );
 
 private:
-  StepFactory();
-  std::map<QString, std::unique_ptr<Step>> factoryMap;
+  static QMap<QString, CreateMethod> factoryMap;
 
 };
 

@@ -238,8 +238,7 @@ QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Project> project)
     {
       QJsonObject jsonStep = steps[index].toObject();
       QString type = jsonStep["type"].toString();
-      Pipeline::Step::Pointer step = Pipeline::StepFactory::getInstance()
-        ->createFromString(type, project);
+      Pipeline::Step::Pointer step = Pipeline::StepFactory::create(type, project);
 
       jsonStep >> step;
       project->addStep(std::move(step));

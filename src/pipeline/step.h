@@ -44,7 +44,6 @@ public:
   virtual QString getName() const = 0;
   virtual QString getType() const = 0;
   typedef std::shared_ptr<Step> Pointer;
-  virtual Pointer create(std::shared_ptr<Model::Project>) const = 0;
   virtual ~Step() = default;
 
   std::shared_ptr<Command::FileObjectConsumer> getFileObjectConsumer() const;

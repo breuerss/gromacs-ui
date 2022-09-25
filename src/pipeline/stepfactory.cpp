@@ -1,67 +1,35 @@
 #include "stepfactory.h"
 
-#include "simulation/step.h"
-#include "pdbdownload/step.h"
-#include "pdbfixer/step.h"
-#include "createbox/step.h"
-#include "creategromacsmodel/step.h"
-#include "neutralise/step.h"
-#include "solvate/step.h"
-#include "smoothtrajectory/step.h"
-#include "centerprotein/step.h"
-#include "gyrate/step.h"
-
-#include "src/model/project.h"
+#include "../model/project.h"
 #include <memory>
 
 namespace Pipeline {
 
-StepFactory* StepFactory::getInstance()
-{
-  static StepFactory instance;
+QMap<QString, StepFactory::CreateMethod> StepFactory::factoryMap;
 
-  return &instance;
+bool StepFactory::registerMethod(
+  const QString& type, 
+  StepFactory::CreateMethod funcCreate)
+{
+  if (!factoryMap.contains(type))
+  {
+    factoryMap[type] = funcCreate;
+    return true;
+  }
+  return false;
 }
 
-StepFactory::StepFactory()
-{
-  auto simulationPrototype = std::make_unique<Simulation::Step>();
-  factoryMap[simulationPrototype->getType()] = std::move(simulationPrototype);
-
-  auto pdbDownloadPrototype = std::make_unique<PdbDownload::Step>();
-  factoryMap[pdbDownloadPrototype->getType()] = std::move(pdbDownloadPrototype);
-
-  auto pdbFixerPrototype = std::make_unique<PdbFixer::Step>();
-  factoryMap[pdbFixerPrototype->getType()] = std::move(pdbFixerPrototype);
-
-  auto createboxPrototype = std::make_unique<CreateBox::Step>();
-  factoryMap[createboxPrototype->getType()] = std::move(createboxPrototype);
-
-  auto createGromacsModelPrototype = std::make_unique<CreateGromacsModel::Step>();
-  factoryMap[createGromacsModelPrototype->getType()] = std::move(createGromacsModelPrototype);
-
-  auto solvatePrototype = std::make_unique<Solvate::Step>();
-  factoryMap[solvatePrototype->getType()] = std::move(solvatePrototype);
-
-  auto neutralisePrototype = std::make_unique<Neutralise::Step>();
-  factoryMap[neutralisePrototype->getType()] = std::move(neutralisePrototype);
-
-  auto smoothTrajectoryPrototype = std::make_unique<SmoothTrajectory::Step>();
-  factoryMap[smoothTrajectoryPrototype->getType()] = std::move(smoothTrajectoryPrototype);
-
-  auto centerProteinPrototype = std::make_unique<CenterProtein::Step>();
-  factoryMap[centerProteinPrototype->getType()] = std::move(centerProteinPrototype);
-
-  auto gyratePrototype = std::make_unique<Gyrate::Step>();
-  factoryMap[gyratePrototype->getType()] = std::move(gyratePrototype);
-}
-
-std::shared_ptr<Step> StepFactory::createFromString(
+std::shared_ptr<Step> StepFactory::create(
   const QString& type,
   std::shared_ptr<Model::Project> project
   )
 {
-  return factoryMap[type]->create(project);
+  if (factoryMap.contains(type))
+  {
+    return factoryMap[type](project);
+  }
+
+  return nullptr;
 }
 
 }
