@@ -259,8 +259,6 @@ void MainWindow::setGraph(const QString& graphFile)
 void MainWindow::setupUIForProject()
 {
   auto project = ProjectManager::getInstance()->getCurrentProject();
-
-  return;
   if (project)
   {
     for (auto conn : conns)
@@ -268,16 +266,27 @@ void MainWindow::setupUIForProject()
       disconnect(conn);
     }
 
-    conns << connect(project.get(), &Model::Project::nameChanged, [this, project] (const QString& newName) {
-      QString title = "GROMACS UI | " + newName;
+    auto updateTitle = [this, project] (const QString& projectName = "") {
+      QStringList titleComps("GROMACS UI");
+
+      auto name = projectName;
+      if (projectName.isEmpty())
+      {
+        auto project = ProjectManager::getInstance();
+        name = project->property("name").toString();
+      }
+      titleComps << name;
+
       QString fileName = ProjectManager::getInstance()->getFileName();
       fileName.replace(QDir::homePath(), "~");
       if (!fileName.isEmpty())
       {
-        title += " | " + fileName;
+        titleComps << fileName;
       }
-      this->setWindowTitle(title);
-    });
+      this->setWindowTitle(titleComps.join(" | "));
+    };
+    conns << connect(project.get(), &Model::Project::nameChanged, updateTitle);
+    updateTitle();
   }
 }
 

@@ -146,8 +146,8 @@ void ProjectManager::open(const QString& newFileName)
     QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
     QJsonObject obj = loadDoc.object();
     obj >> currentProject;
-    currentProjectChanged(currentProject);
     fileName = fileNameToOpen;
+    currentProjectChanged(currentProject);
   }
 
   UndoRedo::Stack::getInstance()->clear();
