@@ -6,6 +6,7 @@
 #include <QString>
 #include <QMap>
 #include <QPointF>
+#include <QObject>
 #include <memory>
 
 namespace config {
@@ -25,7 +26,8 @@ class Executor;
 
 namespace Pipeline {
 
-class Step {
+class Step: public QObject {
+  Q_OBJECT
 public:
   enum class Category {
     Unknown,
@@ -60,7 +62,11 @@ public:
   void showUI(bool show = true);
 
   const Category category;
-  QPointF location;
+  void setLocation(const QPointF& newLocation);
+  const QPointF& getLocation() const;
+
+signals:
+  void locationChanged(const QPointF& location);
 
 protected:
   std::shared_ptr<Model::Project> project;
@@ -72,6 +78,7 @@ protected:
 
   QList<QMetaObject::Connection> conns;
   QMap<std::shared_ptr<Command::FileObject>, QMetaObject::Connection> fileChangeConns;
+  QPointF location;
 };
 
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step);

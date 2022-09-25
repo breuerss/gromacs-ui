@@ -1,8 +1,8 @@
 #ifndef UNDO_REDO_MOVE_COMMAND_H
 #define UNDO_REDO_MOVE_COMMAND_H
 
-#include <QUndoCommand>
 #include "../pipeline/view/node.h"
+#include <QUndoCommand>
 
 namespace UndoRedo {
 
@@ -12,7 +12,7 @@ class MoveCommand : public QUndoCommand
 public:
     enum { Id = 1234 };
 
-    MoveCommand(QGraphicsItem* node, const QPointF& oldPos,
+    MoveCommand(Node* node, const QPointF& oldPos,
                 QUndoCommand* parent = nullptr);
 
     void undo() override;
@@ -21,7 +21,7 @@ public:
     int id() const override { return Id; }
 
 private:
-    QGraphicsItem* node;
+    std::shared_ptr<Pipeline::Step> step;
     QPointF oldPos;
     QPointF newPos;
 };

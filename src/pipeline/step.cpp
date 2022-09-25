@@ -144,13 +144,30 @@ void Step::showStatusUI(bool show)
   UiUpdater::getInstance()->showStatusUI(widget);
 }
 
+void Step::setLocation(const QPointF& newLocation)
+{
+  const bool changed = newLocation != location;
+
+  location = newLocation;
+
+  if (changed)
+  {
+    locationChanged(location);
+  }
+}
+
+const QPointF& Step::getLocation() const
+{
+  return location;
+}
+
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
 {
   if (step->getConfiguration())
   {
     out << step->getConfiguration();
   }
-  const auto& location = step->location;
+  const auto& location = step->getLocation();
   out["type"] = step->getType();
   out["location"] = QJsonArray({
     location.x(), location.y()
@@ -179,7 +196,7 @@ QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
   if (in.contains("location") && in["location"].isArray())
   {
     QJsonArray jsonLoc = in["location"].toArray();
-    step->location = QPointF(jsonLoc[0].toDouble(), jsonLoc[1].toDouble());
+    step->setLocation(QPointF(jsonLoc[0].toDouble(), jsonLoc[1].toDouble()));
   }
 
   if (in.contains("provided-files") && in["provided-files"].isArray())

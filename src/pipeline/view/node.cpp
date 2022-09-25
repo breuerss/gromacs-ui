@@ -55,6 +55,13 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
     tooltipBox->show();
   });
 
+  conns << QObject::connect(
+    step.get(), &Pipeline::Step::locationChanged,
+    [this] (const auto& location) {
+      setPos(location);
+      scene()->update();
+    });
+
   auto config = step->getConfiguration();
   if (config)
   {
@@ -413,7 +420,7 @@ QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
 {
   if (change == QGraphicsItem::ItemPositionHasChanged)
   {
-    step->location = scenePos();
+    step->setLocation(scenePos());
   }
 
   return QGraphicsItem::itemChange(change, value);

@@ -2,13 +2,14 @@
 
 #include <QGraphicsScene>
 #include <QDebug>
+#include "../pipeline/step.h"
 
 namespace UndoRedo {
 
-MoveCommand::MoveCommand(QGraphicsItem* newNode, const QPointF& newOldPos,
+MoveCommand::MoveCommand(Node* newNode, const QPointF& newOldPos,
                          QUndoCommand* parent)
   : QUndoCommand(parent)
-    , node(newNode)
+    , step(newNode->getStep())
     , oldPos(newOldPos)
     , newPos(newNode->pos())
 {
@@ -16,26 +17,25 @@ MoveCommand::MoveCommand(QGraphicsItem* newNode, const QPointF& newOldPos,
 
 void MoveCommand::undo()
 {
-  node->setPos(oldPos);
-  node->scene()->update();
+  step->setLocation(oldPos);
 }
 
 void MoveCommand::redo()
 {
-  node->setPos(newPos);
+  step->setLocation(newPos);
 }
 
 bool MoveCommand::mergeWith(const QUndoCommand *command)
 {
   const MoveCommand *moveCommand = static_cast<const MoveCommand *>(command);
-  auto item = moveCommand->node;
+  auto item = moveCommand->step;
 
-  if (node != item)
+  if (step != item)
   {
     return false;
   }
 
-  newPos = item->pos();
+  newPos = item->getLocation();
 
   return true;
 }
