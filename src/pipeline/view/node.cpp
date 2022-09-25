@@ -115,7 +115,6 @@ void Node::setupRunIcon()
 
   auto command = step->getCommand().get();
   auto enableRunIcon = [this, command] () {
-    qDebug() << (QGraphicsItem*)runIcon;
     runIcon->setEnabled(command->canExecute());
   };
   conns << QObject::connect(command, &Command::Executor::canExecuteChanged, enableRunIcon);
