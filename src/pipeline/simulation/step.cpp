@@ -11,21 +11,22 @@ QString Step::type = "Simulation";
 bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
 
 using FileObject = ::Command::FileObject;
+using Type = FileObject::Type;
 
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : Pipeline::Step(
     {
-      { FileObject::Category::Coordinates, { FileObject::Type::GRO } },
-      { FileObject::Category::Topology, { FileObject::Type::TOP } },
+      { FileObject::Category::Coordinates, { Type::GRO } },
+      { FileObject::Category::Topology, { Type::TOP } },
     },
     {
-      FileObject::Type::GRO,
-      FileObject::Type::XTC,
-      FileObject::Type::LOG,
-      FileObject::Type::MDP,
-      FileObject::Type::TPR,
+      Type::GRO,
+      Type::XTC,
+      Type::LOG,
+      Type::MDP,
+      Type::TPR,
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),
