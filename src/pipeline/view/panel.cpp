@@ -340,8 +340,11 @@ void Panel::removeNode(std::shared_ptr<Pipeline::Step> step)
     // delete node before removal to have access
     // to scene() inside of destructor of port
     disconnect(node);
+    if (node->scene())
+    {
+      removeItem(node);
+    }
     delete node;
-    removeItem(node);
   }
 }
 
