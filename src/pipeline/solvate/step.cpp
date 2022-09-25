@@ -14,6 +14,7 @@ bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
 using FileObject = ::Command::FileObject;
 Step::Step(std::shared_ptr<Model::Project> project)
   : Pipeline::Step(
+    project,
     {
       { FileObject::Category::Coordinates,
         {

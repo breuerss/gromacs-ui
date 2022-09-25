@@ -17,6 +17,7 @@ Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : Pipeline::Step(
+    project,
     {
       { FileObject::Category::Coordinates, { Type::GRO } },
       { FileObject::Category::Topology, { Type::TOP } },

@@ -5,6 +5,7 @@
 #include "src/command/fileobjectconsumer.h"
 #include "src/command/fileobjectprovider.h"
 #include "src/command/executor.h"
+#include "../model/project.h"
 
 #include <QObject>
 #include <QDebug>
@@ -14,6 +15,7 @@
 namespace Pipeline {
 
 Step::Step(
+  std::shared_ptr<Model::Project> newProject,
   const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
   const QList<Command::FileObject::Type> providesList,
   std::shared_ptr<Config::Configuration> newConfiguration,
@@ -22,6 +24,7 @@ Step::Step(
   Category newCategory
   )
   : category(newCategory)
+  , project(newProject)
   , fileObjectConsumer(std::make_shared<Command::FileObjectConsumer>(requiresMap))
   , fileObjectProvider(std::make_shared<Command::FileObjectProvider>(providesList))
   , configuration(newConfiguration)
@@ -56,10 +59,42 @@ Step::Step(
 
   if (configuration)
   {
-    QObject::connect(configuration.get(), &Config::Configuration::anyChanged, updateFileNames);
+    conns << QObject::connect(
+      configuration.get(), &Config::Configuration::anyChanged,
+      updateFileNames);
   }
-  QObject::connect(fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged, updateFileNames);
+  conns << QObject::connect(
+    project.get(), &Model::Project::nameChanged, updateFileNames);
+  conns << QObject::connect(
+    fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged,
+    [this, updateFileNames] (auto newFileObject, auto, auto oldFileObject)
+    {
+      if (newFileObject)
+      {
+        fileChangeConns[newFileObject] = QObject::connect(
+          newFileObject.get(), &Command::FileObject::fileNameChanged, updateFileNames);
+      }
+
+      if (oldFileObject && fileChangeConns.contains(oldFileObject))
+      {
+        QObject::disconnect(fileChangeConns[oldFileObject]);
+      }
+      updateFileNames();
+    }
+    );
   updateFileNames();
+}
+
+Step::~Step()
+{
+  for (auto conn: conns)
+  {
+    QObject::disconnect(conn);
+  }
+  for (auto conn: fileChangeConns.values())
+  {
+    QObject::disconnect(conn);
+  }
 }
 
 std::shared_ptr<Command::FileObjectConsumer>

@@ -4,6 +4,7 @@
 #include "../config/configuration.h"
 #include "../command/fileobject.h"
 #include <QString>
+#include <QMap>
 #include <memory>
 
 namespace config {
@@ -34,6 +35,7 @@ public:
     Analysis,
   };
   Step(
+    std::shared_ptr<Model::Project> newProject,
     const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
     const QList<Command::FileObject::Type> providesList,
     std::shared_ptr<Config::Configuration> configuration,
@@ -44,7 +46,7 @@ public:
   virtual QString getName() const = 0;
   virtual QString getType() const = 0;
   typedef std::shared_ptr<Step> Pointer;
-  virtual ~Step() = default;
+  virtual ~Step();
 
   std::shared_ptr<Command::FileObjectConsumer> getFileObjectConsumer() const;
   std::shared_ptr<Command::FileObjectProvider> getFileObjectProvider() const;
@@ -60,11 +62,15 @@ public:
   QRectF location;
 
 protected:
+  std::shared_ptr<Model::Project> project;
   std::shared_ptr<Command::FileObjectConsumer> fileObjectConsumer;
   std::shared_ptr<Command::FileObjectProvider> fileObjectProvider;
   std::shared_ptr<Config::Configuration> configuration;
   std::shared_ptr<Command::Executor> command;
   std::shared_ptr<Command::FileNameGenerator> fileNameGenerator;
+
+  QList<QMetaObject::Connection> conns;
+  QMap<std::shared_ptr<Command::FileObject>, QMetaObject::Connection> fileChangeConns;
 };
 
 QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step);

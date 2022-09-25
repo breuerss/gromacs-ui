@@ -14,6 +14,7 @@ Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : Pipeline::Step(
+    project,
     {
       { FileObject::Category::Trajectory, { FileObject::Type::XTC } },
       { FileObject::Category::Topology, { FileObject::Type::TPR } },
