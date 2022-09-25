@@ -11,7 +11,7 @@ QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
   {
     auto pdbCode = dynamic_cast<Configuration*>(configuration.get())
       ->property("pdbCode").toString();
-    fileName = project->getProjectPath();
+    fileName = project->getProjectPath() + "/";
     fileName += QString("input/%1.pdb").arg(pdbCode);
   }
 
