@@ -33,11 +33,6 @@ bool SimulationStatusChecker::hasCoordinates() const
   return QFile(getCoordinatesPath()).exists();
 }
 
-bool SimulationStatusChecker::hasInputCoordinates() const
-{
-  return QFile(getInputCoordinatesPath()).exists();
-}
-
 bool SimulationStatusChecker::hasLog() const
 {
   return QFile(getLogPath()).exists();
@@ -66,23 +61,6 @@ QString SimulationStatusChecker::getTrajectoryPath() const
 QString SimulationStatusChecker::getCoordinatesPath() const
 {
   return getBasePath() + ".gro";
-}
-
-QString SimulationStatusChecker::getInputCoordinatesPath() const
-{
-  QString fileName = getBasePath() + "-input.gro";
-  if (!QFile(fileName).exists() && hasTpr())
-  {
-    QProcess createInput;
-    QString command = AppProvider::get("gmx");
-    command += " editconf";
-    command += " -f " + getTprPath();
-    command += " -o " + fileName;
-    createInput.start(command);
-    createInput.waitForFinished();
-  }
-
-  return fileName;
 }
 
 QString SimulationStatusChecker::getLogPath() const
