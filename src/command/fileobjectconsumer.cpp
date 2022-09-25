@@ -51,12 +51,18 @@ void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool 
 
 void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
 {
+  if (!connectedTo.values().contains(fileObject))
+  {
+    return;
+  }
+
   if (createUndoRedo)
   {
     UndoRedo::Stack::getInstance()
       ->push(new UndoRedo::RemoveConnectionCommand(fileObject, this));
   }
-  else {
+  else
+  {
     auto category = getCategoryFor(fileObject);
     if (connectedTo.contains(category) && connectedTo[category] == fileObject)
     {
