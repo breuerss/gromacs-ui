@@ -41,6 +41,13 @@ Step::Step(
     fileNameGenerator->setFileObjectConsumer(fileObjectConsumer);
   }
 
+  conns << QObject::connect(command.get(), &Command::Executor::finished, [this] () {
+    for (auto step: project->getSteps())
+    {
+      step->getCommand()->canExecuteChanged(step->getCommand()->canExecute());
+    }
+  });
+
   auto updateFileNames = [this] {
     if (fileNameGenerator)
     {
