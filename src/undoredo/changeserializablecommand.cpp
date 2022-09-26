@@ -1,5 +1,6 @@
 #include "changeserializablecommand.h"
 #include <QDebug>
+#include <QObject>
 
 namespace UndoRedo {
 
@@ -9,7 +10,7 @@ ChangeSerializableCommand::ChangeSerializableCommand(
   const QVariant& newValue,
   const QVariant& newOldValue,
   QUndoCommand* parent)
-  : QUndoCommand(parent)
+  : QUndoCommand(QObject::tr("Change property"), parent)
     , model(newModel)
     , name(newName)
     , value(newValue)

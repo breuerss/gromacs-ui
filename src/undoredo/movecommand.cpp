@@ -1,14 +1,14 @@
 #include "movecommand.h"
 
-#include <QGraphicsScene>
-#include <QDebug>
 #include "../pipeline/step.h"
+#include <QDebug>
+#include <QObject>
 
 namespace UndoRedo {
 
 MoveCommand::MoveCommand(Node* newNode, const QPointF& newOldPos,
                          QUndoCommand* parent)
-  : QUndoCommand(parent)
+  : QUndoCommand(QObject::tr("Move step"), parent)
     , step(newNode->getStep())
     , oldPos(newOldPos)
     , newPos(newNode->pos())

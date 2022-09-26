@@ -1,6 +1,6 @@
 #include "addstepcommand.h"
 
-#include <QGraphicsScene>
+#include <QObject>
 #include <QDebug>
 
 namespace UndoRedo {
@@ -9,7 +9,7 @@ AddStepCommand::AddStepCommand(
   std::shared_ptr<Pipeline::Step>&& newStep,
   Model::Project* newProject,
   QUndoCommand* parent)
-  : QUndoCommand(parent)
+  : QUndoCommand(QObject::tr("Add step"), parent)
     , project(newProject)
     , step(newStep)
 {
