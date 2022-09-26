@@ -12,13 +12,11 @@ namespace Pipeline {
 
 namespace CenterProtein {
 
-class Step : public Pipeline::Step, public FactoryRegistration<Step> {
+class Step : public FactoryRegistration<Step> {
 
 public:
   Step(std::shared_ptr<Model::Project> project = nullptr);
   QString getName() const override;
-
-  QString getType() const override;
 };
 
 } }

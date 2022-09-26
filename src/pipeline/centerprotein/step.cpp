@@ -16,7 +16,7 @@ using FileObject = ::Command::FileObject;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     {
       { FileObject::Category::Coordinates, { FileObject::Type::GRO } },
@@ -36,11 +36,6 @@ Step::Step(
 QString Step::getName() const
 {
   return "Center Protein";
-}
-
-QString Step::getType() const
-{
-  return type;
 }
 
 } }

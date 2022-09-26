@@ -8,7 +8,9 @@
 
 namespace Pipeline {
 template<typename StepType>
-class FactoryRegistration {
+class FactoryRegistration : public Step {
+public:
+  using Step::Step;
 
 protected:
   static QString type;
@@ -25,11 +27,14 @@ private:
   {
     return std::make_unique<StepType>(project);
   }
+  QString getType() const override
+  {
+    return type;
+  }
 };
 
 template<typename StepType>
 QString FactoryRegistration<StepType>::type;
-
 
 }
 
