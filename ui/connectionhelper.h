@@ -138,7 +138,6 @@ QMetaObject::Connection connectToComboBox(
 
   QObject::connect(
     model, changed, [widget, model, elementName] (ValueType currentValue) {
-      qDebug() << "callback for model change" << (int)currentValue;
       int index = widget->findData(QVariant::fromValue(currentValue));
       widget->setCurrentIndex(index);
     });
