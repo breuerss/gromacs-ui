@@ -73,7 +73,13 @@ TopMenu::TopMenu(QWidget *parent) :
   setDistributionButtonsEnabled(false);
 
   conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::canUndoChanged, ui->undoButton, &QPushButton::setEnabled);
-  connect(UndoRedo::Stack::getInstance(), &QUndoStack::canRedoChanged, ui->redoButton, &QPushButton::setEnabled);
+  conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::undoTextChanged, [this] (const auto& undoText) {
+    ui->undoButton->setToolTip(tr("Undo") + ": " + undoText);
+  });
+  conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::canRedoChanged, ui->redoButton, &QPushButton::setEnabled);
+  conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::redoTextChanged, [this] (const auto& redoText) {
+    ui->redoButton->setToolTip(tr("Redo") + ": " + redoText);
+  });
   ui->redoButton->setEnabled(UndoRedo::Stack::getInstance()->canRedo());
   ui->undoButton->setEnabled(UndoRedo::Stack::getInstance()->canUndo());
   conns << connect(ui->undoButton, &QPushButton::clicked, UndoRedo::Stack::getInstance(), &QUndoStack::undo);
