@@ -155,11 +155,13 @@ Port* Panel::getPort(std::shared_ptr<Command::FileObject> fileObject)
 
 void Panel::deleteSelectedNodes()
 {
+  UndoRedo::Stack::getInstance()->beginMacro("Delete selected nodes");
   for (auto node: nodeSelection)
   {
     project->removeStep(node->getStep());
   }
   nodeSelection.clear();
+  UndoRedo::Stack::getInstance()->endMacro();
 
   selectedNodesChanged(getSelectedNodes());
 }
