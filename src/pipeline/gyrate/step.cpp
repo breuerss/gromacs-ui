@@ -2,18 +2,20 @@
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace Gyrate {
+namespace Pipeline {
 
-QString Step::type = "Gyrate";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<Gyrate::Step>::registered =
+  FactoryRegistration<Gyrate::Step>::registerMethod("Gyrate");
+
+namespace Gyrate {
 
 using FileObject = ::Command::FileObject;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
-  : Pipeline::Step(
+  : FactoryRegistration<Step>(
     project,
     {
       { FileObject::Category::Trajectory, { FileObject::Type::XTC } },
@@ -34,17 +36,5 @@ QString Step::getName() const
 {
   return "Gyrate";
 }
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
-}
-
 
 } }

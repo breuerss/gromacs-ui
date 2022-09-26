@@ -2,18 +2,20 @@
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace PdbFixer {
+namespace Pipeline {
 
-QString Step::type = "PdbFixer";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<PdbFixer::Step>::registered =
+  FactoryRegistration<PdbFixer::Step>::registerMethod("PdbFixer");
+
+namespace PdbFixer {
 
 using FileObject = ::Command::FileObject;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     {
       { FileObject::Category::Coordinates, { FileObject::Type::PDB } }
@@ -33,17 +35,5 @@ QString Step::getName() const
 {
   return "PDB Fixer";
 }
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
-}
-
 
 } }

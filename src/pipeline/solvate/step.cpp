@@ -6,14 +6,17 @@
 #include "../../command/fileobject.h"
 #include "../stepfactory.h"
 
-namespace Pipeline { namespace Solvate {
+namespace Pipeline {
 
-QString Step::type = "Solvate";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<Solvate::Step>::registered =
+  FactoryRegistration<Solvate::Step>::registerMethod("Solvate");
+
+namespace Solvate {
 
 using FileObject = ::Command::FileObject;
 Step::Step(std::shared_ptr<Model::Project> project)
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     {
       { FileObject::Category::Coordinates,
@@ -36,17 +39,6 @@ Step::Step(std::shared_ptr<Model::Project> project)
 QString Step::getName() const
 {
   return "Solvate";
-}
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
 }
 
 } }

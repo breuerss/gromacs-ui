@@ -3,17 +3,19 @@
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace PdbDownload {
+namespace Pipeline {
 
-QString Step::type = "PdbDownload";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<PdbDownload::Step>::registered =
+  FactoryRegistration<PdbDownload::Step>::registerMethod("PdbDownload");
+
+namespace PdbDownload {
 
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     { },
     {
@@ -30,17 +32,6 @@ Step::Step(
 QString Step::getName() const
 {
   return "PDB Downloader";
-}
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
 }
 
 } }

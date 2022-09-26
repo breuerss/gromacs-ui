@@ -1,7 +1,6 @@
 #ifndef PIPELINE_CENTERPROTEIN_STEP_H
 #define PIPELINE_CENTERPROTEIN_STEP_H
 
-#include "../step.h"
 #include "../factoryregistration.h"
 
 namespace Model {

@@ -3,16 +3,18 @@
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../command/fileobject.h"
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace CreateBox {
+namespace Pipeline {
 
-QString Step::type = "CreateBox";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<CreateBox::Step>::registered =
+  FactoryRegistration<CreateBox::Step>::registerMethod("CreateBox");
+
+namespace CreateBox {
 
 using FileObject = ::Command::FileObject;
 Step::Step(std::shared_ptr<Model::Project> project)
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     {
       { FileObject::Category::Coordinates,
@@ -36,16 +38,4 @@ QString Step::getName() const
 {
   return "Create Box";
 }
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_shared<Step>(project);
-}
-
 } }

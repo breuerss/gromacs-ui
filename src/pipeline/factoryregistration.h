@@ -4,11 +4,14 @@
 #include "stepfactory.h"
 #include "step.h"
 #include <QString>
+#include <QDebug>
 #include <memory>
 
 namespace Pipeline {
+
 template<typename StepType>
 class FactoryRegistration : public Step {
+
 public:
   using Step::Step;
 

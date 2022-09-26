@@ -2,17 +2,18 @@
 #include "configuration.h"
 #include "command.h"
 #include "filenamegenerator.h"
-#include <memory>
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace Neutralise {
+namespace Pipeline {
 
-QString Step::type = "Neutralise";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<Neutralise::Step>::registered =
+  FactoryRegistration<Neutralise::Step>::registerMethod("Neutralise");
+
+namespace Neutralise {
 
 using FileObject = ::Command::FileObject;
 Step::Step(std::shared_ptr<Model::Project> project)
-  : Pipeline::Step(
+  : FactoryRegistration(
     project,
     {
       { FileObject::Category::Coordinates,
@@ -35,17 +36,6 @@ Step::Step(std::shared_ptr<Model::Project> project)
 QString Step::getName() const
 {
   return "Neutralise";
-}
-
-QString Step::getType() const
-{
-  return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
 }
 
 } }
