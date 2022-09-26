@@ -2,25 +2,23 @@
 #define PIPELINE_CENTERPROTEIN_STEP_H
 
 #include "../step.h"
+#include "../factoryregistration.h"
 
 namespace Model {
 class Project;
 }
 
-namespace Pipeline { namespace CenterProtein {
+namespace Pipeline {
 
-class Step : public Pipeline::Step {
+namespace CenterProtein {
+
+class Step : public Pipeline::Step, public FactoryRegistration<Step> {
 
 public:
   Step(std::shared_ptr<Model::Project> project = nullptr);
   QString getName() const override;
 
   QString getType() const override;
-  static Step::Pointer create(std::shared_ptr<Model::Project>);
-
-private:
-  static bool registered;
-  static QString type;
 };
 
 } }

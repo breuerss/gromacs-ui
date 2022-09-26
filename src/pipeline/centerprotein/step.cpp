@@ -2,12 +2,14 @@
 #include "command.h"
 #include "filenamegenerator.h"
 #include "../../model/project.h"
-#include "../stepfactory.h"
 
-namespace Pipeline { namespace CenterProtein {
+namespace Pipeline {
 
-QString Step::type = "CenterProtein";
-bool Step::registered = StepFactory::registerMethod(Step::type, Step::create);
+template<>
+bool FactoryRegistration<CenterProtein::Step>::registered =
+  FactoryRegistration<CenterProtein::Step>::registerMethod("CenterProtein");
+
+namespace CenterProtein {
 
 using FileObject = ::Command::FileObject;
 
@@ -39,12 +41,6 @@ QString Step::getName() const
 QString Step::getType() const
 {
   return type;
-}
-
-Step::Pointer
-Step::create(std::shared_ptr<Model::Project> project)
-{
-  return std::make_unique<Step>(project);
 }
 
 } }
