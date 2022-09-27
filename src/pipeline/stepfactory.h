@@ -30,7 +30,7 @@ public:
     );
 
 private:
-  static QMap<QString, CreateMethod> factoryMap;
+  static QMap<QString, CreateMethod>& getFactoryMap();
 
 };
 

@@ -5,15 +5,13 @@
 
 namespace Pipeline {
 
-QMap<QString, StepFactory::CreateMethod> StepFactory::factoryMap;
-
 bool StepFactory::registerMethod(
   const QString& type, 
   StepFactory::CreateMethod funcCreate)
 {
-  if (!factoryMap.contains(type))
+  if (!getFactoryMap().contains(type))
   {
-    factoryMap[type] = funcCreate;
+    getFactoryMap()[type] = funcCreate;
     return true;
   }
   return false;
@@ -24,12 +22,19 @@ std::shared_ptr<Step> StepFactory::create(
   std::shared_ptr<Model::Project> project
   )
 {
-  if (factoryMap.contains(type))
+  if (getFactoryMap().contains(type))
   {
-    return factoryMap[type](project);
+    return getFactoryMap()[type](project);
   }
 
   return nullptr;
+}
+
+QMap<QString, StepFactory::CreateMethod>& StepFactory::getFactoryMap()
+{
+  static QMap<QString, StepFactory::CreateMethod> map;
+
+  return map;
 }
 
 }
