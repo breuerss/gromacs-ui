@@ -5,16 +5,14 @@
 
 namespace Pipeline {
 
-bool StepFactory::registerMethod(
+void StepFactory::registerMethod(
   const QString& type, 
   StepFactory::CreateMethod funcCreate)
 {
   if (!getFactoryMap().contains(type))
   {
     getFactoryMap()[type] = funcCreate;
-    return true;
   }
-  return false;
 }
 
 std::shared_ptr<Step> StepFactory::create(

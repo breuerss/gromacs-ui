@@ -16,22 +16,19 @@ class Step;
 class StepFactory
 {
 public:
-  StepFactory() = delete;
-  static StepFactory* getInstance();
-
   using CreateMethod = std::shared_ptr<Step>(*)(
     std::shared_ptr<Model::Project>
     );
 
-  static bool registerMethod(const QString& name, CreateMethod funcCreate);
+  static void registerMethod(const QString& name, CreateMethod funcCreate);
   static std::shared_ptr<Step> create(
     const QString& typeName,
     std::shared_ptr<Model::Project>
     );
 
 private:
+  StepFactory() = delete;
   static QMap<QString, CreateMethod>& getFactoryMap();
-
 };
 
 }
