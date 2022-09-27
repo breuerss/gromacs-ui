@@ -28,6 +28,5 @@
 1. transparency of ports
 1. avoid overlapping tooltips
 
-1. restore connections when restoring node
 1. simulation type on node
 1. show information of selected options in short form for simulation
