@@ -41,7 +41,8 @@ Step::Step(
 
 QString Step::getName() const
 {
-  return "Simulation";
+  return "Simulation | " + std::dynamic_pointer_cast<Configuration>(configuration)
+    ->getTypeAsString().toUpper();
 }
 
 } }
