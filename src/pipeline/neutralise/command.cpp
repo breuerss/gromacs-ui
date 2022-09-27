@@ -90,11 +90,6 @@ bool Command::canExecute() const
   return QFile(getInputFilename()).exists();
 }
 
-QString Command::getName() const
-{
-  return "Neutralisation";
-}
-
 QString Command::getInputFilename() const
 {
   using Type = ::Command::FileObject::Type;

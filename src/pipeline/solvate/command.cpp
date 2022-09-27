@@ -13,7 +13,6 @@ namespace Pipeline { namespace Solvate {
 
 void Command::doExecute()
 {
-  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -46,11 +45,6 @@ void Command::doExecute()
 bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
-}
-
-QString Command::getName() const
-{
-  return "Solvation";
 }
 
 QString Command::getInputFilename() const

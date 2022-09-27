@@ -18,7 +18,6 @@ public:
 
   void doExecute() override;
   bool canExecute() const override;
-  QString getName() const override;
 
 private:
   QString getOutputFilename() const;

@@ -14,7 +14,6 @@ namespace Pipeline { namespace CreateGromacsModel {
 
 void Command::doExecute()
 {
-  qDebug() << getName();
   QString command = AppProvider::get("gmx");
   if (command.isEmpty())
   {
@@ -53,11 +52,6 @@ QString Command::getInputFilename() const
 bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists();
-}
-
-QString Command::getName() const
-{
-  return "GROMACS model creation";
 }
 
 } }

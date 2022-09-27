@@ -11,7 +11,6 @@ public:
   explicit Command();
   void doExecute() override;
   bool canExecute() const override;
-  QString getName() const override;
 
 private:
   QString getInputFilename() const;

@@ -8,13 +8,12 @@ namespace Pipeline { namespace CreateGromacsModel {
 class Command : public ::Command::Executor
 {
 public:
-    Command() = default;
-    void doExecute() override;
-    bool canExecute() const override;
-    QString getName() const override;
+  Command() = default;
+  void doExecute() override;
+  bool canExecute() const override;
 
 private:
-    QString getInputFilename() const;
+  QString getInputFilename() const;
 };
 
 } }

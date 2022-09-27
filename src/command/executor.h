@@ -27,7 +27,6 @@ public:
   Executor();
   ~Executor();
   virtual void doExecute() = 0;
-  virtual QString getName() const { return QString(); }
   virtual QWidget* getStatusUi() { return nullptr; }
   void exec();
   void stop();

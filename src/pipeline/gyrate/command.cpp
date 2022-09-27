@@ -47,9 +47,4 @@ bool Command::canExecute() const
     QFile(fileObjectConsumer->getFileNameFor(Type::TPR)).exists();
 }
 
-QString Command::getName() const
-{
-  return "gyrate";
-}
-
 } }

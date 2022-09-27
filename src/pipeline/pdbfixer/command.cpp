@@ -48,9 +48,4 @@ bool Command::canExecute() const
   return QFile(getInputFilename()).exists();
 }
 
-QString Command::getName() const
-{
-  return "pdbfixer";
-}
-
 } }

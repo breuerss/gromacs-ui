@@ -20,7 +20,6 @@ Filter::Filter(std::shared_ptr<Model::SystemSetup> systemSetup)
 
 void Filter::doExecute()
 {
-  qDebug() << getName();
   QString fileName;// = getInputFilename();
   QString outputFileName = getOutputFilename();
 
@@ -66,11 +65,6 @@ void Filter::doExecute()
 bool Filter::canExecute() const
 {
   return true;//QFile(getInputFilename()).exists();
-}
-
-QString Filter::getName() const
-{
-  return "PDB filter";
 }
 
 QString Filter::getOutputFilename() const

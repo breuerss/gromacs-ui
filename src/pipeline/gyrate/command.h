@@ -11,7 +11,6 @@ class Command : public ::Command::Executor
 public:
   Command() = default;
   void doExecute() override;
-  QString getName() const override;
   bool canExecute() const override;
 
 private:
