@@ -27,7 +27,6 @@
 
 1. transparency of ports
 1. avoid overlapping tooltips
-1. do not show tooltip whene dragging
 
 1. restore connections when restoring node
 1. simulation type on node

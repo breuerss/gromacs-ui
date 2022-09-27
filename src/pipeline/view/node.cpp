@@ -18,6 +18,7 @@
 #include <QGraphicsView>
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
+#include <QApplication>
 #include <QLayout>
 #include <QDebug>
 #include <QVBoxLayout>
@@ -473,6 +474,17 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent* event)
   startingPos = pos();
   setZValue(2);
 }
+
+void Node::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+  if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
+      .length() > QApplication::startDragDistance()) {
+    tooltipBox->hide();
+  }
+
+  QGraphicsRectItem::mouseMoveEvent(event);
+}
+
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
