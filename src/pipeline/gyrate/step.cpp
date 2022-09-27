@@ -6,7 +6,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<Gyrate::Step>::registered =
+QString FactoryRegistration<Gyrate::Step>::type =
   FactoryRegistration<Gyrate::Step>::registerMethod("Gyrate");
 
 namespace Gyrate {

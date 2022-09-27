@@ -6,7 +6,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<PdbFixer::Step>::registered =
+QString FactoryRegistration<PdbFixer::Step>::type =
   FactoryRegistration<PdbFixer::Step>::registerMethod("PdbFixer");
 
 namespace PdbFixer {

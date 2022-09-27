@@ -7,7 +7,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<Simulation::Step>::registered =
+QString FactoryRegistration<Simulation::Step>::type =
   FactoryRegistration<Simulation::Step>::registerMethod("Simulation");
 
 namespace Simulation {

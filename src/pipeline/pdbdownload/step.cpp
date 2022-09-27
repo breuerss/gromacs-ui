@@ -7,7 +7,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<PdbDownload::Step>::registered =
+QString FactoryRegistration<PdbDownload::Step>::type =
   FactoryRegistration<PdbDownload::Step>::registerMethod("PdbDownload");
 
 namespace PdbDownload {

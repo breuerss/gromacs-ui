@@ -7,7 +7,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<CreateBox::Step>::registered =
+QString FactoryRegistration<CreateBox::Step>::type =
   FactoryRegistration<CreateBox::Step>::registerMethod("CreateBox");
 
 namespace CreateBox {

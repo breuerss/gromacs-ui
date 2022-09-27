@@ -19,25 +19,24 @@ protected:
   static QString type;
 
 private:
-  static bool registerMethod(const QString& newType)
+  static QString registerMethod(const QString& newType)
   {
-    type = newType;
-    return Pipeline::StepFactory::registerMethod(newType, create);
+    Pipeline::StepFactory::registerMethod(newType, create);
+    return newType;
   }
-  static bool registered;
+
   static Pipeline::Step::Pointer
   create(std::shared_ptr<Model::Project> project)
   {
     return std::make_unique<StepType>(project);
   }
+
   QString getType() const override
   {
     return type;
   }
 };
 
-template<typename StepType>
-QString FactoryRegistration<StepType>::type;
 
 }
 

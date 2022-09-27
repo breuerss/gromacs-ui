@@ -6,7 +6,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<CenterProtein::Step>::registered =
+QString FactoryRegistration<CenterProtein::Step>::type =
   FactoryRegistration<CenterProtein::Step>::registerMethod("CenterProtein");
 
 namespace CenterProtein {

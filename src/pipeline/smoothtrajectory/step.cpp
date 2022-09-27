@@ -6,7 +6,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<SmoothTrajectory::Step>::registered =
+QString FactoryRegistration<SmoothTrajectory::Step>::type =
   FactoryRegistration<SmoothTrajectory::Step>::registerMethod("SmoothTrajectory");
 
 namespace SmoothTrajectory {

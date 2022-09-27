@@ -6,7 +6,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<Neutralise::Step>::registered =
+QString FactoryRegistration<Neutralise::Step>::type =
   FactoryRegistration<Neutralise::Step>::registerMethod("Neutralise");
 
 namespace Neutralise {

@@ -7,7 +7,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<CreateGromacsModel::Step>::registered =
+QString FactoryRegistration<CreateGromacsModel::Step>::type =
   FactoryRegistration<CreateGromacsModel::Step>::registerMethod("CreateGromacsModel");
 
 namespace CreateGromacsModel {

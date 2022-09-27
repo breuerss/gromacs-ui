@@ -9,7 +9,7 @@
 namespace Pipeline {
 
 template<>
-bool FactoryRegistration<Solvate::Step>::registered =
+QString FactoryRegistration<Solvate::Step>::type =
   FactoryRegistration<Solvate::Step>::registerMethod("Solvate");
 
 namespace Solvate {
