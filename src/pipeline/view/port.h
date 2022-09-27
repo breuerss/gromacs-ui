@@ -56,13 +56,15 @@ signals:
   void sizeChanged();
 
 private:
+  void setupTooltip();
+  bool hasData();
+
   Type type;
   bool connected = false;
   std::shared_ptr<Command::FileObject> fileObject;
   QMetaObject::Connection conn;
   QList<Command::FileObject::Type> acceptedFileTypes;
   QPointF startingPos;
-  void setupTooltip();
   PortTooltip* tooltipBox;
   QPropertyAnimation* increaseSize;
 };

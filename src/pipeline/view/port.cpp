@@ -126,7 +126,7 @@ QPointF Port::getCenterInScene() const
 
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
-  if (fileObject)
+  if (hasData())
   {
     setCursor(Qt::PointingHandCursor);
   }
@@ -158,9 +158,8 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
   tooltipBox->setPos(tooltipPos);
 
 
-  bool hasFileToOpen = fileObject && fileObject->exists();
-  tooltipBox->setCanOpen(hasFileToOpen);
-  if (hasFileToOpen)
+  tooltipBox->setCanOpen(hasData());
+  if (hasData())
   {
     increaseSize->setDirection(QAbstractAnimation::Forward);
     increaseSize->start();
@@ -171,11 +170,16 @@ void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
   tooltipBox->hide();
-  if (fileObject && fileObject->exists())
+  if (hasData())
   {
     increaseSize->setDirection(QAbstractAnimation::Backward);
     increaseSize->start();
   }
+}
+
+bool Port::hasData()
+{
+  return fileObject && fileObject->exists();
 }
 
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)
@@ -188,7 +192,7 @@ void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
   dynamic_cast<Panel*>(scene())->stopConnector();
   unsetCursor();
-  if (event->scenePos() == startingPos)
+  if (event->scenePos() == startingPos && hasData())
   {
     clicked();
   }
