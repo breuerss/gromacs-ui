@@ -50,6 +50,22 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
     {
       scene()->addItem(tooltipBox);
     }
+
+    auto viewer = scene()->views()[0];
+    QRectF viewport = viewer->viewport()->rect();
+    auto tooFar= viewer->mapToScene(viewport.toRect().bottomRight()) -
+      tooltipBox->mapToScene(tooltipBox->rect().bottomRight());
+    auto tooltipPos = tooltipBox->pos();
+    if (tooFar.x() < 0)
+    {
+      tooltipPos.rx() += tooFar.x() - 20;
+    }
+    if (tooFar.y() < 0)
+    {
+      tooltipPos.ry() += tooFar.y() - 20;
+    }
+    tooltipBox->setPos(tooltipPos);
+
     tooltipBox->show();
   });
 
@@ -437,16 +453,6 @@ void Node::hoverEnterEvent(QGraphicsSceneHoverEvent*)
   delayedTooltip.start();
 
 
-  auto viewer = scene()->views()[0];
-  QRectF viewport = viewer->viewport()->rect();
-  auto tooFarRight = viewer->mapToScene(viewport.toRect().bottomRight()) -
-    tooltipBox->mapToScene(tooltipBox->rect().bottomRight());
-  if (tooFarRight.x() < 0)
-  {
-    auto tooltipPos = tooltipBox->pos();
-    tooltipPos.rx() += tooFarRight.x() - 20;
-    tooltipBox->setPos(tooltipPos);
-  }
 }
 
 void Node::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
