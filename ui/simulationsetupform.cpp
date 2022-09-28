@@ -142,6 +142,8 @@ SimulationSetupForm::SimulationSetupForm(
       ui->vdwSwitchRadiusLabel->setEnabled(switchRadiusNeeded);
     }, &Configuration::vdwModifierChanged);
   conns << connectToSpinBox<QDoubleSpinBox>(
+    ui->vdwSwitchRadius, configuration, "vdwSwitchRadius", &Simulation::vdwSwitchRadiusChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(
     ui->vdwCutoffRadius, configuration, "vdwCutoffRadius", &Simulation::vdwCutoffRadiusChanged);
 
   // PME

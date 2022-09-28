@@ -122,6 +122,7 @@ public:
   Q_PROPERTY(VdwAlgorithm vdwAlgorithm MEMBER vdwAlgorithm NOTIFY vdwAlgorithmChanged);
   Q_PROPERTY(VdwModifier vdwModifier MEMBER vdwModifier NOTIFY vdwModifierChanged);
   Q_PROPERTY(double vdwCutoffRadius MEMBER vdwCutoffRadius NOTIFY vdwCutoffRadiusChanged);
+  Q_PROPERTY(double vdwSwitchRadius MEMBER vdwSwitchRadius NOTIFY vdwSwitchRadiusChanged);
   Q_PROPERTY(double vdwEwaldRtol MEMBER vdwEwaldRtol NOTIFY vdwEwaldRtolChanged);
 
   Q_PROPERTY(PressureAlgorithm pressureAlgorithm MEMBER pressureAlgorithm NOTIFY pressureAlgorithmChanged);
@@ -165,6 +166,7 @@ signals:
   void pmeOrderChanged(int);
 
   void vdwCutoffRadiusChanged(double);
+  void vdwSwitchRadiusChanged(double);
   void vdwAlgorithmChanged(VdwAlgorithm);
   void vdwModifierChanged(VdwModifier);
   void vdwEwaldRtolChanged(double);
@@ -220,6 +222,7 @@ private:
   VdwAlgorithm vdwAlgorithm = VdwAlgorithm::PME;
   VdwModifier vdwModifier = VdwModifier::None;
   double vdwCutoffRadius = 1.0;
+  double vdwSwitchRadius = 0.0;
   double vdwEwaldRtol = 0.001;
 
   // pressure

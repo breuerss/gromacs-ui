@@ -26,6 +26,7 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "ewald-rtol", "electrostaticEwaldRtol" },
   { "vdwtype", "vdwAlgorithm" },
   { "vdw-modifier", "vdwModifier" },
+  { "vdw-switch", "vdwSwitchRadius" },
   { "rvdw", "vdwCutoffRadius" },
   { "ewald-rtol-lj", "vdwEwaldRtol" },
   { "pcoupl", "pressureAlgorithm" },
