@@ -27,5 +27,3 @@
 
 1. transparency of ports
 1. avoid overlapping tooltips
-
-1. show information of selected options in short form for simulation
