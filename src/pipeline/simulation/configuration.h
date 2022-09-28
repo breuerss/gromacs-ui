@@ -6,6 +6,8 @@
 #include "../../misc/bimaphelper.h"
 #include <QString>
 #include <memory>
+#include <type_traits>
+#include <experimental/type_traits>
 
 namespace Pipeline { namespace Simulation {
 
@@ -191,6 +193,7 @@ public slots:
   void removeTemperatureCouplingGroup(int index);
 
 private:
+  QString createParagraph(const QStringList& elements);
   Type simulationType = Type::None;
   Algorithm algorithm = Algorithm::None;
 
@@ -241,19 +244,61 @@ private:
 
 QVariant simulationAlgorithmFrom(const QString& value);
 QString toString(Configuration::Algorithm algorithm);
+QString toLabel(Configuration::Algorithm algorithm);
+
 QVariant pressureAlgorithmFrom(const QString& value);
 QString toString(Configuration::PressureAlgorithm alogrithm);
+QString toLabel(Configuration::PressureAlgorithm alogrithm);
+
 QVariant pressureCouplingTypeFrom(const QString& value);
 QString toString(Configuration::PressureCouplingType type);
+QString toLabel(Configuration::PressureCouplingType type);
+
 QVariant temperatureAlgorithmFrom(const QString& value);
 QString toString(Configuration::TemperatureAlgorithm algorithm);
+QString toLabel(Configuration::TemperatureAlgorithm algorithm);
+
 QString toString(Configuration::Type type, bool shortVersion = false);
+
 QVariant electrostaticAlgorithmFrom(const QString& value);
 QString toString(Configuration::ElectrostaticAlgorithm algorithm);
+QString toLabel(Configuration::ElectrostaticAlgorithm algorithm);
+
 QVariant vdwAlgorithmFrom(const QString& value);
 QString toString(Configuration::VdwAlgorithm algorithm);
+QString toLabel(Configuration::VdwAlgorithm algorithm);
+
 QVariant vdwModifierFrom(const QString& value);
 QString toString(Configuration::VdwModifier algorithm);
+QString toLabel(Configuration::VdwModifier algorithm);
+
+template<typename T>
+using toLabel_t = decltype( Simulation::toLabel(std::declval<T&>()) );
+
+template<typename T>
+constexpr bool has_toLabel = std::experimental::is_detected_v<toLabel_t, T>;
+
+template<typename ValueType>
+QString keyValue(const QString& key, ValueType value)
+{
+  QString label = key + ": ";
+  if constexpr(std::is_integral_v<ValueType>)
+  {
+    label += QString::number(value, 'f', 0);
+  }
+  else if constexpr(std::is_floating_point_v<ValueType>)
+  {
+    label += QString::number(value);
+  }
+  else if constexpr(has_toLabel<ValueType>)
+  {
+    label += Simulation::toLabel(value);
+  }
+  else {
+    label += value;
+  }
+  return label;
+}
 
 } }
 

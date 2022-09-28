@@ -53,7 +53,81 @@ QString Configuration::getName() const
 
 QString Configuration::toString()
 {
-  return getName();
+  QStringList elements;
+  elements << createParagraph({tr("Type") + ": " + getName()});
+
+  elements << createParagraph({
+    tr("General"),
+    keyValue(tr("Algorithm"), algorithm),
+    keyValue(tr("Steps"), numberOfSteps),
+  });
+
+  if (isMinimisation())
+  {
+    elements << createParagraph({
+      tr("Minimisation Settings"),
+      keyValue(tr("Maximum Force"), minimisationMaximumForce) + " kJ/mol/nm",
+      keyValue(tr("Step Size"), minimisationStepSize) + " nm",
+    });
+  }
+
+  if (temperatureAlgorithm != TemperatureAlgorithm::None)
+  {
+    QStringList temp({
+      tr("Temperature Settings"),
+      keyValue(tr("Algorithm"), temperatureAlgorithm),
+    });
+    for (auto group : temperatureCouplingGroups)
+    {
+      temp << keyValue("Group", group->property("group").toString());
+      temp << keyValue("Temperature", group->property("temperature").toDouble()) + " K";
+      temp << keyValue("Update Interval", group->property("updateInterval").toDouble()) + " ps";
+    }
+
+    elements << createParagraph(temp);
+  }
+
+  if (pressureAlgorithm != PressureAlgorithm::None)
+  {
+    elements << createParagraph({
+      tr("Pressure Settings"),
+      keyValue(tr("Pressure"), pressure) + " bar",
+      keyValue(tr("Update Interval"), pressureUpdateInterval) + " ps",
+      keyValue(tr("Algorithm"), pressureAlgorithm),
+      keyValue(tr("Coupling Type"), pressureCouplingType) + "</p>",
+    });
+  }
+
+  elements << createParagraph({
+    tr("Electrostatic Potential"),
+    keyValue(tr("Electrostatic Algorithm"), electrostaticAlgorithm),
+    keyValue(tr("Cutoff Radius"), electrostaticCutoffRadius) + " nm",
+    keyValue(tr("Ewald Tolerance"), electrostaticEwaldRtol),
+  });
+
+  elements << createParagraph({
+    tr("Van der Waals Interaction"),
+    keyValue(tr("Algorithm"), vdwAlgorithm),
+    keyValue(tr("Modifier"), vdwModifier),
+    keyValue(tr("Cutoff Radius"), vdwCutoffRadius) + " nm",
+    keyValue(tr("Switch Radius"), vdwSwitchRadius) + " nm",
+    keyValue(tr("Ewald Tolerance"), vdwEwaldRtol),
+  });
+
+  elements << createParagraph({
+    tr("Particle Mesh Ewald Settings"),
+    keyValue(tr("Fourier Spacing"), fourierSpacing) + " nm",
+    keyValue(tr("Order"), pmeOrder),
+  });
+
+  return elements.join("");
+}
+
+QString Configuration::createParagraph(const QStringList& elements)
+{
+  return "<p style='margin-top: 0px'>"
+    + elements.join("<br>")
+    + "</p>";
 }
 
 QString Configuration::getTypeAsString() const
@@ -125,11 +199,26 @@ QString toString(Configuration::Algorithm algorithm)
   return simulationAlgorithmBimap.left.at(algorithm);
 }
 
-const static auto pressureAlgorithmBimap = makeBimap<Configuration::PressureAlgorithm, QString>({
-  { Configuration::PressureAlgorithm::None, "no" },
-  { Configuration::PressureAlgorithm::Berendsen, "berendsen" },
-  { Configuration::PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
-  { Configuration::PressureAlgorithm::Bussi, "C-rescale" },
+const static auto simulationAlgorithmLabels = QMap<Algorithm, QString>({
+  { Algorithm::None, "None" },
+  { Algorithm::SteepestDescent, "Steepest Descent" },
+  { Algorithm::ConjugateGradient, "Conjugate Gradient" },
+  { Algorithm::LeapFrog, "Leap Frog" },
+  { Algorithm::StochasticDynamics, "Stochastic Dynamics" },
+});
+
+QString toLabel(Configuration::Algorithm algorithm)
+{
+  return simulationAlgorithmLabels[algorithm];
+}
+
+
+using PressureAlgorithm = Configuration::PressureAlgorithm;
+const static auto pressureAlgorithmBimap = makeBimap<PressureAlgorithm, QString>({
+  { PressureAlgorithm::None, "no" },
+  { PressureAlgorithm::Berendsen, "berendsen" },
+  { PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
+  { PressureAlgorithm::Bussi, "C-rescale" },
 });
 
 QVariant pressureAlgorithmFrom(const QString& value)
@@ -140,6 +229,18 @@ QVariant pressureAlgorithmFrom(const QString& value)
 QString toString(Configuration::PressureAlgorithm algorithm)
 {
   return pressureAlgorithmBimap.left.at(algorithm);
+}
+
+const static auto pressureAlgorithmLabels = QMap<Configuration::PressureAlgorithm, QString>({
+  { PressureAlgorithm::None, "None" },
+  { PressureAlgorithm::Berendsen, "berendsen" },
+  { PressureAlgorithm::ParrinelloRahman, "Parrinello-Rahman" },
+  { PressureAlgorithm::Bussi, "C-rescale" },
+});
+
+QString toLabel(Configuration::PressureAlgorithm algorithm)
+{
+  return pressureAlgorithmLabels[algorithm];
 }
 
 QString toString(Configuration::Type type, bool shortVersion)
@@ -170,12 +271,13 @@ QString toString(Configuration::Type type, bool shortVersion)
   }
 }
 
+using PressureCouplingType = Configuration::PressureCouplingType;
 const static auto pressureCouplingTypeBimap =
-makeBimap<Configuration::PressureCouplingType, QString>({
-  { Configuration::PressureCouplingType::Isotropic, "isotropic" },
-  { Configuration::PressureCouplingType::SemiIsoTropic, "semiisotropic" },
-  { Configuration::PressureCouplingType::Anisotropic, "anisotropic" },
-  { Configuration::PressureCouplingType::SurfaceTension, "surface-tension" },
+makeBimap<PressureCouplingType, QString>({
+  { PressureCouplingType::Isotropic, "isotropic" },
+  { PressureCouplingType::SemiIsoTropic, "semiisotropic" },
+  { PressureCouplingType::Anisotropic, "anisotropic" },
+  { PressureCouplingType::SurfaceTension, "surface-tension" },
 });
 
 QVariant pressureCouplingTypeFrom(const QString& value)
@@ -186,6 +288,19 @@ QVariant pressureCouplingTypeFrom(const QString& value)
 QString toString(Configuration::PressureCouplingType type)
 {
   return pressureCouplingTypeBimap.left.at(type);
+}
+
+const static auto pressureCouplingTypeLabels =
+QMap<PressureCouplingType, QString>({
+  { PressureCouplingType::Isotropic, "Isotropic" },
+  { PressureCouplingType::SemiIsoTropic, "Semiisotropic" },
+  { PressureCouplingType::Anisotropic, "Anisotropic" },
+  { PressureCouplingType::SurfaceTension, "Surface-Tension" },
+});
+
+QString toLabel(Configuration::PressureCouplingType type)
+{
+  return pressureCouplingTypeLabels[type];
 }
 
 //QDataStream &operator<<(QDataStream &out, const Configuration &model)
@@ -224,14 +339,15 @@ QString toString(Configuration::PressureCouplingType type)
 //  return in;
 //}
 
+using TemperatureAlgorithm = Configuration::TemperatureAlgorithm;
 const static auto temperatureAlgorithmBimap =
-makeBimap<Configuration::TemperatureAlgorithm, QString>({
-  { Configuration::TemperatureAlgorithm::None, "no" },
-  { Configuration::TemperatureAlgorithm::Berendsen, "berendsen" },
-  { Configuration::TemperatureAlgorithm::NoseHoover, "nose-hoover" },
-  { Configuration::TemperatureAlgorithm::Andersen, "andersen" },
-  { Configuration::TemperatureAlgorithm::AndersenMassive, "andersen-massive" },
-  { Configuration::TemperatureAlgorithm::VelocityRescale, "V-rescale" },
+makeBimap<TemperatureAlgorithm, QString>({
+  { TemperatureAlgorithm::None, "no" },
+  { TemperatureAlgorithm::Berendsen, "berendsen" },
+  { TemperatureAlgorithm::NoseHoover, "nose-hoover" },
+  { TemperatureAlgorithm::Andersen, "andersen" },
+  { TemperatureAlgorithm::AndersenMassive, "andersen-massive" },
+  { TemperatureAlgorithm::VelocityRescale, "V-rescale" },
 });
 
 QVariant temperatureAlgorithmFrom(const QString& value)
@@ -244,14 +360,35 @@ QString toString(Configuration::TemperatureAlgorithm algorithm)
   return temperatureAlgorithmBimap.left.at(algorithm);
 }
 
-const static auto electrostaticAlgorithmBimap =
-makeBimap<Configuration::ElectrostaticAlgorithm, QString>({
-  { Configuration::ElectrostaticAlgorithm::CutOff, "Cut-Off" },
-  { Configuration::ElectrostaticAlgorithm::Ewald, "Ewald" },
-  { Configuration::ElectrostaticAlgorithm::PME, "PME" },
-  { Configuration::ElectrostaticAlgorithm::P3MAD, "P3M-AD" },
-  { Configuration::ElectrostaticAlgorithm::ReactionField, "Reaction-Field" },
+const static auto temperatureAlgorithmLabels =
+QMap<TemperatureAlgorithm, QString>({
+  { TemperatureAlgorithm::None, "None" },
+  { TemperatureAlgorithm::Berendsen, "Berendsen" },
+  { TemperatureAlgorithm::NoseHoover, "Nose-Hoover" },
+  { TemperatureAlgorithm::Andersen, "Andersen" },
+  { TemperatureAlgorithm::AndersenMassive, "Andersen-Massive" },
+  { TemperatureAlgorithm::VelocityRescale, "V-rescale" },
 });
+
+QString toLabel(Configuration::TemperatureAlgorithm algorithm)
+{
+  return temperatureAlgorithmLabels[algorithm];
+}
+
+using ElectrostaticAlgorithm = Configuration::ElectrostaticAlgorithm;
+const static auto electrostaticAlgorithmBimap =
+makeBimap<ElectrostaticAlgorithm, QString>({
+  { ElectrostaticAlgorithm::CutOff, "Cut-Off" },
+  { ElectrostaticAlgorithm::Ewald, "Ewald" },
+  { ElectrostaticAlgorithm::PME, "PME" },
+  { ElectrostaticAlgorithm::P3MAD, "P3M-AD" },
+  { ElectrostaticAlgorithm::ReactionField, "Reaction-Field" },
+});
+
+QString toLabel(Configuration::ElectrostaticAlgorithm algorithm)
+{
+  return toString(algorithm);
+}
 
 QVariant electrostaticAlgorithmFrom(const QString& value)
 {
@@ -279,6 +416,11 @@ QString toString(Configuration::VdwAlgorithm algorithm)
   return vdwAlgorithmBimap.left.at(algorithm);
 }
 
+QString toLabel(Configuration::VdwAlgorithm algorithm)
+{
+  return toString(algorithm);
+}
+
 const static auto vdwModifierBimap =
 makeBimap<Configuration::VdwModifier, QString>({
   { Configuration::VdwModifier::None, "None" },
@@ -295,6 +437,11 @@ QVariant vdwModifierFrom(const QString& value)
 QString toString(Configuration::VdwModifier algorithm)
 {
   return vdwModifierBimap.left.at(algorithm);
+}
+
+QString toLabel(Configuration::VdwModifier algorithm)
+{
+  return toString(algorithm);
 }
 
 } }

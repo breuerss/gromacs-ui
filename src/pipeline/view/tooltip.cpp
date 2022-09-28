@@ -64,7 +64,7 @@ void Tooltip::update()
   headerItem->setParentItem(parent);
 
   parent = this;
-  textItem->setPlainText(text);
+  textItem->setHtml(text);
   if (text.isEmpty())
   {
     parent = nullptr;
