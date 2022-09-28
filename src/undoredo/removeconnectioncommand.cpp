@@ -1,4 +1,5 @@
 #include "removeconnectioncommand.h"
+#include "../command/fileobjectconsumer.h"
 #include <QDebug>
 #include <QObject>
 

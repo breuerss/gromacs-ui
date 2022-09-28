@@ -1,7 +1,6 @@
 #ifndef PIPELINE_STEP_H
 #define PIPELINE_STEP_H
 
-#include "../config/configuration.h"
 #include "../command/fileobject.h"
 #include <QString>
 #include <QMap>
@@ -9,7 +8,7 @@
 #include <QObject>
 #include <memory>
 
-namespace config {
+namespace Config {
 class Configuration;
 }
 

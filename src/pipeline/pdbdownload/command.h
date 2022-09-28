@@ -5,14 +5,8 @@
 #include <memory>
 
 class PdbDownloader;
-namespace Model {
-class Project;
-}
-
 
 namespace Pipeline { namespace PdbDownload {
-
-class FileNameGenerator;
 
 class Command : public ::Command::Executor
 {

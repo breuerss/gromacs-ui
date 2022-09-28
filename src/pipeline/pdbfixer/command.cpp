@@ -1,4 +1,5 @@
 #include "command.h"
+#include "filenamegenerator.h"
 
 #include "../../appprovider.h"
 #include "../../statusmessagesetter.h"

@@ -2,8 +2,12 @@
 #define UNDO_REDO_REMOVE_CONNECTION_COMMAND_H
 
 #include <QUndoCommand>
-#include "../command/fileobjectconsumer.h"
-#include "../command/fileobject.h"
+#include <memory>
+
+namespace Command {
+class FileObject;
+class FileObjectConsumer;
+}
 
 namespace UndoRedo {
 

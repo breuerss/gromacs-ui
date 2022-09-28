@@ -7,6 +7,7 @@
 #include "../../logforwarder.h"
 #include "../../simulationstatuschecker.h"
 #include "src/command/fileobject.h"
+#include "filenamegenerator.h"
 #include "ui/simulationstatus.h"
 
 #include <QDebug>

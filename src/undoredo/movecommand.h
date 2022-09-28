@@ -1,29 +1,36 @@
 #ifndef UNDO_REDO_MOVE_COMMAND_H
 #define UNDO_REDO_MOVE_COMMAND_H
 
-#include "../pipeline/view/node.h"
 #include <QUndoCommand>
+#include <QPointF>
+#include <memory>
+
+namespace Pipeline {
+class Step;
+namespace View {
+class Node;
+}
+}
 
 namespace UndoRedo {
 
 class MoveCommand : public QUndoCommand
 {
-  using Node = Pipeline::View::Node;
 public:
-    enum { Id = 1234 };
+  enum { Id = 1234 };
 
-    MoveCommand(Node* node, const QPointF& oldPos,
-                QUndoCommand* parent = nullptr);
+  MoveCommand(Pipeline::View::Node* node, const QPointF& oldPos,
+              QUndoCommand* parent = nullptr);
 
-    void undo() override;
-    void redo() override;
-    bool mergeWith(const QUndoCommand* command) override;
-    int id() const override { return Id; }
+  void undo() override;
+  void redo() override;
+  bool mergeWith(const QUndoCommand* command) override;
+  int id() const override { return Id; }
 
 private:
-    std::shared_ptr<Pipeline::Step> step;
-    QPointF oldPos;
-    QPointF newPos;
+  std::shared_ptr<Pipeline::Step> step;
+  QPointF oldPos;
+  QPointF newPos;
 };
 
 }

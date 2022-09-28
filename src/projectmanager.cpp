@@ -1,6 +1,6 @@
 #include "projectmanager.h"
 #include "model/project.h"
-#include "src/undoredo/stack.h"
+#include "undoredo/stack.h"
 
 #include <memory>
 #include <exception>

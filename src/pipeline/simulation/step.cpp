@@ -3,6 +3,7 @@
 #include "configuration.h"
 #include "filenamegenerator.h"
 #include "../../model/project.h"
+#include <memory>
 
 namespace Pipeline {
 

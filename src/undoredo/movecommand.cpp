@@ -1,12 +1,13 @@
 #include "movecommand.h"
 
 #include "../pipeline/step.h"
+#include "../pipeline/view/node.h"
 #include <QDebug>
 #include <QObject>
 
 namespace UndoRedo {
 
-MoveCommand::MoveCommand(Node* newNode, const QPointF& newOldPos,
+MoveCommand::MoveCommand(Pipeline::View::Node* newNode, const QPointF& newOldPos,
                          QUndoCommand* parent)
   : QUndoCommand(QObject::tr("Move step"), parent)
     , step(newNode->getStep())

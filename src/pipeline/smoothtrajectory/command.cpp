@@ -1,4 +1,5 @@
 #include "command.h"
+#include "filenamegenerator.h"
 #include "../../gromacsconfigfilegenerator.h"
 #include "../../statusmessagesetter.h"
 #include "../../model/project.h"

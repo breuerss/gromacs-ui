@@ -11,9 +11,6 @@
 namespace Ui {
 class MainWindow;
 }
-namespace Config {
-class Simulation;
-}
 
 using namespace QtCharts;
 

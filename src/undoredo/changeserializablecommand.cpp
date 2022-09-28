@@ -1,4 +1,6 @@
 #include "changeserializablecommand.h"
+#include "../model/serializable.h"
+
 #include <QDebug>
 #include <QObject>
 

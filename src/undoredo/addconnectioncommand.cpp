@@ -1,4 +1,6 @@
 #include "addconnectioncommand.h"
+#include "../command/fileobjectconsumer.h"
+#include "../command/fileobject.h"
 #include <QDebug>
 #include <QObject>
 

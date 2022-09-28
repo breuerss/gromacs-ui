@@ -1,7 +1,6 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
 
-#include "src/command/filenamegenerator.h"
 #include <QObject>
 #include <QProcess>
 #include <QString>
@@ -15,6 +14,8 @@ class Configuration;
 namespace Command {
 
 class FileObjectConsumer;
+class FileNameGenerator;
+class FileObject;
 
 class Executor : public QObject
 {

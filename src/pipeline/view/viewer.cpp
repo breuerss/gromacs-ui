@@ -1,6 +1,4 @@
 #include "viewer.h"
-
-#include "panel.h"
 #include "node.h"
 #include "actionbutton.h"
 #include "addmenu.h"

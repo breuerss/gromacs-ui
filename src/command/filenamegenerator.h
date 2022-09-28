@@ -2,6 +2,7 @@
 #define COMMAND_FILENAMEGENERATOR_H
 
 #include <memory>
+#include <QString>
 #include "fileobject.h"
 
 namespace Model {

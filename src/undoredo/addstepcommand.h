@@ -2,8 +2,15 @@
 #define UNDO_REDO_ADD_STEP_COMMAND_H
 
 #include <QUndoCommand>
-#include "src/model/project.h"
-#include "src/pipeline/step.h"
+#include <memory>
+
+namespace Model {
+class Project;
+}
+
+namespace Pipeline {
+class Step;
+}
 
 namespace UndoRedo {
 

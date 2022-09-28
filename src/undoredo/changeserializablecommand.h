@@ -4,7 +4,9 @@
 #include <QUndoCommand>
 #include <QVariant>
 
-#include "../model/serializable.h"
+namespace Model {
+class Serializable;
+}
 
 namespace UndoRedo {
 

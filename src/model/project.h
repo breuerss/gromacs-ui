@@ -3,8 +3,6 @@
 
 
 #include "stepvector.h"
-#include "../pipeline/step.h"
-#include "../pipeline/simulation/step.h"
 #include "../pipeline/simulation/configuration.h"
 
 #include <QString>
@@ -13,13 +11,14 @@
 #include <vector>
 #include <memory>
 
-namespace Config {
-class Simulation;
+namespace Pipeline {
+class Step;
+namespace Simulation {
+class Step;
+}
 }
 
 namespace Model {
-
-class SystemSetup;
 
 class Project : public Serializable, public std::enable_shared_from_this<Project>
 {

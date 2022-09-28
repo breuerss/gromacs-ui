@@ -8,8 +8,6 @@
 #include <QIcon>
 #include "../../command/fileobjectprovider.h"
 #include "../../command/fileobjectconsumer.h"
-#include "../../projectmanager.h"
-#include "../../model/project.h"
 #include "../steps.h"
 
 namespace Pipeline { namespace View {

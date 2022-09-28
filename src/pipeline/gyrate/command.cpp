@@ -3,6 +3,7 @@
 #include "../../appprovider.h"
 #include "../../statusmessagesetter.h"
 #include "../../command/fileobjectconsumer.h"
+#include "filenamegenerator.h"
 #include <QFileInfo>
 
 namespace Pipeline { namespace Gyrate {

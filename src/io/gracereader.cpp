@@ -1,5 +1,5 @@
 #include "gracereader.h"
-#include "src/io/graphdata.h"
+#include "graphdata.h"
 
 #include <QFile>
 #include <QTextStream>

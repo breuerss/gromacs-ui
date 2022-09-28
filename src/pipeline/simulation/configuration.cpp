@@ -1,5 +1,4 @@
 #include "configuration.h"
-#include "temperaturecouplinggroup.h"
 #include "../../../ui/simulationsetupform.h"
 #include <QDebug>
 #include <QMetaProperty>

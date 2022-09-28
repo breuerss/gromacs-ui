@@ -1,6 +1,8 @@
 #include "removestepcommand.h"
 #include <QObject>
 
+#include "../model/project.h"
+
 namespace UndoRedo {
 
 RemoveStepCommand::RemoveStepCommand(

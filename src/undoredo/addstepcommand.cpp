@@ -1,7 +1,8 @@
 #include "addstepcommand.h"
+#include "../model/project.h"
+#include "../pipeline/step.h"
 
 #include <QObject>
-#include <QDebug>
 
 namespace UndoRedo {
 

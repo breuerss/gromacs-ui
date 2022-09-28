@@ -1,9 +1,10 @@
 #ifndef IO_GRACE_READER_H
 #define IO_GRACE_READER_H
 
-#include "graphdata.h"
-
+#include <QString>
 namespace IO {
+
+class GraphData;
 
 class GraceReader {
 

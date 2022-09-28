@@ -2,7 +2,6 @@
 #define PIPELINE_PORT_H
 
 #include "../../command/fileobject.h"
-#include "roundedrectitem.h"
 #include "porttooltip.h"
 #include <QGraphicsEllipseItem>
 #include <memory>

@@ -1,8 +1,6 @@
 #include "project.h"
-#include "stepvector.h"
 #include "systemsetup.h"
 #include "../settings.h"
-#include "../pipeline/simulation/configuration.h"
 #include "../pipeline/stepfactory.h"
 #include "../pipeline/steps.h"
 #include "../pipeline/runner.h"

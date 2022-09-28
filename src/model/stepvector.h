@@ -1,7 +1,7 @@
 #ifndef MODEL_STEPSVECTOR_H
 #define MODEL_STEPSVECTOR_H
 
-#include "src/pipeline/step.h"
+#include "../pipeline/step.h"
 #include <QObject>
 #include <QList>
 #include <memory>

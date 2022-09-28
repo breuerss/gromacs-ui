@@ -5,6 +5,7 @@
 #include "../../logforwarder.h"
 #include "../../command/fileobjectconsumer.h"
 #include "configuration.h"
+#include "filenamegenerator.h"
 
 #include <QDebug>
 #include <QFileInfo>

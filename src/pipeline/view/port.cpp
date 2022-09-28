@@ -1,7 +1,6 @@
 #include "port.h"
 #include "connector.h"
 #include "colors.h"
-#include "porttooltip.h"
 #include "panel.h"
 #include <QGraphicsView>
 #include <QDebug>

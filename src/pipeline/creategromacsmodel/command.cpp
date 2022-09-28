@@ -5,6 +5,7 @@
 #include "../../command/fileobjectconsumer.h"
 #include "../../command/fileobject.h"
 #include "configuration.h"
+#include "filenamegenerator.h"
 
 #include <QFileInfo>
 #include <QDebug>

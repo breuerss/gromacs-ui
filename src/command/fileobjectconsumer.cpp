@@ -1,5 +1,4 @@
 #include "fileobjectconsumer.h"
-#include "src/command/fileobject.h"
 #include "../undoredo/addconnectioncommand.h"
 #include "../undoredo/removeconnectioncommand.h"
 #include "../undoredo/stack.h"

@@ -1,10 +1,10 @@
 #include "command.h"
+#include "configuration.h"
+#include "filenamegenerator.h"
 
 #include "../../appprovider.h"
 #include "../../statusmessagesetter.h"
 #include "../../command/fileobjectconsumer.h"
-#include "configuration.h"
-#include "../creategromacsmodel/configuration.h"
 
 #include <QFileInfo>
 #include <QDebug>

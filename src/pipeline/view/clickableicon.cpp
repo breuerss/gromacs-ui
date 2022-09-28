@@ -1,5 +1,5 @@
 #include "clickableicon.h"
-#include "qcursor.h"
+#include <QCursor>
 #include <QDebug>
 #include <QIcon>
 #include <QPainter>

@@ -6,8 +6,6 @@
 
 namespace Model {
 
-class Project;
-
 class SystemSetup : public Serializable
 {
   Q_OBJECT
