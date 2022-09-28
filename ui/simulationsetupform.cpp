@@ -288,7 +288,7 @@ void SimulationSetupForm::setAlgorithmsForType(Pipeline::Simulation::Configurati
   {
     case Simulation::Type::Minimisation:
       map = {
-        { "Steepest Descent", Simulation::Algorithm::SteepestDecent },
+        { "Steepest Descent", Simulation::Algorithm::SteepestDescent },
         { "Conjugate Gradient", Simulation::Algorithm::ConjugateGradient },
       };
       break;

@@ -16,7 +16,7 @@ class Configuration
 public:
   enum class Algorithm : int {
     None = 0,
-    SteepestDecent,
+    SteepestDescent,
     ConjugateGradient,
     LeapFrog,
     StochasticDynamics

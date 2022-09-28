@@ -68,7 +68,7 @@ QWidget* Configuration::getUI()
 
 bool Configuration::isMinimisation() const
 {
-  return algorithm == Configuration::Algorithm::SteepestDecent ||
+  return algorithm == Configuration::Algorithm::SteepestDescent ||
     algorithm == Configuration::Algorithm::ConjugateGradient;
 }
 
@@ -106,12 +106,13 @@ void Configuration::removeTemperatureCouplingGroup(int at)
   emit temperatureCouplingGroupRemoved(couplingGroup, at);
 }
 
-const static auto simulationAlgorithmBimap = makeBimap<Configuration::Algorithm, QString>({
-  { Configuration::Algorithm::None, "" },
-  { Configuration::Algorithm::SteepestDecent, "steep" },
-  { Configuration::Algorithm::ConjugateGradient, "cg" },
-  { Configuration::Algorithm::LeapFrog, "md" },
-  { Configuration::Algorithm::StochasticDynamics, "sd" },
+using Algorithm = Configuration::Algorithm;
+const static auto simulationAlgorithmBimap = makeBimap<Algorithm, QString>({
+  { Algorithm::None, "" },
+  { Algorithm::SteepestDescent, "steep" },
+  { Algorithm::ConjugateGradient, "cg" },
+  { Algorithm::LeapFrog, "md" },
+  { Algorithm::StochasticDynamics, "sd" },
 });
 
 QVariant simulationAlgorithmFrom(const QString& value)
