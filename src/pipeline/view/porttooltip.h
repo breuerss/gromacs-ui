@@ -1,15 +1,14 @@
 #ifndef PIPELINE_VIEW_PORTTOOLTIP
 #define PIPELINE_VIEW_PORTTOOLTIP
 
-#include "roundedrectitem.h"
+#include "tooltip.h"
 #include "../../command/fileobject.h"
 
 namespace Pipeline { namespace View {
 
-class PortTooltip : public RoundedRectItem {
+class PortTooltip : public Tooltip {
 
 public:
-  using RoundedRectItem::RoundedRectItem;
   PortTooltip(QGraphicsItem* parent = nullptr);
   ~PortTooltip();
 
@@ -17,6 +16,7 @@ public:
   void setFileName(const QString& newFileName);
   void setFileTypes(const QList<Command::FileObject::Type>& newTypes);
   void setCanOpen(bool newCanOpen);
+  QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 
 private:
   void update();
@@ -24,11 +24,7 @@ private:
   using Category = Command::FileObject::Category;
   Category category = Category::Unknown;
   QList<Command::FileObject::Type> types;
-  QString fileName;
 
-  const int indent = 5;
-  QGraphicsTextItem* categoryAndTypeText;
-  QGraphicsTextItem* fileNameText;
   QGraphicsTextItem* fileNameLegend;
   bool canOpen = false;
 };

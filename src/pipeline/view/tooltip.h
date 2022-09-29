@@ -15,15 +15,17 @@ public:
   void setHeader(const QString& newHeader);
   void setText(const QString& newText);
 
-private:
-  void update();
+  QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-  QString header;
-  QString text;
+protected:
+  void update();
 
   const int indent = 5;
   QGraphicsTextItem* headerItem;
   QGraphicsTextItem* textItem;
+
+  QString header;
+  QString text;
 };
 } }
 

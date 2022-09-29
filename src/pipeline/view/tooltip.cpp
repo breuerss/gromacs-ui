@@ -1,6 +1,8 @@
 #include "tooltip.h"
 #include "colors.h"
 #include <QDebug>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 namespace Pipeline { namespace View {
 
@@ -39,6 +41,35 @@ Tooltip::~Tooltip()
 {
   delete headerItem;
   delete textItem;
+}
+
+QVariant Tooltip::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+  if (change == QGraphicsItem::ItemVisibleChange)
+  {
+    if (value.toBool())
+    {
+      auto viewer = scene()->views()[0];
+      auto sceneScale = viewer->transform().m11();
+      setScale(1 / sceneScale);
+
+      QRectF viewport = viewer->viewport()->rect();
+      auto tooFar= viewer->mapToScene(viewport.toRect().bottomRight()) -
+        mapToScene(rect().bottomRight());
+      auto tooltipPos = pos();
+      if (tooFar.x() < 0)
+      {
+        tooltipPos.rx() += tooFar.x() - 20;
+      }
+      if (tooFar.y() < 0)
+      {
+        tooltipPos.ry() += tooFar.y() - 20;
+      }
+      setPos(tooltipPos);
+    }
+  }
+
+  return QGraphicsItem::itemChange(change, value);
 }
 
 void Tooltip::setHeader(const QString& newHeader)

@@ -5,7 +5,7 @@
 namespace Pipeline { namespace View {
 
 PortTooltip::PortTooltip(QGraphicsItem* parent)
-  : RoundedRectItem(parent)
+  : Tooltip(parent)
 {
   setPen(QPen("transparent"));
   hide();
@@ -14,40 +14,25 @@ PortTooltip::PortTooltip(QGraphicsItem* parent)
   setBrush(Colors::Black);
   setZValue(1000);
 
-  categoryAndTypeText = new QGraphicsTextItem(this);
-  categoryAndTypeText->setDefaultTextColor(Colors::White);
-  auto font = categoryAndTypeText->font();
-  font.setPixelSize(13);
-  font.setWeight(QFont::Bold);
-  categoryAndTypeText->setFont(font);
-  categoryAndTypeText->setPos(indent, indent);
-
-  fileNameText = new QGraphicsTextItem(this);
-  fileNameText->setDefaultTextColor(Colors::White);
-  font = fileNameText->font();
-  font.setPixelSize(11);
-  font.setWeight(QFont::Medium);
-  fileNameText->setFont(font);
-  fileNameText->setPos(
-    categoryAndTypeText->mapToParent(categoryAndTypeText->boundingRect().bottomLeft())
-    );
-
   fileNameLegend = new QGraphicsTextItem("", this);
   fileNameLegend->setDefaultTextColor(Colors::White);
-  font = fileNameLegend->font();
+  auto font = fileNameLegend->font();
   font.setPixelSize(11);
   font.setWeight(QFont::Medium);
   fileNameLegend->setFont(font);
   fileNameLegend->setPos(
-    fileNameText->mapToParent(fileNameText->boundingRect().bottomLeft())
+    textItem->mapToParent(textItem->boundingRect().bottomLeft())
     );
   update();
 }
 
+QVariant PortTooltip::itemChange(GraphicsItemChange change, const QVariant& value)
+{
+  return Tooltip::itemChange(change, value);
+}
+
 PortTooltip::~PortTooltip()
 {
-  delete categoryAndTypeText;
-  delete fileNameText;
   delete fileNameLegend;
 }
 
@@ -59,7 +44,7 @@ void PortTooltip::setCategory(Command::FileObject::Category newCategory)
 
 void PortTooltip::setFileName(const QString& newFileName)
 {
-  fileName = newFileName;
+  setText(newFileName);
   update();
 }
 
@@ -92,21 +77,14 @@ void PortTooltip::update()
   categoryAndTypeList << typesString.join(", ");
 
   QString categoryAndType = categoryAndTypeList.join(" | ");
-  auto parent = this;
-  categoryAndTypeText->setPlainText(categoryAndType);
-  if (categoryAndType.isEmpty())
-  {
-    parent = nullptr;
-  }
-  categoryAndTypeText->setParentItem(parent);
+  setHeader(categoryAndType);
 
-  parent = this;
-  fileNameText->setPlainText(fileName);
-  if (fileName.isEmpty())
+
+  auto parent = this;
+  if (text.isEmpty())
   {
     parent = nullptr;
   }
-  fileNameText->setParentItem(parent);
   fileNameLegend->setParentItem(parent);
   QString legend = tr("(Not yet generated)");
   if (canOpen)
@@ -115,7 +93,7 @@ void PortTooltip::update()
   }
   fileNameLegend->setPlainText(legend);
 
-  setSize(childrenBoundingRect().size() + QSize(2 * indent, 2 * indent));
+  Tooltip::update();
 }
 
 } }

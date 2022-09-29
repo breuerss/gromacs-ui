@@ -134,28 +134,8 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
   {
     scene()->addItem(tooltipBox);
   }
-  tooltipBox->show();
-  auto sceneScale = scene()->views()[0]->transform().m11();
-  tooltipBox->setScale(1 / sceneScale);
-
   tooltipBox->setPos(mapToScene(rect().bottomRight()));
-
-  auto viewer = scene()->views()[0];
-  QRectF viewport = viewer->viewport()->rect();
-  auto tooFarRight = viewer->mapToScene(viewport.toRect().bottomRight()) -
-    tooltipBox->mapToScene(tooltipBox->rect().bottomRight());
-
-  auto tooltipPos = tooltipBox->pos();
-  if (tooFarRight.x() < 0)
-  {
-    tooltipPos.rx() += tooFarRight.x() - 20;
-  }
-  if (tooFarRight.y() < 0)
-  {
-    tooltipPos.ry() += tooFarRight.y() - 20;
-  }
-  tooltipBox->setPos(tooltipPos);
-
+  tooltipBox->show();
 
   tooltipBox->setCanOpen(hasData());
   if (hasData())
