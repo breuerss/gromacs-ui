@@ -2,6 +2,7 @@
 #include "connector.h"
 #include "colors.h"
 #include "panel.h"
+#include "tooltipmanager.h"
 #include <QGraphicsView>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
@@ -135,7 +136,7 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
     scene()->addItem(tooltipBox);
   }
   tooltipBox->setPos(mapToScene(rect().bottomRight()));
-  tooltipBox->show();
+  TooltipManager::show(tooltipBox);
 
   tooltipBox->setCanOpen(hasData());
   if (hasData())

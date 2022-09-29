@@ -1,6 +1,7 @@
 #include "node.h"
 #include "panel.h"
 #include "colors.h"
+#include "tooltipmanager.h"
 #include "styling.h"
 #include "../step.h"
 #include "../../uiupdater.h"
@@ -51,7 +52,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
       scene()->addItem(tooltipBox);
     }
 
-    tooltipBox->show();
+    TooltipManager::show(tooltipBox);
   });
 
   conns << QObject::connect(
