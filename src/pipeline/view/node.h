@@ -3,6 +3,8 @@
 
 #include "roundedrectitem.h"
 #include "port.h"
+#include "outputport.h"
+#include "inputport.h"
 #include "tooltip.h"
 #include "../../command/fileobject.h"
 #include "clickableicon.h"
@@ -25,12 +27,12 @@ class Node : public QObject, public QGraphicsRectItem
 {
   Q_OBJECT
 public:
-  typedef QList<QPair<std::shared_ptr<Command::FileObject>, Port*>> OutputPorts;
+  typedef QList<QPair<std::shared_ptr<Command::FileObject>, OutputPort*>> OutputPorts;
 
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
   ~Node();
 
-  Port* getInputPort(Command::FileObject::Category);
+  InputPort* getInputPort(Command::FileObject::Category);
   const OutputPorts& getOutputPorts() const;
 
   void addInputPort(Command::FileObject::Category category, const QColor& color);
@@ -53,9 +55,15 @@ protected:
   void hoverMoveEvent(QGraphicsSceneHoverEvent*) override;
 
 private:
-  Port* createPort(
-    const QColor& color,
-    Port::Type type);
+  template<typename PortType>
+  PortType* createPort(const QColor& color)
+  {
+    auto port = new PortType(0, 0, this);
+    port->setBrush(QBrush(color));
+    port->setZValue(100);
+    return port;
+  }
+
   QString getCoordinatesPath();
 
   void arrangeOutputPorts();
@@ -76,7 +84,7 @@ private:
   ClickableIcon* runIcon;
   RoundedRectItem* nodeBackground;
 
-  QList<QPair<Command::FileObject::Category, Port*>> inputPorts;
+  QList<QPair<Command::FileObject::Category, InputPort*>> inputPorts;
   OutputPorts outputPorts;
 
   std::shared_ptr<Pipeline::Step> step;

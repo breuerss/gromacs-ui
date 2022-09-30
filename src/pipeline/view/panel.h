@@ -22,6 +22,8 @@ namespace Pipeline { namespace View {
 class Node;
 class Connector;
 class Port;
+class OutputPort;
+class InputPort;
 
 class Panel : public QGraphicsScene
 {
@@ -48,14 +50,14 @@ public:
   std::shared_ptr<Model::Project> getProject() const;
 
   void reuseConnector(Connector* connector);
-  void startConnector(Port* at);
-  void addConnector(Port* start, Port* end);
+  void startConnector(OutputPort* at);
+  void addConnector(OutputPort* start, InputPort* end);
   void stopConnector();
   void connectorAccepted();
   Connector* getActiveConnector();
   QGraphicsItem* startingNode = nullptr;
 
-  Port* getPort(std::shared_ptr<Command::FileObject>);
+  OutputPort* getOutputPort(std::shared_ptr<Command::FileObject>);
   void deleteConnectorFor(Port* port);
   Connector* getConnectorFor(Port* port);
   const QList<Node*>& getSelectedNodes() const;
@@ -84,11 +86,11 @@ private:
   QList<QMetaObject::Connection> conns;
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void removeNode(std::shared_ptr<Pipeline::Step> step);
-  void addPort(std::shared_ptr<Command::FileObject>, Port*);
+  void addOutputPort(std::shared_ptr<Command::FileObject>, OutputPort*);
   QList<Node*> getSortedSelectedNodes() const;
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
-  std::map<std::shared_ptr<Command::FileObject>, Port*> portMap;
+  std::map<std::shared_ptr<Command::FileObject>, OutputPort*> outputPortMap;
   QMap<QPair<Port*, Port*>, Connector*> connectorMap;
   QList<Node*> nodeSelection;
   QPointF startingPos;

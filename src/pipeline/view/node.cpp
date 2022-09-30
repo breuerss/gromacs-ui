@@ -179,7 +179,7 @@ void Node::setupPorts()
       auto endPort = getInputPort(category);
       if (fileObject)
       {
-        auto startPort = panel->getPort(fileObject);
+        auto startPort = panel->getOutputPort(fileObject);
         panel->addConnector(startPort, endPort);
       }
       else
@@ -192,10 +192,10 @@ void Node::setupPorts()
 void Node::addInputPort(Command::FileObject::Category category, const QColor& color)
 {
   const auto& acceptedFileTypes = step->getFileObjectConsumer()->requires()[category];
-  auto inputPort = createPort(color, Port::Type::Input);
+  auto inputPort = createPort<InputPort>(color);
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPort->setCategory(category);
-  inputPorts << QPair<Command::FileObject::Category, Port*>(category, inputPort);
+  inputPorts << QPair<Command::FileObject::Category, InputPort*>(category, inputPort);
   conns << QObject::connect(
     inputPort, &Port::connectedToChanged, 
     [this] (
@@ -292,11 +292,11 @@ void Node::setupResizeAnimation()
 
 void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color)
 {
-  auto outputPort = createPort(color, Port::Type::Output);
+  auto outputPort = createPort<OutputPort>(color);
   outputPort->setProvidedFileObject(fileObject);
-  outputPorts << QPair<std::shared_ptr<Command::FileObject>, Port*>(
+  outputPorts << QPair<std::shared_ptr<Command::FileObject>, OutputPort*>(
     fileObject, outputPort);
-  conns << QObject::connect(outputPort, &Port::clicked, [this, fileObject] () {
+  conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
     using FileObject = Command::FileObject;
     using Category = FileObject::Category;
     switch (FileObject::getCategoryFor(fileObject->type))
@@ -351,14 +351,6 @@ QString Node::getCoordinatesPath()
   return coordinatesPath;
 }
 
-Port* Node::createPort(const QColor& color, Port::Type type)
-{
-  auto port = new Port(0, 0, type, this);
-  port->setBrush(QBrush(color));
-  port->setZValue(100);
-  return port;
-}
-
 void Node::arrangeOutputPorts()
 {
   const double steps = 45;
@@ -402,9 +394,9 @@ QPointF Node::getCirclePoint(double radius, double angle)
   );
 }
 
-Port* Node::getInputPort(Command::FileObject::Category category)
+InputPort* Node::getInputPort(Command::FileObject::Category category)
 {
-  Port* port = nullptr;
+  InputPort* port = nullptr;
   for (auto& inputPort : inputPorts)
   {
     if (inputPort.first == category)

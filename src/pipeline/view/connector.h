@@ -1,7 +1,8 @@
 #ifndef PIPELINE_CONNECTOR_H
 #define PIPELINE_CONNECTOR_H
 
-#include "port.h"
+#include "inputport.h"
+#include "outputport.h"
 #include <QGraphicsPathItem>
 
 namespace Pipeline { namespace View {
@@ -9,17 +10,17 @@ namespace Pipeline { namespace View {
 class Connector : public QGraphicsPathItem
 {
 public:
-  Connector(Port* startingPort);
+  Connector(OutputPort* startingPort);
   ~Connector();
 
-  void setEndingPort(Port* endingPort);
+  void setEndingPort(InputPort* endingPort);
   void redraw(const QPointF& endingPoint = QPointF());
-  Port* getStartingPort() const;
-  Port* getEndingPort() const;
+  OutputPort* getStartingPort() const;
+  InputPort* getEndingPort() const;
 
 private:
-  Port* startingPort;
-  Port* endingPort;
+  OutputPort* startingPort;
+  InputPort* endingPort;
   QMetaObject::Connection startingPortConn;
   QMetaObject::Connection endingPortConn;
 };

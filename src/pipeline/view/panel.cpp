@@ -38,7 +38,7 @@ void Panel::reuseConnector(Connector* connector)
   activeConnector = connector;
 }
 
-void Panel::startConnector(Port* at)
+void Panel::startConnector(OutputPort* at)
 {
   stopConnector();
   activeConnector = new Connector(at);
@@ -63,7 +63,7 @@ void Panel::connectorAccepted()
   stopConnector();
 }
 
-void Panel::addConnector(Port* start, Port* end)
+void Panel::addConnector(OutputPort* start, InputPort* end)
 {
   auto deletePortEntry = [this] (Port* deleted) {
     deleteConnectorFor(deleted);
@@ -113,7 +113,7 @@ void Panel::setProject(std::shared_ptr<Model::Project> newProject)
     disconnect(conn);
   }
 
-  portMap.clear();
+  outputPortMap.clear();
   connectorMap.clear();
   nodeMap.clear();
   clear();
@@ -143,14 +143,14 @@ std::shared_ptr<Model::Project> Panel::getProject() const
   return project;
 }
 
-void Panel::addPort(std::shared_ptr<Command::FileObject> fileObject, Port* port)
+void Panel::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, OutputPort* port)
 {
-  portMap[fileObject] = port;
+  outputPortMap[fileObject] = port;
 }
 
-Port* Panel::getPort(std::shared_ptr<Command::FileObject> fileObject)
+OutputPort* Panel::getOutputPort(std::shared_ptr<Command::FileObject> fileObject)
 {
-  return portMap[fileObject];
+  return outputPortMap[fileObject];
 }
 
 void Panel::deleteSelectedNodes()
@@ -368,7 +368,7 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
   addItem(node);
   for (const auto& pair : node->getOutputPorts())
   {
-    addPort(pair.first, pair.second);
+    addOutputPort(pair.first, pair.second);
   }
 
   auto pos = step->getLocation();

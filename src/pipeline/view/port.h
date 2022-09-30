@@ -23,26 +23,19 @@ public:
 
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
   QPointF getCenterInScene() const;
-  void setConnected(bool connected = true);
+  void setConnected(bool newConnected = true);
 
-  std::shared_ptr<Command::FileObject> getFileObject() const { return fileObject; }
-  void setProvidedFileObject(std::shared_ptr<Command::FileObject> fileObject);
   void setCategory(Command::FileObject::Category category);
-  void setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes);
-  const QList<Command::FileObject::Type>& getAcceptedFileTypes() const { return acceptedFileTypes; }
 
-  QSizeF getSize() const;
-  void setSize(const QSizeF& newSize);
-
-  Q_PROPERTY(QSizeF size READ getSize WRITE setSize NOTIFY sizeChanged);
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
   void mouseReleaseEvent(QGraphicsSceneMouseEvent* event) override;
   void mouseMoveEvent(QGraphicsSceneMouseEvent* event) override;
-  void dragMoveEvent(QGraphicsSceneDragDropEvent *event) override;
-  void dropEvent(QGraphicsSceneDragDropEvent *event) override;
   void hoverEnterEvent(QGraphicsSceneHoverEvent*) override;
   void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
+  PortTooltip* tooltipBox;
+  QPointF startingPos;
+  bool connected = false;
 
 signals:
   void deleted(Port*);
@@ -51,21 +44,11 @@ signals:
     std::shared_ptr<Command::FileObject> newFileObject,
     std::shared_ptr<Command::FileObject> oldFileObject
     );
-  void clicked();
-  void sizeChanged();
 
 private:
   void setupTooltip();
-  bool hasData();
 
   Type type;
-  bool connected = false;
-  std::shared_ptr<Command::FileObject> fileObject;
-  QMetaObject::Connection conn;
-  QList<Command::FileObject::Type> acceptedFileTypes;
-  QPointF startingPos;
-  PortTooltip* tooltipBox;
-  QPropertyAnimation* increaseSize;
 };
 
 } }

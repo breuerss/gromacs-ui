@@ -6,7 +6,7 @@
 
 namespace Pipeline { namespace View {
 
-Connector::Connector(Port* startingPort)
+Connector::Connector(OutputPort* startingPort)
   : startingPort(startingPort)
   , endingPort(nullptr)
 {
@@ -23,7 +23,7 @@ Connector::~Connector()
   QObject::disconnect(endingPortConn);
 }
 
-void Connector::setEndingPort(Port* newEndingPort)
+void Connector::setEndingPort(InputPort* newEndingPort)
 {
   if (endingPort)
   {
@@ -76,12 +76,12 @@ void Connector::redraw(const QPointF& endingPointOverride)
   setPath(painterPath);
 }
 
-Port* Connector::getStartingPort() const
+OutputPort* Connector::getStartingPort() const
 {
   return startingPort;
 }
 
-Port* Connector::getEndingPort() const
+InputPort* Connector::getEndingPort() const
 {
   return endingPort;
 }

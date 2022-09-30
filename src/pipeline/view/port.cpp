@@ -26,78 +26,25 @@ Port::Port(
   setAcceptedMouseButtons(Qt::LeftButton);
   setAcceptDrops(type == Type::Input);
   setAcceptHoverEvents(true);
+  setTransformOriginPoint(rect().center());
 
   setupTooltip();
-
-  increaseSize = new QPropertyAnimation(this, "size");
-  increaseSize->setStartValue(QSize(2 * RADIUS, 2 * RADIUS));
-  increaseSize->setEndValue(QSize(2.4 * RADIUS, 2.4 * RADIUS));
-  increaseSize->setDuration(200);
-  increaseSize->setEasingCurve(QEasingCurve::OutQuad);
 }
 
 Port::~Port()
 {
-  QObject::disconnect(conn);
   deleted(this);
-  delete increaseSize;
   delete tooltipBox;
+}
+
+void Port::setConnected(bool newConnected)
+{
+  connected = newConnected;
 }
 
 void Port::setupTooltip()
 {
   tooltipBox = new PortTooltip();
-}
-
-void Port::setSize(const QSizeF& newSize)
-{
-  auto currentDim = rect();
-  auto oldWidth = currentDim.width();
-  auto oldHeight = currentDim.height();
-  currentDim.setWidth(newSize.width());
-  currentDim.setHeight(newSize.height());
-
-  double newX = currentDim.x() + ((oldWidth - currentDim.width()) / 2);
-  currentDim.setX(newX);
-  double newY = currentDim.y() + ((oldHeight - currentDim.height()) / 2);
-  currentDim.setY(newY);
-
-  setRect(currentDim);
-}
-
-QSizeF Port::getSize() const
-{
-  return rect().size();
-}
-
-void Port::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
-{
-  fileObject = newFileObject;
-
-  QObject::disconnect(conn);
-
-  setCategory(Command::FileObject::getCategoryFor(fileObject->type));
-  tooltipBox->setFileTypes({ fileObject->type });
-  auto setTooltipCallback = [this] (const QString& tooltip)
-  {
-    tooltipBox->setFileName(tooltip);
-  };
-
-  setTooltipCallback("");
-  if (fileObject)
-  {
-    conn = QObject::connect(
-      fileObject.get(), &Command::FileObject::fileNameChanged,
-      setTooltipCallback
-      );
-    setTooltipCallback(fileObject->getFileName());
-  }
-}
-
-void Port::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)
-{
-  acceptedFileTypes = newAcceptedFileTypes;
-  tooltipBox->setFileTypes(acceptedFileTypes);
 }
 
 void Port::setCategory(Command::FileObject::Category category)
@@ -114,11 +61,6 @@ QVariant Port::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
   return QGraphicsItem::itemChange(change, value);
 }
 
-void Port::setConnected(bool newConnected)
-{
-  connected = newConnected;
-}
-
 QPointF Port::getCenterInScene() const
 {
   return mapToScene(rect().center());
@@ -126,40 +68,18 @@ QPointF Port::getCenterInScene() const
 
 void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 {
-  if (hasData())
-  {
-    setCursor(Qt::PointingHandCursor);
-  }
-
   if (!tooltipBox->scene())
   {
     scene()->addItem(tooltipBox);
   }
   tooltipBox->setPos(mapToScene(rect().bottomRight()));
   TooltipManager::show(tooltipBox);
-
-  tooltipBox->setCanOpen(hasData());
-  if (hasData())
-  {
-    increaseSize->setDirection(QAbstractAnimation::Forward);
-    increaseSize->start();
-  }
 }
 
 void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
   tooltipBox->hide();
-  if (hasData())
-  {
-    increaseSize->setDirection(QAbstractAnimation::Backward);
-    increaseSize->start();
-  }
-}
-
-bool Port::hasData()
-{
-  return fileObject && fileObject->exists();
 }
 
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)
@@ -168,14 +88,10 @@ void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)
   startingPos = event->scenePos();
 }
 
-void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+void Port::mouseReleaseEvent(QGraphicsSceneMouseEvent*)
 {
   dynamic_cast<Panel*>(scene())->stopConnector();
   unsetCursor();
-  if (event->scenePos() == startingPos && hasData())
-  {
-    clicked();
-  }
 }
 
 void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
@@ -185,56 +101,15 @@ void Port::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  auto panel = dynamic_cast<Panel*>(scene());
-  if (type == Type::Input)
-  {
-    if (connected)
-    {
-      Connector* connector = panel->getConnectorFor(this);
-      panel->reuseConnector(connector);
-
-      auto fileObject = connector->getStartingPort()->getFileObject();
-      connectedToChanged(nullptr, fileObject);
-    }
-  }
-  else
-  {
-    panel->startConnector(this);
-  }
-
   QDrag* drag = new QDrag(this);
   QMimeData *mime = new QMimeData;
   drag->setMimeData(mime);
   drag->exec();
 
   unsetCursor();
+
+  auto panel = dynamic_cast<Panel*>(scene());
   panel->stopConnector();
-}
-
-void Port::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
-{
-  auto panel = dynamic_cast<Panel*>(scene());
-  if (!connected && parentItem() != panel->startingNode)
-  {
-    auto port = panel->getActiveConnector()->getStartingPort();
-    if (acceptedFileTypes.contains(port->getFileObject()->type))
-    {
-      event->accept();
-      return;
-    }
-  }
-
-  event->ignore();
-}
-
-void Port::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
-{
-  auto panel = dynamic_cast<Panel*>(scene());
-  auto connector = panel->getActiveConnector();
-  connector->setEndingPort(this);
-  auto startingPort = connector->getStartingPort();
-  connectedToChanged(startingPort->getFileObject(), nullptr);
-  panel->connectorAccepted();
 }
 
 } }
