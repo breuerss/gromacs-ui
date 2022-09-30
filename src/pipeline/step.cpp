@@ -31,22 +31,27 @@ Step::Step(
   , command(newCommand)
   , fileNameGenerator(newFileNameGenerator)
 {
-  command->setConfig(configuration.get());
-  command->setFileObjectConsumer(fileObjectConsumer.get());
-  command->setFileNameGenerator(fileNameGenerator.get());
-
   if (fileNameGenerator)
   {
     fileNameGenerator->setConfiguration(configuration);
     fileNameGenerator->setFileObjectConsumer(fileObjectConsumer);
   }
 
-  conns << QObject::connect(command.get(), &Command::Executor::finished, [this] () {
-    for (auto step: project->getSteps())
-    {
-      step->getCommand()->canExecuteChanged(step->getCommand()->canExecute());
-    }
-  });
+  if (command)
+  {
+    command->setConfig(configuration.get());
+    command->setFileObjectConsumer(fileObjectConsumer.get());
+    command->setFileNameGenerator(fileNameGenerator.get());
+    conns << QObject::connect(command.get(), &Command::Executor::finished, [this] () {
+      for (auto step: project->getSteps())
+      {
+        if (step->getCommand())
+        {
+          step->getCommand()->canExecuteChanged(step->getCommand()->canExecute());
+        }
+      }
+    });
+  }
 
   auto updateFileNames = [this] {
     if (fileNameGenerator)
@@ -137,7 +142,7 @@ Step::getFileNameGenerator() const
 void Step::showStatusUI(bool show)
 {
   QWidget* widget = nullptr;
-  if (show)
+  if (show && command)
   {
     widget = command->getStatusUi();
   }

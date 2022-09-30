@@ -11,6 +11,7 @@
 #include "smoothtrajectory/step.h"
 #include "centerprotein/step.h"
 #include "gyrate/step.h"
+#include "timestepcontrol/step.h"
 
 #endif
 

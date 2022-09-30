@@ -35,7 +35,7 @@ void ClickableIcon::setEnabled(bool newEnabled)
 
 void ClickableIcon::repaint()
 {
-  QPixmap pixMap = icon.pixmap(pixmap().size());
+  QPixmap pixMap = icon.pixmap(defaultSize);
   if (grayScale)
   {
     pixMap = getGrayScale(pixMap);

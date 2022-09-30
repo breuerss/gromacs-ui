@@ -72,6 +72,7 @@ AddMenu::AddMenu(ActionButton* trigger)
   nodeMenuDefinitions[Category::PostProcess] = {
     { "Smooth Trajectory", addStepToProject<Pipeline::SmoothTrajectory::Step> },
     { "Center Protein", addStepToProject<Pipeline::CenterProtein::Step> },
+    { "Time Step Control", addStepToProject<Pipeline::TimeStepControl::Step> },
   };
 
   for (const auto& definition: definitions)

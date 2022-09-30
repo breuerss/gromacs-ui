@@ -31,6 +31,9 @@ protected:
   bool grayScale = false;
   bool enabled = true;
   void repaint();
+
+private:
+  const QSize defaultSize = QSize(35, 35);
 };
 
 } }

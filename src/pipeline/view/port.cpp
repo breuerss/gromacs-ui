@@ -1,19 +1,10 @@
 #include "port.h"
-#include "connector.h"
-#include "colors.h"
 #include "panel.h"
 #include "tooltipmanager.h"
-#include <QGraphicsView>
 #include <QDebug>
-#include <QGraphicsSceneMouseEvent>
-#include <QCursor>
 #include <QApplication>
 #include <QDrag>
 #include <QMimeData>
-#include <QWidget>
-#include <QObject>
-#include <qabstractanimation.h>
-#include <qpropertyanimation.h>
 
 namespace Pipeline { namespace View {
 

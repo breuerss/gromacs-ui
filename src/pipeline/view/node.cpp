@@ -117,6 +117,11 @@ void Node::setupText()
 
 void Node::setupRunIcon()
 {
+  if (!step->getCommand())
+  {
+    runIcon->setParentItem(nullptr);
+    return;
+  }
   runIcon->setZValue(11);
   auto textDim = text->boundingRect();
   runIcon->setPos(
@@ -141,17 +146,21 @@ void Node::setupRunIcon()
       command->exec();
     }
   });
+
+  auto changeIcon = [this] (bool isRunning) {
+    auto icon = QIcon::fromTheme("media-playback-start");
+    if (isRunning)
+    {
+      icon = QIcon::fromTheme("media-playback-pause");
+    }
+
+    runIcon->setIcon(icon, true);
+  };
+
   conns << QObject::connect(
     command, &Command::Executor::runningChanged,
-    [this] (bool isRunning) {
-      auto icon = QIcon::fromTheme("media-playback-start");
-      if (isRunning)
-      {
-        icon = QIcon::fromTheme("media-playback-pause");
-      }
-
-      runIcon->setIcon(icon, true);
-  });
+    changeIcon);
+  changeIcon(command->isRunning());
 }
 
 void Node::setupPorts()
