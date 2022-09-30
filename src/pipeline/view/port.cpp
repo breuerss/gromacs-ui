@@ -68,7 +68,7 @@ void Port::hoverEnterEvent(QGraphicsSceneHoverEvent*)
 void Port::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   unsetCursor();
-  tooltipBox->hide();
+  TooltipManager::hide(tooltipBox);
 }
 
 void Port::mousePressEvent(QGraphicsSceneMouseEvent* event)

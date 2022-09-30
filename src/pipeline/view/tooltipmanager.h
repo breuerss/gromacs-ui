@@ -8,10 +8,12 @@ namespace View {
 
 class TooltipManager {
 public:
-  static void show(Tooltip* tooltip);
+  static void show(Tooltip* tooltip, bool newExclusive = true);
+  static void hide(Tooltip* tooltip);
 
 private:
   static Tooltip* tooltip;
+  static bool exclusive;
 
 };
 }

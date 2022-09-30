@@ -450,7 +450,7 @@ void Node::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
 {
   tooltipBox->setParentItem(nullptr);
   delayedTooltip.stop();
-  tooltipBox->hide();
+  TooltipManager::hide(tooltipBox);
 }
 
 // necessary to detect release event
@@ -465,7 +465,7 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
   if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
       .length() > QApplication::startDragDistance()) {
-    tooltipBox->hide();
+    TooltipManager::hide(tooltipBox);
   }
 
   QGraphicsRectItem::mouseMoveEvent(event);
