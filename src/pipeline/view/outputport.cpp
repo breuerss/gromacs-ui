@@ -8,7 +8,7 @@ namespace Pipeline { namespace View {
 
 OutputPort::OutputPort(
   double x, double y, QGraphicsItem* parent)
-  : Port(x, y, Port::Type::Output, parent)
+  : Port(x, y, parent)
 {
   setTransformOriginPoint(rect().center());
   increaseSize = new QPropertyAnimation(this, "scale");

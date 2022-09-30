@@ -8,8 +8,9 @@ namespace Pipeline { namespace View {
 
 InputPort::InputPort(
   double x, double y, QGraphicsItem* parent)
-  : Port(x, y, Port::Type::Input, parent)
+  : Port(x, y, parent)
 {
+  setAcceptDrops(true);
 }
 
 void InputPort::setAcceptedFileTypes(const QList<Command::FileObject::Type>& newAcceptedFileTypes)

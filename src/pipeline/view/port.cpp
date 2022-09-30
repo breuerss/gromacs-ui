@@ -9,13 +9,11 @@
 namespace Pipeline { namespace View {
 
 Port::Port(
-  double x, double y, Type type, QGraphicsItem* parent)
+  double x, double y, QGraphicsItem* parent)
   : QGraphicsEllipseItem(x, y, 2 * RADIUS, 2 * RADIUS, parent)
-  , type(type)
 {
   setFlag(QGraphicsItem::ItemSendsScenePositionChanges);
   setAcceptedMouseButtons(Qt::LeftButton);
-  setAcceptDrops(type == Type::Input);
   setAcceptHoverEvents(true);
   setTransformOriginPoint(rect().center());
 
