@@ -24,16 +24,16 @@ GromacsSystemSettings::~GromacsSystemSettings()
 
 void GromacsSystemSettings::prepareWaterOptions()
 {
-  using Pipeline::CreateGromacsModel::Configuration;
-  setOptions<Configuration::WaterModel>(
+  using WaterModel = Pipeline::CreateGromacsModel::Configuration::WaterModel;
+  setOptions<WaterModel>(
     ui->waterModel,
     {
       //{ "None", SystemSetup::WaterModel::None }, // not yet properly handled
-      { "SPC", Configuration::WaterModel::SPC },
-      { "TIP3P", Configuration::WaterModel::TIP3P },
-      { "TIP4P", Configuration::WaterModel::TIP4P },
-      { "TIP5P", Configuration::WaterModel::TIP5P },
-    }, Configuration::WaterModel::SPC);
+      { "SPC", WaterModel::SPC },
+      { "TIP3P", WaterModel::TIP3P },
+      { "TIP4P", WaterModel::TIP4P },
+      { "TIP5P", WaterModel::TIP5P },
+    }, WaterModel::SPC);
 }
 
 void GromacsSystemSettings::prepareForceFieldOptions()
