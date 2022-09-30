@@ -9,6 +9,7 @@ namespace Pipeline { namespace View {
 Tooltip::Tooltip(QGraphicsItem* parent)
   : RoundedRectItem(parent)
 {
+  setAcceptedMouseButtons(Qt::NoButton);
   setPen(QPen("transparent"));
   hide();
   setRadius(8);
