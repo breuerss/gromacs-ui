@@ -103,7 +103,12 @@ void Tooltip::update()
   }
   textItem->setParentItem(parent);
 
-  setSize(childrenBoundingRect().size() + QSize(2 * indent, 2 * indent));
+  auto size = childrenBoundingRect().size();
+  if (!size.isEmpty())
+  {
+    size += QSize(2 * indent, 2 * indent);
+  }
+  setSize(size);
 }
 
 } }
