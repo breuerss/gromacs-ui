@@ -1,6 +1,8 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
 
+#include "types.h"
+
 #include <QObject>
 #include <QProcess>
 #include <QString>
@@ -62,7 +64,7 @@ private:
   bool running = false;
   QList<QMetaObject::Connection> conns;
   QList<QMetaObject::Connection> fileConsumerConnections;
-  QMap<const FileObject*, QMetaObject::Connection> fileObjectConnections;
+  QMap<Command::Data, QMetaObject::Connection> fileObjectConnections;
 };
 
 }

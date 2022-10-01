@@ -4,7 +4,7 @@ namespace UndoRedo { namespace Helper {
 
 void connectTo(
   Command::FileObjectConsumer* consumer,
-  Command::FileObject::Pointer inputObject
+  const Command::Data& inputObject
   )
 {
   UndoRedo::Stack::getInstance()->push(
@@ -14,7 +14,7 @@ void connectTo(
 
 void disconnectFrom(
   Command::FileObjectConsumer* consumer,
-  Command::FileObject::Pointer inputObject
+  const Command::Data& inputObject
   )
 {
   UndoRedo::Stack::getInstance()->push(

@@ -1,10 +1,11 @@
 #include "step.h"
 #include "../uiupdater.h"
 #include "../../ui/pdbcode.h"
-#include "src/command/filenamegenerator.h"
-#include "src/command/fileobjectconsumer.h"
-#include "src/command/fileobjectprovider.h"
-#include "src/command/executor.h"
+#include "../command/filenamegenerator.h"
+#include "../command/fileobjectconsumer.h"
+#include "../command/fileobjectprovider.h"
+#include "../command/executor.h"
+#include "../command/types.h"
 #include "../model/project.h"
 
 #include <QObject>
@@ -14,10 +15,34 @@
 
 namespace Pipeline {
 
+using FileObject = Command::FileObject;
+
 Step::Step(
   std::shared_ptr<Model::Project> newProject,
   const QMap<Command::InputOutput::Category, QList<Command::FileObject::Type>>& requiresMap,
-  const QList<Command::FileObject::Type> providesList,
+  const QList<Command::Data> providesList,
+  std::shared_ptr<Config::Configuration> configuration,
+  std::shared_ptr<Command::Executor> command,
+  std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
+  Category category
+)
+  : Step(
+    newProject,
+    requiresMap,
+    QList<FileObject::Type>(),
+    configuration,
+    command,
+    fileNameGenerator,
+    category
+    )
+{
+  fileObjectProvider = std::make_shared<Command::FileObjectProvider>(providesList);
+}
+
+Step::Step(
+  std::shared_ptr<Model::Project> newProject,
+  const QMap<Command::InputOutput::Category, QList<FileObject::Type>>& requiresMap,
+  const QList<FileObject::Type> providesList,
   std::shared_ptr<Config::Configuration> newConfiguration,
   std::shared_ptr<Command::Executor> newCommand,
   std::shared_ptr<Command::FileNameGenerator> newFileNameGenerator,
@@ -53,48 +78,60 @@ Step::Step(
     });
   }
 
-  auto updateFileNames = [this] {
-    if (fileNameGenerator)
-    {
-      for (auto fileObject: fileObjectProvider->provides())
-      {
-        QString fileName = fileNameGenerator->getFileNameFor(fileObject->type);
-        fileName = fileName.split("/", Qt::SkipEmptyParts).join("/");
-        if (!fileName.isEmpty())
-        {
-          fileName = "/" + fileName;
-        }
-        fileObject->setFileName(fileName);
-      }
-    }
-  };
-
-  if (configuration)
+  if (fileNameGenerator)
   {
-    conns << QObject::connect(
-      configuration.get(), &Config::Configuration::anyChanged,
-      updateFileNames);
-  }
-  conns << QObject::connect(
-    project.get(), &Model::Project::nameChanged, updateFileNames);
-  conns << QObject::connect(
-    fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged,
-    [this, updateFileNames] (auto newFileObject, auto, auto oldFileObject)
-    {
-      if (newFileObject)
+    using FileObject = Command::FileObject;
+    auto updateFileNames = [this] {
+      for (const auto& data: fileObjectProvider->provides())
       {
-        fileChangeConns[newFileObject] = QObject::connect(
-          newFileObject.get(), &Command::FileObject::fileNameChanged, updateFileNames);
+        if (std::holds_alternative<FileObject::Pointer>(data))
+        {
+          auto fileObject = std::get<FileObject::Pointer>(data);
+          QString fileName = fileNameGenerator->getFileNameFor(fileObject->type);
+          fileName = fileName.split("/", Qt::SkipEmptyParts).join("/");
+          if (!fileName.isEmpty())
+          {
+            fileName = "/" + fileName;
+          }
+          fileObject->setFileName(fileName);
+        }
       }
+    };
 
-      if (oldFileObject && fileChangeConns.contains(oldFileObject))
-      {
-        QObject::disconnect(fileChangeConns[oldFileObject]);
-      }
-      updateFileNames();
+    if (configuration)
+    {
+      conns << QObject::connect(
+        configuration.get(), &Config::Configuration::anyChanged,
+        updateFileNames);
     }
+    conns << QObject::connect(
+      project.get(), &Model::Project::nameChanged, updateFileNames);
+
+    conns << QObject::connect(
+      fileObjectConsumer.get(), &Command::FileObjectConsumer::connectedToChanged,
+      [this, updateFileNames] (
+        const Command::Data& newData, const auto&, const Command::Data& oldData)
+      {
+        if (std::holds_alternative<FileObject::Pointer>(newData))
+        {
+          auto& fileObject = std::get<FileObject::Pointer>(newData);
+          fileChangeConns[fileObject] = QObject::connect(
+            fileObject.get(), &Command::FileObject::fileNameChanged, updateFileNames);
+        }
+
+        if (std::holds_alternative<FileObject::Pointer>(oldData))
+        {
+          auto& oldFileObject = std::get<FileObject::Pointer>(oldData);
+          if (oldFileObject && fileChangeConns.contains(oldFileObject))
+          {
+            QObject::disconnect(fileChangeConns[oldFileObject]);
+          }
+          updateFileNames();
+        }
+      }
     );
-  updateFileNames();
+    updateFileNames();
+  }
 }
 
 Step::~Step()
@@ -179,15 +216,27 @@ QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
   });
 
   QJsonArray fileObjectsArray;
-  const auto& fileObjects = step->getFileObjectProvider()->provides();
-  for (const auto& fileObject : fileObjects)
+  QJsonArray configObjectsArray;
+  const auto& providedData = step->getFileObjectProvider()->provides();
+  for (const auto& data : providedData)
   {
-    QJsonObject fileObjectJson;
-    fileObjectJson << fileObject;
-    fileObjectsArray.append(fileObjectJson);
+    QJsonObject jsonObject;
+
+    std::visit([&jsonObject] (const auto& data) {
+      jsonObject << data;
+    }, data);
+    if (std::holds_alternative<FileObject::Pointer>(data))
+    {
+      fileObjectsArray.append(jsonObject);
+    }
+    if (std::holds_alternative<Config::Configuration::Pointer>(data))
+    {
+      configObjectsArray.append(jsonObject);
+    }
   }
 
   out["provided-files"] = fileObjectsArray;
+  out["provided-configs"] = configObjectsArray;
 
   return out;
 }
@@ -211,7 +260,29 @@ QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
     for (int index = 0; index < provides.size(); index++)
     {
       QJsonObject fileObjectJson = files[index].toObject();
-      fileObjectJson >> provides[index];
+      auto& data = provides[index];
+      if (std::holds_alternative<FileObject::Pointer>(data))
+      {
+        auto& fileObject = std::get<FileObject::Pointer>(data);
+        fileObjectJson >> fileObject;
+      }
+
+    }
+  }
+
+  if (in.contains("provided-configs") && in["provided-configs"].isArray())
+  {
+    QJsonArray files = in["provided-configs"].toArray();
+    const auto& provides = step->getFileObjectProvider()->provides();
+    for (int index = 0; index < provides.size(); index++)
+    {
+      QJsonObject fileObjectJson = files[index].toObject();
+      auto& data = provides[index];
+      if (std::holds_alternative<Config::Configuration::Pointer>(data))
+      {
+        auto& configObject = std::get<Config::Configuration::Pointer>(data);
+        fileObjectJson >> configObject;
+      }
     }
   }
 

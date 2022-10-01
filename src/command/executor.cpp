@@ -106,21 +106,25 @@ void Executor::setFileObjectConsumer(
   fileConsumerConnections << connect(
     fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
     [this] (
-      FileObject::Pointer newFileObject,
+      const Command::Data& newData,
       InputOutput::Category,
-      FileObject::Pointer oldFileObject) {
-      if (fileObjectConnections.contains(oldFileObject.get()))
+      const Command::Data& oldData) {
+      if (fileObjectConnections.contains(oldData))
       {
-        disconnect(fileObjectConnections[oldFileObject.get()]);
+        disconnect(fileObjectConnections[oldData]);
       }
 
-      if (newFileObject)
+      if (std::visit([] (const auto& data) { return !!data; }, newData))
       {
-        fileObjectConnections[newFileObject.get()] = connect(
-          newFileObject.get(), &FileObject::fileNameChanged,
-          [this] () {
-            canExecuteChanged(canExecute());
-          });
+        if (std::holds_alternative<FileObject::Pointer>(newData))
+        {
+          fileObjectConnections[newData] = connect(
+            std::get<FileObject::Pointer>(newData).get(),
+            &FileObject::fileNameChanged,
+            [this] () {
+              canExecuteChanged(canExecute());
+            });
+        }
       }
       canExecuteChanged(canExecute());
   });

@@ -180,9 +180,18 @@ void Node::resize()
 
 void Node::setupPorts()
 {
-  for (const auto& fileObject: step->getFileObjectProvider()->provides())
+  using Category = Command::InputOutput::Category;
+  using FileObject = Command::FileObject;
+  for (const auto& data: step->getFileObjectProvider()->provides())
   {
-    addOutputPort(fileObject, Colors::getColorFor(fileObject->type));
+    QColor color = Colors::getColorFor(Category::Configuration);
+    if (std::holds_alternative<FileObject::Pointer>(data))
+    {
+      auto fileObject = std::get<FileObject::Pointer>(data);
+      color = Colors::getColorFor(fileObject->type);
+    }
+
+    addOutputPort(data, color);
   }
 
   auto categories = step->getFileObjectConsumer()->requires().keys();
@@ -195,15 +204,15 @@ void Node::setupPorts()
     step->getFileObjectConsumer().get(),
     &Command::FileObjectConsumer::connectedToChanged,
     [this] (
-      std::shared_ptr<Command::FileObject> fileObject,
+      const Command::Data& data,
       Command::InputOutput::Category category,
-      std::shared_ptr<Command::FileObject> /*oldFileObject*/
+      const auto& /*oldFileObject*/
       ) {
       auto panel = dynamic_cast<Panel*>(scene());
       auto endPort = getInputPort(category);
-      if (fileObject)
+      if (std::visit([] (const auto& data) { return !!data; }, data))
       {
-        auto startPort = panel->getOutputPort(fileObject);
+        auto startPort = panel->getOutputPort(data);
         panel->addConnector(startPort, endPort);
       }
       else
@@ -220,19 +229,20 @@ void Node::addInputPort(Command::InputOutput::Category category, const QColor& c
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPort->setCategory(category);
   inputPorts << QPair<Command::InputOutput::Category, InputPort*>(category, inputPort);
+
   conns << QObject::connect(
     inputPort, &Port::connectedToChanged, 
     [this] (
-      std::shared_ptr<Command::FileObject> fileObject,
-      std::shared_ptr<Command::FileObject> oldFileObject
+      const Command::Data& newData,
+      const Command::Data& oldData
       ) {
-      if (fileObject)
+      if (std::visit([] (const auto& data) { return !!data; }, newData))
       {
-        UndoRedo::Helper::connectTo(step->getFileObjectConsumer().get(), fileObject);
+        UndoRedo::Helper::connectTo(step->getFileObjectConsumer().get(), newData);
       }
       else
       {
-        UndoRedo::Helper::disconnectFrom(step->getFileObjectConsumer().get(), oldFileObject);
+        UndoRedo::Helper::disconnectFrom(step->getFileObjectConsumer().get(), oldData);
       }
     });
   arrangeInputPorts();
@@ -314,35 +324,40 @@ void Node::setupResizeAnimation()
   });
 }
 
-void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color)
+void Node::addOutputPort(const Command::Data& data, const QColor& color)
 {
   auto outputPort = createPort<OutputPort>(color);
-  outputPort->setProvidedFileObject(fileObject);
-  outputPorts << QPair<std::shared_ptr<Command::FileObject>, OutputPort*>(
-    fileObject, outputPort);
-  conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
-    using FileObject = Command::FileObject;
-    using Category = Command::InputOutput::Category;
-    switch (FileObject::getCategoryFor(fileObject->type))
-    {
-      case Category::Coordinates:
-        UiUpdater::getInstance()->showCoordinates(fileObject->getFileName());
-        break;
-      case Category::Trajectory:
-        UiUpdater::getInstance()->showTrajectory(
-          getCoordinatesPath(),
-          fileObject->getFileName());
-        break;
-      case Category::Text:
-        UiUpdater::getInstance()->showTextFile(fileObject->getFileName());
-        break;
-      case Category::Graph:
-        UiUpdater::getInstance()->showGraph(fileObject->getFileName());
-        break;
-      default:
-        break;
-    }
-  });
+  outputPort->setProvidedData(data);
+  using namespace Command;
+  outputPorts << QPair<Data, OutputPort*>(data, outputPort);
+
+  if (std::holds_alternative<FileObject::Pointer>(data))
+  {
+    auto fileObject = std::get<FileObject::Pointer>(data);
+    conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
+      using FileObject = Command::FileObject;
+      using Category = Command::InputOutput::Category;
+      switch (FileObject::getCategoryFor(fileObject->type))
+      {
+        case Category::Coordinates:
+          UiUpdater::getInstance()->showCoordinates(fileObject->getFileName());
+          break;
+        case Category::Trajectory:
+          UiUpdater::getInstance()->showTrajectory(
+            getCoordinatesPath(),
+            fileObject->getFileName());
+          break;
+        case Category::Text:
+          UiUpdater::getInstance()->showTextFile(fileObject->getFileName());
+          break;
+        case Category::Graph:
+          UiUpdater::getInstance()->showGraph(fileObject->getFileName());
+          break;
+        default:
+          break;
+      }
+    });
+  }
   arrangeOutputPorts();
 }
 
@@ -350,26 +365,18 @@ QString Node::getCoordinatesPath()
 {
   QString coordinatesPath;
 
-  using FileObject = Command::FileObject;
-  using Category = Command::InputOutput::Category;
-  for (auto port : outputPorts)
-  {
-    auto fileObject = port.first;
-    if (FileObject::getCategoryFor(fileObject->type)
-        == Category::Coordinates &&
-        fileObject->exists())
-    {
-      coordinatesPath = fileObject->getFileName();
-    }
-  }
-
+  using namespace Command;
   if (coordinatesPath.isEmpty())
   {
-    auto fileObject = step->getFileObjectConsumer()
-      ->getConnectedTo()[Command::InputOutput::Category::Coordinates];
-    if (fileObject->exists())
+    const auto& data = step->getFileObjectConsumer()
+      ->getConnectedTo()[InputOutput::Category::Coordinates];
+    if (std::holds_alternative<FileObject::Pointer>(data))
     {
-      coordinatesPath = fileObject->getFileName();
+      const auto& fileObject = std::get<FileObject::Pointer>(data);
+      if (fileObject->exists())
+      {
+        coordinatesPath = fileObject->getFileName();
+      }
     }
   }
 

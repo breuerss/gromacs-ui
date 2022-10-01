@@ -2,6 +2,7 @@
 #define PIPELINE_OUTPUTPORT_H
 
 #include "port.h"
+#include "../../command/types.h"
 
 namespace Pipeline { namespace View {
 
@@ -12,8 +13,8 @@ public:
   OutputPort(double x, double y, QGraphicsItem* parent = nullptr);
   virtual ~OutputPort();
 
-  void setProvidedFileObject(std::shared_ptr<Command::FileObject> fileObject);
-  std::shared_ptr<Command::FileObject> getFileObject() const { return fileObject; }
+  void setProvidedData(const Command::Data& data);
+  const Command::Data& getProvidedData() const { return data; }
 
   Q_PROPERTY(double scale READ scale WRITE setScale NOTIFY scaleChanged);
   void setScale(double scale);
@@ -31,7 +32,7 @@ signals:
 private:
   bool hasData();
 
-  std::shared_ptr<Command::FileObject> fileObject;
+  Command::Data data;
   QMetaObject::Connection conn;
   QPropertyAnimation* increaseSize;
 };

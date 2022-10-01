@@ -10,12 +10,12 @@ namespace UndoRedo { namespace Helper {
 
 void connectTo(
   Command::FileObjectConsumer* consumer,
-  Command::FileObject::Pointer inputObject
+  const Command::Data& data
   );
 
 void disconnectFrom(
   Command::FileObjectConsumer* consumer,
-  Command::FileObject::Pointer inputObject
+  const Command::Data& data
   );
 
 } }

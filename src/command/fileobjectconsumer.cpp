@@ -2,6 +2,7 @@
 #include "../undoredo/addconnectioncommand.h"
 #include "../undoredo/removeconnectioncommand.h"
 #include "../undoredo/stack.h"
+#include "inputoutput.h"
 #include <memory>
 #include <QDebug>
 
@@ -19,75 +20,88 @@ const QMap<InputOutput::Category, QList<FileObject::Type>>& FileObjectConsumer::
   return requiresMap;
 }
 
-bool FileObjectConsumer::accepts(FileObject::Pointer fileObject)
+bool FileObjectConsumer::accepts(const Data& fileObject)
 {
   return getCategoryFor(fileObject) != InputOutput::Category::Unknown;
 }
 
-void FileObjectConsumer::connectTo(FileObject::Pointer fileObject)
+void FileObjectConsumer::connectTo(const Data& data)
 {
-  auto category = getCategoryFor(fileObject);
+  auto category = getCategoryFor(data);
   if (category != InputOutput::Category::Unknown)
   {
-    FileObject::Pointer old;
+    Data old;
     if (connectedTo.contains(category))
     {
       old = connectedTo[category];
     }
-    connectedTo[category] = fileObject;
+    connectedTo[category] = data;
 
-    emit connectedToChanged(fileObject, category, old);
+    emit connectedToChanged(data, category, old);
   }
 }
 
-void FileObjectConsumer::disconnectFrom(FileObject::Pointer fileObject)
+void FileObjectConsumer::disconnectFrom(const Data& data)
 {
-  if (!connectedTo.values().contains(fileObject))
+  if (!connectedTo.values().contains(data))
   {
     return;
   }
 
-  auto category = getCategoryFor(fileObject);
-  if (connectedTo.contains(category) && connectedTo[category] == fileObject)
+  auto category = getCategoryFor(data);
+  if (connectedTo.contains(category) && connectedTo[category] == data)
   {
     connectedTo.remove(category);
-    emit connectedToChanged(nullptr, category, fileObject);
+    emit connectedToChanged(Data(), category, data);
   }
 }
 
 QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
 {
   QString fileName;
-  for (auto object : connectedTo.values())
+  for (const auto& object : connectedTo.values())
   {
-    if (object->type == type)
+    if (std::holds_alternative<FileObject::Pointer>(object))
     {
-      fileName = object->getFileName();
-      break;
+      auto fileObject = std::get<FileObject::Pointer>(object);
+      if (fileObject->type == type)
+      {
+        fileName = fileObject->getFileName();
+        break;
+      }
     }
   }
 
   return fileName;
 }
 
-InputOutput::Category FileObjectConsumer::getCategoryFor(FileObject::Pointer fileObject)
+InputOutput::Category FileObjectConsumer::getCategoryFor(const Data& data)
 {
   InputOutput::Category category = InputOutput::Category::Unknown;
 
-  auto requireMap = requires();
-  for (const auto& key: requireMap.keys())
+
+  if (std::holds_alternative<FileObject::Pointer>(data))
   {
-    if (requireMap[key].contains(fileObject->type))
+    auto fileObject = std::get<FileObject::Pointer>(data);
+    auto requireMap = requires();
+    for (const auto& key: requireMap.keys())
     {
-      category = key;
-      break;
+      if (requireMap[key].contains(fileObject->type))
+      {
+        category = key;
+        break;
+      }
     }
+  }
+  else if (std::holds_alternative<Config::Configuration::Pointer>(data))
+  {
+    category = InputOutput::Category::Configuration;
   }
 
   return category;
 }
 
-const QMap<InputOutput::Category, FileObject::Pointer>
+const QMap<InputOutput::Category, Data>
 FileObjectConsumer::getConnectedTo() const
 {
   return connectedTo;

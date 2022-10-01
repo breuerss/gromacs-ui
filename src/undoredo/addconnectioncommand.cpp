@@ -7,23 +7,23 @@
 namespace UndoRedo {
 
 AddConnectionCommand::AddConnectionCommand(
-  std::shared_ptr<Command::FileObject> newFileObject,
+  const Command::Data& newData,
   Command::FileObjectConsumer* newConsumer,
   QUndoCommand* parent)
   : QUndoCommand(QObject::tr("Add connection"), parent)
-    , fileObject(newFileObject)
+    , data(newData)
     , consumer(newConsumer)
 {
 }
 
 void AddConnectionCommand::undo()
 {
-  consumer->disconnectFrom(fileObject);
+  consumer->disconnectFrom(data);
 }
 
 void AddConnectionCommand::redo()
 {
-  consumer->connectTo(fileObject);
+  consumer->connectTo(data);
 }
 
 }

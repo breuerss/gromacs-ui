@@ -6,7 +6,7 @@
 #include "outputport.h"
 #include "inputport.h"
 #include "tooltip.h"
-#include "../../command/fileobject.h"
+#include "../../command/types.h"
 #include "clickableicon.h"
 
 #include <QGraphicsRectItem>
@@ -27,7 +27,7 @@ class Node : public QObject, public QGraphicsRectItem
 {
   Q_OBJECT
 public:
-  typedef QList<QPair<std::shared_ptr<Command::FileObject>, OutputPort*>> OutputPorts;
+  typedef QList<QPair<Command::Data, OutputPort*>> OutputPorts;
 
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
   ~Node();
@@ -36,7 +36,7 @@ public:
   const OutputPorts& getOutputPorts() const;
 
   void addInputPort(Command::InputOutput::Category category, const QColor& color);
-  void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
+  void addOutputPort(const Command::Data& fileObject, const QColor& color);
 
   bool isSelected() const;
   void setSelected(bool newSelected);

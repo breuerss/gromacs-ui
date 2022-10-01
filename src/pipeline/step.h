@@ -1,9 +1,10 @@
 #ifndef PIPELINE_STEP_H
 #define PIPELINE_STEP_H
 
-#include "../command/fileobject.h"
+#include "../command/types.h"
 #include <QString>
 #include <QMap>
+#include <QList>
 #include <QPointF>
 #include <QObject>
 #include <memory>
@@ -40,6 +41,16 @@ public:
     std::shared_ptr<Model::Project> newProject,
     const QMap<Command::InputOutput::Category, QList<Command::FileObject::Type>>& requiresMap,
     const QList<Command::FileObject::Type> providesList,
+    std::shared_ptr<Config::Configuration> configuration,
+    std::shared_ptr<Command::Executor> command,
+    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
+    Category category
+    );
+
+  explicit Step(
+    std::shared_ptr<Model::Project> newProject,
+    const QMap<Command::InputOutput::Category, QList<Command::FileObject::Type>>& requiresMap,
+    const QList<Command::Data> providesList,
     std::shared_ptr<Config::Configuration> configuration,
     std::shared_ptr<Command::Executor> command,
     std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,

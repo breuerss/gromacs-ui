@@ -1,7 +1,7 @@
 #ifndef PIPELINE_PORT_H
 #define PIPELINE_PORT_H
 
-#include "../../command/fileobject.h"
+#include "../../command/types.h"
 #include "porttooltip.h"
 #include <QGraphicsEllipseItem>
 #include <memory>
@@ -32,13 +32,14 @@ protected:
   PortTooltip* tooltipBox;
   QPointF startingPos;
   bool connected = false;
+  Command::InputOutput::Category category;
 
 signals:
   void deleted(Port*);
   void centerPositionChanged(const QPointF& center);
   void connectedToChanged(
-    std::shared_ptr<Command::FileObject> newFileObject,
-    std::shared_ptr<Command::FileObject> oldFileObject
+    const Command::Data& newFileObject,
+    const Command::Data& oldFileObject
     );
 
 private:

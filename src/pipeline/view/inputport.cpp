@@ -37,8 +37,8 @@ void InputPort::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     Connector* connector = panel->getConnectorFor(this);
     panel->reuseConnector(connector);
 
-    auto fileObject = connector->getStartingPort()->getFileObject();
-    connectedToChanged(nullptr, fileObject);
+    const auto& data = connector->getStartingPort()->getProvidedData();
+    connectedToChanged(Command::Data(), data);
   }
 
 
@@ -51,7 +51,19 @@ void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
   if (!connected && parentItem() != panel->startingNode)
   {
     auto port = panel->getActiveConnector()->getStartingPort();
-    if (acceptedFileTypes.contains(port->getFileObject()->type))
+    const auto& data = port->getProvidedData();
+
+    bool accepts = false;
+    if (std::holds_alternative<Command::FileObject::Pointer>(data))
+    {
+      const auto& fileObject = std::get<Command::FileObject::Pointer>(data);
+      accepts = acceptedFileTypes.contains(fileObject->type);
+    }
+    else if (std::holds_alternative<Config::Configuration::Pointer>(data))
+    {
+      accepts = (category == Command::InputOutput::Category::Configuration);
+    }
+    if (accepts)
     {
       event->accept();
       return;
@@ -67,7 +79,7 @@ void InputPort::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
   auto connector = panel->getActiveConnector();
   connector->setEndingPort(this);
   auto startingInputPort = connector->getStartingPort();
-  connectedToChanged(startingInputPort->getFileObject(), nullptr);
+  connectedToChanged(startingInputPort->getProvidedData(), Command::Data());
   panel->connectorAccepted();
 }
 

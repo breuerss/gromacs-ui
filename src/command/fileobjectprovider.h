@@ -2,6 +2,7 @@
 #define COMMAND_FILEOBJECTPROVIDER_H
 
 #include "fileobject.h"
+#include "types.h"
 #include <memory>
 #include <QList>
 
@@ -11,11 +12,12 @@ class FileObjectProvider
 {
 public:
   FileObjectProvider(const QList<FileObject::Type>& fileTypes);
-  const QList<FileObject::Pointer>& provides() const;
-  QList<FileObject::Pointer>& provides();
+  explicit FileObjectProvider(const QList<Data>& newProvidesList);
+  const QList<Data>& provides() const;
+  QList<Data>& provides();
 
 private:
-   QList<FileObject::Pointer> providesList;
+   QList<Data> providesList;
 };
 
 }

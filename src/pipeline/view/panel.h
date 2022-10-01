@@ -1,7 +1,7 @@
 #ifndef PIPELINE_PANEL_H
 #define PIPELINE_PANEL_H
 
-#include "../../command/fileobject.h"
+#include "../../command/types.h"
 #include <QGraphicsScene>
 #include <QMap>
 #include <QList>
@@ -57,7 +57,7 @@ public:
   Connector* getActiveConnector();
   QGraphicsItem* startingNode = nullptr;
 
-  OutputPort* getOutputPort(std::shared_ptr<Command::FileObject>);
+  OutputPort* getOutputPort(const Command::Data& data);
   void deleteConnectorFor(Port* port);
   Connector* getConnectorFor(Port* port);
   const QList<Node*>& getSelectedNodes() const;
@@ -86,11 +86,11 @@ private:
   QList<QMetaObject::Connection> conns;
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void removeNode(std::shared_ptr<Pipeline::Step> step);
-  void addOutputPort(std::shared_ptr<Command::FileObject>, OutputPort*);
+  void addOutputPort(const Command::Data&, OutputPort*);
   QList<Node*> getSortedSelectedNodes() const;
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
-  std::map<std::shared_ptr<Command::FileObject>, OutputPort*> outputPortMap;
+  std::map<Command::Data, OutputPort*> outputPortMap;
   QMap<QPair<Port*, Port*>, Connector*> connectorMap;
   QList<Node*> nodeSelection;
   QPointF startingPos;

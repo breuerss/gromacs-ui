@@ -1,6 +1,7 @@
 #ifndef UNDO_REDO_ADD_CONNECTION_COMMAND_H
 #define UNDO_REDO_ADD_CONNECTION_COMMAND_H
 
+#include "../command/types.h"
 #include <QUndoCommand>
 #include <memory>
 
@@ -15,7 +16,7 @@ class AddConnectionCommand : public QUndoCommand
 {
 public:
     AddConnectionCommand(
-      std::shared_ptr<Command::FileObject> newFileObject,
+      const Command::Data& newData,
       Command::FileObjectConsumer* newConsumer,
       QUndoCommand* parent = nullptr);
 
@@ -23,7 +24,7 @@ public:
     void redo() override;
 
 private:
-    std::shared_ptr<Command::FileObject> fileObject;
+    Command::Data data;
     Command::FileObjectConsumer* consumer;
 };
 

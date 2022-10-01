@@ -143,14 +143,14 @@ std::shared_ptr<Model::Project> Panel::getProject() const
   return project;
 }
 
-void Panel::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, OutputPort* port)
+void Panel::addOutputPort(const Command::Data& data, OutputPort* port)
 {
-  outputPortMap[fileObject] = port;
+  outputPortMap[data] = port;
 }
 
-OutputPort* Panel::getOutputPort(std::shared_ptr<Command::FileObject> fileObject)
+OutputPort* Panel::getOutputPort(const Command::Data& data)
 {
-  return outputPortMap[fileObject];
+  return outputPortMap[data];
 }
 
 void Panel::deleteSelectedNodes()

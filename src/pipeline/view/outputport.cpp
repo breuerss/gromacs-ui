@@ -33,27 +33,32 @@ void OutputPort::setScale(double newScale)
   }
 }
 
-void OutputPort::setProvidedFileObject(std::shared_ptr<Command::FileObject> newFileObject)
+void OutputPort::setProvidedData(const Command::Data& newData)
 {
-  fileObject = newFileObject;
+  data = newData;
 
   QObject::disconnect(conn);
 
-  setCategory(Command::FileObject::getCategoryFor(fileObject->type));
-  tooltipBox->setFileTypes({ fileObject->type });
-  auto setTooltipCallback = [this] (const QString& tooltip)
+  if (std::holds_alternative<Command::FileObject::Pointer>(data))
   {
-    tooltipBox->setFileName(tooltip);
-  };
+    auto& fileObject = std::get<Command::FileObject::Pointer>(data);
 
-  setTooltipCallback("");
-  if (fileObject)
-  {
-    conn = QObject::connect(
-      fileObject.get(), &Command::FileObject::fileNameChanged,
-      setTooltipCallback
+    setCategory(Command::FileObject::getCategoryFor(fileObject->type));
+    tooltipBox->setFileTypes({ fileObject->type });
+    auto setTooltipCallback = [this] (const QString& tooltip)
+    {
+      tooltipBox->setFileName(tooltip);
+    };
+
+    setTooltipCallback("");
+    if (fileObject)
+    {
+      conn = QObject::connect(
+        fileObject.get(), &Command::FileObject::fileNameChanged,
+        setTooltipCallback
       );
-    setTooltipCallback(fileObject->getFileName());
+      setTooltipCallback(fileObject->getFileName());
+    }
   }
 }
 
@@ -88,7 +93,13 @@ void OutputPort::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 
 bool OutputPort::hasData()
 {
-  return fileObject && fileObject->exists();
+  bool hasData = false;
+  if (std::holds_alternative<Command::FileObject::Pointer>(data))
+  {
+    auto fileObject = std::get<Command::FileObject::Pointer>(data);
+    hasData = fileObject && fileObject->exists();
+  }
+  return hasData;
 }
 
 void OutputPort::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)

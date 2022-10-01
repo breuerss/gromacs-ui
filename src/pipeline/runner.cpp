@@ -89,17 +89,21 @@ Runner::getNextStepsFor(
   )
 {
 
-  auto outputFiles = step->getFileObjectProvider()->provides();
+  auto outputData = step->getFileObjectProvider()->provides();
   using FileObject = Command::FileObject;
-  QList<FileObject::Pointer> relevantOutputFiles = outputFiles;
+  auto relevantOutputFiles = outputData;
 
   if (relevantTypes.size())
   {
-    for (const auto& file: outputFiles)
+    for (const auto& data: outputData)
     {
-      if (!relevantTypes.contains(file->type))
+      if (std::holds_alternative<FileObject::Pointer>(data))
       {
-        relevantOutputFiles.removeAll(file);
+        auto file = std::get<FileObject::Pointer>(data);
+        if (!relevantTypes.contains(file->type))
+        {
+          relevantOutputFiles.removeAll(file);
+        }
       }
     }
   }
