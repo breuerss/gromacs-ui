@@ -9,6 +9,7 @@
 #include "../../command/executor.h"
 #include "../../command/fileobjectconsumer.h"
 #include "../../command/fileobjectprovider.h"
+#include "../../undoredo/helper.h"
 #include <cmath>
 #include <memory>
 #include <QIcon>
@@ -227,11 +228,11 @@ void Node::addInputPort(Command::InputOutput::Category category, const QColor& c
       ) {
       if (fileObject)
       {
-        step->getFileObjectConsumer()->connectTo(fileObject);
+        UndoRedo::Helper::connectTo(step->getFileObjectConsumer().get(), fileObject);
       }
       else
       {
-        step->getFileObjectConsumer()->disconnectFrom(oldFileObject);
+        UndoRedo::Helper::disconnectFrom(step->getFileObjectConsumer().get(), oldFileObject);
       }
     });
   arrangeInputPorts();

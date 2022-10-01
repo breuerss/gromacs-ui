@@ -18,12 +18,12 @@ AddConnectionCommand::AddConnectionCommand(
 
 void AddConnectionCommand::undo()
 {
-  consumer->disconnectFrom(fileObject, false);
+  consumer->disconnectFrom(fileObject);
 }
 
 void AddConnectionCommand::redo()
 {
-  consumer->connectTo(fileObject, false);
+  consumer->connectTo(fileObject);
 }
 
 }

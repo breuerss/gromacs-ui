@@ -18,8 +18,8 @@ public:
   getConnectedTo() const;
 
   bool accepts(std::shared_ptr<FileObject> fileObject);
-  void connectTo(std::shared_ptr<FileObject> fileObject, bool createUndoRedo = true);
-  void disconnectFrom(std::shared_ptr<FileObject> fileObject, bool createUndoRedo = true);
+  void connectTo(std::shared_ptr<FileObject> fileObject);
+  void disconnectFrom(std::shared_ptr<FileObject> fileObject);
   QString getFileNameFor(FileObject::Type type) const;
 
 signals:

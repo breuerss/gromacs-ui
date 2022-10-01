@@ -24,50 +24,34 @@ bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
   return getCategoryFor(fileObject) != InputOutput::Category::Unknown;
 }
 
-void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
+void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject)
 {
-  if (createUndoRedo)
+  auto category = getCategoryFor(fileObject);
+  if (category != InputOutput::Category::Unknown)
   {
-    UndoRedo::Stack::getInstance()
-      ->push(new UndoRedo::AddConnectionCommand(fileObject, this));
-  }
-  else
-  {
-    auto category = getCategoryFor(fileObject);
-    if (category != InputOutput::Category::Unknown)
+    std::shared_ptr<FileObject> old;
+    if (connectedTo.contains(category))
     {
-      std::shared_ptr<FileObject> old;
-      if (connectedTo.contains(category))
-      {
-        old = connectedTo[category];
-      }
-      connectedTo[category] = fileObject;
-
-      emit connectedToChanged(fileObject, category, old);
+      old = connectedTo[category];
     }
+    connectedTo[category] = fileObject;
+
+    emit connectedToChanged(fileObject, category, old);
   }
 }
 
-void FileObjectConsumer::disconnectFrom(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
+void FileObjectConsumer::disconnectFrom(FileObject::Pointer fileObject)
 {
   if (!connectedTo.values().contains(fileObject))
   {
     return;
   }
 
-  if (createUndoRedo)
+  auto category = getCategoryFor(fileObject);
+  if (connectedTo.contains(category) && connectedTo[category] == fileObject)
   {
-    UndoRedo::Stack::getInstance()
-      ->push(new UndoRedo::RemoveConnectionCommand(fileObject, this));
-  }
-  else
-  {
-    auto category = getCategoryFor(fileObject);
-    if (connectedTo.contains(category) && connectedTo[category] == fileObject)
-    {
-      connectedTo.remove(category);
-      emit connectedToChanged(nullptr, category, fileObject);
-    }
+    connectedTo.remove(category);
+    emit connectedToChanged(nullptr, category, fileObject);
   }
 }
 

@@ -17,12 +17,12 @@ RemoveConnectionCommand::RemoveConnectionCommand(
 
 void RemoveConnectionCommand::undo()
 {
-  consumer->connectTo(fileObject, false);
+  consumer->connectTo(fileObject);
 }
 
 void RemoveConnectionCommand::redo()
 {
-  consumer->disconnectFrom(fileObject, false);
+  consumer->disconnectFrom(fileObject);
 }
 
 }
