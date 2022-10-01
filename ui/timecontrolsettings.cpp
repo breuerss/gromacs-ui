@@ -29,13 +29,13 @@ TimeControlSettings::TimeControlSettings(Pipeline::TimeStepControl::Configuratio
       "stride", &Configuration::strideChanged
       );
 
-    conns << connect(
-      ui->timeUnit, &QComboBox::currentTextChanged,
-      [this] (const QString& timeUnit) {
-        ui->endTimeStepUnitLabel->setText(timeUnit);
-        ui->startTimeStepUnitLabel->setText(timeUnit);
-        ui->intervalLabel->setText(timeUnit);
-      });
+    auto setUnitLabel = [this] (const QString& timeUnit) {
+      ui->endTimeStepUnitLabel->setText(timeUnit);
+      ui->startTimeStepUnitLabel->setText(timeUnit);
+      ui->intervalUnitLabel->setText(timeUnit);
+    };
+    conns << connect(ui->timeUnit, &QComboBox::currentTextChanged, setUnitLabel);
+    setUnitLabel(ui->timeUnit->currentText());
 }
 
 TimeControlSettings::~TimeControlSettings()

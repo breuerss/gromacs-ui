@@ -267,12 +267,14 @@ void Node::setupSettingsWidget()
   settingsPos.ry() += text->boundingRect().size().height();
   auto transform = proxySettingsWidget->transform();
   proxySettingsWidget->setTransform(transform.translate(settingsPos.x(), settingsPos.y()));
-  children = ui->findChildren<QWidget*>(QString(), Qt::FindDirectChildrenOnly);
+
+  auto uiLayout = ui->layout();
+  auto layouts = uiLayout->findChildren<QLayout*>(QString(), Qt::FindDirectChildrenOnly);
   auto layout = new QVBoxLayout;
   double minWidth = 0;
-  for (auto child : children)
+  for (auto child : layouts)
   {
-    layout->addWidget(child);
+    layout->addItem(uiLayout->takeAt(uiLayout->indexOf(child)));
     minWidth = std::max<double>(minWidth, child->sizeHint().width());
   }
   QSizeF minimumSize = text->boundingRect().size() + runIcon->boundingRect().size();

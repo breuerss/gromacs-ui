@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>116</height>
+    <width>108</width>
+    <height>170</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,34 +15,30 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QVBoxLayout" name="verticalLayout_8">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <widget class="QLabel" name="waterModelLabel">
-         <property name="text">
-          <string>Water Model</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="waterModel"/>
-       </item>
-      </layout>
+      <widget class="QLabel" name="forceFieldLabel">
+       <property name="text">
+        <string>Force Field</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
-       <item>
-        <widget class="QLabel" name="forceFieldLabel">
-         <property name="text">
-          <string>Force Field</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="forceField"/>
-       </item>
-      </layout>
+      <widget class="QComboBox" name="forceField"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout_7">
+     <item>
+      <widget class="QLabel" name="waterModelLabel">
+       <property name="text">
+        <string>Water Model</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="waterModel"/>
      </item>
     </layout>
    </item>
