@@ -136,6 +136,7 @@ void Node::setupRunIcon()
   enableRunIcon();
 
   conns << QObject::connect(runIcon, &ClickableIcon::clicked, [this] () {
+    TooltipManager::hide(tooltipBox);
     auto command = step->getCommand();
     if (command->isRunning())
     {
