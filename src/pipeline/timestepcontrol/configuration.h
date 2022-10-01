@@ -21,6 +21,7 @@ public:
   Q_ENUM(TimeUnit);
 
   Configuration();
+  QString getForCommand() const;
   Q_PROPERTY(TimeUnit timeUnit MEMBER timeUnit NOTIFY timeUnitChanged)
   Q_PROPERTY(double startTimeStep MEMBER startTimeStep NOTIFY startTimeStepChanged)
   Q_PROPERTY(double endTimeStep MEMBER endTimeStep NOTIFY endTimeStepChanged)

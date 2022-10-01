@@ -23,16 +23,31 @@ QWidget* Configuration::getUI()
   return new TimeControlSettings(this);
 }
 
+QString Configuration::getForCommand() const
+{
+  QStringList options;
+  options << "-b" << QString::number(startTimeStep);
+  if (endTimeStep >= 0)
+  {
+    options << "-e" << QString::number(endTimeStep);
+  }
+  options << "-tu" << TimeStepControl::toString(timeUnit);
+  options << "-skip" << QString::number(stride);
+  options << "-dt" << QString::number(interval);
+  return options.join(" ");
+
+}
+
 QString Configuration::toString()
 {
   return 
     tr("Start Time Step") + ": " + QString::number(startTimeStep)
-    + " " + TimeStepControl::toString(timeUnit) + "\n"
+    + " " + TimeStepControl::toString(timeUnit) + "<br>"
    + tr("End Time Step") + ": " + QString::number(endTimeStep)
-   + " " + TimeStepControl::toString(timeUnit) + "\n"
-   + tr("Skip every nth step") + ": " + QString::number(stride) + "\n"
+   + " " + TimeStepControl::toString(timeUnit) + "<br>"
+   + tr("Skip every nth step") + ": " + QString::number(stride) + "<br>"
    + tr("Take step divisable by") + ": " + QString::number(interval)
-   + " " + TimeStepControl::toString(timeUnit) + "\n";
+   + " " + TimeStepControl::toString(timeUnit) + "<br>";
 }
 
 using TimeUnit = Configuration::TimeUnit;

@@ -1,14 +1,11 @@
 #include "command.h"
-#include "../../gromacsconfigfilegenerator.h"
 #include "../../statusmessagesetter.h"
-#include "../../model/project.h"
 #include "../../command/fileobjectconsumer.h"
+#include "../timestepcontrol/configuration.h"
 #include "../../appprovider.h"
 #include "../../logforwarder.h"
-#include "../../simulationstatuschecker.h"
-#include "src/command/fileobject.h"
+#include "../../command/fileobject.h"
 #include "filenamegenerator.h"
-#include "ui/simulationstatus.h"
 
 #include <QDebug>
 #include <QDir>
@@ -24,7 +21,6 @@ Command::Command()
 
 void Command::doExecute()
 {
-  qDebug() << "Exec simulation";
   QString gmx = AppProvider::get("gmx");
   if (gmx.isEmpty())
   {
@@ -42,6 +38,20 @@ void Command::doExecute()
   command += " -o " + fileNameGenerator->getFileNameFor(Type::XTC);
   command += " -center";
   command += " -pbc nojump";
+
+  const auto& connectedTo = fileObjectConsumer->getConnectedTo();
+  const auto& timeStepControlPort = connectedTo[::Command::InputOutput::Category::Configuration];
+  if (std::holds_alternative<Config::Configuration::Pointer>(timeStepControlPort))
+  {
+    auto timeStepControlPointer = std::get<Config::Configuration::Pointer>(timeStepControlPort);
+
+    if (timeStepControlPointer)
+    {
+      auto timeStepControl = std::dynamic_pointer_cast<TimeStepControl::Configuration>(timeStepControlPointer);
+
+      command += " " + timeStepControl->getForCommand();
+    }
+  }
 
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(QFileInfo(inputStructure).absolutePath());

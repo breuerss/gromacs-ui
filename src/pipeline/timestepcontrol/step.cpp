@@ -1,5 +1,6 @@
 #include "step.h"
 #include "configuration.h"
+#include "../../command/fileobjectprovider.h"
 
 namespace Pipeline {
 
@@ -16,6 +17,7 @@ Step::Step(
     project,
     { },
     {
+      std::make_shared<Configuration>(),
     },
     std::make_shared<Configuration>(),
     nullptr,
@@ -23,6 +25,9 @@ Step::Step(
     Category::PostProcess
     )
 {
+  auto& provides = getFileObjectProvider()->provides();
+  provides.clear();
+  provides.append(configuration);
 }
 
 QString Step::getName() const

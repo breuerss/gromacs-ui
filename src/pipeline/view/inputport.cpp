@@ -3,6 +3,7 @@
 #include "connector.h"
 #include <QGraphicsSceneMouseEvent>
 #include <QApplication>
+#include <QDebug>
 
 namespace Pipeline { namespace View {
 

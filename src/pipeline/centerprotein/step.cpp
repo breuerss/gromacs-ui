@@ -20,6 +20,7 @@ Step::Step(
   : FactoryRegistration(
     project,
     {
+      { InputOutput::Category::Configuration, {} },
       { InputOutput::Category::Coordinates, { FileObject::Type::GRO } },
       { InputOutput::Category::Trajectory, { FileObject::Type::XTC } },
     },

@@ -27,6 +27,7 @@ QColor getColorFor(Command::InputOutput::Category category)
     { Category::Forces, 0xff9974aa },
     { Category::Topology, 0xff00740a },
     { Category::Text, Colors::Grey },
+    { Category::Configuration, Colors::Grey },
 
     //0xffc1584f
   };
