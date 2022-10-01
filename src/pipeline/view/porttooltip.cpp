@@ -36,7 +36,7 @@ PortTooltip::~PortTooltip()
   delete fileNameLegend;
 }
 
-void PortTooltip::setCategory(Command::FileObject::Category newCategory)
+void PortTooltip::setCategory(Command::InputOutput::Category newCategory)
 {
   category = newCategory;
   update();
@@ -62,13 +62,14 @@ void PortTooltip::setCanOpen(bool newCanOpen)
 
 void PortTooltip::update()
 {
-  using FileObject = Command::FileObject;
+  using InputOuput = Command::InputOutput;
   QStringList categoryAndTypeList;
   if (category != Category::Unknown)
   {
-    categoryAndTypeList << FileObject::toString(category).toUpper();
+    categoryAndTypeList << InputOuput::toString(category).toUpper();
   }
     
+  using FileObject = Command::FileObject;
   QStringList typesString;
   for (auto type : types)
   {

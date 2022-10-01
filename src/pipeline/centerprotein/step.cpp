@@ -12,6 +12,7 @@ QString FactoryRegistration<CenterProtein::Step>::type =
 namespace CenterProtein {
 
 using FileObject = ::Command::FileObject;
+using InputOutput = ::Command::InputOutput;
 
 Step::Step(
     std::shared_ptr<Model::Project> project
@@ -19,8 +20,8 @@ Step::Step(
   : FactoryRegistration(
     project,
     {
-      { FileObject::Category::Coordinates, { FileObject::Type::GRO } },
-      { FileObject::Category::Trajectory, { FileObject::Type::XTC } },
+      { InputOutput::Category::Coordinates, { FileObject::Type::GRO } },
+      { InputOutput::Category::Trajectory, { FileObject::Type::XTC } },
     },
     {
       FileObject::Type::XTC

@@ -13,11 +13,13 @@ QString FactoryRegistration<CreateBox::Step>::type =
 namespace CreateBox {
 
 using FileObject = ::Command::FileObject;
+using InputOutput = ::Command::InputOutput;
+
 Step::Step(std::shared_ptr<Model::Project> project)
   : FactoryRegistration(
     project,
     {
-      { FileObject::Category::Coordinates,
+      { InputOutput::Category::Coordinates,
         {
           FileObject::Type::GRO
         }

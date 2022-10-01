@@ -12,14 +12,15 @@ QString FactoryRegistration<Gyrate::Step>::type =
 namespace Gyrate {
 
 using FileObject = ::Command::FileObject;
+using InputOutput = ::Command::InputOutput;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : FactoryRegistration<Step>(
     project,
     {
-      { FileObject::Category::Trajectory, { FileObject::Type::XTC } },
-      { FileObject::Category::Topology, { FileObject::Type::TPR } },
+      { InputOutput::Category::Trajectory, { FileObject::Type::XTC } },
+      { InputOutput::Category::Topology, { FileObject::Type::TPR } },
     },
     {
       FileObject::Type::XVG,

@@ -17,9 +17,9 @@ QColor getColorFor(Step::Category category)
   return categoryColorMap[category];
 }
 
-QColor getColorFor(Command::FileObject::Category category)
+QColor getColorFor(Command::InputOutput::Category category)
 {
-  using Category = Command::FileObject::Category;
+  using Category = Command::InputOutput::Category;
   const static QMap<Category, QColor> colors = {
     { Category::Coordinates, 0xff5b81e4 },
     { Category::Trajectory, 0xffe7911d },

@@ -14,6 +14,7 @@ QString FactoryRegistration<Simulation::Step>::type =
 namespace Simulation {
 
 using FileObject = ::Command::FileObject;
+using InputOutput = ::Command::InputOutput;
 using Type = FileObject::Type;
 
 Step::Step(
@@ -22,8 +23,8 @@ Step::Step(
   : FactoryRegistration(
     project,
     {
-      { FileObject::Category::Coordinates, { Type::GRO } },
-      { FileObject::Category::Topology, { Type::TOP } },
+      { InputOutput::Category::Coordinates, { Type::GRO } },
+      { InputOutput::Category::Topology, { Type::TOP } },
     },
     {
       Type::GRO,

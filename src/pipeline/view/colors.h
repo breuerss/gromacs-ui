@@ -19,7 +19,7 @@ const QColor Black("#111111");
 const QColor White("#eeeeee");
 
 QColor getColorFor(Step::Category category);
-QColor getColorFor(Command::FileObject::Category category);
+QColor getColorFor(Command::InputOutput::Category category);
 QColor getColorFor(Command::FileObject::Type type);
 
 } } }

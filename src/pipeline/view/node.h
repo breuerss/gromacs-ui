@@ -32,10 +32,10 @@ public:
   Node(std::shared_ptr<Pipeline::Step> step, QGraphicsItem* parent = nullptr);
   ~Node();
 
-  InputPort* getInputPort(Command::FileObject::Category);
+  InputPort* getInputPort(Command::InputOutput::Category);
   const OutputPorts& getOutputPorts() const;
 
-  void addInputPort(Command::FileObject::Category category, const QColor& color);
+  void addInputPort(Command::InputOutput::Category category, const QColor& color);
   void addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const QColor& color);
 
   bool isSelected() const;
@@ -85,7 +85,7 @@ private:
   ClickableIcon* runIcon;
   RoundedRectItem* background;
 
-  QList<QPair<Command::FileObject::Category, InputPort*>> inputPorts;
+  QList<QPair<Command::InputOutput::Category, InputPort*>> inputPorts;
   OutputPorts outputPorts;
 
   std::shared_ptr<Pipeline::Step> step;

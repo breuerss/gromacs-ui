@@ -36,7 +36,7 @@ void Port::setupTooltip()
   tooltipBox = new PortTooltip();
 }
 
-void Port::setCategory(Command::FileObject::Category category)
+void Port::setCategory(Command::InputOutput::Category category)
 {
   tooltipBox->setCategory(category);
 }

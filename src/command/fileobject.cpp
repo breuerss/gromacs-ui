@@ -32,8 +32,9 @@ const QString& FileObject::getFileName() const
   return fileName;
 }
 
-FileObject::Category FileObject::getCategoryFor(FileObject::Type type)
+InputOutput::Category FileObject::getCategoryFor(FileObject::Type type)
 {
+  using Category = InputOutput::Category;
   static const QMap<Type, Category> categoryMap = {
     { Type::GRO, Category::Coordinates },
     { Type::PDB, Category::Coordinates },
@@ -66,23 +67,6 @@ QString FileObject::toString(Type type)
   };
 
   return map[type];
-}
-
-QString FileObject::toString(Category category)
-{
-  const static QMap<Category, QString> map = {
-    { Category::Unknown, "Unknown" },
-    { Category::Coordinates, "Coordinates" },
-    { Category::Trajectory, "Trajectory" },
-    { Category::Energy, "Energy" },
-    { Category::Velocities, "Velocities" },
-    { Category::Forces, "Forces" },
-    { Category::Topology, "Topology" },
-    { Category::Text, "Text" },
-    { Category::Graph, "Graph" },
-  };
-
-  return map[category];
 }
 
 QJsonObject &operator<<(QJsonObject &out, const FileObject::Pointer obj)

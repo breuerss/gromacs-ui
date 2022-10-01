@@ -38,7 +38,7 @@ public:
   };
   Step(
     std::shared_ptr<Model::Project> newProject,
-    const QMap<Command::FileObject::Category, QList<Command::FileObject::Type>>& requiresMap,
+    const QMap<Command::InputOutput::Category, QList<Command::FileObject::Type>>& requiresMap,
     const QList<Command::FileObject::Type> providesList,
     std::shared_ptr<Config::Configuration> configuration,
     std::shared_ptr<Command::Executor> command,

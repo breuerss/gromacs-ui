@@ -8,20 +8,20 @@
 namespace Command {
 
 FileObjectConsumer::FileObjectConsumer(
-  const QMap<FileObject::Category, QList<FileObject::Type>>& requiresMap
+  const QMap<InputOutput::Category, QList<FileObject::Type>>& requiresMap
   )
   : requiresMap(requiresMap)
 {
 }
 
-const QMap<FileObject::Category, QList<FileObject::Type>>& FileObjectConsumer::requires() const 
+const QMap<InputOutput::Category, QList<FileObject::Type>>& FileObjectConsumer::requires() const 
 {
   return requiresMap;
 }
 
 bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
 {
-  return getCategoryFor(fileObject) != FileObject::Category::Unknown;
+  return getCategoryFor(fileObject) != InputOutput::Category::Unknown;
 }
 
 void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool createUndoRedo)
@@ -34,7 +34,7 @@ void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject, bool 
   else
   {
     auto category = getCategoryFor(fileObject);
-    if (category != FileObject::Category::Unknown)
+    if (category != InputOutput::Category::Unknown)
     {
       std::shared_ptr<FileObject> old;
       if (connectedTo.contains(category))
@@ -86,9 +86,9 @@ QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
   return fileName;
 }
 
-FileObject::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObject> fileObject)
+InputOutput::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObject> fileObject)
 {
-  FileObject::Category category = FileObject::Category::Unknown;
+  InputOutput::Category category = InputOutput::Category::Unknown;
 
   auto requireMap = requires();
   for (const auto& key: requireMap.keys())
@@ -103,7 +103,7 @@ FileObject::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObje
   return category;
 }
 
-const QMap<FileObject::Category, std::shared_ptr<FileObject>>
+const QMap<InputOutput::Category, std::shared_ptr<FileObject>>
 FileObjectConsumer::getConnectedTo() const
 {
   return connectedTo;

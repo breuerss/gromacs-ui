@@ -12,13 +12,14 @@ QString FactoryRegistration<PdbFixer::Step>::type =
 namespace PdbFixer {
 
 using FileObject = ::Command::FileObject;
+using InputOutput = ::Command::InputOutput;
 Step::Step(
     std::shared_ptr<Model::Project> project
   )
   : FactoryRegistration(
     project,
     {
-      { FileObject::Category::Coordinates, { FileObject::Type::PDB } }
+      { InputOutput::Category::Coordinates, { FileObject::Type::PDB } }
     },
     {
       FileObject::Type::PDB,

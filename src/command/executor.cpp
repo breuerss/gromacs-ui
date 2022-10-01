@@ -107,7 +107,7 @@ void Executor::setFileObjectConsumer(
     fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
     [this] (
       std::shared_ptr<FileObject> newFileObject,
-      FileObject::Category,
+      InputOutput::Category,
       std::shared_ptr<FileObject> oldFileObject) {
       if (fileObjectConnections.contains(oldFileObject.get()))
       {

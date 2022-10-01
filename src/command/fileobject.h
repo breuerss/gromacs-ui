@@ -1,6 +1,8 @@
 #ifndef COMMAND_FILEOBJECT_H
 #define COMMAND_FILEOBJECT_H
 
+#include "inputoutput.h"
+
 #include <QString>
 #include <QObject>
 #include <memory>
@@ -27,27 +29,15 @@ public:
     XVG,
   };
 
-  enum class Category {
-    Unknown,
-    Coordinates,
-    Trajectory,
-    Energy,
-    Velocities,
-    Forces,
-    Topology,
-    Text,
-    Graph,
-  };
-
   FileObject(Type newType);
   bool exists() const;
   void setFileName(const QString& fileName);
   const QString& getFileName() const;
 
   const Type type;
-  static Category getCategoryFor(Type);
+  static InputOutput::Category getCategoryFor(Type);
   static QString toString(Type);
-  static QString toString(Category);
+  static QString toString(InputOutput::Category);
 
 signals:
   void fileNameChanged(const QString& newFileName);

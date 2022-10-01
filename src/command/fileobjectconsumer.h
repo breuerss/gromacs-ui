@@ -12,9 +12,9 @@ class FileObjectConsumer : public QObject
 {
   Q_OBJECT
 public:
-  FileObjectConsumer(const QMap<FileObject::Category, QList<FileObject::Type>>& requiresMap);
-  const QMap<FileObject::Category, QList<FileObject::Type>>& requires() const;
-  const QMap<FileObject::Category, std::shared_ptr<FileObject>>
+  FileObjectConsumer(const QMap<InputOutput::Category, QList<FileObject::Type>>& requiresMap);
+  const QMap<InputOutput::Category, QList<FileObject::Type>>& requires() const;
+  const QMap<InputOutput::Category, std::shared_ptr<FileObject>>
   getConnectedTo() const;
 
   bool accepts(std::shared_ptr<FileObject> fileObject);
@@ -25,15 +25,15 @@ public:
 signals:
   void connectedToChanged(
     std::shared_ptr<FileObject> fileObject,
-    FileObject::Category connectedToCategory,
+    InputOutput::Category connectedToCategory,
     std::shared_ptr<FileObject> oldFileObject
     );
 
 private:
-  FileObject::Category getCategoryFor(std::shared_ptr<FileObject> fileObject);
-  QMap<FileObject::Category, std::shared_ptr<FileObject>> connectedTo;
+  InputOutput::Category getCategoryFor(std::shared_ptr<FileObject> fileObject);
+  QMap<InputOutput::Category, std::shared_ptr<FileObject>> connectedTo;
 
-  QMap<FileObject::Category, QList<FileObject::Type>> requiresMap;
+  QMap<InputOutput::Category, QList<FileObject::Type>> requiresMap;
 };
 
 }

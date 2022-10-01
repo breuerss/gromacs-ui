@@ -21,7 +21,7 @@ public:
   QPointF getCenterInScene() const;
   void setConnected(bool newConnected = true);
 
-  void setCategory(Command::FileObject::Category category);
+  void setCategory(Command::InputOutput::Category category);
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;

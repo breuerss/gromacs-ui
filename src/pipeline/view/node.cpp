@@ -195,7 +195,7 @@ void Node::setupPorts()
     &Command::FileObjectConsumer::connectedToChanged,
     [this] (
       std::shared_ptr<Command::FileObject> fileObject,
-      Command::FileObject::Category category,
+      Command::InputOutput::Category category,
       std::shared_ptr<Command::FileObject> /*oldFileObject*/
       ) {
       auto panel = dynamic_cast<Panel*>(scene());
@@ -212,13 +212,13 @@ void Node::setupPorts()
     });
 }
 
-void Node::addInputPort(Command::FileObject::Category category, const QColor& color)
+void Node::addInputPort(Command::InputOutput::Category category, const QColor& color)
 {
   const auto& acceptedFileTypes = step->getFileObjectConsumer()->requires()[category];
   auto inputPort = createPort<InputPort>(color);
   inputPort->setAcceptedFileTypes(acceptedFileTypes);
   inputPort->setCategory(category);
-  inputPorts << QPair<Command::FileObject::Category, InputPort*>(category, inputPort);
+  inputPorts << QPair<Command::InputOutput::Category, InputPort*>(category, inputPort);
   conns << QObject::connect(
     inputPort, &Port::connectedToChanged, 
     [this] (
@@ -321,7 +321,7 @@ void Node::addOutputPort(std::shared_ptr<Command::FileObject> fileObject, const 
     fileObject, outputPort);
   conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
     using FileObject = Command::FileObject;
-    using Category = FileObject::Category;
+    using Category = Command::InputOutput::Category;
     switch (FileObject::getCategoryFor(fileObject->type))
     {
       case Category::Coordinates:
@@ -350,11 +350,12 @@ QString Node::getCoordinatesPath()
   QString coordinatesPath;
 
   using FileObject = Command::FileObject;
+  using Category = Command::InputOutput::Category;
   for (auto port : outputPorts)
   {
     auto fileObject = port.first;
     if (FileObject::getCategoryFor(fileObject->type)
-        == FileObject::Category::Coordinates &&
+        == Category::Coordinates &&
         fileObject->exists())
     {
       coordinatesPath = fileObject->getFileName();
@@ -364,7 +365,7 @@ QString Node::getCoordinatesPath()
   if (coordinatesPath.isEmpty())
   {
     auto fileObject = step->getFileObjectConsumer()
-      ->getConnectedTo()[FileObject::Category::Coordinates];
+      ->getConnectedTo()[Command::InputOutput::Category::Coordinates];
     if (fileObject->exists())
     {
       coordinatesPath = fileObject->getFileName();
@@ -417,7 +418,7 @@ QPointF Node::getCirclePoint(double radius, double angle)
   );
 }
 
-InputPort* Node::getInputPort(Command::FileObject::Category category)
+InputPort* Node::getInputPort(Command::InputOutput::Category category)
 {
   InputPort* port = nullptr;
   for (auto& inputPort : inputPorts)

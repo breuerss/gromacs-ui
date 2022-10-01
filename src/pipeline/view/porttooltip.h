@@ -12,7 +12,7 @@ public:
   PortTooltip(QGraphicsItem* parent = nullptr);
   ~PortTooltip();
 
-  void setCategory(Command::FileObject::Category category);
+  void setCategory(Command::InputOutput::Category category);
   void setFileName(const QString& newFileName);
   void setFileTypes(const QList<Command::FileObject::Type>& newTypes);
   void setCanOpen(bool newCanOpen);
@@ -21,7 +21,7 @@ public:
 private:
   void update();
 
-  using Category = Command::FileObject::Category;
+  using Category = Command::InputOutput::Category;
   Category category = Category::Unknown;
   QList<Command::FileObject::Type> types;
 
