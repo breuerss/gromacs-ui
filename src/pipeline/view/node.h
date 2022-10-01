@@ -65,6 +65,7 @@ private:
   }
 
   QString getCoordinatesPath();
+  void resize();
 
   void arrangeOutputPorts();
   void arrangeInputPorts();
@@ -82,7 +83,7 @@ private:
 
   QGraphicsTextItem* text;
   ClickableIcon* runIcon;
-  RoundedRectItem* nodeBackground;
+  RoundedRectItem* background;
 
   QList<QPair<Command::FileObject::Category, InputPort*>> inputPorts;
   OutputPorts outputPorts;

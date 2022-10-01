@@ -42,6 +42,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   setupBackground();
   setupText();
   setupRunIcon();
+  resize();
   setupPorts();
   tooltipBox = new Tooltip();
   delayedTooltip.setInterval(500);
@@ -87,26 +88,22 @@ Node::~Node()
   delete proxySettingsWidget;
   delete text;
   delete runIcon;
-  delete nodeBackground;
+  delete background;
 }
 
 void Node::setupBackground()
 {
-  double width = std::max<double>(120, text->boundingRect().width() + 2 * indent);
-  width += runIcon->boundingRect().width();
-  width += spacing;
-
-  nodeBackground = new RoundedRectItem(0, 0, width, height, this);
-  setRect(nodeBackground->rect());
-  nodeBackground->setBrush(Colors::getColorFor(step->category));
-  nodeBackground->setRadiusX(height / 2);
-  nodeBackground->setRadiusY(height / 2);
-  nodeBackground->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
+  background = new RoundedRectItem(0, 0, 0, height, this);
+  background->setBrush(Colors::getColorFor(step->category));
+  background->setRadiusX(height / 2);
+  background->setRadiusY(height / 2);
+  background->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
+  resize();
 }
 
 void Node::setupText()
 {
-  text->setPos(indent, (nodeBackground->rect().height() - text->boundingRect().height()) / 2);
+  text->setPos(indent, (background->rect().height() - text->boundingRect().height()) / 2);
   text->setDefaultTextColor(Colors::White);
   auto font = text->font();
   font.setPixelSize(16);
@@ -120,6 +117,7 @@ void Node::setupRunIcon()
   if (!step->getCommand())
   {
     runIcon->setParentItem(nullptr);
+    resize();
     return;
   }
   runIcon->setZValue(11);
@@ -162,6 +160,21 @@ void Node::setupRunIcon()
     command, &Command::Executor::runningChanged,
     changeIcon);
   changeIcon(command->isRunning());
+}
+
+void Node::resize()
+{
+  const static double minWidth = 120;
+  double width = text->boundingRect().width();
+  if (runIcon->parentItem())
+  {
+    width += runIcon->boundingRect().width();
+  }
+  width += spacing;
+  width += 2 * indent;
+  width = std::max(minWidth, width);
+  background->setSize(QSize(width, height));
+  setRect(background->rect());
 }
 
 void Node::setupPorts()
@@ -257,7 +270,7 @@ void Node::setupSettingsWidget()
   widget->setLayout(layout);
   widget->setStyleSheet(stylesheet);
 
-  QSizeF newSize = nodeBackground->getSize();
+  QSizeF newSize = background->getSize();
   if (minimumSize.width() > minWidth)
   {
     widget->setFixedWidth(minimumSize.width());
@@ -276,9 +289,9 @@ void Node::setupSettingsWidget()
 
 void Node::setupResizeAnimation()
 {
-  resizeAnimation = new QPropertyAnimation(nodeBackground, "size");
+  resizeAnimation = new QPropertyAnimation(background, "size");
   resizeAnimation->setDuration(200);
-  resizeAnimation->setStartValue(nodeBackground->boundingRect().size());
+  resizeAnimation->setStartValue(background->boundingRect().size());
   resizeAnimation->setEasingCurve(QEasingCurve::OutQuad);
 
   conns << QObject::connect(
@@ -366,7 +379,7 @@ void Node::arrangeOutputPorts()
   const double steps = 45;
   const double startAngle = (outputPorts.size() - 1) * steps / 2.0;
   const double radius = rect().height() / 2;
-  const double width = nodeBackground->boundingRect().size().width();
+  const double width = background->boundingRect().size().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
     const auto port = outputPorts[index];
