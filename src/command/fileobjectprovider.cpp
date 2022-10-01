@@ -11,12 +11,12 @@ FileObjectProvider::FileObjectProvider(const QList<FileObject::Type>& types)
   }
 }
 
-const QList<std::shared_ptr<FileObject>>& FileObjectProvider::provides() const
+const QList<FileObject::Pointer>& FileObjectProvider::provides() const
 {
   return providesList;
 }
 
-QList<std::shared_ptr<FileObject>>& FileObjectProvider::provides()
+QList<FileObject::Pointer>& FileObjectProvider::provides()
 {
   return providesList;
 }

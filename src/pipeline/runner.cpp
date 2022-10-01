@@ -91,7 +91,7 @@ Runner::getNextStepsFor(
 
   auto outputFiles = step->getFileObjectProvider()->provides();
   using FileObject = Command::FileObject;
-  QList<std::shared_ptr<FileObject>> relevantOutputFiles = outputFiles;
+  QList<FileObject::Pointer> relevantOutputFiles = outputFiles;
 
   if (relevantTypes.size())
   {

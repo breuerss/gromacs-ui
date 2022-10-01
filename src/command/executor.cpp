@@ -106,9 +106,9 @@ void Executor::setFileObjectConsumer(
   fileConsumerConnections << connect(
     fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
     [this] (
-      std::shared_ptr<FileObject> newFileObject,
+      FileObject::Pointer newFileObject,
       InputOutput::Category,
-      std::shared_ptr<FileObject> oldFileObject) {
+      FileObject::Pointer oldFileObject) {
       if (fileObjectConnections.contains(oldFileObject.get()))
       {
         disconnect(fileObjectConnections[oldFileObject.get()]);

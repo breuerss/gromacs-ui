@@ -19,17 +19,17 @@ const QMap<InputOutput::Category, QList<FileObject::Type>>& FileObjectConsumer::
   return requiresMap;
 }
 
-bool FileObjectConsumer::accepts(std::shared_ptr<FileObject> fileObject)
+bool FileObjectConsumer::accepts(FileObject::Pointer fileObject)
 {
   return getCategoryFor(fileObject) != InputOutput::Category::Unknown;
 }
 
-void FileObjectConsumer::connectTo(std::shared_ptr<FileObject> fileObject)
+void FileObjectConsumer::connectTo(FileObject::Pointer fileObject)
 {
   auto category = getCategoryFor(fileObject);
   if (category != InputOutput::Category::Unknown)
   {
-    std::shared_ptr<FileObject> old;
+    FileObject::Pointer old;
     if (connectedTo.contains(category))
     {
       old = connectedTo[category];
@@ -70,7 +70,7 @@ QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
   return fileName;
 }
 
-InputOutput::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObject> fileObject)
+InputOutput::Category FileObjectConsumer::getCategoryFor(FileObject::Pointer fileObject)
 {
   InputOutput::Category category = InputOutput::Category::Unknown;
 
@@ -87,7 +87,7 @@ InputOutput::Category FileObjectConsumer::getCategoryFor(std::shared_ptr<FileObj
   return category;
 }
 
-const QMap<InputOutput::Category, std::shared_ptr<FileObject>>
+const QMap<InputOutput::Category, FileObject::Pointer>
 FileObjectConsumer::getConnectedTo() const
 {
   return connectedTo;
