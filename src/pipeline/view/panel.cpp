@@ -374,7 +374,7 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
   auto pos = step->getLocation();
   if (pos.isNull())
   {
-    pos = itemsBoundingRect().topRight() + QPointF(20, 0);
+    pos = itemsBoundingRect().center();
   }
   node->setPos(pos);
 }
