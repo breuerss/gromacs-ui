@@ -212,7 +212,6 @@ void Node::setupPorts()
       auto endPort = getInputPort(category);
       if (isSet(oldData))
       {
-        qDebug() << "olde data is set";
         panel->deleteConnectorFor(endPort);
       }
 
