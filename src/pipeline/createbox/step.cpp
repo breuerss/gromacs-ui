@@ -6,11 +6,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<CreateBox::Step>;
 template<>
-QString FactoryRegistration<CreateBox::Step>::type =
-  FactoryRegistration<CreateBox::Step>::registerMethod("CreateBox");
+QString Registration::type = Registration::registerMethod("CreateBox");
 template<>
-const QString FactoryRegistration<CreateBox::Step>::name("Create Box");
+const QString Registration::name("Create Box");
+template<>
+const Step::Category Registration::category = Step::Category::PreProcess;
 
 namespace CreateBox {
 
@@ -32,8 +34,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PreProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

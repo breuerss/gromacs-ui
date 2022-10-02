@@ -8,11 +8,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<Solvate::Step>;
 template<>
-QString FactoryRegistration<Solvate::Step>::type =
-  FactoryRegistration<Solvate::Step>::registerMethod("Solvate");
+QString Registration::type = Registration::registerMethod("Solvate");
 template<>
-const QString FactoryRegistration<Solvate::Step>::name("Solvate");
+const QString Registration::name("Solvate");
+template<>
+const Step::Category Registration::category = Step::Category::PreProcess;
 
 namespace Solvate {
 
@@ -33,8 +35,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PreProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

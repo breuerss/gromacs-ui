@@ -5,11 +5,14 @@
 
 namespace Pipeline {
 
+using Registration = Pipeline::FactoryRegistration<Gyrate::Step>;
 template<>
-QString FactoryRegistration<Gyrate::Step>::type =
-  FactoryRegistration<Gyrate::Step>::registerMethod("Gyrate");
+QString Registration::type =
+  Registration::registerMethod("Gyrate");
 template<>
-const QString FactoryRegistration<Gyrate::Step>::name("Radius of Gyration");
+const QString Registration::name("Radius of Gyration");
+template<>
+const Step::Category Registration::category = Step::Category::Analysis;
 
 namespace Gyrate {
 
@@ -29,8 +32,7 @@ Step::Step(
     },
     nullptr,
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::Analysis
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

@@ -4,11 +4,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<TimeStepControl::Step>;
 template<>
-QString FactoryRegistration<TimeStepControl::Step>::type =
-  FactoryRegistration<TimeStepControl::Step>::registerMethod("TimeStepControl");
+QString Registration::type = Registration::registerMethod("TimeStepControl");
 template<>
-const QString FactoryRegistration<TimeStepControl::Step>::name("Time Step Control");
+const QString Registration::name("Time Step Control");
+template<>
+const Step::Category Registration::category = Step::Category::PostProcess;
 
 namespace TimeStepControl {
 
@@ -23,8 +25,7 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     nullptr,
-    nullptr,
-    Category::PostProcess
+    nullptr
     )
 {
   auto& provides = getFileObjectProvider()->provides();

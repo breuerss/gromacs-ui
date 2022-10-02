@@ -6,11 +6,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<CreateGromacsModel::Step>;
 template<>
-QString FactoryRegistration<CreateGromacsModel::Step>::type =
-  FactoryRegistration<CreateGromacsModel::Step>::registerMethod("CreateGromacsModel");
+QString Registration::type = Registration::registerMethod("CreateGromacsModel");
 template<>
-const QString FactoryRegistration<CreateGromacsModel::Step>::name("Create GROMACS Model");
+const QString Registration::name("Create GROMACS Model");
+template<>
+const Step::Category Registration::category = Step::Category::PreProcess;
 
 namespace CreateGromacsModel {
 
@@ -32,8 +34,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PreProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

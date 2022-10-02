@@ -15,6 +15,7 @@ class FactoryRegistration : public Step {
 public:
   using Step::Step;
   const static QString name;
+  const static Category category;
 
 protected:
   static QString type;
@@ -40,6 +41,11 @@ private:
   QString getName() const override
   {
     return name;
+  }
+
+  Category getCategory() const override
+  {
+    return category;
   }
 };
 

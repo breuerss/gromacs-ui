@@ -95,10 +95,10 @@ Node::~Node()
 void Node::setupBackground()
 {
   background = new RoundedRectItem(0, 0, 0, height, this);
-  background->setBrush(Colors::getColorFor(step->category));
+  background->setBrush(Colors::getColorFor(step->getCategory()));
   background->setRadiusX(height / 2);
   background->setRadiusY(height / 2);
-  background->setPen(QPen(Colors::getColorFor(step->category).darker(135), 2));
+  background->setPen(QPen(Colors::getColorFor(step->getCategory()).darker(135), 2));
   resize();
 }
 

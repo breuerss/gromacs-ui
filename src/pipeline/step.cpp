@@ -23,8 +23,7 @@ Step::Step(
   const QList<Command::Data> providesList,
   std::shared_ptr<Config::Configuration> configuration,
   std::shared_ptr<Command::Executor> command,
-  std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
-  Category category
+  std::shared_ptr<Command::FileNameGenerator> fileNameGenerator
 )
   : Step(
     newProject,
@@ -32,8 +31,7 @@ Step::Step(
     QList<FileObject::Type>(),
     configuration,
     command,
-    fileNameGenerator,
-    category
+    fileNameGenerator
     )
 {
   fileObjectProvider = std::make_shared<Command::FileObjectProvider>(providesList);
@@ -45,11 +43,9 @@ Step::Step(
   const QList<FileObject::Type> providesList,
   std::shared_ptr<Config::Configuration> newConfiguration,
   std::shared_ptr<Command::Executor> newCommand,
-  std::shared_ptr<Command::FileNameGenerator> newFileNameGenerator,
-  Category newCategory
+  std::shared_ptr<Command::FileNameGenerator> newFileNameGenerator
   )
-  : category(newCategory)
-  , project(newProject)
+  : project(newProject)
   , fileObjectConsumer(std::make_shared<Command::FileObjectConsumer>(requiresMap))
   , fileObjectProvider(std::make_shared<Command::FileObjectProvider>(providesList))
   , configuration(newConfiguration)

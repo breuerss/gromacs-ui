@@ -5,11 +5,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<CenterProtein::Step>;
 template<>
-QString FactoryRegistration<CenterProtein::Step>::type =
-  FactoryRegistration<CenterProtein::Step>::registerMethod("CenterProtein");
+QString Registration::type = Registration::registerMethod("CenterProtein");
 template<>
-const QString FactoryRegistration<CenterProtein::Step>::name("Center Protein");
+const QString Registration::name("Center Protein");
+template<>
+const Step::Category Registration::category = Step::Category::PostProcess;
 
 namespace CenterProtein {
 
@@ -31,8 +33,7 @@ Step::Step(
     },
     nullptr,
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PostProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

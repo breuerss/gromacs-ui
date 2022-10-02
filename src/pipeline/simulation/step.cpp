@@ -7,11 +7,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<Simulation::Step>;
 template<>
-QString FactoryRegistration<Simulation::Step>::type =
-  FactoryRegistration<Simulation::Step>::registerMethod("Simulation");
+QString Registration::type = Registration::registerMethod("Simulation");
 template<>
-const QString FactoryRegistration<Simulation::Step>::name("Simulation");
+const QString Registration::name("Simulation");
+template<>
+const Step::Category Registration::category = Step::Category::Simulation;
 
 namespace Simulation {
 
@@ -37,9 +39,8 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),
-    std::make_shared<FileNameGenerator>(project),
-    Category::Simulation
-    )
+    std::make_shared<FileNameGenerator>(project)
+  )
 {
 }
 

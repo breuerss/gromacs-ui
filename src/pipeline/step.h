@@ -43,8 +43,7 @@ public:
     const QList<Command::FileObject::Type> providesList,
     std::shared_ptr<Config::Configuration> configuration,
     std::shared_ptr<Command::Executor> command,
-    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
-    Category category
+    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator
     );
 
   explicit Step(
@@ -53,11 +52,11 @@ public:
     const QList<Command::Data> providesList,
     std::shared_ptr<Config::Configuration> configuration,
     std::shared_ptr<Command::Executor> command,
-    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator,
-    Category category
+    std::shared_ptr<Command::FileNameGenerator> fileNameGenerator
     );
   virtual QString getName() const = 0;
   virtual QString getType() const = 0;
+  virtual Category getCategory() const = 0;
   typedef std::shared_ptr<Step> Pointer;
   virtual ~Step();
 
@@ -71,7 +70,6 @@ public:
   void showStatusUI(bool show = true);
   void showUI(bool show = true);
 
-  const Category category;
   void setLocation(const QPointF& newLocation);
   const QPointF& getLocation() const;
 

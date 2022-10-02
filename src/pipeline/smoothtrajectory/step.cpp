@@ -5,11 +5,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<SmoothTrajectory::Step>;
 template<>
-QString FactoryRegistration<SmoothTrajectory::Step>::type =
-  FactoryRegistration<SmoothTrajectory::Step>::registerMethod("SmoothTrajectory");
+QString Registration::type = Registration::registerMethod("SmoothTrajectory");
 template<>
-const QString FactoryRegistration<SmoothTrajectory::Step>::name("Smooth Trajectory");
+const QString Registration::name("Smooth Trajectory");
+template<>
+const Step::Category Registration::category = Step::Category::PostProcess;
 
 namespace SmoothTrajectory {
 
@@ -30,8 +32,7 @@ Step::Step(
     },
     nullptr,
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PostProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

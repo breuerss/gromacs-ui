@@ -5,11 +5,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<PdbFixer::Step>;
 template<>
-QString FactoryRegistration<PdbFixer::Step>::type =
-  FactoryRegistration<PdbFixer::Step>::registerMethod("PdbFixer");
+QString Registration::type = Registration::registerMethod("PdbFixer");
 template<>
-const QString FactoryRegistration<PdbFixer::Step>::name("PDB Fixer");
+const QString Registration::name("PDB Fixer");
+template<>
+const Step::Category Registration::category = Step::Category::PreProcess;
 
 namespace PdbFixer {
 
@@ -28,8 +30,7 @@ Step::Step(
     },
     nullptr,
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PreProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

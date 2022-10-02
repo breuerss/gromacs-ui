@@ -5,11 +5,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<Neutralise::Step>;
 template<>
-QString FactoryRegistration<Neutralise::Step>::type =
-  FactoryRegistration<Neutralise::Step>::registerMethod("Neutralise");
+QString Registration::type = Registration::registerMethod("Neutralise");
 template<>
-const QString FactoryRegistration<Neutralise::Step>::name("Neutralise");
+const QString Registration::name("Neutralise");
+template<>
+const Step::Category Registration::category = Step::Category::PreProcess;
 
 namespace Neutralise {
 
@@ -30,8 +32,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::PreProcess
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

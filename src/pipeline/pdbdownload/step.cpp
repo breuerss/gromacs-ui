@@ -6,11 +6,13 @@
 
 namespace Pipeline {
 
+using Registration = FactoryRegistration<PdbDownload::Step>;
 template<>
-QString FactoryRegistration<PdbDownload::Step>::type =
-  FactoryRegistration<PdbDownload::Step>::registerMethod("PdbDownload");
+QString Registration::type = Registration::registerMethod("PdbDownload");
 template<>
-const QString FactoryRegistration<PdbDownload::Step>::name("Download PDB");
+const QString Registration::name("Download PDB");
+template<>
+const Step::Category Registration::category = Step::Category::DataProvider;
 
 namespace PdbDownload {
 
@@ -25,8 +27,7 @@ Step::Step(
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),
-    std::make_shared<FileNameGenerator>(project),
-    Category::DataProvider
+    std::make_shared<FileNameGenerator>(project)
     )
 {
 }

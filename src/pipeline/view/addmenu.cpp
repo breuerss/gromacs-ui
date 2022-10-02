@@ -29,13 +29,13 @@ AddMenu::AddMenu(ActionButton* trigger)
 
   using namespace Pipeline;
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
-  auto addToDefinition = [&nodeMenuDefinitions]<typename Type> (Category category, tag<Type>)
+  auto addToDefinition = [&nodeMenuDefinitions]<typename Type> (tag<Type>)
   {
-    nodeMenuDefinitions[category] << AddNodeMenu::ButtonDefinition({ Type::name, addStepToProject<Type> });
+    nodeMenuDefinitions[Type::category] << AddNodeMenu::ButtonDefinition({ Type::name, addStepToProject<Type> });
   };
 
-  addToDefinition(Category::Analysis, tag<Gyrate::Step>{});
-  addToDefinition(Category::DataProvider, tag<PdbDownload::Step>{});
+  addToDefinition(tag<Gyrate::Step>{});
+  addToDefinition(tag<PdbDownload::Step>{});
 
   nodeMenuDefinitions[Category::PreProcess] = {
     { "Preparation Pipeline",
@@ -46,11 +46,11 @@ AddMenu::AddMenu(ActionButton* trigger)
       // Filter
     }},
   };
-  addToDefinition(Category::PreProcess, tag<PdbFixer::Step>{});
-  addToDefinition(Category::PreProcess, tag<CreateGromacsModel::Step>{});
-  addToDefinition(Category::PreProcess, tag<CreateBox::Step>{});
-  addToDefinition(Category::PreProcess, tag<Solvate::Step>{});
-  addToDefinition(Category::PreProcess, tag<Neutralise::Step>{});
+  addToDefinition(tag<PdbFixer::Step>{});
+  addToDefinition(tag<CreateGromacsModel::Step>{});
+  addToDefinition(tag<CreateBox::Step>{});
+  addToDefinition(tag<Solvate::Step>{});
+  addToDefinition(tag<Neutralise::Step>{});
 
   using SimulationType = Pipeline::Simulation::Configuration::Type;
   nodeMenuDefinitions[Category::Simulation] = {
@@ -72,9 +72,9 @@ AddMenu::AddMenu(ActionButton* trigger)
       } },
   };
 
-  addToDefinition(Category::PostProcess, tag<SmoothTrajectory::Step>{});
-  addToDefinition(Category::PostProcess, tag<CenterProtein::Step>{});
-  addToDefinition(Category::PostProcess, tag<TimeStepControl::Step>{});
+  addToDefinition(tag<SmoothTrajectory::Step>{});
+  addToDefinition(tag<CenterProtein::Step>{});
+  addToDefinition(tag<TimeStepControl::Step>{});
 
   for (const auto& definition: definitions)
   {
