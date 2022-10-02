@@ -230,7 +230,11 @@ void Viewer::setScene(View::Panel* newScene)
 void Viewer::center()
 {
   resetTransform();
-  const auto& rect = scene()->itemsBoundingRect();
+  auto rect = scene()->itemsBoundingRect();
+  if (rect.isEmpty())
+  {
+    rect = viewport()->rect();
+  }
   fitInView(rect + QMargins(10, 10, 10, 10), Qt::KeepAspectRatio);
 }
 
