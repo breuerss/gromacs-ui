@@ -8,6 +8,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<CenterProtein::Step>::type =
   FactoryRegistration<CenterProtein::Step>::registerMethod("CenterProtein");
+template<>
+const QString FactoryRegistration<CenterProtein::Step>::name("Center Protein");
 
 namespace CenterProtein {
 
@@ -33,11 +35,6 @@ Step::Step(
     Category::PostProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Center Protein";
 }
 
 } }

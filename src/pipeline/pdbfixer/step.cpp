@@ -8,6 +8,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<PdbFixer::Step>::type =
   FactoryRegistration<PdbFixer::Step>::registerMethod("PdbFixer");
+template<>
+const QString FactoryRegistration<PdbFixer::Step>::name("PDB Fixer");
 
 namespace PdbFixer {
 
@@ -30,11 +32,6 @@ Step::Step(
     Category::PreProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "PDB Fixer";
 }
 
 } }

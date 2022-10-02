@@ -9,6 +9,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<PdbDownload::Step>::type =
   FactoryRegistration<PdbDownload::Step>::registerMethod("PdbDownload");
+template<>
+const QString FactoryRegistration<PdbDownload::Step>::name("Download PDB");
 
 namespace PdbDownload {
 
@@ -27,11 +29,6 @@ Step::Step(
     Category::DataProvider
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "PDB Downloader";
 }
 
 } }

@@ -10,6 +10,7 @@
 #include "../../command/fileobjectconsumer.h"
 #include "../steps.h"
 
+template <typename> struct tag {};
 namespace Pipeline { namespace View {
 
 AddMenu::AddMenu(ActionButton* trigger)
@@ -26,14 +27,16 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "A", Category::Analysis },
   };
 
+  using namespace Pipeline;
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
-  nodeMenuDefinitions[Category::Analysis] = {
-    { "Gyrate", addStepToProject<Pipeline::Gyrate::Step> },
+  auto addToDefinition = [&nodeMenuDefinitions]<typename Type> (Category category, tag<Type>)
+  {
+    nodeMenuDefinitions[category] << AddNodeMenu::ButtonDefinition({ Type::name, addStepToProject<Type> });
   };
-  nodeMenuDefinitions[Category::DataProvider] = {
-    { "PDB Downloader", addStepToProject<Pipeline::PdbDownload::Step> },
-    //{ "Load From File", []() {} },
-  };
+
+  addToDefinition(Category::Analysis, tag<Gyrate::Step>{});
+  addToDefinition(Category::DataProvider, tag<PdbDownload::Step>{});
+
   nodeMenuDefinitions[Category::PreProcess] = {
     { "Preparation Pipeline",
       [] () {
@@ -42,12 +45,12 @@ AddMenu::AddMenu(ActionButton* trigger)
       // TODO
       // Filter
     }},
-    { "PDB Fixer", addStepToProject<Pipeline::PdbFixer::Step> },
-    { "Create GROMACS Model", addStepToProject<Pipeline::CreateGromacsModel::Step> },
-    { "Create Box", addStepToProject<Pipeline::CreateBox::Step> },
-    { "Solvate", addStepToProject<Pipeline::Solvate::Step> },
-    { "Neutralise", addStepToProject<Pipeline::Neutralise::Step> },
   };
+  addToDefinition(Category::PreProcess, tag<PdbFixer::Step>{});
+  addToDefinition(Category::PreProcess, tag<CreateGromacsModel::Step>{});
+  addToDefinition(Category::PreProcess, tag<CreateBox::Step>{});
+  addToDefinition(Category::PreProcess, tag<Solvate::Step>{});
+  addToDefinition(Category::PreProcess, tag<Neutralise::Step>{});
 
   using SimulationType = Pipeline::Simulation::Configuration::Type;
   nodeMenuDefinitions[Category::Simulation] = {
@@ -69,11 +72,9 @@ AddMenu::AddMenu(ActionButton* trigger)
       } },
   };
 
-  nodeMenuDefinitions[Category::PostProcess] = {
-    { "Smooth Trajectory", addStepToProject<Pipeline::SmoothTrajectory::Step> },
-    { "Center Protein", addStepToProject<Pipeline::CenterProtein::Step> },
-    { "Time Step Control", addStepToProject<Pipeline::TimeStepControl::Step> },
-  };
+  addToDefinition(Category::PostProcess, tag<SmoothTrajectory::Step>{});
+  addToDefinition(Category::PostProcess, tag<CenterProtein::Step>{});
+  addToDefinition(Category::PostProcess, tag<TimeStepControl::Step>{});
 
   for (const auto& definition: definitions)
   {

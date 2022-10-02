@@ -9,6 +9,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<CreateGromacsModel::Step>::type =
   FactoryRegistration<CreateGromacsModel::Step>::registerMethod("CreateGromacsModel");
+template<>
+const QString FactoryRegistration<CreateGromacsModel::Step>::name("Create GROMACS Model");
 
 namespace CreateGromacsModel {
 
@@ -34,11 +36,6 @@ Step::Step(std::shared_ptr<Model::Project> project)
     Category::PreProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Create GROMACS Model";
 }
 
 } }

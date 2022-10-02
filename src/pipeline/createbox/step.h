@@ -9,7 +9,6 @@ class Step : public FactoryRegistration<Step> {
 
 public:
   Step(std::shared_ptr<Model::Project> project = nullptr);
-  QString getName() const override;
 };
 
 } }

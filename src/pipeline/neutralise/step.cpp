@@ -8,6 +8,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<Neutralise::Step>::type =
   FactoryRegistration<Neutralise::Step>::registerMethod("Neutralise");
+template<>
+const QString FactoryRegistration<Neutralise::Step>::name("Neutralise");
 
 namespace Neutralise {
 
@@ -32,11 +34,6 @@ Step::Step(std::shared_ptr<Model::Project> project)
     Category::PreProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Neutralise";
 }
 
 } }

@@ -9,6 +9,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<CreateBox::Step>::type =
   FactoryRegistration<CreateBox::Step>::registerMethod("CreateBox");
+template<>
+const QString FactoryRegistration<CreateBox::Step>::name("Create Box");
 
 namespace CreateBox {
 
@@ -36,8 +38,4 @@ Step::Step(std::shared_ptr<Model::Project> project)
 {
 }
 
-QString Step::getName() const
-{
-  return "Create Box";
-}
 } }

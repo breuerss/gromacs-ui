@@ -10,6 +10,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<Simulation::Step>::type =
   FactoryRegistration<Simulation::Step>::registerMethod("Simulation");
+template<>
+const QString FactoryRegistration<Simulation::Step>::name("Simulation");
 
 namespace Simulation {
 
@@ -43,7 +45,7 @@ Step::Step(
 
 QString Step::getName() const
 {
-  return "Simulation | " + std::dynamic_pointer_cast<Configuration>(configuration)
+  return name + " | " + std::dynamic_pointer_cast<Configuration>(configuration)
     ->getTypeAsString().toUpper();
 }
 

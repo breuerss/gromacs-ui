@@ -11,6 +11,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<Solvate::Step>::type =
   FactoryRegistration<Solvate::Step>::registerMethod("Solvate");
+template<>
+const QString FactoryRegistration<Solvate::Step>::name("Solvate");
 
 namespace Solvate {
 
@@ -35,11 +37,6 @@ Step::Step(std::shared_ptr<Model::Project> project)
     Category::PreProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Solvate";
 }
 
 } }

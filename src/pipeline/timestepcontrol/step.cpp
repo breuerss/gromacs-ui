@@ -7,6 +7,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<TimeStepControl::Step>::type =
   FactoryRegistration<TimeStepControl::Step>::registerMethod("TimeStepControl");
+template<>
+const QString FactoryRegistration<TimeStepControl::Step>::name("Time Step Control");
 
 namespace TimeStepControl {
 
@@ -28,11 +30,6 @@ Step::Step(
   auto& provides = getFileObjectProvider()->provides();
   provides.clear();
   provides.append(configuration);
-}
-
-QString Step::getName() const
-{
-  return "Time Step Control";
 }
 
 } }

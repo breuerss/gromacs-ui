@@ -8,6 +8,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<Gyrate::Step>::type =
   FactoryRegistration<Gyrate::Step>::registerMethod("Gyrate");
+template<>
+const QString FactoryRegistration<Gyrate::Step>::name("Radius of Gyration");
 
 namespace Gyrate {
 
@@ -31,11 +33,6 @@ Step::Step(
     Category::Analysis
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Gyrate";
 }
 
 } }

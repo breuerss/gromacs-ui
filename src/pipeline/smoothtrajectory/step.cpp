@@ -8,6 +8,8 @@ namespace Pipeline {
 template<>
 QString FactoryRegistration<SmoothTrajectory::Step>::type =
   FactoryRegistration<SmoothTrajectory::Step>::registerMethod("SmoothTrajectory");
+template<>
+const QString FactoryRegistration<SmoothTrajectory::Step>::name("Smooth Trajectory");
 
 namespace SmoothTrajectory {
 
@@ -32,11 +34,6 @@ Step::Step(
     Category::PostProcess
     )
 {
-}
-
-QString Step::getName() const
-{
-  return "Smooth Trajectory";
 }
 
 } }
