@@ -21,8 +21,8 @@ public:
   void setText(const QString& text);
 
 protected:
-  void enterEvent(QEvent* event);
-  void leaveEvent(QEvent* event);
+  void enterEvent(QEvent* event) override;
+  void leaveEvent(QEvent* event) override;
 
 protected:
   void updateStyle();

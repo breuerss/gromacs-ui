@@ -38,11 +38,6 @@ private:
   void refreshShowAnimation();
   QPoint oldTriggerCenter;
 
-  struct ButtonDefinition {
-    QString label;
-    Step::Category category;
-  };
-
   QList<ActionButton*> buttons;
   ActionButton* trigger;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;

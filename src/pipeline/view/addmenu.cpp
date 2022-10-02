@@ -19,12 +19,17 @@ AddMenu::AddMenu(ActionButton* trigger)
   , showAnimation(std::make_shared<QParallelAnimationGroup>())
 {
   using Category = Step::Category;
+  struct ButtonDefinition {
+    QString label;
+    Category category;
+    QString tooltip;
+  };
   QList<ButtonDefinition> definitions = {
-    { "D", Category::DataProvider },
-    { "Pre", Category::PreProcess },
-    { "S", Category::Simulation },
-    { "P", Category::PostProcess },
-    { "A", Category::Analysis },
+    { ":/icons/database.svg", Category::DataProvider, tr("Input Data") },
+    { ":/icons/cube.svg", Category::PreProcess, tr("Preprocessing Steps") },
+    { ":/icons/atom.svg", Category::Simulation, tr("Simulations") },
+    { ":/icons/crosshair.svg", Category::PostProcess, tr("Postprocessing steps") },
+    { ":/icons/chart-line.svg", Category::Analysis, tr("Analysis Tools") },
   };
 
   using namespace Pipeline;
@@ -41,9 +46,6 @@ AddMenu::AddMenu(ActionButton* trigger)
     { "Preparation Pipeline",
       [] () {
         ProjectManager::getInstance()->getCurrentProject()->addPreparationPipeline();
-
-      // TODO
-      // Filter
     }},
   };
   addToDefinition(tag<PdbFixer::Step>{});
@@ -81,7 +83,16 @@ AddMenu::AddMenu(ActionButton* trigger)
   {
     const auto color = Colors::getColorFor(definition.category);
     auto button = new ActionButton(50, color, this);
-    button->setText(definition.label);
+    button->setToolTip(definition.tooltip);
+    if (definition.label.contains("icons"))
+    {
+      button->setIcon(QIcon(definition.label));
+      button->setIconSize(QSize(36, 36));
+    }
+    else
+    {
+      button->setText(definition.label);
+    }
     buttons << button;
     menus[definition.category] = new AddNodeMenu(
       nodeMenuDefinitions[definition.category], color, button, this);

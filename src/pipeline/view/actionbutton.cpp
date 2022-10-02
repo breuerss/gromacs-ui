@@ -41,24 +41,36 @@ void ActionButton::setColor(const QColor& newColor)
 void ActionButton::updateStyle()
 {
   QString style = QString(
-    "border-radius: %1;"
-    "background-color: " + color.name() + ";"
-    "color: white;"
-    "font-size: %2px;"
-    "line-height: 1;"
+    "QPushButton {"
     "padding: 0px 20px;"
-    )
-    .arg(size / 2)
-    .arg(size / 5. * 3.);
-
+  );
   if (minimumWidth() == maximumWidth())
   {
     style += "padding: 0px;";
   }
   if (text() == "+")
   {
-    style += "padding-top: -10px;";
+    style += QString(
+      "padding-top: -10px;"
+      );
   }
+
+  style += QString(
+    "border-radius: %1;"
+    "background-color: " + color.name() + ";"
+    "color: white;"
+    "font-size: %2px;"
+    "line-height: 1;"
+    "}"
+    "QLabel, QToolTip {"
+    "background: black;"
+    "padding: 5px;"
+    "color: white;"
+    "border-radius: 8px;"
+    "}"
+  )
+    .arg(size / 2)
+    .arg(size / 5. * 3.);
 
   setStyleSheet(style);
 }
