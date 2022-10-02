@@ -61,7 +61,7 @@ QString FileObjectConsumer::getFileNameFor(FileObject::Type type) const
   QString fileName;
   for (const auto& object : connectedTo.values())
   {
-    if (std::holds_alternative<FileObject::Pointer>(object))
+    if (Command::isSet<FileObject::Pointer>(object))
     {
       auto fileObject = std::get<FileObject::Pointer>(object);
       if (fileObject->type == type)
@@ -80,7 +80,7 @@ InputOutput::Category FileObjectConsumer::getCategoryFor(const Data& data)
   InputOutput::Category category = InputOutput::Category::Unknown;
 
 
-  if (std::holds_alternative<FileObject::Pointer>(data))
+  if (Command::isSet<FileObject::Pointer>(data))
   {
     auto fileObject = std::get<FileObject::Pointer>(data);
     auto requireMap = requires();

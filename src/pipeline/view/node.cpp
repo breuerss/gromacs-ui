@@ -185,7 +185,7 @@ void Node::setupPorts()
   for (const auto& data: step->getFileObjectProvider()->provides())
   {
     QColor color = Colors::getColorFor(Category::Configuration);
-    if (std::holds_alternative<FileObject::Pointer>(data))
+    if (Command::isSet<FileObject::Pointer>(data))
     {
       auto fileObject = std::get<FileObject::Pointer>(data);
       color = Colors::getColorFor(fileObject->type);
@@ -210,7 +210,7 @@ void Node::setupPorts()
       ) {
       auto panel = dynamic_cast<Panel*>(scene());
       auto endPort = getInputPort(category);
-      if (std::visit([] (const auto& data) { return !!data; }, data))
+      if (isSet(data))
       {
         auto startPort = panel->getOutputPort(data);
         panel->addConnector(startPort, endPort);
@@ -333,7 +333,7 @@ void Node::addOutputPort(const Command::Data& data, const QColor& color)
   using namespace Command;
   outputPorts << QPair<Data, OutputPort*>(data, outputPort);
 
-  if (std::holds_alternative<FileObject::Pointer>(data))
+  if (Command::isSet<FileObject::Pointer>(data))
   {
     auto fileObject = std::get<FileObject::Pointer>(data);
     conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
@@ -372,7 +372,7 @@ QString Node::getCoordinatesPath()
   {
     const auto& data = step->getFileObjectConsumer()
       ->getConnectedTo()[InputOutput::Category::Coordinates];
-    if (std::holds_alternative<FileObject::Pointer>(data))
+    if (isSet<FileObject::Pointer>(data))
     {
       const auto& fileObject = std::get<FileObject::Pointer>(data);
       if (fileObject->exists())

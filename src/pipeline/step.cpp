@@ -84,7 +84,7 @@ Step::Step(
     auto updateFileNames = [this] {
       for (const auto& data: fileObjectProvider->provides())
       {
-        if (std::holds_alternative<FileObject::Pointer>(data))
+        if (Command::isSet<FileObject::Pointer>(data))
         {
           auto fileObject = std::get<FileObject::Pointer>(data);
           QString fileName = fileNameGenerator->getFileNameFor(fileObject->type);
@@ -112,14 +112,14 @@ Step::Step(
       [this, updateFileNames] (
         const Command::Data& newData, const auto&, const Command::Data& oldData)
       {
-        if (std::holds_alternative<FileObject::Pointer>(newData))
+        if (Command::isSet<FileObject::Pointer>(newData))
         {
           auto& fileObject = std::get<FileObject::Pointer>(newData);
           fileChangeConns[fileObject] = QObject::connect(
             fileObject.get(), &Command::FileObject::fileNameChanged, updateFileNames);
         }
 
-        if (std::holds_alternative<FileObject::Pointer>(oldData))
+        if (Command::isSet<FileObject::Pointer>(oldData))
         {
           auto& oldFileObject = std::get<FileObject::Pointer>(oldData);
           if (oldFileObject && fileChangeConns.contains(oldFileObject))

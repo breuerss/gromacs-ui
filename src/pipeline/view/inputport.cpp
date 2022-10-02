@@ -55,7 +55,7 @@ void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     const auto& data = port->getProvidedData();
 
     bool accepts = false;
-    if (std::holds_alternative<Command::FileObject::Pointer>(data))
+    if (Command::isSet<Command::FileObject::Pointer>(data))
     {
       const auto& fileObject = std::get<Command::FileObject::Pointer>(data);
       accepts = acceptedFileTypes.contains(fileObject->type);

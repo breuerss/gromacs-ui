@@ -114,17 +114,14 @@ void Executor::setFileObjectConsumer(
         disconnect(fileObjectConnections[oldData]);
       }
 
-      if (std::visit([] (const auto& data) { return !!data; }, newData))
+      if (isSet<FileObject::Pointer>(newData))
       {
-        if (std::holds_alternative<FileObject::Pointer>(newData))
-        {
-          fileObjectConnections[newData] = connect(
-            std::get<FileObject::Pointer>(newData).get(),
-            &FileObject::fileNameChanged,
-            [this] () {
-              canExecuteChanged(canExecute());
-            });
-        }
+        fileObjectConnections[newData] = connect(
+          std::get<FileObject::Pointer>(newData).get(),
+          &FileObject::fileNameChanged,
+          [this] () {
+            canExecuteChanged(canExecute());
+          });
       }
       canExecuteChanged(canExecute());
   });

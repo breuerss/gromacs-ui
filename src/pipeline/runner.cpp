@@ -97,7 +97,7 @@ Runner::getNextStepsFor(
   {
     for (const auto& data: outputData)
     {
-      if (std::holds_alternative<FileObject::Pointer>(data))
+      if (Command::isSet<FileObject::Pointer>(data))
       {
         auto file = std::get<FileObject::Pointer>(data);
         if (!relevantTypes.contains(file->type))

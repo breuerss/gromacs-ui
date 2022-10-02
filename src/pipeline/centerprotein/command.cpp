@@ -41,7 +41,7 @@ void Command::doExecute()
 
   const auto& connectedTo = fileObjectConsumer->getConnectedTo();
   const auto& timeStepControlPort = connectedTo[::Command::InputOutput::Category::Configuration];
-  if (std::holds_alternative<Config::Configuration::Pointer>(timeStepControlPort))
+  if (::Command::isSet<Config::Configuration::Pointer>(timeStepControlPort))
   {
     auto timeStepControlPointer = std::get<Config::Configuration::Pointer>(timeStepControlPort);
 

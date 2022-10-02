@@ -12,6 +12,14 @@ typedef std::variant<
   Config::Configuration::Pointer
   > Data;
 
+bool isSet(const Data& data);
+
+template<typename ContainedType>
+bool isSet(const Data& data)
+{
+  return std::holds_alternative<ContainedType>(data) &&
+    std::get<ContainedType>(data);
+}
 
 }
 

@@ -39,7 +39,7 @@ void OutputPort::setProvidedData(const Command::Data& newData)
 
   QObject::disconnect(conn);
 
-  if (std::holds_alternative<Command::FileObject::Pointer>(data))
+  if (Command::isSet<Command::FileObject::Pointer>(data))
   {
     auto& fileObject = std::get<Command::FileObject::Pointer>(data);
 
@@ -94,10 +94,10 @@ void OutputPort::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
 bool OutputPort::hasData()
 {
   bool hasData = false;
-  if (std::holds_alternative<Command::FileObject::Pointer>(data))
+  if (Command::isSet<Command::FileObject::Pointer>(data))
   {
     auto fileObject = std::get<Command::FileObject::Pointer>(data);
-    hasData = fileObject && fileObject->exists();
+    hasData = fileObject->exists();
   }
   return hasData;
 }
