@@ -33,6 +33,10 @@ void Runner::handleNextSteps(
   )
 {  
   auto command = step->getCommand();
+  if (!command)
+  {
+    return;
+  }
   conns << connect(
     command.get(), &Command::Executor::finished,
     [this, step, project] () {
