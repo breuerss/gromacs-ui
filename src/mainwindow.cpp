@@ -268,19 +268,20 @@ void MainWindow::setupUIForProject()
       disconnect(conn);
     }
 
-    auto updateTitle = [this, project] (const QString& projectName = "") {
+    auto updateTitle = [this, project] () {
       QStringList titleComps("GROMACS UI");
 
-      auto name = projectName;
-      if (projectName.isEmpty())
-      {
-        auto project = ProjectManager::getInstance();
-        name = project->property("name").toString();
-      }
+      const auto& project = ProjectManager::getInstance();
+      auto name = project->property("name").toString();
+
       titleComps << name;
 
       QString fileName = ProjectManager::getInstance()->getFileName();
       fileName.replace(QDir::homePath(), "~");
+      if (!UndoRedo::Stack::getInstance()->isClean())
+      {
+        fileName += "*";
+      }
       if (!fileName.isEmpty())
       {
         titleComps << fileName;
@@ -288,6 +289,7 @@ void MainWindow::setupUIForProject()
       this->setWindowTitle(titleComps.join(" | "));
     };
     conns << connect(project.get(), &Model::Project::nameChanged, updateTitle);
+    conns << connect(UndoRedo::Stack::getInstance(), &QUndoStack::cleanChanged, updateTitle);
     updateTitle();
   }
 }
