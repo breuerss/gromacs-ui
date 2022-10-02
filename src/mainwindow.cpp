@@ -274,7 +274,7 @@ void MainWindow::setupUIForProject()
     auto updateTitle = [this, project] () {
       QStringList titleComps("GROMACS UI");
 
-      const auto& project = ProjectManager::getInstance();
+      const auto& project = ProjectManager::getInstance()->getCurrentProject();
       auto name = project->property("name").toString();
 
       titleComps << name;
