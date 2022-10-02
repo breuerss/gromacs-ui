@@ -6,10 +6,11 @@
 
 namespace Pipeline { namespace CreateBox {
 
-QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
+using Type = ::Command::FileObject::Type;
+QString FileNameGenerator::getFileNameFor(Type type) const
 {
   QString fileName;
-  if (type == Command::FileObject::Type::GRO && project)
+  if (type == Type::GRO && project)
   {
     QString inputFileName = fileObjectConsumer->getFileNameFor(type);
     QFileInfo fileInfo(inputFileName);
