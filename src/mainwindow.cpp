@@ -170,6 +170,9 @@ MainWindow::MainWindow(QWidget *parent)
     ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
     [this, view] () {
       view->center();
+      setTextFile("");
+      setGraph("");
+      setMoleculeFile("");
     });
 
   connect(
@@ -221,13 +224,20 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
 void MainWindow::setTextFile(const QString& fileName)
 {
-  QFile file(fileName);
-  file.open(QFile::ReadOnly);
-  ui->textView->setText(file.readAll());
-  file.close();
+  QString content;
+  QString title = tr("File Content Viewer");
+  if (!fileName.isEmpty())
+  {
+    QFile file(fileName);
+    file.open(QFile::ReadOnly);
+    content = file.readAll();
+    file.close();
+    ui->textViewDock->raise();
+    title = fileName;
+  }
 
-  ui->textViewDock->setWindowTitle(fileName);
-  ui->textViewDock->raise();
+  ui->textView->setText(content);
+  ui->textViewDock->setWindowTitle(title);
 }
 
 void MainWindow::setGraph(const QString& graphFile)
@@ -235,19 +245,22 @@ void MainWindow::setGraph(const QString& graphFile)
   auto graphData = IO::GraceReader::readFile(graphFile);
 
   auto chart = new QChart();
-  auto xSeries = graphData.data[0].entries;
-  for (int index = 1; index < graphData.data.size(); index++)
+  if (graphData.data.size())
   {
-    auto inputSeries = graphData.data[index].entries;
-    auto series = new QSplineSeries();
-    for (int valueIndex = 0; valueIndex < inputSeries.size(); valueIndex++)
+    auto xSeries = graphData.data[0].entries;
+    for (int index = 1; index < graphData.data.size(); index++)
     {
-      series->append(xSeries[valueIndex], inputSeries[valueIndex]);
+      auto inputSeries = graphData.data[index].entries;
+      auto series = new QSplineSeries();
+      for (int valueIndex = 0; valueIndex < inputSeries.size(); valueIndex++)
+      {
+        series->append(xSeries[valueIndex], inputSeries[valueIndex]);
+      }
+      series->setName(graphData.data[index].legend);
+      chart->addSeries(series);
     }
-    series->setName(graphData.data[index].legend);
-    chart->addSeries(series);
+    chart->setTitle(graphData.title);
   }
-  chart->setTitle(graphData.title);
   chart->createDefaultAxes();
 
   auto oldChart = graphView->chart();
@@ -257,8 +270,13 @@ void MainWindow::setGraph(const QString& graphFile)
     delete oldChart;
   }
 
-  ui->graphDock->setWindowTitle(graphFile);
-  ui->graphDock->raise();
+  QString title = tr("Graph Viewer");
+  if (!graphFile.isEmpty())
+  {
+    title = graphFile;
+    ui->graphDock->raise();
+  }
+  ui->graphDock->setWindowTitle(title);
 }
 
 void MainWindow::setupUIForProject()
@@ -317,5 +335,8 @@ void MainWindow::setMoleculeFile(const QString& file, const QString& trajectory)
 
   ui->molpreview->setUrl(url);
   ui->moleculeDock->setVisible(true);
-  ui->moleculeDock->raise();
+  if (!file.isEmpty())
+  {
+    ui->moleculeDock->raise();
+  }
 }
