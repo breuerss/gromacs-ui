@@ -20,6 +20,9 @@ public:
 
   void setScene(View::Panel* scene);
 
+protected:
+  void resizeEvent(QResizeEvent* event);
+
 protected slots:
   void wheelEvent(QWheelEvent *event);
   void keyPressEvent(QKeyEvent *event);

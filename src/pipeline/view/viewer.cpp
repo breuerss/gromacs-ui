@@ -96,6 +96,12 @@ void Viewer::createAddButton()
   connect(addButton, &QPushButton::clicked, addMenu, &AddMenu::toggle);
 }
 
+void Viewer::resizeEvent(QResizeEvent* event)
+{
+  QWidget::resizeEvent(event);
+  center();
+}
+
 void Viewer::wheelEvent(QWheelEvent *event)
 {
   const auto currentScaleFactor = transform().m11();
