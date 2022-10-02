@@ -12,6 +12,7 @@
 #include "centerprotein/step.h"
 #include "gyrate/step.h"
 #include "timestepcontrol/step.h"
+#include "fittoinput/step.h"
 
 #endif
 

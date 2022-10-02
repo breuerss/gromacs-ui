@@ -74,6 +74,7 @@ AddMenu::AddMenu(ActionButton* trigger)
 
   addToDefinition(tag<SmoothTrajectory::Step>{});
   addToDefinition(tag<CenterProtein::Step>{});
+  addToDefinition(tag<FitToInput::Step>{});
   addToDefinition(tag<TimeStepControl::Step>{});
 
   for (const auto& definition: definitions)
