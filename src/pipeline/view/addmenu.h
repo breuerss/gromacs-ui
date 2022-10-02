@@ -33,7 +33,10 @@ protected:
   void mousePressEvent(QMouseEvent *event) override;
 
 private:
+  void createShowAnimation();
   void addMoveAnimation(ActionButton* button, const QPoint& start, const QPoint& end);
+  void refreshShowAnimation();
+  QPoint oldTriggerCenter;
 
   struct ButtonDefinition {
     QString label;
@@ -44,7 +47,6 @@ private:
   ActionButton* trigger;
   std::shared_ptr<QParallelAnimationGroup> showAnimation;
   QMap<Step::Category, AddNodeMenu*> menus;
-  void createShowAnimation();
   template<typename T>
   static std::shared_ptr<T> addStepToProject()
   {

@@ -107,8 +107,7 @@ AddMenu::AddMenu(ActionButton* trigger)
     });
   }
 
-  //addViewerButton->setIcon(QIcon::fromTheme("screen"));
-  setStyleSheet("background-color: red");
+  createShowAnimation();
   stackUnder(trigger);
   QWidget::hide();
 }
@@ -141,8 +140,7 @@ void AddMenu::show()
 {
   setFixedSize(sizeHint());
   QWidget::show();
-  disconnect(showAnimation.get(), 0, 0, 0);
-  createShowAnimation();
+  refreshShowAnimation();
   showAnimation->setDirection(QAbstractAnimation::Forward);
   showAnimation->start();
 }
@@ -154,30 +152,44 @@ void AddMenu::hide()
     menu->hide();
   }
   showAnimation->setDirection(QAbstractAnimation::Backward);
-  connect(
-    showAnimation.get(), &QAbstractAnimation::finished,
-    [this] () {
-      QWidget::hide();
-    });
   showAnimation->start();
+}
+
+void AddMenu::refreshShowAnimation()
+{
+  auto triggerCenter = trigger->rect().center();
+  auto triggerCenterInViewport = trigger->mapToParent(triggerCenter);
+  if (oldTriggerCenter != triggerCenterInViewport && buttons.size() > 0)
+  {
+    oldTriggerCenter = triggerCenterInViewport;
+    showAnimation->clear();
+
+    static const unsigned spacing = 15;
+
+    const auto firstButtonRect = buttons[0]->rect();
+    const auto position = trigger->rect().center() - firstButtonRect.center();
+    const auto start = trigger->mapToParent(position);
+
+    auto end = start;
+    for (const auto& button: buttons)
+    {
+      end.ry() -= button->height() + spacing;
+      addMoveAnimation(button, start, end);
+    }
+  }
 }
 
 void AddMenu::createShowAnimation()
 {
-  showAnimation->clear();
-  const unsigned buffer = 15;
-  const unsigned height = buffer + trigger->height();
-  auto position = QPoint(
-    (trigger->width() - buttons[0]->width()) / 2, -height
-    );
-  auto start = trigger->mapToParent(QPoint(position.x(), 0));
-  auto end = trigger->mapToParent(position);
-  for (auto& button: buttons)
-  {
-    addMoveAnimation(button, start, end);
-    position.ry() -= button->height() + buffer;
-    end = trigger->mapToParent(position);
-  }
+  refreshShowAnimation();
+  connect(
+    showAnimation.get(), &QAbstractAnimation::finished,
+    [this] () {
+      if (showAnimation->direction() == QAbstractAnimation::Backward)
+      {
+        QWidget::hide();
+      }
+    });
 }
 
 void AddMenu::toggle()
