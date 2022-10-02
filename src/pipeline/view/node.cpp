@@ -206,10 +206,16 @@ void Node::setupPorts()
     [this] (
       const Command::Data& data,
       Command::InputOutput::Category category,
-      const auto& /*oldFileObject*/
+      const auto& oldData
       ) {
       auto panel = dynamic_cast<Panel*>(scene());
       auto endPort = getInputPort(category);
+      if (isSet(oldData))
+      {
+        qDebug() << "olde data is set";
+        panel->deleteConnectorFor(endPort);
+      }
+
       if (isSet(data))
       {
         auto startPort = panel->getOutputPort(data);

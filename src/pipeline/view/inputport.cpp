@@ -32,13 +32,12 @@ void InputPort::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  auto panel = dynamic_cast<Panel*>(scene());
   if (connected)
   {
-    Connector* connector = panel->getConnectorFor(this);
-    panel->reuseConnector(connector);
+    auto panel = dynamic_cast<Panel*>(scene());
+    panel->reuseConnectorFor(this);
 
-    const auto& data = connector->getStartingPort()->getProvidedData();
+    auto data = getData();
     connectedToChanged(Command::Data(), data);
   }
 
@@ -46,10 +45,23 @@ void InputPort::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
   Port::mouseMoveEvent(event);
 }
 
+Command::Data InputPort::getData()
+{
+  Command::Data data;
+  if (connected)
+  {
+    auto panel = dynamic_cast<Panel*>(scene());
+    Connector* connector = panel->getConnectorFor(this);
+    data = connector->getStartingPort()->getProvidedData();
+  }
+
+  return data;
+}
+
 void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
   auto panel = dynamic_cast<Panel*>(scene());
-  if (!connected && parentItem() != panel->startingNode)
+  if (parentItem() != panel->startingNode)
   {
     auto port = panel->getActiveConnector()->getStartingPort();
     const auto& data = port->getProvidedData();
@@ -76,11 +88,19 @@ void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void InputPort::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
 {
+  auto oldData = getData();
+
   auto panel = dynamic_cast<Panel*>(scene());
+  if (connected)
+  {
+    panel->deleteConnectorFor(this);
+  }
+
   auto connector = panel->getActiveConnector();
   connector->setEndingPort(this);
   auto startingInputPort = connector->getStartingPort();
-  connectedToChanged(startingInputPort->getProvidedData(), Command::Data());
+  auto newData = startingInputPort->getProvidedData();
+  connectedToChanged(newData, oldData);
   panel->connectorAccepted();
 }
 

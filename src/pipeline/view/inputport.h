@@ -20,6 +20,7 @@ protected:
   void dropEvent(QGraphicsSceneDragDropEvent *event) override;
 
 private:
+  Command::Data getData();
   QList<Command::FileObject::Type> acceptedFileTypes;
 };
 

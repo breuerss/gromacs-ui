@@ -49,7 +49,7 @@ public:
   void setProject(std::shared_ptr<Model::Project> newProject);
   std::shared_ptr<Model::Project> getProject() const;
 
-  void reuseConnector(Connector* connector);
+  void reuseConnectorFor(Port* port);
   void startConnector(OutputPort* at);
   void addConnector(OutputPort* start, InputPort* end);
   void stopConnector();
@@ -60,6 +60,7 @@ public:
   OutputPort* getOutputPort(const Command::Data& data);
   void deleteConnectorFor(Port* port);
   Connector* getConnectorFor(Port* port);
+  Connector* takeConnectorFor(Port* port);
   const QList<Node*>& getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
@@ -91,7 +92,7 @@ private:
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<Command::Data, OutputPort*> outputPortMap;
-  QMap<QPair<Port*, Port*>, Connector*> connectorMap;
+  QMap<QPair<OutputPort*, InputPort*>, Connector*> connectorMap;
   QList<Node*> nodeSelection;
   QPointF startingPos;
   Node* movingNode = nullptr;

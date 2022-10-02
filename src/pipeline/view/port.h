@@ -38,8 +38,8 @@ signals:
   void deleted(Port*);
   void centerPositionChanged(const QPointF& center);
   void connectedToChanged(
-    const Command::Data& newFileObject,
-    const Command::Data& oldFileObject
+    const Command::Data& newData,
+    const Command::Data& oldData
     );
 
 private:

@@ -28,10 +28,11 @@ Panel::~Panel()
   }
 }
 
-void Panel::reuseConnector(Connector* connector)
+void Panel::reuseConnectorFor(Port* port)
 {
   stopConnector();
 
+  auto connector = takeConnectorFor(port);
   connector->setEndingPort(nullptr);
   startingNode = connector->getStartingPort()->parentItem();
 
@@ -65,14 +66,14 @@ void Panel::connectorAccepted()
 
 void Panel::addConnector(OutputPort* start, InputPort* end)
 {
-  auto deletePortEntry = [this] (Port* deleted) {
-    deleteConnectorFor(deleted);
-    disconnect(deleted);
-  };
-  conns << connect(start, &Port::deleted, deletePortEntry);
-  conns << connect(end, &Port::deleted, deletePortEntry);
   if (!connectorMap.count({start, end}))
   {
+    auto deletePortEntry = [this] (Port* deleted) {
+      deleteConnectorFor(deleted);
+      disconnect(deleted);
+    };
+    conns << connect(start, &Port::deleted, deletePortEntry);
+    conns << connect(end, &Port::deleted, deletePortEntry);
     auto connector = new Connector(start);
     connector->setEndingPort(end);
     addItem(connector);
@@ -82,7 +83,7 @@ void Panel::addConnector(OutputPort* start, InputPort* end)
 
 void Panel::deleteConnectorFor(Port* port)
 {
-  auto connector = getConnectorFor(port);
+  auto connector = takeConnectorFor(port);
   if (connector)
   {
     removeItem(connector);
@@ -90,7 +91,7 @@ void Panel::deleteConnectorFor(Port* port)
   }
 }
 
-Connector* Panel::getConnectorFor(Port* port)
+Connector* Panel::takeConnectorFor(Port* port)
 {
   Connector* connector = nullptr;
 
@@ -105,6 +106,23 @@ Connector* Panel::getConnectorFor(Port* port)
 
   return connector;
 }
+
+Connector* Panel::getConnectorFor(Port* port)
+{
+  Connector* connector = nullptr;
+
+  for (const auto& pair : connectorMap.keys())
+  {
+    if (pair.second == port || pair.first == port)
+    {
+      connector = connectorMap[pair];
+      break;
+    }
+  }
+
+  return connector;
+}
+
 
 void Panel::setProject(std::shared_ptr<Model::Project> newProject)
 {
