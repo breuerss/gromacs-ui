@@ -4,9 +4,6 @@
 1. import from directory
 1. Proper project handling, distinction between project, import from directory structure
 1. loading source structure from drive
-1. simulation steps should only be runnable if source structure is available
-
-1. system setup template names should be defined in system setup, regenerate signal should be used instead of value set
 
 1. reset output on new project
 
@@ -26,4 +23,3 @@
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
 
 1. transparency of ports
-1. avoid overlapping tooltips
