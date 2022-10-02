@@ -122,8 +122,8 @@ Step::Step(
           {
             QObject::disconnect(fileChangeConns[oldFileObject]);
           }
-          updateFileNames();
         }
+        updateFileNames();
       }
     );
     updateFileNames();
