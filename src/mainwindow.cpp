@@ -170,7 +170,6 @@ MainWindow::MainWindow(QWidget *parent)
     ProjectManager::getInstance(), &ProjectManager::currentProjectChanged,
     [this, view] () {
       view->center();
-      setupUIForProject();
     });
 
   connect(

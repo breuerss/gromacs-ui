@@ -43,10 +43,17 @@ void ProjectManager::createNewProject()
       nullptr, tr("New Project"),
       tr("Do you really want to dismiss all changes in your current project?"));
   }
+  else
+  {
+    currentProject.reset(new Model::Project());
+  }
+
   if (choice == QMessageBox::Yes)
   {
     fileName.clear();
-    currentProject.reset(new Model::Project());
+    currentProject->clearSteps();
+    currentProject->setProperty("name", "");
+    UndoRedo::Stack::getInstance()->clear();
     emit currentProjectChanged(currentProject);
   }
 }
@@ -70,6 +77,7 @@ void ProjectManager::save(const QString& saveToFileName)
     data << currentProject;
     file.write(QJsonDocument(data).toJson());
     file.close();
+    UndoRedo::Stack::getInstance()->setClean();
   }
 }
 
