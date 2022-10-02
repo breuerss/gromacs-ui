@@ -70,16 +70,20 @@ void PortTooltip::update()
   }
     
   using FileObject = Command::FileObject;
-  QStringList typesString;
+  QStringList typesStringList;
   for (auto type : types)
   {
-    typesString << FileObject::toString(type).toUpper();
+    typesStringList << FileObject::toString(type).toUpper();
   }
-  categoryAndTypeList << typesString.join(", ");
+  QString typesString = typesStringList.join(", ");
+  if (!typesString.isEmpty())
+  {
+    categoryAndTypeList << typesString;
+  }
 
   QString categoryAndType = categoryAndTypeList.join(" | ");
-  setHeader(categoryAndType);
 
+  setHeader(categoryAndType);
 
   auto parent = this;
   if (text.isEmpty())

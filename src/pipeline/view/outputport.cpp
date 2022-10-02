@@ -60,6 +60,10 @@ void OutputPort::setProvidedData(const Command::Data& newData)
       setTooltipCallback(fileObject->getFileName());
     }
   }
+  else if (std::holds_alternative<Config::Configuration::Pointer>(data))
+  {
+    setCategory(Command::InputOutput::Category::Configuration);
+  }
 }
 
 void OutputPort::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
