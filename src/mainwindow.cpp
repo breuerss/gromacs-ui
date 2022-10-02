@@ -201,6 +201,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+  for (auto conn: conns)
+  {
+    disconnect(conn);
+  }
   delete ui;
 }
 
