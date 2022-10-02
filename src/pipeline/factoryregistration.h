@@ -14,17 +14,20 @@ class FactoryRegistration : public Step {
 
 public:
   using Step::Step;
-  const static QString name;
-  const static Category category;
 
-protected:
-  static QString type;
+  struct Config {
+    QString type;
+    QString name;
+    Category category;
+  };
+
+  const static Config config;
 
 private:
-  static QString registerMethod(const QString& newType)
+  static Config registerMethod(const Config& newConfig)
   {
-    Pipeline::StepFactory::registerMethod(newType, create);
-    return newType;
+    Pipeline::StepFactory::registerMethod(newConfig.type, create);
+    return newConfig;
   }
 
   static Pipeline::Step::Pointer
@@ -35,17 +38,17 @@ private:
 
   QString getType() const override
   {
-    return type;
+    return config.type;
   }
 
   QString getName() const override
   {
-    return name;
+    return config.name;
   }
 
   Category getCategory() const override
   {
-    return category;
+    return config.category;
   }
 };
 

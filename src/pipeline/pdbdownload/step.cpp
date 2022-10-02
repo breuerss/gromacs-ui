@@ -8,11 +8,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<PdbDownload::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("PdbDownload");
-template<>
-const QString Registration::name("Download PDB");
-template<>
-const Step::Category Registration::category = Step::Category::DataProvider;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "PdbDownload", "Download PDB", Step::Category::DataProvider
+});
 
 namespace PdbDownload {
 

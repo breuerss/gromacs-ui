@@ -7,11 +7,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<PdbFixer::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("PdbFixer");
-template<>
-const QString Registration::name("PDB Fixer");
-template<>
-const Step::Category Registration::category = Step::Category::PreProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "PdbFixer", "PDB Fixer", Step::Category::PreProcess
+});
 
 namespace PdbFixer {
 

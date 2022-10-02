@@ -7,11 +7,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<Neutralise::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("Neutralise");
-template<>
-const QString Registration::name("Neutralise");
-template<>
-const Step::Category Registration::category = Step::Category::PreProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "Neutralise", "Neutralise", Step::Category::PreProcess
+});
 
 namespace Neutralise {
 

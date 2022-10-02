@@ -8,11 +8,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<CreateGromacsModel::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("CreateGromacsModel");
-template<>
-const QString Registration::name("Create GROMACS Model");
-template<>
-const Step::Category Registration::category = Step::Category::PreProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "CreateGromacsModel", "Create GROMACS Model", Step::Category::PreProcess
+});
 
 namespace CreateGromacsModel {
 

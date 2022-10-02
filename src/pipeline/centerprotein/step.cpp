@@ -7,11 +7,11 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<CenterProtein::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("CenterProtein");
-template<>
-const QString Registration::name("Center Protein");
-template<>
-const Step::Category Registration::category = Step::Category::PostProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "CenterProtein",
+  "Center Protein",
+  Step::Category::PostProcess
+});
 
 namespace CenterProtein {
 

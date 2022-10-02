@@ -6,13 +6,11 @@
 
 namespace Pipeline {
 
-using Registration = FactoryRegistration<CreateBox::Step>;
+using Registration = Pipeline::FactoryRegistration<CreateBox::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("CreateBox");
-template<>
-const QString Registration::name("Create Box");
-template<>
-const Step::Category Registration::category = Step::Category::PreProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "CreateBox", "Create Box", Step::Category::PreProcess
+});
 
 namespace CreateBox {
 

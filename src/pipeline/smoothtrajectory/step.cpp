@@ -7,11 +7,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<SmoothTrajectory::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("SmoothTrajectory");
-template<>
-const QString Registration::name("Smooth Trajectory");
-template<>
-const Step::Category Registration::category = Step::Category::PostProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "SmoothTrajectory", "Smooth Trajectory", Step::Category::PostProcess
+});
 
 namespace SmoothTrajectory {
 

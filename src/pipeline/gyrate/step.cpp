@@ -7,12 +7,9 @@ namespace Pipeline {
 
 using Registration = Pipeline::FactoryRegistration<Gyrate::Step>;
 template<>
-QString Registration::type =
-  Registration::registerMethod("Gyrate");
-template<>
-const QString Registration::name("Radius of Gyration");
-template<>
-const Step::Category Registration::category = Step::Category::Analysis;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "Gyrate", "Radius of Gyration", Step::Category::Analysis
+});
 
 namespace Gyrate {
 

@@ -31,7 +31,7 @@ AddMenu::AddMenu(ActionButton* trigger)
   QMap<Category, QList<AddNodeMenu::ButtonDefinition>> nodeMenuDefinitions;
   auto addToDefinition = [&nodeMenuDefinitions]<typename Type> (tag<Type>)
   {
-    nodeMenuDefinitions[Type::category] << AddNodeMenu::ButtonDefinition({ Type::name, addStepToProject<Type> });
+    nodeMenuDefinitions[Type::config.category] << AddNodeMenu::ButtonDefinition({ Type::config.name, addStepToProject<Type> });
   };
 
   addToDefinition(tag<Gyrate::Step>{});

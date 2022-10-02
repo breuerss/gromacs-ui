@@ -9,11 +9,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<Simulation::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("Simulation");
-template<>
-const QString Registration::name("Simulation");
-template<>
-const Step::Category Registration::category = Step::Category::Simulation;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "Simulation", "Simulation", Step::Category::Simulation
+});
 
 namespace Simulation {
 
@@ -46,7 +44,7 @@ Step::Step(
 
 QString Step::getName() const
 {
-  return name + " | " + std::dynamic_pointer_cast<Configuration>(configuration)
+  return config.name + " | " + std::dynamic_pointer_cast<Configuration>(configuration)
     ->getTypeAsString().toUpper();
 }
 

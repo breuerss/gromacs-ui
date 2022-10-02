@@ -7,11 +7,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<FitToInput::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("FitToInput");
-template<>
-const QString Registration::name("Fit to Input");
-template<>
-const Step::Category Registration::category = Step::Category::PostProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "FitToInput", "Fit to Input", Step::Category::PostProcess
+});
 
 namespace FitToInput {
 

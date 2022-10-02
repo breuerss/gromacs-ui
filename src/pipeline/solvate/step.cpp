@@ -10,11 +10,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<Solvate::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("Solvate");
-template<>
-const QString Registration::name("Solvate");
-template<>
-const Step::Category Registration::category = Step::Category::PreProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "Solvate", "Solvate", Step::Category::PreProcess
+});
 
 namespace Solvate {
 

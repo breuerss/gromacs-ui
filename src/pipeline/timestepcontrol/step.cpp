@@ -6,11 +6,9 @@ namespace Pipeline {
 
 using Registration = FactoryRegistration<TimeStepControl::Step>;
 template<>
-QString Registration::type = Registration::registerMethod("TimeStepControl");
-template<>
-const QString Registration::name("Time Step Control");
-template<>
-const Step::Category Registration::category = Step::Category::PostProcess;
+const Registration::Config Registration::config = Registration::registerMethod({
+  "TimeStepControl", "Time Step Control", Step::Category::PostProcess
+});
 
 namespace TimeStepControl {
 
