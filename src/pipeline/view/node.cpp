@@ -212,17 +212,14 @@ void Node::setupPorts()
       auto endPort = getInputPort(category);
       if (isSet(oldData))
       {
-        panel->deleteConnectorFor(endPort);
+        auto startPort = panel->getOutputPort(oldData);
+        panel->removeConnectorFor({ startPort, endPort });
       }
 
       if (isSet(data))
       {
         auto startPort = panel->getOutputPort(data);
-        panel->addConnector(startPort, endPort);
-      }
-      else
-      {
-        panel->deleteConnectorFor(endPort);
+        panel->addConnector({ startPort, endPort });
       }
     });
 }
@@ -241,14 +238,17 @@ void Node::addInputPort(Command::InputOutput::Category category, const QColor& c
       const Command::Data& newData,
       const Command::Data& oldData
       ) {
-      if (std::visit([] (const auto& data) { return !!data; }, newData))
+      UndoRedo::Stack::getInstance()->beginMacro("Change connection");
+      if (Command::isSet(newData))
       {
         UndoRedo::Helper::connectTo(step->getFileObjectConsumer().get(), newData);
       }
-      else
+
+      if (Command::isSet(oldData))
       {
         UndoRedo::Helper::disconnectFrom(step->getFileObjectConsumer().get(), oldData);
       }
+      UndoRedo::Stack::getInstance()->endMacro();
     });
   arrangeInputPorts();
 }

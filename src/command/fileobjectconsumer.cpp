@@ -37,17 +37,15 @@ void FileObjectConsumer::connectTo(const Data& data)
     }
     connectedTo[category] = data;
 
-    emit connectedToChanged(data, category, old);
+    if (old != data)
+    {
+      emit connectedToChanged(data, category, old);
+    }
   }
 }
 
 void FileObjectConsumer::disconnectFrom(const Data& data)
 {
-  if (!connectedTo.values().contains(data))
-  {
-    return;
-  }
-
   auto category = getCategoryFor(data);
   if (connectedTo.contains(category) && connectedTo[category] == data)
   {

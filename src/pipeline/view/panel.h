@@ -8,6 +8,7 @@
 #include <QMetaObject>
 #include <QGraphicsSceneMouseEvent>
 #include <memory>
+#include <tuple>
 
 namespace Pipeline {
 class Step;
@@ -43,6 +44,19 @@ public:
     Horizontal,
     Vertical,
   };
+
+  struct NodePair {
+    OutputPort* start = nullptr;
+    InputPort* end = nullptr;
+    operator bool () const
+    {
+      return start && end;
+    }
+    bool operator<(const NodePair& other) const {
+      return std::tie(start, end) < std::tie(other.start, other.end);
+    }
+  };
+
   Panel(QObject* parent = nullptr);
   ~Panel();
 
@@ -51,16 +65,14 @@ public:
 
   void reuseConnectorFor(Port* port);
   void startConnector(OutputPort* at);
-  void addConnector(OutputPort* start, InputPort* end);
+  void addConnector(const NodePair& nodePair);
   void stopConnector();
-  void connectorAccepted();
   Connector* getActiveConnector();
   QGraphicsItem* startingNode = nullptr;
 
   OutputPort* getOutputPort(const Command::Data& data);
-  void deleteConnectorFor(Port* port);
+  void removeConnectorFor(const NodePair& pair);
   Connector* getConnectorFor(Port* port);
-  Connector* takeConnectorFor(Port* port);
   const QList<Node*>& getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
@@ -85,6 +97,9 @@ protected:
 private:
   std::shared_ptr<Model::Project> project;
   QList<QMetaObject::Connection> conns;
+
+  Connector* takeConnectorFor(Port* port);
+  NodePair getPairFor(Port* port);
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void removeNode(std::shared_ptr<Pipeline::Step> step);
   void addOutputPort(const Command::Data&, OutputPort*);
@@ -92,7 +107,7 @@ private:
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<Command::Data, OutputPort*> outputPortMap;
-  QMap<QPair<OutputPort*, InputPort*>, Connector*> connectorMap;
+  QMap<NodePair, Connector*> connectorMap;
   QList<Node*> nodeSelection;
   QPointF startingPos;
   Node* movingNode = nullptr;

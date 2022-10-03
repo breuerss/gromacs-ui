@@ -60,25 +60,23 @@ void ProjectManager::createNewProject()
 
 void ProjectManager::save(const QString& saveToFileName)
 {
-  if (fileName.isEmpty())
+  QString writeToFileName = saveToFileName;
+  if (writeToFileName.isEmpty())
+  {
+    writeToFileName = fileName;
+  }
+
+  if (writeToFileName.isEmpty())
   {
     saveAs();
   }
-  else
-  {
-    QString writeToFileName = saveToFileName;
-    if (writeToFileName.isEmpty())
-    {
-      writeToFileName = fileName;
-    }
-    QFile file(writeToFileName);
-    file.open(QFile::WriteOnly);
-    QJsonObject data;
-    data << currentProject;
-    file.write(QJsonDocument(data).toJson());
-    file.close();
-    UndoRedo::Stack::getInstance()->setClean();
-  }
+  QFile file(writeToFileName);
+  file.open(QFile::WriteOnly);
+  QJsonObject data;
+  data << currentProject;
+  file.write(QJsonDocument(data).toJson());
+  file.close();
+  UndoRedo::Stack::getInstance()->setClean();
 }
 
 void ProjectManager::saveAs()

@@ -22,13 +22,7 @@ Port::Port(
 
 Port::~Port()
 {
-  deleted(this);
   delete tooltipBox;
-}
-
-void Port::setConnected(bool newConnected)
-{
-  connected = newConnected;
 }
 
 void Port::setupTooltip()

@@ -10,7 +10,6 @@ Connector::Connector(OutputPort* startingPort)
   : startingPort(startingPort)
   , endingPort(nullptr)
 {
-  startingPort->setConnected();
   startingPortConn = QObject::connect(startingPort, &Port::centerPositionChanged, [this] () {
     redraw();
   });
@@ -27,14 +26,12 @@ void Connector::setEndingPort(InputPort* newEndingPort)
 {
   if (endingPort)
   {
-    endingPort->setConnected(false);
     QObject::disconnect(endingPortConn);
   }
 
   endingPort = newEndingPort;
   if (endingPort)
   {
-    endingPort->setConnected();
     endingPortConn = QObject::connect(
       endingPort, &Port::centerPositionChanged,
       [this] () {

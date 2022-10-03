@@ -32,12 +32,13 @@ void InputPort::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  if (connected)
+  auto panel = dynamic_cast<Panel*>(scene());
+  Connector* connector = panel->getConnectorFor(this);
+  if (connector)
   {
-    auto panel = dynamic_cast<Panel*>(scene());
-    panel->reuseConnectorFor(this);
-
     auto data = getData();
+
+    panel->reuseConnectorFor(this);
     connectedToChanged(Command::Data(), data);
   }
 
@@ -48,10 +49,10 @@ void InputPort::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 Command::Data InputPort::getData()
 {
   Command::Data data;
-  if (connected)
+  auto panel = dynamic_cast<Panel*>(scene());
+  Connector* connector = panel->getConnectorFor(this);
+  if (connector)
   {
-    auto panel = dynamic_cast<Panel*>(scene());
-    Connector* connector = panel->getConnectorFor(this);
     data = connector->getStartingPort()->getProvidedData();
   }
 
@@ -60,10 +61,12 @@ Command::Data InputPort::getData()
 
 void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
-  auto panel = dynamic_cast<Panel*>(scene());
-  if (parentItem() != panel->startingNode)
+  const auto panel = dynamic_cast<Panel*>(scene());
+  const auto activeConnector = panel->getActiveConnector();
+
+  if (parentItem() != panel->startingNode && activeConnector)
   {
-    auto port = panel->getActiveConnector()->getStartingPort();
+    const auto& port = activeConnector->getStartingPort();
     const auto& data = port->getProvidedData();
 
     bool accepts = false;
@@ -86,22 +89,22 @@ void InputPort::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
   event->ignore();
 }
 
-void InputPort::dropEvent(QGraphicsSceneDragDropEvent* /*event*/)
+void InputPort::dropEvent(QGraphicsSceneDragDropEvent*)
 {
-  auto oldData = getData();
-
-  auto panel = dynamic_cast<Panel*>(scene());
-  if (connected)
+  const auto panel = dynamic_cast<Panel*>(scene());
+  const auto connector = panel->getActiveConnector();
+  if (connector)
   {
-    panel->deleteConnectorFor(this);
-  }
+    const auto oldData = getData();
 
-  auto connector = panel->getActiveConnector();
-  connector->setEndingPort(this);
-  auto startingInputPort = connector->getStartingPort();
-  auto newData = startingInputPort->getProvidedData();
-  connectedToChanged(newData, oldData);
-  panel->connectorAccepted();
+    const auto startingInputPort = connector->getStartingPort();
+    const auto newData = startingInputPort->getProvidedData();
+    panel->stopConnector();
+    if (oldData != newData)
+    {
+      connectedToChanged(newData, oldData);
+    }
+  }
 }
 
 } }

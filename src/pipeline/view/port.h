@@ -19,7 +19,6 @@ public:
 
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
   QPointF getCenterInScene() const;
-  void setConnected(bool newConnected = true);
 
   void setCategory(Command::InputOutput::Category category);
 
@@ -31,11 +30,9 @@ protected:
   void hoverLeaveEvent(QGraphicsSceneHoverEvent*) override;
   PortTooltip* tooltipBox;
   QPointF startingPos;
-  bool connected = false;
   Command::InputOutput::Category category;
 
 signals:
-  void deleted(Port*);
   void centerPositionChanged(const QPointF& center);
   void connectedToChanged(
     const Command::Data& newData,

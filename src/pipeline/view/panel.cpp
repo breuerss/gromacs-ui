@@ -5,6 +5,7 @@
 #include "../../model/project.h"
 #include "../../undoredo/stack.h"
 #include "src/pipeline/step.h"
+#include "src/pipeline/view/outputport.h"
 
 #include <memory>
 #include <QDebug>
@@ -58,34 +59,22 @@ void Panel::stopConnector()
   }
 }
 
-void Panel::connectorAccepted()
+void Panel::addConnector(const NodePair& pair)
 {
-  addConnector(activeConnector->getStartingPort(), activeConnector->getEndingPort());
-  stopConnector();
-}
-
-void Panel::addConnector(OutputPort* start, InputPort* end)
-{
-  if (!connectorMap.count({start, end}))
+  if (!connectorMap.contains(pair))
   {
-    auto deletePortEntry = [this] (Port* deleted) {
-      deleteConnectorFor(deleted);
-      disconnect(deleted);
-    };
-    conns << connect(start, &Port::deleted, deletePortEntry);
-    conns << connect(end, &Port::deleted, deletePortEntry);
-    auto connector = new Connector(start);
-    connector->setEndingPort(end);
+    auto connector = new Connector(pair.start);
+    connector->setEndingPort(pair.end);
     addItem(connector);
-    connectorMap.insert({ start, end }, connector);
+    connectorMap.insert(pair, connector);
   }
 }
 
-void Panel::deleteConnectorFor(Port* port)
+void Panel::removeConnectorFor(const NodePair& pair)
 {
-  auto connector = takeConnectorFor(port);
-  if (connector)
+  if (pair && connectorMap.contains(pair))
   {
+    auto connector = connectorMap.take(pair);
     removeItem(connector);
     delete connector;
   }
@@ -95,13 +84,10 @@ Connector* Panel::takeConnectorFor(Port* port)
 {
   Connector* connector = nullptr;
 
-  for (const auto& pair : connectorMap.keys())
+  auto found = getPairFor(port);
+  if (found)
   {
-    if (pair.second == port || pair.first == port)
-    {
-      connector = connectorMap.take(pair);
-      break;
-    }
+    connector = connectorMap.take(found);
   }
 
   return connector;
@@ -111,18 +97,29 @@ Connector* Panel::getConnectorFor(Port* port)
 {
   Connector* connector = nullptr;
 
-  for (const auto& pair : connectorMap.keys())
+  auto found = getPairFor(port);
+  if (found)
   {
-    if (pair.second == port || pair.first == port)
-    {
-      connector = connectorMap[pair];
-      break;
-    }
+    connector = connectorMap[found];
   }
 
   return connector;
 }
 
+Panel::NodePair Panel::getPairFor(Port* port)
+{
+  NodePair foundPair;
+  for (const auto& pair : connectorMap.keys())
+  {
+    if (pair.start == port || pair.end == port)
+    {
+      foundPair = pair;
+      break;
+    }
+  }
+
+  return foundPair;
+}
 
 void Panel::setProject(std::shared_ptr<Model::Project> newProject)
 {
