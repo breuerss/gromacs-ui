@@ -10,13 +10,17 @@ CreateBoxSettings::CreateBoxSettings(Pipeline::CreateBox::Configuration* newConf
   ui->setupUi(this);
   prepareBoxOptions();
   using Pipeline::CreateBox::Configuration;
-  connectToComboBox(ui->boxType, config, "boxType", &Configuration::boxTypeChanged);
-  connectToSpinBox<QDoubleSpinBox>(ui->distanceToEdge, config, "distance", &Configuration::distanceChanged);
+  conns << connectToComboBox(ui->boxType, config, "boxType", &Configuration::boxTypeChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(ui->distanceToEdge, config, "distance", &Configuration::distanceChanged);
 }
 
 CreateBoxSettings::~CreateBoxSettings()
 {
-    delete ui;
+  for (auto conn : conns)
+  {
+    disconnect(conn);
+  }
+  delete ui;
 }
 
 void CreateBoxSettings::prepareBoxOptions()

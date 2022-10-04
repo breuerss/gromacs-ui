@@ -1,8 +1,9 @@
 #ifndef CREATEBOXSETTINGS_H
 #define CREATEBOXSETTINGS_H
 
-#include <QWidget>
 #include "../src/pipeline/createbox/configuration.h"
+#include <QWidget>
+#include <QMetaObject>
 
 namespace Ui {
 class CreateBoxSettings;
@@ -21,6 +22,7 @@ private:
 
     Ui::CreateBoxSettings *ui;
     Pipeline::CreateBox::Configuration* config;
+    QList<QMetaObject::Connection> conns;
 };
 
 #endif
