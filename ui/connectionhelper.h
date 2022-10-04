@@ -1,7 +1,7 @@
 #ifndef UICONNECTIONHELPER_H
 #define UICONNECTIONHELPER_H
 
-#include "src/model/serializable.h"
+#include "../src/model/serializable.h"
 #include <QComboBox>
 #include <QLineEdit>
 #include <QCheckBox>
@@ -13,7 +13,7 @@
 #include <optional>
 
 template<typename ElementType, typename ConfigType, typename ValueType>
-QMetaObject::Connection connectToSpinBox(
+QList<QMetaObject::Connection> connectToSpinBox(
   QWidget* container,
   std::shared_ptr<ConfigType> model,
   const QString& elementName,
@@ -24,7 +24,7 @@ QMetaObject::Connection connectToSpinBox(
 }
 
 template<typename ElementType, typename ConfigType, typename ValueType>
-QMetaObject::Connection connectToSpinBox(
+QList<QMetaObject::Connection> connectToSpinBox(
   QWidget* container,
   ConfigType* model,
   const QString& elementName,
@@ -36,7 +36,8 @@ QMetaObject::Connection connectToSpinBox(
   {
     widget = dynamic_cast<ElementType*>(container);
   }
-  auto conn = QObject::connect(
+  QList<QMetaObject::Connection> conns;
+  conns << QObject::connect(
     widget,
     QOverload<ValueType>::of(&ElementType::valueChanged),
     [model, elementName] (ValueType value) {
@@ -46,7 +47,7 @@ QMetaObject::Connection connectToSpinBox(
       }
     });
 
-  QObject::connect(
+  conns << QObject::connect(
     model,
     changed,
     widget,
@@ -54,7 +55,7 @@ QMetaObject::Connection connectToSpinBox(
 
   ValueType value = model->property(elementName.toStdString().c_str()).template value<ValueType>();
   widget->setValue(value);
-  return conn;
+  return conns;
 }
 
 template<typename ValueType>
@@ -122,7 +123,7 @@ QMetaObject::Connection connectToComboBox(
 }
 
 template<typename ValueType, typename ConfigType>
-QMetaObject::Connection connectToComboBox(
+QList<QMetaObject::Connection> connectToComboBox(
   QWidget* container,
   ConfigType* model,
   const QString& elementName,
@@ -136,17 +137,19 @@ QMetaObject::Connection connectToComboBox(
     widget = dynamic_cast<QComboBox*>(container);
   }
 
-  QObject::connect(
+  QList<QMetaObject::Connection> conns;
+  conns << QObject::connect(
     model, changed, [widget, model, elementName] (ValueType currentValue) {
       int index = widget->findData(QVariant::fromValue(currentValue));
       widget->setCurrentIndex(index);
     });
 
-  return connectToComboBox(container, model, elementName, std::move(callback));
+  conns << connectToComboBox(container, model, elementName, std::move(callback));
+  return conns;
 }
 
 template<typename ValueType, typename ConfigType>
-QMetaObject::Connection connectToComboBox(
+QList<QMetaObject::Connection> connectToComboBox(
   QWidget* container,
   ConfigType* model,
   const QString& elementName,
