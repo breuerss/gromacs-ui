@@ -125,8 +125,8 @@ void GromacsConfigFileGenerator::generate(
 
     // pressure
     writeLine<Simulation::PressureAlgorithm>(writer, "pcoupl");
-    Simulation::PressureAlgorithm pressureAlgorithm =
-      configuration->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
+    auto pressureAlgorithm = configuration->property("pressureAlgorithm")
+      .value<Simulation::PressureAlgorithm>();
     if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
     {
       writeLine<Simulation::PressureCouplingType>(writer, "pcoupltype");
