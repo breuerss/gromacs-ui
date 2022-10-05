@@ -41,6 +41,13 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "emtol", "minimisationMaximumForce" },
   { "emstep", "minimisationStepSize" },
   { "pme-order", "pmeOrder" },
+
+  { "constraints", "constraints" },
+  { "constraint-algorithm", "constraintAlgorithm" },
+  { "lincs-order", "lincsOrder" },
+  { "lincs-iter", "lincsIter" },
+  { "lincs-warnangle", "lincsWarnAngle" },
+  { "shake-tol", "shakeTolerance" },
 };
 
 GromacsConfigFileGenerator::GromacsConfigFileGenerator(
@@ -65,6 +72,9 @@ GromacsConfigFileGenerator::conversionMap = {
   { "coulombtype", Pipeline::Simulation::electrostaticAlgorithmFrom},
   { "vdwtype", Pipeline::Simulation::vdwAlgorithmFrom},
   { "vdw-modifier", Pipeline::Simulation::vdwModifierFrom},
+
+  { "constraints", Pipeline::Simulation::constraintTargetFrom},
+  { "constraint-algorithm", Pipeline::Simulation::constraintAlgorithmFrom},
 };
 
 const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
@@ -123,6 +133,35 @@ void GromacsConfigFileGenerator::generate(
       writeLine<float>(writer, "tau-p");
       writeLine<float>(writer, "ref-p");
       writeLine<double>(writer, "compressibility");
+    }
+
+    using ConstraintTarget = Simulation::ConstraintTarget;
+    const auto constraints = configuration->property("constraints")
+      .value<ConstraintTarget>();
+    const bool constraintActive = constraints != ConstraintTarget::None;
+    if (constraintActive)
+    {
+      writeLine<ConstraintTarget>(writer, "constraints");
+      using ConstraintAlgorithm = Simulation::ConstraintAlgorithm;
+      writeLine<ConstraintAlgorithm>(writer, "constraint-algorithm");
+      const auto algorithm = configuration
+        ->property("constraintAlgorithm").value<ConstraintAlgorithm>();
+      if (algorithm == ConstraintAlgorithm::LINCS)
+      {
+        writeLine<int>(writer, "lincs-order");
+        writeLine<int>(writer, "lincs-iter");
+        writeLine<int>(writer, "lincs-warnangle");
+      }
+      if (algorithm == ConstraintAlgorithm::SHAKE)
+      {
+        writeLine<double>(writer, "shake-tol");
+      }
+      writeLine(
+        writer, "morse",
+        configuration->property("morsePotential").toBool() ? "yes" : "no");
+      writeLine(
+        writer, "continuation",
+        configuration->property("continuation").toBool() ? "yes" : "no");
     }
 
     // temperature

@@ -173,19 +173,49 @@ QMetaObject::Connection connectToLineEdit(
   std::function<void(const QString&)>&& callback = nullptr
   );
 
-QMetaObject::Connection connectToCheckbox(
+template<typename ConfigType>
+QList<QMetaObject::Connection> connectCheckBox(
   QCheckBox* widget,
-  Model::Serializable* model,
+  ConfigType* model,
   const QString& elementName,
-  std::function<void(bool)>&& callback = nullptr
-  );
+  std::function<void(bool)>&& callback = nullptr,
+  void(ConfigType::*changed)(bool) = nullptr
+  )
+{
+  QList<QMetaObject::Connection> conns;
+  conns << QObject::connect(
+    widget,
+    &QCheckBox::stateChanged,
+    [model, elementName, callback] (int state) {
+      bool value = state == Qt::Checked;
+      model->setProperty(elementName.toStdString().c_str(), value);
+      if (callback != nullptr)
+      {
+        callback(value);
+      }
+    });
 
-QMetaObject::Connection connectToCheckbox(
+  bool value = model->property(elementName.toStdString().c_str()).toBool();
+  widget->setChecked(value);
+  conns << QObject::connect(
+    model, changed, [widget, model, elementName] (bool currentValue) {
+      widget->setChecked(currentValue);
+    });
+
+  return conns;
+}
+
+template<typename ConfigType>
+QMetaObject::Connection connectCheckBox(
   QCheckBox* widget,
-  std::shared_ptr<Model::Serializable> model,
+  std::shared_ptr<ConfigType> model,
   const QString& elementName,
-  std::function<void(bool)>&& callback = nullptr
-  );
+  std::function<void(bool)>&& callback = nullptr,
+  void(ConfigType::*changed)(bool) = nullptr
+  )
+{
+  return connect(widget, model.get(), elementName, std::move(callback), changed);
+}
 
 template<typename TypeName = QVariant>
 void setOptions(

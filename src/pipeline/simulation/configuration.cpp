@@ -30,6 +30,12 @@ Configuration::Configuration()
     qRegisterMetaTypeStreamOperators<int>("Configuration::VdwAlgorithm");
     qRegisterMetaType<VdwModifier>("Configuration::VdwModifier");
     qRegisterMetaTypeStreamOperators<int>("Configuration::VdwModifier");
+
+    qRegisterMetaType<ConstraintTarget>("Configuration::ConstraintTarget");
+    qRegisterMetaTypeStreamOperators<int>("Configuration::ConstraintTarget");
+
+    qRegisterMetaType<ConstraintAlgorithm>("Configuration::ConstraintAlgorithm");
+    qRegisterMetaTypeStreamOperators<int>("Configuration::ConstraintAlgorithm");
     registered = true;
   }
 
@@ -440,6 +446,63 @@ QString toString(Configuration::VdwModifier algorithm)
 }
 
 QString toLabel(Configuration::VdwModifier algorithm)
+{
+  return toString(algorithm);
+}
+
+using ConstraintTarget = Configuration::ConstraintTarget;
+const static auto constraintTargetBimap =
+makeBimap<ConstraintTarget, QString>({
+  { ConstraintTarget::None, "none" },
+  { ConstraintTarget::HydrogenBonds, "h-bonds" },
+  { ConstraintTarget::AllBonds, "all-bonds" },
+  { ConstraintTarget::HydrogenAngles, "h-angles" },
+  { ConstraintTarget::AllAngles, "all-angles" },
+});
+
+QVariant constraintTargetFrom(const QString& value)
+{
+  return QVariant::fromValue(constraintTargetBimap.right.at(value));
+}
+
+QString toString(Configuration::ConstraintTarget target)
+{
+  return constraintTargetBimap.left.at(target);
+}
+
+const static auto constraintTargetLabel =
+QMap<ConstraintTarget, QString>({
+  { ConstraintTarget::None, "None" },
+  { ConstraintTarget::HydrogenBonds, "Hydrogen Bonds" },
+  { ConstraintTarget::AllBonds, "All Bonds" },
+  { ConstraintTarget::HydrogenAngles, "Hydrogen Angles" },
+  { ConstraintTarget::AllAngles, "All Angles" },
+});
+
+QString toLabel(Configuration::ConstraintTarget target)
+{
+  return constraintTargetLabel[target];
+}
+
+using ConstraintAlgorithm = Configuration::ConstraintAlgorithm;
+const static auto constraintAlgorithmBimap =
+makeBimap<ConstraintAlgorithm, QString>({
+  { ConstraintAlgorithm::None, "" },
+  { ConstraintAlgorithm::LINCS, "LINCS" },
+  { ConstraintAlgorithm::SHAKE, "SHAKE" },
+});
+
+QVariant constraintAlgorithmFrom(const QString& value)
+{
+  return QVariant::fromValue(constraintAlgorithmBimap.right.at(value));
+}
+
+QString toString(Configuration::ConstraintAlgorithm algorithm)
+{
+  return constraintAlgorithmBimap.left.at(algorithm);
+}
+
+QString toLabel(Configuration::ConstraintAlgorithm algorithm)
 {
   return toString(algorithm);
 }

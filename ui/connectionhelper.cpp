@@ -34,37 +34,4 @@ QMetaObject::Connection connectToLineEdit(
   return conn;
 }
 
-QMetaObject::Connection connectToCheckbox(
-  QCheckBox* widget,
-  Model::Serializable* model,
-  const QString& elementName,
-  std::function<void(bool)>&& callback
-  )
-{
-  auto conn = QObject::connect(
-    widget,
-    &QCheckBox::stateChanged,
-    [model, elementName, callback] (int state) {
-      bool value = state == Qt::Checked;
-      model->setProperty(elementName.toStdString().c_str(), value);
-      if (callback != nullptr)
-      {
-        callback(value);
-      }
-    });
 
-  bool value = model->property(elementName.toStdString().c_str()).value<bool>();
-  widget->setChecked(value);
-
-  return conn;
-}
-
-QMetaObject::Connection connectToCheckbox(
-  QCheckBox* widget,
-  std::shared_ptr<Model::Serializable> model,
-  const QString& elementName,
-  std::function<void(bool)>&& callback
-  )
-{
-  return connectToCheckbox(widget, model.get(), elementName, std::move(callback));
-}

@@ -21,7 +21,7 @@ SimulationSetupForm::SimulationSetupForm(
 {
   ui->setupUi(this);
 
-  conns << connectToCheckbox(ui->resume, configuration, "resume");
+  conns << connectCheckBox(ui->resume, configuration, "resume");
 
   using Type = Pipeline::Simulation::Configuration::Type;
 
@@ -147,10 +147,11 @@ SimulationSetupForm::SimulationSetupForm(
     ui->vdwCutoffRadius, configuration, "vdwCutoffRadius", &Simulation::vdwCutoffRadiusChanged);
 
   // PME
-  conns << connect(configuration, &Simulation::pmeSettingsNeededChanged,
-          [this] () {
-            ui->pmeSettingsGroup->setEnabled(configuration->pmeSettingsNeeded());
-          });
+  conns << connect(
+    configuration, &Simulation::pmeSettingsNeededChanged,
+    [this] () {
+      ui->pmeSettingsGroup->setEnabled(configuration->pmeSettingsNeeded());
+    });
   conns << connectToSpinBox<QDoubleSpinBox>(ui->fourierSpacing, configuration, "fourierSpacing", &Simulation::fourierSpacingChanged);
   conns << connectToSpinBox<QSpinBox>(ui->pmeOrder, configuration, "pmeOrder", &Simulation::pmeOrderChanged);
 
@@ -202,6 +203,81 @@ SimulationSetupForm::SimulationSetupForm(
   conns << connect(configuration, &Simulation::timeStepChanged, updateDuration);
   updateDuration();
 
+  using ConstraintTarget = Simulation::ConstraintTarget;
+  setOptions<ConstraintTarget>(ui->constraints, {
+     {"None", ConstraintTarget::None },
+     {"Hydrogen Bonds", ConstraintTarget::HydrogenBonds },
+     {"All Bonds", ConstraintTarget::AllBonds },
+     {"Hydrogen Angles", ConstraintTarget::HydrogenAngles },
+     {"All Angles", ConstraintTarget::AllAngles },
+  }, ConstraintTarget::None);
+
+  using ConstraintAlgorithm = Simulation::ConstraintAlgorithm;
+  auto setConstraintAlgorithmSettingsEnabled = [this] (ConstraintAlgorithm algorithm) {
+    const bool enabled = ui->constraintAlgorithm->isEnabled();
+    const bool isShake = algorithm == ConstraintAlgorithm::SHAKE;
+    ui->shakeTolerance->setEnabled(enabled && isShake);
+    ui->shakeToleranceLabel->setEnabled(enabled && isShake);
+    const bool isLincs = algorithm == ConstraintAlgorithm::LINCS;
+    ui->lincsOrder->setEnabled(enabled && isLincs);
+    ui->lincsOrderLabel->setEnabled(enabled && isLincs);
+    ui->lincsIteration->setEnabled(enabled && isLincs);
+    ui->lincsIterationLabel->setEnabled(enabled && isLincs);
+    ui->lincsWarningAngle->setEnabled(enabled && isLincs);
+    ui->lincsWarningAngleLabel->setEnabled(enabled && isLincs);
+  };
+
+  auto setConstraintsEnabled = [
+    this,
+    setConstraintAlgorithmSettingsEnabled
+  ] (ConstraintTarget newTarget) {
+    const bool enabled = newTarget != ConstraintTarget::None;
+    ui->constraintAlgorithm->setEnabled(enabled);
+    ui->constraintAlgorithmLabel->setEnabled(enabled);
+    ui->continuation->setEnabled(enabled);
+    ui->morse->setEnabled(enabled);
+    auto algorithm = configuration->property("constraintAlgorithm")
+      .value<ConstraintAlgorithm>();
+    setConstraintAlgorithmSettingsEnabled(algorithm);
+  };
+  conns << connectToComboBox<ConstraintTarget>(
+    ui->constraints, configuration,
+    "constraints", setConstraintsEnabled,
+    &Simulation::constraintsChanged);
+  setConstraintsEnabled(configuration->property("constraints").value<ConstraintTarget>());
+
+  setOptions<ConstraintAlgorithm>(ui->constraintAlgorithm, {
+     {"LINCS", ConstraintAlgorithm::LINCS },
+     {"SHAKE", ConstraintAlgorithm::SHAKE},
+  }, ConstraintAlgorithm::LINCS);
+
+  conns << connectToComboBox<ConstraintAlgorithm>(
+    ui->constraintAlgorithm, configuration,
+    "constraintAlgorithm", setConstraintAlgorithmSettingsEnabled,
+    &Simulation::constraintAlgorithmChanged);
+  setConstraintAlgorithmSettingsEnabled(
+    configuration
+    ->property("constraintAlgorithm").value<ConstraintAlgorithm>()
+    );
+  using Simulation = Pipeline::Simulation::Configuration;
+  conns << connectCheckBox(
+    ui->continuation, configuration, "continuation",
+    nullptr, &Simulation::continuationChanged);
+  conns << connectCheckBox(
+    ui->morse, configuration, "morsePotential",
+    nullptr, &Simulation::morsePotentialChanged);
+  conns << connectToSpinBox<QDoubleSpinBox>(
+    ui->shakeTolerance, configuration, "shakeTolerance",
+    &Simulation::shakeToleranceChanged);
+  conns << connectToSpinBox<QSpinBox>(
+    ui->lincsOrder, configuration, "lincsOrder",
+    &Simulation::lincsOrderChanged);
+  conns << connectToSpinBox<QSpinBox>(
+    ui->lincsIteration, configuration, "lincsIter",
+    &Simulation::lincsIterChanged);
+  conns << connectToSpinBox<QSpinBox>(
+    ui->lincsWarningAngle, configuration, "lincsWarnAngle",
+    &Simulation::lincsWarnAngleChanged);
 }
 
 SimulationSetupForm::~SimulationSetupForm()

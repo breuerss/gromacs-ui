@@ -83,6 +83,22 @@ public:
   };
   Q_ENUM(VdwModifier);
 
+  enum class ConstraintTarget : int {
+    None = 0,
+    HydrogenBonds,
+    AllBonds,
+    HydrogenAngles,
+    AllAngles,
+  };
+  Q_ENUM(ConstraintTarget);
+
+  enum class ConstraintAlgorithm : int {
+    None = 0,
+    LINCS,
+    SHAKE,
+  };
+  Q_ENUM(ConstraintAlgorithm);
+
   Configuration();
   ~Configuration();
   QString getName() const;
@@ -137,6 +153,15 @@ public:
 
   Q_PROPERTY(TemperatureAlgorithm temperatureAlgorithm
              MEMBER temperatureAlgorithm NOTIFY temperatureAlgorithmChanged);
+  // constraints
+  Q_PROPERTY(ConstraintTarget constraints MEMBER constraints NOTIFY constraintsChanged);
+  Q_PROPERTY(ConstraintAlgorithm constraintAlgorithm MEMBER constraintAlgorithm NOTIFY constraintAlgorithmChanged);
+  Q_PROPERTY(bool continuation MEMBER continuation NOTIFY continuationChanged);
+  Q_PROPERTY(double shakeTolerance MEMBER shakeTolerance NOTIFY shakeToleranceChanged);
+  Q_PROPERTY(int lincsOrder MEMBER lincsOrder NOTIFY lincsOrderChanged);
+  Q_PROPERTY(int lincsIter MEMBER lincsIter NOTIFY lincsIterChanged);
+  Q_PROPERTY(int lincsWarnAngle MEMBER lincsWarnAngle NOTIFY lincsWarnAngleChanged);
+  Q_PROPERTY(bool morsePotential MEMBER morsePotential NOTIFY morsePotentialChanged);
 
   QString toString() override;
 
@@ -186,6 +211,16 @@ signals:
   void temperatureCouplingGroupRemoved(std::shared_ptr<TemperatureCouplingGroup>, int at);
 
   void pmeSettingsNeededChanged();
+
+  // constraints
+  void constraintsChanged(ConstraintTarget constraints);
+  void constraintAlgorithmChanged(ConstraintAlgorithm);
+  void continuationChanged(bool);
+  void shakeToleranceChanged(double);
+  void lincsOrderChanged(int);
+  void lincsIterChanged(int);
+  void lincsWarnAngleChanged(int);
+  void morsePotentialChanged(bool);
 
 public slots:
   const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups() const;
@@ -239,6 +274,16 @@ private:
   TemperatureAlgorithm temperatureAlgorithm = TemperatureAlgorithm::None;
   std::vector<std::shared_ptr<TemperatureCouplingGroup>> temperatureCouplingGroups;
 
+  // constraints
+  ConstraintTarget constraints = ConstraintTarget::None;
+  ConstraintAlgorithm constraintAlgorithm = ConstraintAlgorithm::LINCS;
+  bool continuation = false;
+  double shakeTolerance = 0.0001;
+  int lincsOrder = 4;
+  int lincsIter = 1;
+  int lincsWarnAngle = 30;
+  bool morsePotential = false;
+
   bool resume = true;
 };
 
@@ -271,6 +316,14 @@ QString toLabel(Configuration::VdwAlgorithm algorithm);
 QVariant vdwModifierFrom(const QString& value);
 QString toString(Configuration::VdwModifier algorithm);
 QString toLabel(Configuration::VdwModifier algorithm);
+
+QVariant constraintTargetFrom(const QString& value);
+QString toString(Configuration::ConstraintTarget target);
+QString toLabel(Configuration::ConstraintTarget target);
+
+QVariant constraintAlgorithmFrom(const QString& value);
+QString toString(Configuration::ConstraintAlgorithm algorithm);
+QString toLabel(Configuration::ConstraintAlgorithm algorithm);
 
 template<typename T>
 using toLabel_t = decltype( Simulation::toLabel(std::declval<T&>()) );
