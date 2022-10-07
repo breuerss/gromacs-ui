@@ -12,7 +12,7 @@
 namespace Pipeline { namespace Simulation {
 
 class Configuration
-: public Config::Configuration
+: public Config::Configuration, public std::enable_shared_from_this<Configuration>
 {
   Q_OBJECT
 public:
@@ -109,6 +109,8 @@ public:
   bool isMinimisation() const;
   bool pmeSettingsNeeded() const;
 
+  void toObject(QJsonObject&) override;
+  void fromObject(QJsonObject&) override;
   // temperature
   std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups();
   Q_PROPERTY(Type simulationType MEMBER simulationType NOTIFY simulationTypeChanged);
@@ -352,6 +354,9 @@ QString keyValue(const QString& key, ValueType value)
   }
   return label;
 }
+
+QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Configuration>& model);
+QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Configuration> model);
 
 } }
 

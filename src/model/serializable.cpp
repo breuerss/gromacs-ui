@@ -69,11 +69,22 @@ QMetaMethod Serializable::getSignalForProperty(const QString& name)
 
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model)
 {
+  out << model.get();
+  return out;
+}
+
+
+QJsonObject &operator<<(QJsonObject &out, const Serializable* model)
+{
   const QMetaObject *metaobject = model->metaObject();
   int count = metaobject->propertyCount();
   for (int i = 0; i < count; ++i) {
     QMetaProperty metaproperty = metaobject->property(i);
     const char *name = metaproperty.name();
+    if (QString(name) == "objectName")
+    {
+      continue;
+    }
     QVariant value = model->property(name);
 
     out[name] = QJsonValue::fromVariant(value);
@@ -84,6 +95,12 @@ QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> mo
 
 QJsonObject &operator>>
 (QJsonObject &in, std::shared_ptr<Serializable> model)
+{
+  in >> model.get();
+  return in;
+}
+
+QJsonObject &operator>>(QJsonObject &in, Serializable* model)
 {
   const QMetaObject *metaobject = model->metaObject();
   int count = metaobject->propertyCount();
@@ -98,5 +115,4 @@ QJsonObject &operator>>
 
   return in;
 }
-
 }

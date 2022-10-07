@@ -20,6 +20,8 @@ signals:
   void anyChanged();
 };
 
+QJsonObject &operator<<(QJsonObject &out, const Serializable* model);
+QJsonObject &operator>>(QJsonObject &in, Serializable* model);
 QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Serializable> model);
 QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Serializable> model);
 

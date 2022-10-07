@@ -4,6 +4,7 @@
 #include "../model/serializable.h"
 
 #include <QWidget>
+#include <QJsonObject>
 #include <memory>
 
 namespace Config {
@@ -16,6 +17,12 @@ public:
   virtual ~Configuration() = default;
   virtual QWidget* getUI() = 0;
   virtual QString toString() { return QString(); };
+  virtual void toObject(QJsonObject& out) {
+    out << this;
+  };
+  virtual void fromObject(QJsonObject& in) {
+    in >> this;
+  };
 };
 
 }

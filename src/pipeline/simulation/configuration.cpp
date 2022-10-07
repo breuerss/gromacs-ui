@@ -2,6 +2,7 @@
 #include "../../../ui/simulationsetupform.h"
 #include <QDebug>
 #include <QMetaProperty>
+#include <QJsonArray>
 #include <cstring>
 #include <memory>
 
@@ -309,41 +310,54 @@ QString toLabel(Configuration::PressureCouplingType type)
   return pressureCouplingTypeLabels[type];
 }
 
-//QDataStream &operator<<(QDataStream &out, const Configuration &model)
-//{
-//  const Model::Serializable& tmp = model;
-//  out << tmp;
-//
-//  const auto& groups = model.getTemperatureCouplingGroups();
-//  int noOfGroups = groups.size();
-//  out << noOfGroups;
-//  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
-//  {
-//    out << *(groups[groupIndex]);
-//  }
-//
-//
-//  return out;
-//}
-//
-//QDataStream &operator>>(QDataStream &in, Configuration& model)
-//{
-//  Model::Serializable& tmp = model;
-//  in >> tmp;
-//
-//  int noOfGroups;
-//  in >> noOfGroups;
-//
-//  auto& groups = model.getTemperatureCouplingGroups();
-//  groups.clear();
-//  for (int groupIndex = 0; groupIndex < noOfGroups; groupIndex++)
-//  {
-//    auto group = model.addTemperatureCouplingGroup();
-//    in >> (*group);
-//  }
-//
-//  return in;
-//}
+void Configuration::toObject(QJsonObject& out)
+{
+  out << Configuration::shared_from_this();
+}
+
+void Configuration::fromObject(QJsonObject& in)
+{
+  in >> Configuration::shared_from_this();
+}
+
+QJsonObject &operator<<(QJsonObject &out, const std::shared_ptr<Configuration>& model)
+{
+  const auto& tmp = std::dynamic_pointer_cast<Model::Serializable>(model);
+  out << tmp;
+
+  const auto& groups = model->getTemperatureCouplingGroups();
+  QJsonArray temperatureGroups;
+  for (const auto& group: groups)
+  {
+    QJsonObject groupObject;
+    groupObject << group;
+    temperatureGroups.append(groupObject);
+  }
+  out["temperatureGroups"] = temperatureGroups;
+
+  return out;
+}
+
+QJsonObject &operator>>(QJsonObject &in, std::shared_ptr<Configuration> model)
+{
+  auto tmp = std::dynamic_pointer_cast<Model::Serializable>(model);
+  in >> tmp;
+
+  auto& groups = model->getTemperatureCouplingGroups();
+  groups.clear();
+  if (in.contains("temperatureGroups") && in["temperatureGroups"].isArray())
+  {
+    QJsonArray arr = in["temperatureGroups"].toArray();
+    for (const auto& entry: arr)
+    {
+      std::shared_ptr<Model::Serializable> group = model->addTemperatureCouplingGroup();
+      auto obj = entry.toObject();
+      obj >> group;
+    }
+  }
+
+  return in;
+}
 
 using TemperatureAlgorithm = Configuration::TemperatureAlgorithm;
 const static auto temperatureAlgorithmBimap =

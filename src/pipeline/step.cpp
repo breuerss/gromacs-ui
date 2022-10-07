@@ -203,7 +203,7 @@ QJsonObject &operator<<(QJsonObject &out, const Step::Pointer step)
 {
   if (step->getConfiguration())
   {
-    out << step->getConfiguration();
+    step->getConfiguration()->toObject(out);
   }
   const auto& location = step->getLocation();
   out["type"] = step->getType();
@@ -241,7 +241,7 @@ QJsonObject &operator>>(QJsonObject &in, Step::Pointer step)
 {
   if (step->getConfiguration())
   {
-    in >> step->getConfiguration();
+    step->getConfiguration()->fromObject(in);
   }
   if (in.contains("location") && in["location"].isArray())
   {
