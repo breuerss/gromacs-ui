@@ -4,6 +4,7 @@
 #include "../src/projectmanager.h"
 #include "../src/model/project.h"
 #include "../src/undoredo/stack.h"
+#include "../src/pipeline/runner.h"
 #include <QPushButton>
 #include <QResizeEvent>
 
@@ -66,6 +67,9 @@ TopMenu::TopMenu(QWidget *parent) :
   conns << connect(ui->alignLeft, &QPushButton::clicked, this, &TopMenu::alignLeftClicked);
   conns << connect(ui->alignRight, &QPushButton::clicked, this, &TopMenu::alignRightClicked);
   conns << connect(ui->alignHCenter, &QPushButton::clicked, this, &TopMenu::alignHCenterClicked);
+  conns << connect(ui->runAllButton, &QPushButton::clicked, [] () {
+    Pipeline::Runner::getInstance()->startPipeline();
+  });
 
   conns << connect(ui->distributeHorizontally, &QPushButton::clicked, this, &TopMenu::distributeHorizontallyClicked);
   conns << connect(ui->distributeVertically, &QPushButton::clicked, this, &TopMenu::distributeVerticallyClicked);
