@@ -18,6 +18,7 @@ public:
 
   void setAlignmentButtonsEnabled(bool enabled);
   void setDistributionButtonsEnabled(bool enabled);
+  void resizeEvent(QResizeEvent* event);
 
 signals:
   void alignLeftClicked();

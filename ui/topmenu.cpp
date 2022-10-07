@@ -5,6 +5,7 @@
 #include "../src/model/project.h"
 #include "../src/undoredo/stack.h"
 #include <QPushButton>
+#include <QResizeEvent>
 
 TopMenu::TopMenu(QWidget *parent) :
     QWidget(parent),
@@ -100,6 +101,28 @@ void TopMenu::setDistributionButtonsEnabled(bool enabled)
 {
   ui->distributeHorizontally->setEnabled(enabled);
   ui->distributeVertically->setEnabled(enabled);
+}
+
+void TopMenu::resizeEvent(QResizeEvent* event)
+{
+  const auto size = event->size();
+  const bool visible = size.width() > 761;
+  ui->alignBottom->setVisible(visible);
+  ui->alignTop->setVisible(visible);
+  ui->alignLeft->setVisible(visible);
+  ui->alignRight->setVisible(visible);
+
+  const bool distributeVisible = size.width() > 597;
+  ui->distributeVertically->setVisible(distributeVisible);
+  ui->distributeHorizontally->setVisible(distributeVisible);
+
+  const bool alignVisible = size.width() > 502;
+  ui->alignVCenter->setVisible(alignVisible);
+  ui->alignHCenter->setVisible(alignVisible);
+
+  const bool undoRedoVisible = size.width() > 407;
+  ui->undoButton->setVisible(undoRedoVisible);
+  ui->redoButton->setVisible(undoRedoVisible);
 }
 
 TopMenu::~TopMenu()

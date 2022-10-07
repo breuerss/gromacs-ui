@@ -20,5 +20,4 @@
 
 1. transparency of ports
 1. run button in top menu
-1. handle icons in small pipeline view
 1. load from disk

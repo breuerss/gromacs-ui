@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>827</width>
+    <width>845</width>
     <height>114</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>310</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -19,6 +31,15 @@
   <layout class="QHBoxLayout" name="horizontalLayout_7">
    <property name="spacing">
     <number>15</number>
+   </property>
+   <property name="leftMargin">
+    <number>30</number>
+   </property>
+   <property name="rightMargin">
+    <number>30</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
    </property>
    <item>
     <spacer name="horizontalSpacer">
@@ -34,30 +55,15 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <property name="spacing">
-      <number>5</number>
+    <widget class="QPushButton" name="runAllButton">
+     <property name="text">
+      <string/>
      </property>
-     <item>
-      <widget class="QPushButton" name="undoButton">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset resource="../share/icons.qrc">
-         <normaloff>:/icons/arrow-arc-left.svg</normaloff>:/icons/arrow-arc-left.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="redoButton">
-       <property name="icon">
-        <iconset resource="../share/icons.qrc">
-         <normaloff>:/icons/arrow-arc-right.svg</normaloff>:/icons/arrow-arc-right.svg</iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <property name="icon">
+      <iconset resource="../share/icons/resource.qrc">
+       <normaloff>:/icons/play.svg</normaloff>:/icons/play.svg</iconset>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QFrame" name="frame">
@@ -95,6 +101,32 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <property name="spacing">
+      <number>5</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="undoButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../share/icons/resource.qrc">
+         <normaloff>:/icons/arrow-arc-left.svg</normaloff>:/icons/arrow-arc-left.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="redoButton">
+       <property name="icon">
+        <iconset resource="../share/icons/resource.qrc">
+         <normaloff>:/icons/arrow-arc-right.svg</normaloff>:/icons/arrow-arc-right.svg</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <property name="spacing">
       <number>15</number>
@@ -110,7 +142,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-left.svg</normaloff>:/icons/align-left.svg</iconset>
          </property>
          <property name="iconSize">
@@ -124,7 +156,7 @@
        <item>
         <widget class="QPushButton" name="alignHCenter">
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-center-horizontal.svg</normaloff>:/icons/align-center-horizontal.svg</iconset>
          </property>
          <property name="iconSize">
@@ -138,7 +170,7 @@
        <item>
         <widget class="QPushButton" name="alignRight">
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-right.svg</normaloff>:/icons/align-right.svg</iconset>
          </property>
          <property name="iconSize">
@@ -159,7 +191,7 @@
        <item>
         <widget class="QPushButton" name="alignTop">
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-top.svg</normaloff>:/icons/align-top.svg</iconset>
          </property>
          <property name="iconSize">
@@ -173,7 +205,7 @@
        <item>
         <widget class="QPushButton" name="alignVCenter">
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-center-vertical.svg</normaloff>:/icons/align-center-vertical.svg</iconset>
          </property>
          <property name="iconSize">
@@ -190,7 +222,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/align-bottom.svg</normaloff>:/icons/align-bottom.svg</iconset>
          </property>
          <property name="iconSize">
@@ -214,7 +246,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/dots-three-outline-vertical.svg</normaloff>:/icons/dots-three-outline-vertical.svg</iconset>
          </property>
          <property name="iconSize">
@@ -228,7 +260,7 @@
        <item>
         <widget class="QPushButton" name="distributeHorizontally">
          <property name="icon">
-          <iconset resource="../share/icons.qrc">
+          <iconset resource="../share/icons/resource.qrc">
            <normaloff>:/icons/dots-three-outline.svg</normaloff>:/icons/dots-three-outline.svg</iconset>
          </property>
          <property name="iconSize">
@@ -259,7 +291,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../share/icons.qrc"/>
+  <include location="../share/icons/resource.qrc"/>
  </resources>
  <connections/>
 </ui>
