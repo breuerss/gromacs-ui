@@ -10,7 +10,6 @@
 1. default settings for different force fields
 
 1. simplify widgets updates
-1. logger instead of QDebug
 
 # Pipeline implementation
 
@@ -18,5 +17,4 @@
 1. Loading starting configuration for different simulations
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
 
-1. transparency of ports
 1. load from disk
