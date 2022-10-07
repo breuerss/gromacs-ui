@@ -5,13 +5,9 @@
 1. Proper project handling, distinction between project, import from directory structure
 1. loading source structure from drive
 
-1. reset output on new project
-
 1. notify user if project name is already in use in project dir to avoid overwriting?
 
-
 1. default settings for different force fields
-1. constraints config
 
 1. simplify widgets updates
 1. logger instead of QDebug
@@ -23,3 +19,6 @@
 1. cleanup pointer handling, use naked pointers where memory management is not a factor
 
 1. transparency of ports
+1. run button in top menu
+1. handle icons in small pipeline view
+1. load from disk
