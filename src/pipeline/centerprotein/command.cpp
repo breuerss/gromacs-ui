@@ -21,8 +21,8 @@ Command::Command()
 
 void Command::doExecute()
 {
-  QString gmx = AppProvider::get("gmx");
-  if (gmx.isEmpty())
+  QString command = AppProvider::get("gmx");
+  if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");
     StatusMessageSetter::getInstance()->setMessage(message);
@@ -32,12 +32,12 @@ void Command::doExecute()
   using Type = ::Command::FileObject::Type;
   QString inputStructure = fileObjectConsumer->getFileNameFor(Type::XTC);
 
-  QString command = gmx + " trjconv";
-  command += " -f " + inputStructure;
-  command += " -s " + fileObjectConsumer->getFileNameFor(Type::GRO);
-  command += " -o " + fileNameGenerator->getFileNameFor(Type::XTC);
-  command += " -center";
-  command += " -pbc nojump";
+  QStringList args("trjconv");
+  args << "-f" << inputStructure;
+  args << "-s" << fileObjectConsumer->getFileNameFor(Type::GRO);
+  args << "-o" << fileNameGenerator->getFileNameFor(Type::XTC);
+  args << "-center";
+  args << "-pbc" << "nojump";
 
   const auto& connectedTo = fileObjectConsumer->getConnectedTo();
   const auto& timeStepControlPort = connectedTo[::Command::InputOutput::Category::Configuration];
@@ -49,14 +49,14 @@ void Command::doExecute()
     {
       auto timeStepControl = std::dynamic_pointer_cast<TimeStepControl::Configuration>(timeStepControlPointer);
 
-      command += " " + timeStepControl->getForCommand();
+      args << timeStepControl->getArgsForCommand();
     }
   }
 
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(QFileInfo(inputStructure).absolutePath());
-  process.start(command);
-  process.write("1 0");
+  process.start(command, args);
+  process.write("Protein System");
   process.closeWriteChannel();
 }
 

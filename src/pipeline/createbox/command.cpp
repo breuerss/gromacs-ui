@@ -26,22 +26,22 @@ void Command::doExecute()
     return;
   }
 
-  command += " editconf";
+  QStringList args("editconf");
   QString inputFile = getInputFilename();
 
   QString outputFile = fileNameGenerator
     ->getFileNameFor(::Command::FileObject::Type::GRO);
-  command += " -f " + inputFile;
-  command += " -o " + outputFile;
+  args << "-f" << inputFile;
+  args << "-o" << outputFile;
   auto config = dynamic_cast<Configuration*>(configuration);
-  command += " -d " + config->property("distance").value<QString>();
-  command += " -bt " + toString(config->property("boxType").value<Configuration::BoxType>());
+  args << "-d" << config->property("distance").value<QString>();
+  args << "-bt" << toString(config->property("boxType").value<Configuration::BoxType>());
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   StatusMessageSetter::getInstance()->setMessage("Executing " + command);
   process.setWorkingDirectory(inputDirectory);
-  process.start(command);
+  process.start(command, args);
 }
 
 bool Command::canExecute() const

@@ -23,25 +23,25 @@ void Command::doExecute()
     return;
   }
 
-  command += " pdb2gmx";
+  QStringList args("pdb2gmx");
   QString inputFile = getInputFilename();
 
   const QString outputFileName =
     fileNameGenerator->getFileNameFor(::Command::FileObject::Type::GRO);
-  command += " -f " + inputFile;
-  command += " -o " + outputFileName;
-  command += " -ignh ";
+  args << "-f" << inputFile;
+  args << "-o" << outputFileName;
+  args << "-ignh";
 
   auto config = dynamic_cast<Configuration*>(configuration);
-  command += " -water " + toString(config->property("waterModel")
-                                   .value<Configuration::WaterModel>());
-  command += " -ff " + toString(config->property("forceField")
-                                .value<Configuration::ForceField>());
+  args << "-water" << toString(config->property("waterModel")
+                               .value<Configuration::WaterModel>());
+  args << "-ff" << toString(config->property("forceField")
+                            .value<Configuration::ForceField>());
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
-  process.start(command);
+  process.start(command, args);
 }
 
 QString Command::getInputFilename() const

@@ -336,9 +336,11 @@ void GromacsConfigFileGenerator::setFromTprFile(
   QTemporaryFile tmpfile;
   tmpfile.open();
   QString temporaryFileName = tmpfile.fileName();
-  command += "-s " + fileName;
-  command += "-om " + temporaryFileName;
-  convert.start(command);
+
+  QStringList args;
+  args << "-s" << fileName;
+  args << "-om" << temporaryFileName;
+  convert.start(command, args);
   convert.waitForFinished();
   if (convert.exitCode() != 0)
   {

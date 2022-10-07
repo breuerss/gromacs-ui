@@ -23,19 +23,21 @@ void Command::doExecute()
 
   QString outputFile = fileNameGenerator
     ->getFileNameFor(::Command::FileObject::Type::PDB);
-  command += " " + inputFile;
-  command += " --output=" + outputFile;
-  command += " --replace-nonstandard";
-  command += " --keep-heterogens=none";
-  command += " --add-residues";
-  command += " --add-atoms=heavy";
-  command += " --verbose";
+
+  QStringList args;
+  args << inputFile;
+  args << "--output=" + outputFile;
+  args << "--replace-nonstandard";
+  args << "--keep-heterogens=none";
+  args << "--add-residues";
+  args << "--add-atoms=heavy";
+  args << "--verbose";
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
-  StatusMessageSetter::getInstance()->setMessage("Executing " + command);
+  StatusMessageSetter::getInstance()->setMessage("Executing " + command + " " + args.join(" "));
   process.setWorkingDirectory(inputDirectory);
-  process.start(command);
+  process.start(command, args);
 }
 
 QString Command::getInputFilename() const

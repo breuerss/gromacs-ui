@@ -21,8 +21,7 @@ void Command::doExecute()
   QString outputFile = fileNameGenerator
     ->getFileNameFor(Type::XVG);
 
-  command += " gyrate";
-  QStringList args;
+  QStringList args("gyrate");
   args << "-f" << getInputFilename();
   args << "-s" << fileObjectConsumer->getFileNameFor(Type::TPR);
   args << "-o" << outputFile;
@@ -32,8 +31,8 @@ void Command::doExecute()
   QString inputDirectory = fileInfo.absolutePath();
   StatusMessageSetter::getInstance()->setMessage("Executing " + command + args.join(" "));
   process.setWorkingDirectory(inputDirectory);
-  process.start(command + " " + args.join(" "));
-  process.write("1");
+  process.start(command, args);
+  process.write("Protein");
   process.closeWriteChannel();
 }
 

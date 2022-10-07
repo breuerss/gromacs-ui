@@ -37,35 +37,35 @@ void Command::doExecute()
   prepCommand.setWorkingDirectory(inputDirectory);
   LogForwarder::getInstance()->listenTo(&prepCommand);
   QString ionsTprPath = ionsBasePath + ".tpr";
-  QString createIonsTprs = command + " grompp";
-  createIonsTprs += " -f " + ionsMdpPath;
-  createIonsTprs += " -c " + solvatedStructure;
-  createIonsTprs += " -p topol.top";
-  createIonsTprs += " -o " + ionsTprPath;
+  QStringList createIonsTprs("grompp");
+  createIonsTprs << "-f" << ionsMdpPath;
+  createIonsTprs << "-c" << solvatedStructure;
+  createIonsTprs << "-p" << "topol.top";
+  createIonsTprs << "-o" << ionsTprPath;
 
-  StatusMessageSetter::getInstance()->setMessage("Executing command " + createIonsTprs);
+  StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + createIonsTprs.join(" "));
 
-  prepCommand.start(createIonsTprs);
+  prepCommand.start(command, createIonsTprs);
   prepCommand.waitForFinished();
   if (prepCommand.exitCode() != 0)
   {
     qDebug() << prepCommand.exitCode();
-    StatusMessageSetter::getInstance()->setMessage("Failed executing " + createIonsTprs);
+    StatusMessageSetter::getInstance()->setMessage("Failed executing " + command + " " + createIonsTprs.join(" "));
   }
   LogForwarder::getInstance()->detach(&prepCommand);
 
-  command += " genion";
+  QStringList args("genion");
 
   QString outputFile = fileNameGenerator
     ->getFileNameFor(::Command::FileObject::Type::GRO);
-  command += " -s " + ionsTprPath;
-  command += " -o " + outputFile;
+  args << "-s" << ionsTprPath;
+  args << "-o" << outputFile;
   auto config = dynamic_cast<Configuration*>(configuration);
-  command += " -conc " + QString::number(config->property("ionConcentration").value<double>());
-  command += " -p topol.top";
+  args << "-conc" << QString::number(config->property("ionConcentration").value<double>());
+  args << "-p" << "topol.top";
 
   const QString& positiveIon = config->property("positiveIon").value<QString>();
-  command += " -pname " + positiveIon;
+  args << "-pname" << positiveIon;
   static const QMap<QString, int> positiveIonCharge = {
     { "MG", 2 },
     { "CA", 2 },
@@ -75,15 +75,17 @@ void Command::doExecute()
     { "RB", 1 },
     { "CS", 1 },
   };
-  command += " -pq " + QString::number(positiveIonCharge[positiveIon]);
-  command += " -nname " + config->property("negativeIon").value<QString>();
-  command += " -nq -1";
-  command += " -neutral";
+  args << "-pq" << QString::number(positiveIonCharge[positiveIon]);
+  args << "-nname" << config->property("negativeIon").value<QString>();
+  args << "-nq" << "-1";
+  args << "-neutral";
 
   process.setWorkingDirectory(inputDirectory);
-  StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
+  StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + args.join(" "));
 
-  process.start("bash", QStringList() << "-c" << "echo SOL|" + command);
+  process.start(command, args);
+  process.write("SOL");
+  process.closeWriteChannel();
 }
 
 bool Command::canExecute() const

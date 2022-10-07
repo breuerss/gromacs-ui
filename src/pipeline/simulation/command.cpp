@@ -37,8 +37,8 @@ Command::Command(std::shared_ptr<Model::Project> project)
 void Command::doExecute()
 {
   qDebug() << "Exec simulation";
-  QString gmx = AppProvider::get("gmx");
-  if (gmx.isEmpty())
+  QString command = AppProvider::get("gmx");
+  if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");
     StatusMessageSetter::getInstance()->setMessage(message);
@@ -72,17 +72,17 @@ void Command::doExecute()
     return;
   }
 
-  QString command = gmx + " mdrun";
-  command += " -deffnm " + simulationConfig->getTypeAsString();
-  command += " -cpt 5";
+  QStringList args("mdrun");
+  args << "-deffnm" << simulationConfig->getTypeAsString();
+  args << "-cpt" << "5";
   if (simulationConfig->property("resume").value<bool>())
   {
-    command += " -cpi";
+    args += "-cpi";
   }
 
-  StatusMessageSetter::getInstance()->setMessage("Executing " + command);
+  StatusMessageSetter::getInstance()->setMessage("Executing " + command + " " + args.join(" "));
   process.setWorkingDirectory(dir.absolutePath());
-  process.start(command);
+  process.start(command, args);
 
   checkProgress();
 }
@@ -112,19 +112,21 @@ bool Command::execGrompp(
   const QString& workingDirectory
   )
 {
-  QString command = AppProvider::get("gmx") + " grompp";
-  command += " -f " + mdpFile;
-  command += " -c " + inputStructure;
-  command += " -p " + topology;
-  command += " -maxwarn 2 ";
-  command += " -o " + output;
+  QString command = AppProvider::get("gmx");
 
-  qDebug() << "executing grompp" << command;
+  QStringList args("grompp");
+  args << "-f" << mdpFile;
+  args << "-c" << inputStructure;
+  args << "-p" << topology;
+  args << "-maxwarn" << "2";
+  args << "-o" << output;
+
+  qDebug() << "executing grompp" << command << args.join(" ");
   QProcess grompp;
   LogForwarder::getInstance()->listenTo(&grompp);
   grompp.setWorkingDirectory(workingDirectory);
 
-  grompp.start(command);
+  grompp.start(command, args);
   grompp.waitForFinished();
 
   const bool successful = grompp.exitCode() == 0;

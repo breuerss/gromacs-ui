@@ -21,7 +21,7 @@ void Command::doExecute()
     return;
   }
 
-  command += " solvate";
+  QStringList args("solvate");
   QString inputFile = getInputFilename();
 
   auto config = dynamic_cast<Configuration*>(configuration);
@@ -30,16 +30,16 @@ void Command::doExecute()
 
   QString outputFile = fileNameGenerator->getFileNameFor(
     ::Command::FileObject::Type::GRO);
-  command += " -cp " + inputFile;
-  command += " -o " + outputFile;
-  command += " -cs " + getWaterBoxFor(waterModel);
-  command += " -p topol.top";
+  args << "-cp" << inputFile;
+  args << "-o" << outputFile;
+  args << "-cs" << getWaterBoxFor(waterModel);
+  args << "-p" << "topol.top";
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
   process.setWorkingDirectory(inputDirectory);
-  StatusMessageSetter::getInstance()->setMessage("Executing command " + command);
-  process.start(command);
+  StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + args.join(" "));
+  process.start(command, args);
 }
 
 bool Command::canExecute() const

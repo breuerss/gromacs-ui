@@ -25,8 +25,8 @@ Command::Command()
 void Command::doExecute()
 {
   qDebug() << "Exec simulation";
-  QString gmx = AppProvider::get("gmx");
-  if (gmx.isEmpty())
+  QString command = AppProvider::get("gmx");
+  if (command.isEmpty())
   {
     QString message("Path to 'gmx' command is not set.");
     StatusMessageSetter::getInstance()->setMessage(message);
@@ -36,17 +36,17 @@ void Command::doExecute()
   using Type = ::Command::FileObject::Type;
   QString inputStructure = fileObjectConsumer->getFileNameFor(Type::XTC);
 
-  QString command = gmx + " filter";
-  command += " -f " + inputStructure;
-  command += " -s " + fileObjectConsumer->getFileNameFor(Type::GRO);
-  command += " -ol " + fileNameGenerator->getFileNameFor(Type::XTC);
-  command += " -nojump";
-  command += " -all";
-  command += " -nf 5";
+  QStringList args("filter");
+  args << "-f" << inputStructure;
+  args << "-s" << fileObjectConsumer->getFileNameFor(Type::GRO);
+  args << "-ol" << fileNameGenerator->getFileNameFor(Type::XTC);
+  args << "-nojump";
+  args << "-all";
+  args << "-nf" << "5";
 
-  StatusMessageSetter::getInstance()->setMessage("Executing " + command);
+  StatusMessageSetter::getInstance()->setMessage("Executing " + command + " " + args.join(" "));
   process.setWorkingDirectory(QFileInfo(inputStructure).absolutePath());
-  process.start(command);
+  process.start(command, args);
 }
 
 QString Command::getInputFileName() const
