@@ -260,8 +260,12 @@ void MainWindow::setGraph(const QString& graphFile)
       chart->addSeries(series);
     }
     chart->setTitle(graphData.title);
+    chart->createDefaultAxes();
+    auto xAxis = chart->axes(Qt::Horizontal)[0];
+    xAxis->setTitleText(graphData.xLabel);
+    auto yAxis = chart->axes(Qt::Vertical)[0];
+    yAxis->setTitleText(graphData.yLabel);
   }
-  chart->createDefaultAxes();
 
   auto oldChart = graphView->chart();
   graphView->setChart(chart);
