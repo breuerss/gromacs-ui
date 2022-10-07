@@ -34,6 +34,7 @@ Step::Step(
       Type::LOG,
       Type::MDP,
       Type::TPR,
+      Type::EDR,
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(project),

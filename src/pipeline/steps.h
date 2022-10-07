@@ -13,6 +13,7 @@
 #include "gyrate/step.h"
 #include "timestepcontrol/step.h"
 #include "fittoinput/step.h"
+#include "temperature/step.h"
 
 #endif
 

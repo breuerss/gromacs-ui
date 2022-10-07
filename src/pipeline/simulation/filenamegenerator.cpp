@@ -36,6 +36,9 @@ QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
     case Command::FileObject::Type::TRR:
       fileName += ".trr";
       break;
+    case Command::FileObject::Type::EDR:
+      fileName += ".edr";
+      break;
     case Command::FileObject::Type::TPR:
       fileName += ".tpr";
       break;

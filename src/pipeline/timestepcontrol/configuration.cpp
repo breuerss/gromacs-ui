@@ -25,6 +25,11 @@ QWidget* Configuration::getUI()
 
 QString Configuration::getForCommand() const
 {
+  return getArgsForCommand().join(" ");
+}
+
+QStringList Configuration::getArgsForCommand() const
+{
   QStringList options;
   options << "-b" << QString::number(startTimeStep);
   if (endTimeStep >= 0)
@@ -34,8 +39,7 @@ QString Configuration::getForCommand() const
   options << "-tu" << TimeStepControl::toString(timeUnit);
   options << "-skip" << QString::number(stride);
   options << "-dt" << QString::number(interval);
-  return options.join(" ");
-
+  return options;
 }
 
 QString Configuration::toString()

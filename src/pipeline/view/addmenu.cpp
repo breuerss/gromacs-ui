@@ -40,6 +40,7 @@ AddMenu::AddMenu(ActionButton* trigger)
   };
 
   addToDefinition(tag<Gyrate::Step>{});
+  addToDefinition(tag<Temperature::Step>{});
   addToDefinition(tag<PdbDownload::Step>{});
 
   nodeMenuDefinitions[Category::PreProcess] = {

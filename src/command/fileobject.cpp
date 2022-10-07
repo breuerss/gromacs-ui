@@ -45,6 +45,7 @@ InputOutput::Category FileObject::getCategoryFor(FileObject::Type type)
     { Type::LOG, Category::Text },
     { Type::MDP, Category::Text },
     { Type::XVG, Category::Graph },
+    { Type::EDR, Category::Energy },
   };
 
   return categoryMap[type];
