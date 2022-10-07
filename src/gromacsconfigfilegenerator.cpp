@@ -348,7 +348,6 @@ void GromacsConfigFileGenerator::setFromTprFile(
   setFromMdpFile(temporaryFileName);
 }
 
-
 void GromacsConfigFileGenerator::writeLine(QTextStream& writer, const QString& key, const QString& value)
 {
   writer << qSetFieldWidth(25) << Qt::left << key << qSetFieldWidth(0) << " = " << value << ";" << Qt::endl;
