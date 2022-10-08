@@ -10,7 +10,6 @@
 #include "io/graphdata.h"
 #include "undoredo/movecommand.h"
 #include "undoredo/stack.h"
-#include "model/systemsetup.h"
 #include "model/project.h"
 #include "pipeline/view/viewer.h"
 #include "pipeline/view/panel.h"
