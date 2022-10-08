@@ -105,6 +105,7 @@ void Node::setHeightAndRadius()
 
   radius = std::max(arcLength / PI, minHeight / 2);
   height = 2 * radius;
+  portArea = (Port::RADIUS * 2 + arcSpacing) / radius;
 }
 
 void Node::setupBackground()
@@ -407,28 +408,26 @@ QString Node::getCoordinatesPath()
 
 void Node::arrangeOutputPorts()
 {
-  const double steps = (Port::RADIUS * 2 + arcSpacing) / radius;
-  const double startAngle = (outputPorts.size() - 1) * steps / 2.0;
+  const double startAngle = (outputPorts.size() - 1) * portArea / 2.0;
   const double width = background->boundingRect().size().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
-    const auto port = outputPorts[index];
-    const auto angle = startAngle - (outputPorts.size() - 1 - index) * steps;
+    const auto port = outputPorts[index].second;
+    const auto angle = startAngle - (outputPorts.size() - 1 - index) * portArea;
     const QPointF circlePoint = getCirclePoint(radius, angle);
-    port.second->setX((width - radius) + circlePoint.x() - Port::RADIUS);
-    port.second->setY(radius           + circlePoint.y() - Port::RADIUS);
+    port->setX((width - radius) + circlePoint.x() - Port::RADIUS);
+    port->setY(radius           + circlePoint.y() - Port::RADIUS);
   }
 }
 
 void Node::arrangeInputPorts()
 {
-  const double steps = (Port::RADIUS * 2 + arcSpacing) / radius;
-  const double startAngle = PI - (inputPorts.size() - 1) * steps / 2.0;
+  const double startAngle = PI - (inputPorts.size() - 1) * portArea / 2.0;
   const double x = boundingRect().topLeft().x();
   for (int index = 0; index < inputPorts.size(); index++)
   {
     const auto port = inputPorts[index].second;
-    const auto angle = startAngle + index * steps;
+    const auto angle = startAngle + index * portArea;
     const QPointF circlePoint = getCirclePoint(radius, angle);
     port->setX(radius + x + circlePoint.x() - Port::RADIUS);
     port->setY(radius -     circlePoint.y() - Port::RADIUS);

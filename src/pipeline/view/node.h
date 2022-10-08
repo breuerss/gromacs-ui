@@ -100,6 +100,7 @@ private:
   const double minHeight = 60;
   double radius = minHeight / 2;
   double height = minHeight;
+  double portArea = (Port::RADIUS * 2 + arcSpacing) / radius;
   static const double PI;
 
   QGraphicsProxyWidget* proxySettingsWidget = nullptr;
