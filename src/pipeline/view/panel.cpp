@@ -360,9 +360,23 @@ void Panel::removeNode(std::shared_ptr<Pipeline::Step> step)
     if (node->scene())
     {
       removeItem(node);
+      setNodeSelected(node, false);
     }
     delete node;
   }
+}
+
+void Panel::setNodeSelected(Node* node, bool selected)
+{
+  if (selected)
+  {
+    nodeSelection << node;
+  }
+  else
+  {
+    nodeSelection.removeOne(node);
+  }
+  selectedNodesChanged(getSelectedNodes());
 }
 
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
@@ -370,15 +384,7 @@ void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
   auto node = new Node(step);
   nodeMap[step] = node;
   connect(node, &Node::selectedChanged, [this, node] () {
-    if (node->isSelected())
-    {
-      nodeSelection << node;
-    }
-    else
-    {
-      nodeSelection.removeOne(node);
-    }
-    selectedNodesChanged(getSelectedNodes());
+    setNodeSelected(node, node->isSelected());
   });
   addItem(node);
   for (const auto& pair : node->getOutputPorts())

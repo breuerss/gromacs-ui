@@ -100,6 +100,7 @@ private:
 
   Connector* takeConnectorFor(Port* port);
   NodePair getPairFor(Port* port);
+  void setNodeSelected(Node* node, bool selected);
   void addNode(std::shared_ptr<Pipeline::Step> step);
   void removeNode(std::shared_ptr<Pipeline::Step> step);
   void addOutputPort(const Command::Data&, OutputPort*);
