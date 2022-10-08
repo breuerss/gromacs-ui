@@ -24,6 +24,8 @@
 
 namespace Pipeline { namespace View {
 
+const double Node::PI = std::acos(-1);
+
 Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
@@ -36,6 +38,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
   setAcceptHoverEvents(true);
+  setHeightAndRadius();
 
   QPen pen(QColor(0, 0, 0, 0));
   setPen(pen);
@@ -90,6 +93,18 @@ Node::~Node()
   delete text;
   delete runIcon;
   delete background;
+}
+
+void Node::setHeightAndRadius()
+{
+  const auto maxPortNumber = std::max(
+    step->getFileObjectConsumer()->requires().size(),
+    step->getFileObjectProvider()->provides().size()
+  );
+  const auto arcLength = maxPortNumber * (2 * Port::RADIUS + arcSpacing) + arcSpacing;
+
+  radius = std::max(arcLength / PI, minHeight / 2);
+  height = 2 * radius;
 }
 
 void Node::setupBackground()
@@ -392,9 +407,8 @@ QString Node::getCoordinatesPath()
 
 void Node::arrangeOutputPorts()
 {
-  const double steps = 45;
+  const double steps = (Port::RADIUS * 2 + arcSpacing) / radius;
   const double startAngle = (outputPorts.size() - 1) * steps / 2.0;
-  const double radius = rect().height() / 2;
   const double width = background->boundingRect().size().width();
   for (int index = 0; index < outputPorts.size(); index++)
   {
@@ -408,9 +422,8 @@ void Node::arrangeOutputPorts()
 
 void Node::arrangeInputPorts()
 {
-  const double steps = 45;
-  const double startAngle = 180 - (inputPorts.size() - 1) * steps / 2.0;
-  const double radius = rect().height() / 2;
+  const double steps = (Port::RADIUS * 2 + arcSpacing) / radius;
+  const double startAngle = PI - (inputPorts.size() - 1) * steps / 2.0;
   const double x = boundingRect().topLeft().x();
   for (int index = 0; index < inputPorts.size(); index++)
   {
@@ -422,11 +435,8 @@ void Node::arrangeInputPorts()
   }
 }
 
-QPointF Node::getCirclePoint(double radius, double angle)
+QPointF Node::getCirclePoint(double radius, double radians)
 {
-  static const double pi = std::acos(-1);
-  const double radians = angle * pi / 180;
-
   return QPointF(
     radius * std::cos(radians),
     radius * std::sin(radians)

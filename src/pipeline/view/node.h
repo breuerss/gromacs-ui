@@ -71,6 +71,8 @@ private:
   void arrangeInputPorts();
   static QPointF getCirclePoint(double radius, double angle);
 
+  void setHeightAndRadius();
+
   void setupBackground();
   void setupText();
   void setupRunIcon();
@@ -94,7 +96,11 @@ private:
 
   const double indent = 30;
   const double spacing = 10;
-  const double height = 60;
+  const double arcSpacing = 6;
+  const double minHeight = 60;
+  double radius = minHeight / 2;
+  double height = minHeight;
+  static const double PI;
 
   QGraphicsProxyWidget* proxySettingsWidget = nullptr;
   QPropertyAnimation* resizeAnimation = nullptr;
