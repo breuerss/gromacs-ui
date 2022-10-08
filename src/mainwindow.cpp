@@ -173,6 +173,9 @@ MainWindow::MainWindow(QWidget *parent)
       setTextFile("");
       setGraph("");
       setMoleculeFile("");
+      ui->logOutput->setPlainText("");
+      UiUpdater::getInstance()->showStatusUI(nullptr);
+      UiUpdater::getInstance()->showConfigUI(nullptr);
     });
 
   connect(
