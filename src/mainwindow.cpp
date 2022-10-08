@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
   menu->addAction(ui->statusDock->toggleViewAction());
   menu->addAction(ui->moleculeDock->toggleViewAction());
   menu->addAction(ui->textViewDock->toggleViewAction());
+  menu->addAction(ui->graphDock->toggleViewAction());
 
   auto view = new Pipeline::View::Viewer(this);
   if (!ui->pipelineTab->layout())
