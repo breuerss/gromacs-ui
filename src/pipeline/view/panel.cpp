@@ -18,7 +18,7 @@ Panel::Panel(QObject* parent)
   : QGraphicsScene(parent)
 {
   setBackgroundBrush(QBrush(Colors::DarkGrey));
-  setSceneRect(itemsBoundingRect() + QMarginsF(1, 1, 1, 1) * 5000);
+  setSceneRect(QRect(0, 0, 0, 0) + QMarginsF(1, 1, 1, 1) * 5000);
 }
 
 Panel::~Panel()
