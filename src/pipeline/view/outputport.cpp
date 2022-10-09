@@ -20,6 +20,7 @@ OutputPort::OutputPort(
 
 OutputPort::~OutputPort()
 {
+  QObject::disconnect(conn);
   delete increaseSize;
 }
 
