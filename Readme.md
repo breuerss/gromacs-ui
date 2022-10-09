@@ -20,6 +20,26 @@ In future versions the tool is intended to support more options of
 the Gromacs `mdp` files. And also guide the user more with reasonable
 defaults.
 
+## Update to pipeline support
+
+The setup and execution of a simulation can be understood as a pipeline of
+data passing through modifiying steps. Hence, the new user interface is
+designed as simulation pipeline configurator. It allows to create a pipeline
+of nodes connected to each other.
+
+Data can be downloaded from rcsb.org and loaded into the pipeline from
+hard drive. Several preparation steps modify the input structure and prepare
+it for the simulation.
+
+Different simulation types can be chained after one another to allow minimisation,
+equillibration, and production runs in a row.
+
+The generated structures and output files can be viewed inside of the application
+by clicking the respective output ports.
+
+Postprocessing and analysis tools can be added to the chain to clean up
+the trajectory or extract information from trajrectory or energy files.
+
 # Prerequisites
 
 The application is based on the Qt framework and tested with version 5.15.3.
