@@ -4,19 +4,14 @@
 
 LogForwarder* LogForwarder::getInstance()
 {
-  static std::unique_ptr<LogForwarder> instance;
-  if (!instance)
-  {
-    instance.reset(new LogForwarder);
-  }
+  static LogForwarder instance;
 
-  return instance.get();
+  return &instance;
 }
 
 LogForwarder::LogForwarder(QObject *parent)
   : QObject{parent}
 {
-
 }
 
 void LogForwarder::forward(const QString& message, QProcess::ProcessChannel channel)

@@ -4,7 +4,7 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QProcess>
-#include "qcoreapplication.h"
+#include "projectmanager.h"
 
 int main(int argc, char *argv[])
 {
@@ -25,5 +25,12 @@ int main(int argc, char *argv[])
 
   MainWindow w;
   w.show();
+
+  if (argc == 2)
+  {
+    QString fileName(argv[1]);
+    ProjectManager::getInstance()->open(fileName);
+  }
+
   return a.exec();
 }

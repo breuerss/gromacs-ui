@@ -12,16 +12,15 @@
 
 namespace Command {
 
-Filter::Filter(std::shared_ptr<Model::SystemSetup> systemSetup, QObject *parent)
-  : Executor(parent)
+Filter::Filter(std::shared_ptr<Model::SystemSetup> systemSetup)
+  : Executor()
   , systemSetup(systemSetup)
 {
 }
 
 void Filter::doExecute()
 {
-  qDebug() << getName();
-  QString fileName = getInputFilename();
+  QString fileName;// = getInputFilename();
   QString outputFileName = getOutputFilename();
 
   QString command = AppProvider::get("pdb_selchain");
@@ -63,14 +62,14 @@ void Filter::doExecute()
   }
 }
 
-QString Filter::getName() const
+bool Filter::canExecute() const
 {
-  return "PDB filter";
+  return true;//QFile(getInputFilename()).exists();
 }
 
 QString Filter::getOutputFilename() const
 {
-  QFileInfo fileInfo(getInputFilename());
+  QFileInfo fileInfo("");//(getInputFilename());
   return fileInfo.absolutePath() + "/" +
     fileInfo.baseName() + "_filtered.pdb";
 }

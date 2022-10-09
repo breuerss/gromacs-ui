@@ -3,20 +3,13 @@
 1. disable configuration during run
 1. import from directory
 1. Proper project handling, distinction between project, import from directory structure
-1. loading source structure from drive
-1. simulation steps should only be runnable if source structure is available
-
-1. system setup template names should be defined in system setup, regenerate signal should be used instead of value set
-
-1. visualisation presets do not allow to filter out molecule groups
-
-1. reset output on new project
 
 1. notify user if project name is already in use in project dir to avoid overwriting?
 
-
 1. default settings for different force fields
-1. constraints config
 
-1. simplify widgets updates
-1. logger instead of QDebug
+# Pipeline implementation
+
+1. Filter
+1. Loading starting configuration for different simulations
+1. cleanup pointer handling, use naked pointers where memory management is not a factor

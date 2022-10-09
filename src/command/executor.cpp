@@ -1,21 +1,22 @@
 #include "executor.h"
 #include "../statusmessagesetter.h"
 #include "../logforwarder.h"
+#include "fileobjectconsumer.h"
 #include <QDebug>
+#include <memory>
 
 namespace Command {
 
-Executor::Executor(QObject *parent)
-  : QObject{parent}
-, mHasRun(false)
+Executor::Executor()
+  : QObject(nullptr)
+    , mHasRun(false)
 {
   conns << connect(
     &process,
     QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-    [this] (int, QProcess::ExitStatus) {
+    [this] () {
       mHasRun = true;
-      running = false;
-      emit runningChanged(running);
+      setRunning(false);
       QString command = process.program() + " " + process.arguments().join(" ");
       QString message("Error executing ");
       if (process.exitCode() == 0)
@@ -35,7 +36,7 @@ Executor::Executor(QObject *parent)
     &process,
     &QProcess::started,
     [this] () {
-      running = true;
+      setRunning(true);
     });
   LogForwarder::getInstance()->listenTo(&process);
 }
@@ -53,6 +54,10 @@ Executor::~Executor()
 
 void Executor::exec()
 {
+  if (!canExecute())
+  {
+    return;
+  }
   terminationRequested = false;
   emit runningChanged(running);
   emit started();
@@ -81,6 +86,56 @@ bool Executor::wasSuccessful() const
   return hasRun() &&
     process.exitStatus() == QProcess::NormalExit &&
     process.exitCode() == 0;
+}
+
+void Executor::setConfig(Config::Configuration* newConfig)
+{
+  configuration = newConfig;
+  configChanged(configuration);
+}
+
+void Executor::setFileObjectConsumer(
+  const Command::FileObjectConsumer* newFileObjectConsumer)
+{
+  for (auto conn: fileConsumerConnections)
+  {
+    disconnect(conn);
+  }
+  fileObjectConsumer = newFileObjectConsumer;
+
+  fileConsumerConnections << connect(
+    fileObjectConsumer, &FileObjectConsumer::connectedToChanged,
+    [this] (
+      const Command::Data& newData,
+      InputOutput::Category,
+      const Command::Data& oldData) {
+      if (fileObjectConnections.contains(oldData))
+      {
+        disconnect(fileObjectConnections[oldData]);
+      }
+
+      if (isSet<FileObject::Pointer>(newData))
+      {
+        fileObjectConnections[newData] = connect(
+          std::get<FileObject::Pointer>(newData).get(),
+          &FileObject::fileNameChanged,
+          [this] () {
+            canExecuteChanged(canExecute());
+          });
+      }
+      canExecuteChanged(canExecute());
+  });
+}
+
+void Executor::setRunning(bool newRunning)
+{
+  running = newRunning;
+  runningChanged(running);
+}
+
+void Executor::setFileNameGenerator(const FileNameGenerator* newFileNameGenerator)
+{
+  fileNameGenerator = newFileNameGenerator;
 }
 
 }

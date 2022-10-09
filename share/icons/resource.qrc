@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>align-bottom.svg</file>
+        <file>align-center-horizontal.svg</file>
+        <file>align-center-vertical.svg</file>
+        <file>align-left.svg</file>
+        <file>align-right.svg</file>
+        <file>align-top.svg</file>
+        <file>dots-three-outline.svg</file>
+        <file>dots-three-outline-vertical.svg</file>
+        <file>arrow-arc-left.svg</file>
+        <file>arrow-arc-right.svg</file>
+        <file>atom.svg</file>
+        <file>chart-line.svg</file>
+        <file>crosshair.svg</file>
+        <file>database.svg</file>
+        <file>floppy-disk.svg</file>
+        <file>folder-notch-open.svg</file>
+        <file>folder-notch-plus.svg</file>
+        <file>folder-open.svg</file>
+        <file>pause.svg</file>
+        <file>play.svg</file>
+        <file>tree-structure.svg</file>
+        <file>cube.svg</file>
+        <file>x.svg</file>
+    </qresource>
+</RCC>

@@ -13,16 +13,17 @@ class ProjectManager : public QObject
   Q_OBJECT
 public:
   static ProjectManager* getInstance();
-  const std::shared_ptr<Model::Project> getCurrentProject() const;
+  std::shared_ptr<Model::Project> getCurrentProject() const;
+  ~ProjectManager() = default;
   void createNewProject();
   const QString& getFileName() const;
 
 signals:
   void currentProjectChanged(std::shared_ptr<Model::Project> currentProject);
 
-  public slots:
-  void save();
-  void open();
+public slots:
+  void save(const QString& saveToFileName = "");
+  void open(const QString& fileName = "");
   void saveAs();
   void saveAs(const QString& fileName);
 

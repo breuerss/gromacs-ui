@@ -5,12 +5,8 @@
 
 StatusMessageSetter* StatusMessageSetter::getInstance()
 {
-  static std::unique_ptr<StatusMessageSetter> instance;
-  if (!instance)
-  {
-    instance.reset(new StatusMessageSetter);
-  }
-  return instance.get();
+  static StatusMessageSetter instance;
+  return &instance;
 }
 
 StatusMessageSetter::StatusMessageSetter(QObject *parent)

@@ -7,10 +7,11 @@
 QStringList PdbInfoExtractor::getChains(const QString &pdbFile)
 {
   QString command = AppProvider::get("pdb_wc");
-  command += " -c " + pdbFile;
-  qDebug() << "executing" << command;
+  QStringList args;
+  args << "-c" << pdbFile;
+  qDebug() << "executing" << command << args.join(" ");
   QProcess process;
-  process.start(command);
+  process.start(command, args);
   process.waitForFinished();
 
   QString output = process.readAllStandardOutput();

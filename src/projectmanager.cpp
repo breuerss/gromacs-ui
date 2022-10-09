@@ -1,5 +1,6 @@
 #include "projectmanager.h"
 #include "model/project.h"
+#include "undoredo/stack.h"
 
 #include <memory>
 #include <exception>
@@ -7,20 +8,23 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 ProjectManager* ProjectManager::getInstance()
 {
-  static std::unique_ptr<ProjectManager> instance;
-  if (!instance)
+  static ProjectManager instance;
+  static bool initiated = false;
+  if (!initiated)
   {
-    instance.reset(new ProjectManager());
-    instance->createNewProject();
+    instance.createNewProject();
+    initiated = true;
   }
 
-  return instance.get();
+  return &instance;
 }
 
-const std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
+std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 {
   return currentProject;
 }
@@ -39,24 +43,40 @@ void ProjectManager::createNewProject()
       nullptr, tr("New Project"),
       tr("Do you really want to dismiss all changes in your current project?"));
   }
+  else
+  {
+    currentProject.reset(new Model::Project());
+  }
+
   if (choice == QMessageBox::Yes)
   {
     fileName.clear();
-    currentProject.reset(new Model::Project());
+    currentProject->clearSteps();
+    currentProject->setProperty("name", "");
+    UndoRedo::Stack::getInstance()->clear();
     emit currentProjectChanged(currentProject);
   }
 }
 
-void ProjectManager::save()
+void ProjectManager::save(const QString& saveToFileName)
 {
-  if (fileName.isEmpty())
+  QString writeToFileName = saveToFileName;
+  if (writeToFileName.isEmpty())
+  {
+    writeToFileName = fileName;
+  }
+
+  if (writeToFileName.isEmpty())
   {
     saveAs();
   }
-  else
-  {
-    saveAs(fileName);
-  }
+  QFile file(writeToFileName);
+  file.open(QFile::WriteOnly);
+  QJsonObject data;
+  data << currentProject;
+  file.write(QJsonDocument(data).toJson());
+  file.close();
+  UndoRedo::Stack::getInstance()->setClean();
 }
 
 void ProjectManager::saveAs()
@@ -97,40 +117,44 @@ void ProjectManager::saveAs(const QString& saveAsFileName)
     }
   }
 
-  if (!writeToFileName.isEmpty())
+  save(writeToFileName);
+  if (!writeToFileName.isEmpty() && fileName.isEmpty())
   {
-    QFile file(writeToFileName);
-    file.open(QFile::WriteOnly);
-    QDataStream out(&file);
-    out << *(currentProject.get());
-    file.close();
-
-    if (fileName.isEmpty())
-    {
-      fileName = writeToFileName;
-    }
+    fileName = writeToFileName;
   }
 }
 
-void ProjectManager::open()
+void ProjectManager::open(const QString& newFileName)
 {
-  fileName = QFileDialog::getOpenFileName(
-    nullptr,
-    tr("Open Gromacs Simulation Project"),
-    QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
-    "*.groproj"
-    );
-  if (!fileName.isEmpty())
+  QString fileNameToOpen = newFileName;
+
+  if (fileNameToOpen.isEmpty())
   {
-    QFile file(fileName);
-    file.open(QFile::ReadOnly);
-    QDataStream data(&file);
+    fileNameToOpen = QFileDialog::getOpenFileName(
+      nullptr,
+      tr("Open Gromacs Simulation Project"),
+      QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation),
+      "*.groproj"
+      );
+  }
+
+  QFile file(fileNameToOpen);
+  if (file.exists() && file.open(QFile::ReadOnly))
+  {
+    QByteArray saveData = file.readAll();
+    file.close();
+
     if (!currentProject)
     {
       createNewProject();
     }
-    data >> *(currentProject.get());
-    file.close();
+
+    QJsonDocument loadDoc(QJsonDocument::fromJson(saveData));
+    QJsonObject obj = loadDoc.object();
+    obj >> currentProject;
+    fileName = fileNameToOpen;
     currentProjectChanged(currentProject);
   }
+
+  UndoRedo::Stack::getInstance()->clear();
 }

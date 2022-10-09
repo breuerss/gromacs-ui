@@ -1,6 +1,5 @@
 #include "gromacsconfigfilegenerator.h"
 
-#include "model/simulation.h"
 #include "appprovider.h"
 
 #include <QFile>
@@ -27,6 +26,7 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "ewald-rtol", "electrostaticEwaldRtol" },
   { "vdwtype", "vdwAlgorithm" },
   { "vdw-modifier", "vdwModifier" },
+  { "vdw-switch", "vdwSwitchRadius" },
   { "rvdw", "vdwCutoffRadius" },
   { "ewald-rtol-lj", "vdwEwaldRtol" },
   { "pcoupl", "pressureAlgorithm" },
@@ -41,30 +41,40 @@ const QMap<QString, QString> GromacsConfigFileGenerator::optionsMap = {
   { "emtol", "minimisationMaximumForce" },
   { "emstep", "minimisationStepSize" },
   { "pme-order", "pmeOrder" },
+
+  { "constraints", "constraints" },
+  { "constraint-algorithm", "constraintAlgorithm" },
+  { "lincs-order", "lincsOrder" },
+  { "lincs-iter", "lincsIter" },
+  { "lincs-warnangle", "lincsWarnAngle" },
+  { "shake-tol", "shakeTolerance" },
 };
 
 GromacsConfigFileGenerator::GromacsConfigFileGenerator(
-  std::shared_ptr<Model::Simulation> model
+  Pipeline::Simulation::Configuration* newConfiguration
   )
-  : model(model)
+  : configuration(newConfiguration)
 {
 }
 
 const QMap<QString, std::function<QVariant(const QString&)>>
 GromacsConfigFileGenerator::conversionMap = {
-  { "integrator", Model::simulationAlgorithmFrom },
+  { "integrator", Pipeline::Simulation::simulationAlgorithmFrom },
   {
     "dt", [] (const QString& timeStep) {
       return QVariant::fromValue(timeStep.toFloat() * 1000);
     },
   },
-  { "pcoupl", Model::pressureAlgorithmFrom },
-  { "pcoupltype", Model::pressureCouplingTypeFrom },
-  { "tcoupl", Model::temperatureAlgorithmFrom },
-  { "tc-grps", Model::temperatureGroupFrom },
-  { "coulombtype", Model::electrostaticAlgorithmFrom},
-  { "vdwtype", Model::vdwAlgorithmFrom},
-  { "vdw-modifier", Model::vdwModifierFrom},
+  { "pcoupl", Pipeline::Simulation::pressureAlgorithmFrom },
+  { "pcoupltype", Pipeline::Simulation::pressureCouplingTypeFrom },
+  { "tcoupl", Pipeline::Simulation::temperatureAlgorithmFrom },
+  { "tc-grps", Pipeline::Simulation::temperatureGroupFrom },
+  { "coulombtype", Pipeline::Simulation::electrostaticAlgorithmFrom},
+  { "vdwtype", Pipeline::Simulation::vdwAlgorithmFrom},
+  { "vdw-modifier", Pipeline::Simulation::vdwModifierFrom},
+
+  { "constraints", Pipeline::Simulation::constraintTargetFrom},
+  { "constraint-algorithm", Pipeline::Simulation::constraintAlgorithmFrom},
 };
 
 const QList<QString> GromacsConfigFileGenerator::temperatureCouplingOptions = {
@@ -81,13 +91,13 @@ void GromacsConfigFileGenerator::generate(
   file.open(QFile::WriteOnly);
   QTextStream writer(&file);
 
-  using Model::Simulation;
-  Simulation::Type simulationType = model->property("simulationType").value<Simulation::Type>();
+  using Simulation = Pipeline::Simulation::Configuration;
+  Simulation::Type simulationType = configuration->property("simulationType").value<Simulation::Type>();
   if (simulationType != Simulation::Type::None)
   {
     writeLine<Simulation::Algorithm>(writer, "integrator");
-    writeLine(writer, "nsteps", QString::number(model->property("numberOfSteps").value<double>(), 'f', 0));
-    writeLine(writer, "dt", QString::number(model->property("timeStep").value<double>() / 1000));
+    writeLine(writer, "nsteps", QString::number(configuration->property("numberOfSteps").value<double>(), 'f', 0));
+    writeLine(writer, "dt", QString::number(configuration->property("timeStep").value<double>() / 1000));
 
     // output control
     writeLine<unsigned int>(writer, "nstenergy");
@@ -113,12 +123,10 @@ void GromacsConfigFileGenerator::generate(
     writeLine<float>(writer, "rvdw");
     writeLine<double>(writer, "ewald-rtol-lj");
 
-    using Model::Simulation;
-
     // pressure
     writeLine<Simulation::PressureAlgorithm>(writer, "pcoupl");
-    Simulation::PressureAlgorithm pressureAlgorithm =
-      model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>();
+    auto pressureAlgorithm = configuration->property("pressureAlgorithm")
+      .value<Simulation::PressureAlgorithm>();
     if (pressureAlgorithm != Simulation::PressureAlgorithm::None)
     {
       writeLine<Simulation::PressureCouplingType>(writer, "pcoupltype");
@@ -127,9 +135,38 @@ void GromacsConfigFileGenerator::generate(
       writeLine<double>(writer, "compressibility");
     }
 
+    using ConstraintTarget = Simulation::ConstraintTarget;
+    const auto constraints = configuration->property("constraints")
+      .value<ConstraintTarget>();
+    const bool constraintActive = constraints != ConstraintTarget::None;
+    if (constraintActive)
+    {
+      writeLine<ConstraintTarget>(writer, "constraints");
+      using ConstraintAlgorithm = Simulation::ConstraintAlgorithm;
+      writeLine<ConstraintAlgorithm>(writer, "constraint-algorithm");
+      const auto algorithm = configuration
+        ->property("constraintAlgorithm").value<ConstraintAlgorithm>();
+      if (algorithm == ConstraintAlgorithm::LINCS)
+      {
+        writeLine<int>(writer, "lincs-order");
+        writeLine<int>(writer, "lincs-iter");
+        writeLine<int>(writer, "lincs-warnangle");
+      }
+      if (algorithm == ConstraintAlgorithm::SHAKE)
+      {
+        writeLine<double>(writer, "shake-tol");
+      }
+      writeLine(
+        writer, "morse",
+        configuration->property("morsePotential").toBool() ? "yes" : "no");
+      writeLine(
+        writer, "continuation",
+        configuration->property("continuation").toBool() ? "yes" : "no");
+    }
+
     // temperature
     Simulation::TemperatureAlgorithm temperatureAlgorithm =
-      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
+      configuration->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>();
     writeLine<Simulation::TemperatureAlgorithm>(writer, "tcoupl");
     if (temperatureAlgorithm != Simulation::TemperatureAlgorithm::None)
     {
@@ -137,10 +174,10 @@ void GromacsConfigFileGenerator::generate(
       QStringList temperatures;
       QStringList updateIntervals;
 
-      const auto& groups = model->getTemperatureCouplingGroups();
+      const auto& groups = configuration->getTemperatureCouplingGroups();
       for (auto group : groups)
       {
-        groupNames << toString(group->property("group").value<Model::TemperatureCouplingGroup::Group>());
+        groupNames << toString(group->property("group").value<Pipeline::Simulation::TemperatureCouplingGroup::Group>());
         temperatures << QString::number(group->property("temperature").value<double>());
         updateIntervals << QString::number(group->property("updateInterval").value<double>());
       }
@@ -151,7 +188,7 @@ void GromacsConfigFileGenerator::generate(
     }
   }
 
-  if (simulationType == Model::Simulation::Type::Minimisation)
+  if (simulationType == Simulation::Type::Minimisation)
   {
     writeLine<float>(writer, "emtol");
     writeLine<float>(writer, "emstep");
@@ -160,12 +197,12 @@ void GromacsConfigFileGenerator::generate(
   file.close();
 }
 
-std::shared_ptr<Model::Simulation>
+std::shared_ptr<Pipeline::Simulation::Configuration>
 GromacsConfigFileGenerator::createFrom(const QString& fileName)
 {
-  auto model = std::make_shared<Model::Simulation>();
-  GromacsConfigFileGenerator(model).setFromMdpFile(fileName);
-  return model;
+  auto configuration = std::make_shared<Pipeline::Simulation::Configuration>();
+  GromacsConfigFileGenerator(configuration.get()).setFromMdpFile(fileName);
+  return configuration;
 }
 
 void GromacsConfigFileGenerator::setFromMdpFile(
@@ -202,11 +239,11 @@ void GromacsConfigFileGenerator::setFromMdpFile(
       {
         QStringList groupsInputValues = inputValueString
           .split(QRegExp("\\s+"), Qt::SkipEmptyParts);
-        auto& temperatureCouplingGroups = model->getTemperatureCouplingGroups();
+        auto& temperatureCouplingGroups = configuration->getTemperatureCouplingGroups();
         for (int groupIndex = temperatureCouplingGroups.size();
              groupIndex < groupsInputValues.size(); groupIndex++)
         {
-          model->addTemperatureCouplingGroup();
+          configuration->addTemperatureCouplingGroup();
         }
 
         for (int valueIndex = 0; valueIndex < groupsInputValues.size(); valueIndex++)
@@ -231,30 +268,30 @@ void GromacsConfigFileGenerator::setFromMdpFile(
         continue;
       }
 
-      model->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
+      configuration->setProperty(optionsMap.value(option).toStdString().c_str(), inputValue);
     }
     file.close();
 
-    using Model::Simulation;
+    using Simulation = Pipeline::Simulation::Configuration;
     auto simulationType = Simulation::Type::None;
-    if (model->isMinimisation())
+    if (configuration->isMinimisation())
     {
       simulationType = Simulation::Type::Minimisation;
     }
     else if (
-      model->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>() !=
+      configuration->property("temperatureAlgorithm").value<Simulation::TemperatureAlgorithm>() !=
       Simulation::TemperatureAlgorithm::None)
     {
       simulationType = Simulation::Type::NVT;
       if (
-        model->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>() !=
+        configuration->property("pressureAlgorithm").value<Simulation::PressureAlgorithm>() !=
         Simulation::PressureAlgorithm::None
         )
       {
         simulationType = Simulation::Type::NPT;
       }
     }
-    model->setProperty("type", QVariant::fromValue(simulationType));
+    configuration->setProperty("type", QVariant::fromValue(simulationType));
   }
   else
   {
@@ -299,9 +336,11 @@ void GromacsConfigFileGenerator::setFromTprFile(
   QTemporaryFile tmpfile;
   tmpfile.open();
   QString temporaryFileName = tmpfile.fileName();
-  command += "-s " + fileName;
-  command += "-om " + temporaryFileName;
-  convert.start(command);
+
+  QStringList args;
+  args << "-s" << fileName;
+  args << "-om" << temporaryFileName;
+  convert.start(command, args);
   convert.waitForFinished();
   if (convert.exitCode() != 0)
   {
@@ -310,7 +349,6 @@ void GromacsConfigFileGenerator::setFromTprFile(
   }
   setFromMdpFile(temporaryFileName);
 }
-
 
 void GromacsConfigFileGenerator::writeLine(QTextStream& writer, const QString& key, const QString& value)
 {

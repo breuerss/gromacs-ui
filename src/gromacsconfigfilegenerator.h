@@ -5,14 +5,14 @@
 #include <type_traits>
 #include <QString>
 #include <QTextStream>
-#include "model/simulation.h"
+#include "../src/pipeline/simulation/configuration.h"
 
 class GromacsConfigFileGenerator
 {
 public:
-  GromacsConfigFileGenerator(std::shared_ptr<Model::Simulation>);
+  GromacsConfigFileGenerator(Pipeline::Simulation::Configuration*);
   void generate(const QString& fileName);
-  static std::shared_ptr<Model::Simulation> createFrom(const QString& fileName);
+  static std::shared_ptr<Pipeline::Simulation::Configuration> createFrom(const QString& fileName);
   void setFromMdpFile(const QString& fileName);
   void setFromTprFile(const QString& fileName);
 
@@ -20,13 +20,13 @@ private:
   template<typename T>
   QString getValueFromModelImpl(const QString& key, std::true_type)
   {
-    return QString::number(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+    return QString::number(configuration->property(optionsMap[key].toStdString().c_str()).value<T>());
   }
 
   template<typename T>
   QString getValueFromModelImpl(const QString& key, std::false_type)
   {
-    return toString(model->property(optionsMap[key].toStdString().c_str()).value<T>());
+    return toString(configuration->property(optionsMap[key].toStdString().c_str()).value<T>());
   }
 
   template<typename T>
@@ -54,7 +54,7 @@ private:
   static QVariant createValueFrom(const QString& option, const QString& inputValueString);
 
 private:
-  std::shared_ptr<Model::Simulation> model;
+  Pipeline::Simulation::Configuration* configuration;
 };
 
 #endif // GROMACSCONFIGFILEGENERATOR_H

@@ -1,6 +1,6 @@
 #include "simulationstatuschecker.h"
 #include "model/project.h"
-#include "model/simulation.h"
+#include "pipeline/simulation/configuration.h"
 #include "appprovider.h"
 
 #include <QFile>
@@ -9,7 +9,7 @@
 
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
-  std::shared_ptr<Model::Simulation> simulation,
+  const Pipeline::Simulation::Configuration* simulation,
   QObject *parent
   )
   : QObject(parent)
@@ -31,11 +31,6 @@ bool SimulationStatusChecker::hasTrajectory() const
 bool SimulationStatusChecker::hasCoordinates() const
 {
   return QFile(getCoordinatesPath()).exists();
-}
-
-bool SimulationStatusChecker::hasInputCoordinates() const
-{
-  return QFile(getInputCoordinatesPath()).exists();
 }
 
 bool SimulationStatusChecker::hasLog() const
@@ -66,23 +61,6 @@ QString SimulationStatusChecker::getTrajectoryPath() const
 QString SimulationStatusChecker::getCoordinatesPath() const
 {
   return getBasePath() + ".gro";
-}
-
-QString SimulationStatusChecker::getInputCoordinatesPath() const
-{
-  QString fileName = getBasePath() + "-input.gro";
-  if (!QFile(fileName).exists() && hasTpr())
-  {
-    QProcess createInput;
-    QString command = AppProvider::get("gmx");
-    command += " editconf";
-    command += " -f " + getTprPath();
-    command += " -o " + fileName;
-    createInput.start(command);
-    createInput.waitForFinished();
-  }
-
-  return fileName;
 }
 
 QString SimulationStatusChecker::getLogPath() const
