@@ -2,6 +2,7 @@
 #define PIPELINE_STEPS_H
 
 #include "pdbdownload/step.h"
+#include "localstructure/step.h"
 #include "pdbfixer/step.h"
 #include "creategromacsmodel/step.h"
 #include "createbox/step.h"

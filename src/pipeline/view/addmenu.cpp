@@ -39,9 +39,11 @@ AddMenu::AddMenu(ActionButton* trigger)
     nodeMenuDefinitions[Type::config.category] << AddNodeMenu::ButtonDefinition({ Type::config.name, addStepToProject<Type> });
   };
 
+  addToDefinition(tag<PdbDownload::Step>{});
+  addToDefinition(tag<LocalStructure::Step>{});
+
   addToDefinition(tag<Gyrate::Step>{});
   addToDefinition(tag<Temperature::Step>{});
-  addToDefinition(tag<PdbDownload::Step>{});
 
   nodeMenuDefinitions[Category::PreProcess] = {
     { "Preparation Pipeline",
