@@ -37,8 +37,6 @@ Command::Command()
 
 void Command::doExecute()
 {
-  qDebug() << "Exec simulation";
-
   QString pdbCode = getPdbCode();
 
   QString fileName = fileNameGenerator->getFileNameFor(::Command::FileObject::Type::PDB);

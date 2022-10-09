@@ -23,4 +23,4 @@ private:
 
 } }
 
-#endif // RUNSIMULATION_H
+#endif
