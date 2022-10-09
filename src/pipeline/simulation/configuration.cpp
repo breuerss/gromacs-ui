@@ -127,6 +127,38 @@ QString Configuration::toString()
     keyValue(tr("Order"), pmeOrder),
   });
 
+  QStringList constraintList({
+    tr("Constraints"),
+    keyValue(tr("Constraint Target"), constraints),
+  });
+
+  if (constraints != ConstraintTarget::None)
+  {
+    constraintList <<
+      keyValue(tr("Algorithm"), constraintAlgorithm);
+    switch(constraintAlgorithm)
+    {
+      case ConstraintAlgorithm::LINCS:
+        {
+          constraintList << keyValue(tr("LINCS Order"), lincsOrder)
+            << keyValue(tr("LINCS Iteration"), lincsIter)
+            << keyValue(tr("LINCS Warn Angle"), lincsWarnAngle);
+          break;
+        }
+      case ConstraintAlgorithm::SHAKE:
+        {
+          constraintList << keyValue(tr("SHAKE Tolerance"), shakeTolerance);
+          break;
+        }
+      case ConstraintAlgorithm::None:
+      default:
+        break;
+    }
+    constraintList << keyValue(tr("Continuation"), continuation ? tr("yes") : tr("no"))
+      << keyValue(tr("Convert to Morse Potential"), morsePotential ? tr("yes") : tr("no"));
+  }
+  elements << createParagraph(constraintList);
+
   return elements.join("");
 }
 
