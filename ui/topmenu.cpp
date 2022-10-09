@@ -67,6 +67,9 @@ TopMenu::TopMenu(QWidget *parent) :
   conns << connect(ui->alignLeft, &QPushButton::clicked, this, &TopMenu::alignLeftClicked);
   conns << connect(ui->alignRight, &QPushButton::clicked, this, &TopMenu::alignRightClicked);
   conns << connect(ui->alignHCenter, &QPushButton::clicked, this, &TopMenu::alignHCenterClicked);
+
+  conns << connect(ui->deleteSelected, &QPushButton::clicked, this, &TopMenu::deleteSelectedClicked);
+  setDeleteButtonEnabled(false);
   conns << connect(ui->runAllButton, &QPushButton::clicked, [] () {
     Pipeline::Runner::getInstance()->startPipeline();
   });
@@ -105,6 +108,11 @@ void TopMenu::setDistributionButtonsEnabled(bool enabled)
 {
   ui->distributeHorizontally->setEnabled(enabled);
   ui->distributeVertically->setEnabled(enabled);
+}
+
+void TopMenu::setDeleteButtonEnabled(bool enabled)
+{
+  ui->deleteSelected->setEnabled(enabled);
 }
 
 void TopMenu::resizeEvent(QResizeEvent* event)

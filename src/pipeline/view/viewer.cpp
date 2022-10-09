@@ -79,6 +79,12 @@ void Viewer::createTopMenu()
   connect(topMenu, &TopMenu::distributeVerticallyClicked, [distribute] () {
     distribute(Panel::Distribution::Vertical);
   });
+
+  connect(topMenu, &TopMenu::deleteSelectedClicked, [this] () {
+    auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
+    panel->deleteSelectedNodes();
+  });
+
 }
 
 void Viewer::createAddButton()
@@ -228,6 +234,7 @@ void Viewer::setScene(View::Panel* newScene)
     [this] (QList<Node*> selectedNodes) {
       topMenu->setAlignmentButtonsEnabled(selectedNodes.size() > 1);
       topMenu->setDistributionButtonsEnabled(selectedNodes.size() > 2);
+      topMenu->setDeleteButtonEnabled(selectedNodes.size() > 0);
     });
 
   QGraphicsView::setScene(newScene);

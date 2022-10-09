@@ -18,6 +18,7 @@ public:
 
   void setAlignmentButtonsEnabled(bool enabled);
   void setDistributionButtonsEnabled(bool enabled);
+  void setDeleteButtonEnabled(bool enabled);
   void resizeEvent(QResizeEvent* event);
 
 signals:
@@ -29,6 +30,7 @@ signals:
   void alignVCenterClicked();
   void distributeVerticallyClicked();
   void distributeHorizontallyClicked();
+  void deleteSelectedClicked();
 
 private:
   Ui::TopMenu *ui;

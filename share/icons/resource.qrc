@@ -22,5 +22,6 @@
         <file>play.svg</file>
         <file>tree-structure.svg</file>
         <file>cube.svg</file>
+        <file>x.svg</file>
     </qresource>
 </RCC>
