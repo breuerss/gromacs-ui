@@ -8,8 +8,6 @@
 
 1. default settings for different force fields
 
-1. simplify widgets updates
-
 # Pipeline implementation
 
 1. Filter
