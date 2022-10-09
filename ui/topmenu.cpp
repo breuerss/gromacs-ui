@@ -118,23 +118,26 @@ void TopMenu::setDeleteButtonEnabled(bool enabled)
 void TopMenu::resizeEvent(QResizeEvent* event)
 {
   const auto size = event->size();
-  const bool visible = size.width() > 761;
+  const bool visible = size.width() > 812;
   ui->alignBottom->setVisible(visible);
   ui->alignTop->setVisible(visible);
   ui->alignLeft->setVisible(visible);
   ui->alignRight->setVisible(visible);
 
-  const bool distributeVisible = size.width() > 597;
+  const bool distributeVisible = size.width() > 648;
   ui->distributeVertically->setVisible(distributeVisible);
   ui->distributeHorizontally->setVisible(distributeVisible);
 
-  const bool alignVisible = size.width() > 502;
+  const bool alignVisible = size.width() > 553;
   ui->alignVCenter->setVisible(alignVisible);
   ui->alignHCenter->setVisible(alignVisible);
 
-  const bool undoRedoVisible = size.width() > 407;
+  const bool undoRedoVisible = size.width() > 458;
   ui->undoButton->setVisible(undoRedoVisible);
   ui->redoButton->setVisible(undoRedoVisible);
+
+  const bool deleteButtonVisible = size.width() > 400;
+  ui->deleteSelected->setVisible(deleteButtonVisible);
 }
 
 TopMenu::~TopMenu()
