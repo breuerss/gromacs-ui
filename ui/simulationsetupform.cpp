@@ -194,7 +194,7 @@ SimulationSetupForm::SimulationSetupForm(
       { 5, "s" },
     };
 
-    unitStep = std::min(unitStep, 5);
+    unitStep = std::max(0, std::min(unitStep, 5));
     duration /= pow(10, 3 * unitStep);
 
     ui->duration->setText(QString::number(duration) + " " + unitMap.at(unitStep));
