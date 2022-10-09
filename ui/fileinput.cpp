@@ -23,6 +23,7 @@ FileInput::FileInput(Pipeline::LocalStructure::Configuration* newConfig)
       config->setProperty("fileName", fileName);
     }
   });
+  ui->fileName->setText(config->property("fileName").toString());
 }
 
 FileInput::~FileInput()
