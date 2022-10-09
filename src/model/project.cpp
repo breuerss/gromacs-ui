@@ -9,6 +9,7 @@
 #include "../undoredo/removestepcommand.h"
 #include "../command/fileobjectconsumer.h"
 #include "../command/fileobjectprovider.h"
+#include "../undoredo/helper.h"
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
@@ -38,7 +39,10 @@ void Project::removeStep(int at)
   auto step = pipelineSteps.takeAt(at);
   for (auto fileObject : step->getFileObjectConsumer()->getConnectedTo().values())
   {
-    step->getFileObjectConsumer()->disconnectFrom(fileObject);
+    UndoRedo::Helper::disconnectFrom(
+      step->getFileObjectConsumer().get(),
+      fileObject
+      );
   }
   auto nextSteps = Pipeline::Runner::getNextStepsFor(step, shared_from_this());
 
@@ -47,7 +51,10 @@ void Project::removeStep(int at)
   {
     for (auto nextStep : nextSteps)
     {
-      nextStep->getFileObjectConsumer()->disconnectFrom(fileObject);
+      UndoRedo::Helper::disconnectFrom(
+        nextStep->getFileObjectConsumer().get(),
+        fileObject
+        );
     }
   }
 
