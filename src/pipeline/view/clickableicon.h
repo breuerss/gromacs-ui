@@ -17,6 +17,8 @@ public:
     QGraphicsItem* parent = nullptr);
   void setIcon(const QIcon& icon, bool grayScale = false);
   void setEnabled(bool enabled);
+  QRectF boundingRect() const override;
+  void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 signals:
   void clicked();
@@ -30,10 +32,9 @@ protected:
   QIcon icon;
   bool grayScale = false;
   bool enabled = true;
-  void repaint();
 
 private:
-  const QSize defaultSize = QSize(35, 35);
+  static const QSize defaultSize;
 };
 
 } }

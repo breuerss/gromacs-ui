@@ -30,7 +30,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
   , runIcon(new ClickableIcon(
-      QIcon::fromTheme("media-playback-start"),
+      QIcon(":/icons/play.svg"),
       true,
       this))
   , step(newStep)
@@ -164,12 +164,13 @@ void Node::setupRunIcon()
   });
 
   auto changeIcon = [this] (bool isRunning) {
-    auto icon = QIcon::fromTheme("media-playback-start");
+    QString file = ":/icons/play.svg";
     if (isRunning)
     {
-      icon = QIcon::fromTheme("media-playback-pause");
+      file = ":/icons/pause.svg";
     }
 
+    const auto icon = QIcon(file);
     runIcon->setIcon(icon, true);
   };
 

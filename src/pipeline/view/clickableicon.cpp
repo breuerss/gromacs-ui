@@ -6,17 +6,24 @@
 
 namespace Pipeline { namespace View {
 
+const QSize ClickableIcon::defaultSize = QSize(42, 42);
+
 ClickableIcon::ClickableIcon(
   const QIcon& newIcon,
   bool newGrayScale,
   QGraphicsItem* parent)
   : QObject(nullptr)
-  , QGraphicsPixmapItem(newIcon.pixmap(35, 35), parent)
+  , QGraphicsPixmapItem(newIcon.pixmap(defaultSize), parent)
   , icon(newIcon)
   , grayScale(newGrayScale)
 {
   setAcceptHoverEvents(true);
-  repaint();
+  update();
+}
+
+QRectF ClickableIcon::boundingRect() const
+{
+  return QRectF(QPointF(0, 0), defaultSize);
 }
 
 void ClickableIcon::setIcon(const QIcon& newIcon, bool newGrayScale)
@@ -24,16 +31,16 @@ void ClickableIcon::setIcon(const QIcon& newIcon, bool newGrayScale)
   icon = newIcon;
   grayScale = newGrayScale;
 
-  repaint();
+  update();
 }
 
 void ClickableIcon::setEnabled(bool newEnabled)
 {
   enabled = newEnabled;
-  repaint();
+  update();
 }
 
-void ClickableIcon::repaint()
+void ClickableIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*)
 {
   QPixmap pixMap = icon.pixmap(defaultSize);
   if (grayScale)
@@ -41,18 +48,11 @@ void ClickableIcon::repaint()
     pixMap = getGrayScale(pixMap);
   }
 
-  if (enabled) {
-    setPixmap(pixMap);
-  }
-  else
-  {
-    QPixmap grayScale(pixMap.size());
-    grayScale.fill(Qt::transparent);
-    QPainter p(&grayScale);
-    p.setOpacity(0.5);
-    p.drawPixmap(0, 0, pixMap);
-    setPixmap(grayScale);
-  }
+  QPixmap grayScale(pixMap.size());
+  grayScale.fill(Qt::transparent);
+  painter->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
+  painter->setOpacity(enabled ? 0.6 : 0.20);
+  painter->drawPixmap(0, 0, pixMap);
 }
 
 QPixmap ClickableIcon::getGrayScale(const QPixmap& pixmap) const 
