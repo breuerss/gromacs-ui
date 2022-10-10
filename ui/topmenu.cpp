@@ -71,7 +71,23 @@ TopMenu::TopMenu(QWidget *parent) :
   conns << connect(ui->deleteSelected, &QPushButton::clicked, this, &TopMenu::deleteSelectedClicked);
   setDeleteButtonEnabled(false);
   conns << connect(ui->runAllButton, &QPushButton::clicked, [] () {
-    Pipeline::Runner::getInstance()->startPipeline();
+    if (Pipeline::Runner::getInstance()->isRunning())
+    {
+      Pipeline::Runner::getInstance()->stopPipeline();
+    }
+    else
+    {
+      Pipeline::Runner::getInstance()->startPipeline();
+    }
+  });
+
+  conns << connect(Pipeline::Runner::getInstance(), &Pipeline::Runner::runningChanged, [this] (bool running) {
+    QIcon icon(":/icons/play.svg");
+    if (running)
+    {
+      icon = QIcon(":/icons/pause.svg");
+    }
+    ui->runAllButton->setIcon(icon);
   });
 
   conns << connect(ui->distributeHorizontally, &QPushButton::clicked, this, &TopMenu::distributeHorizontallyClicked);

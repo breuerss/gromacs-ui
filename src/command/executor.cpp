@@ -19,7 +19,9 @@ Executor::Executor()
       setRunning(false);
       QString command = process.program() + " " + process.arguments().join(" ");
       QString message("Error executing ");
-      if (process.exitCode() == 0)
+
+      const bool successful = process.exitCode() == 0;
+      if (successful)
       {
         message = "Sucessfully executed ";
       }
@@ -30,7 +32,17 @@ Executor::Executor()
       message += command;
 
       StatusMessageSetter::getInstance()->setMessage(message);
-      emit finished();
+      finished(successful);
+    });
+  conns << connect(
+    &process,
+    &QProcess::errorOccurred,
+    [this] (QProcess::ProcessError error) {
+      if (error == QProcess::FailedToStart || error == QProcess::Crashed)
+      {
+        setRunning(false);
+        finished(false);
+      }
     });
   conns << connect(
     &process,

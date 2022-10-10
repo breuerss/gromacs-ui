@@ -10,9 +10,12 @@ namespace Pipeline {
 
 class Runner : public QObject
 {
+  Q_OBJECT
 public:
   static Runner* getInstance();
   void startPipeline();
+  void stopPipeline();
+  bool isRunning();
 
   using Type = Command::FileObject::Type;
   static QList<std::shared_ptr<Pipeline::Step>>
@@ -21,13 +24,18 @@ public:
     std::shared_ptr<Model::Project>,
     const QList<Command::FileObject::Type> relevantTypes = {});
 
+  Q_PROPERTY(bool isRunning READ isRunning NOTIFY runningChanged);
+
+signals:
+  void runningChanged(bool running);
+
 private:
   Runner() = default;
   QList<std::shared_ptr<Pipeline::Step>> getStartingSteps(std::shared_ptr<Model::Project>) const;
   void handleNextSteps(std::shared_ptr<Pipeline::Step> step, std::shared_ptr<Model::Project>);
+  void cleanUpCommand(std::shared_ptr<Command::Executor> command);
 
-  QList<QMetaObject::Connection> conns;
-  int running = 0;
+  QMap<std::shared_ptr<Command::Executor>, QMetaObject::Connection> runningSteps;
 };
 
 }

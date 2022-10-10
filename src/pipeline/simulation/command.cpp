@@ -69,6 +69,7 @@ void Command::doExecute()
       dir.absolutePath()
       ))
   {
+    finished(false);
     return;
   }
 

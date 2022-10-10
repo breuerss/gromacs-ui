@@ -18,10 +18,14 @@ Command::Command()
 {
   auto callback = [this] () {
     setRunning(false);
-    finished();
+    finished(true);
   };
-  connect(downloader.get(), &PdbDownloader::error, callback);
-  connect(downloader.get(), &PdbDownloader::notFound, callback);
+  auto failed = [this] () {
+    setRunning(false);
+    finished(false);
+  };
+  connect(downloader.get(), &PdbDownloader::error, failed);
+  connect(downloader.get(), &PdbDownloader::notFound, failed);
   connect(downloader.get(), &PdbDownloader::downloaded, callback);
 
   connect(this, &Executor::configChanged, [this] (auto configuration) {

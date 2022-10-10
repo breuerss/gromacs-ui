@@ -44,7 +44,7 @@ public:
   void setFileNameGenerator(const FileNameGenerator* newfileNameGenerator);
 
 signals:
-  void finished();
+  void finished(bool successful);
   void started();
   void progress(float percentage, ProgressType type = ProgressType::Percentage);
   void runningChanged(bool running);

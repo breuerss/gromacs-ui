@@ -60,7 +60,7 @@ void Command::doExecute()
   qDebug() << "Copying" << inputFilename << "to" << outputFileName;
   QFile(inputFilename).copy(outputFileName);
   setRunning(false);
-  finished();
+  finished(true);
 }
 
 bool Command::canExecute() const

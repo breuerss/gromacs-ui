@@ -27,6 +27,30 @@ void Runner::startPipeline()
   }
 }
 
+void Runner::stopPipeline()
+{
+  for (auto command: runningSteps.keys())
+  {
+    cleanUpCommand(command);
+  }
+}
+
+bool Runner::isRunning()
+{
+  return runningSteps.size() > 0;
+}
+
+void Runner::cleanUpCommand(std::shared_ptr<Command::Executor> command)
+{
+  disconnect(runningSteps[command]);
+  runningSteps.remove(command);
+  if (command->isRunning())
+  {
+    command->stop();
+  }
+  runningChanged(isRunning());
+}
+
 void Runner::handleNextSteps(
   std::shared_ptr<Pipeline::Step> step,
   std::shared_ptr<Model::Project> project
@@ -37,37 +61,35 @@ void Runner::handleNextSteps(
   {
     return;
   }
-  conns << connect(
+  auto conn = connect(
     command.get(), &Command::Executor::finished,
-    [this, step, project] () {
-      running--;
-      auto nextSteps = getNextStepsFor(
-        step, project,
-        {
-          Type::GRO,
-          Type::PDB,
-          Type::XTC,
-          Type::TOP,
-          Type::EDR,
-          Type::TRR,
-        });
-      for (auto step : nextSteps)
+    [this, step, project, command] (bool successful) {
+      if (successful)
       {
-        handleNextSteps(step, project);
-      }
-
-      if (running == 0)
-      {
-        qDebug() << "finished";
-        for (auto conn : conns)
+        auto nextSteps = getNextStepsFor(
+          step, project,
+          {
+            Type::GRO,
+            Type::PDB,
+            Type::XTC,
+            Type::TOP,
+            Type::EDR,
+            Type::TRR,
+          });
+        for (auto step : nextSteps)
         {
-          disconnect(conn);
+          handleNextSteps(step, project);
         }
       }
+
+      cleanUpCommand(command);
     });
 
+  runningSteps[command] = conn;
+
   command->exec();
-  running++;
+
+  runningChanged(isRunning());
 }
 
 QList<std::shared_ptr<Pipeline::Step>>
