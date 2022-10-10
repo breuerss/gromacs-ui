@@ -14,6 +14,8 @@ public:
 
 private:
   QString getInputFilename() const;
+  QPair<std::shared_ptr<QProcess>, QString> getPreparationCommand();
+  void neutralise(const QString& ionsTprPath);
 };
 
 } }

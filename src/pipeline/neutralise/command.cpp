@@ -22,6 +22,34 @@ void Command::doExecute()
     return;
   }
 
+  setRunning(true);
+  auto pair = getPreparationCommand();
+  auto prepCommand = pair.first;
+
+
+  QString ionsTprPath = pair.second;
+  connect(
+    prepCommand.get(), QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+    [this, ionsTprPath, prepCommand] () {
+    LogForwarder::getInstance()->detach(prepCommand.get());
+
+    if (prepCommand->exitCode() != 0)
+    {
+      qDebug() << prepCommand->exitCode();
+      StatusMessageSetter::getInstance()->setMessage(
+        "Failed executing " + prepCommand->program() + " " + prepCommand->arguments().join(" "));
+
+      return;
+    }
+
+    neutralise(ionsTprPath);
+  });
+
+}
+
+QPair<std::shared_ptr<QProcess>, QString> Command::getPreparationCommand()
+{
+  QString command = AppProvider::get("gmx");
   QString solvatedStructure = getInputFilename();
   QFileInfo fileInfo(solvatedStructure);
 
@@ -33,9 +61,9 @@ void Command::doExecute()
 
   QString inputDirectory = fileInfo.absolutePath();
 
-  QProcess prepCommand;
-  prepCommand.setWorkingDirectory(inputDirectory);
-  LogForwarder::getInstance()->listenTo(&prepCommand);
+  auto prepCommand = std::make_shared<QProcess>();
+  prepCommand->setWorkingDirectory(inputDirectory);
+  LogForwarder::getInstance()->listenTo(prepCommand.get());
   QString ionsTprPath = ionsBasePath + ".tpr";
   QStringList createIonsTprs("grompp");
   createIonsTprs << "-f" << ionsMdpPath;
@@ -45,15 +73,13 @@ void Command::doExecute()
 
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + createIonsTprs.join(" "));
 
-  prepCommand.start(command, createIonsTprs);
-  prepCommand.waitForFinished();
-  if (prepCommand.exitCode() != 0)
-  {
-    qDebug() << prepCommand.exitCode();
-    StatusMessageSetter::getInstance()->setMessage("Failed executing " + command + " " + createIonsTprs.join(" "));
-  }
-  LogForwarder::getInstance()->detach(&prepCommand);
+  prepCommand->start(command, createIonsTprs);
 
+  return { prepCommand, ionsTprPath };
+}
+
+void Command::neutralise(const QString& ionsTprPath)
+{
   QStringList args("genion");
 
   QString outputFile = fileNameGenerator
@@ -80,9 +106,11 @@ void Command::doExecute()
   args << "-nq" << "-1";
   args << "-neutral";
 
-  process.setWorkingDirectory(inputDirectory);
-  StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + args.join(" "));
+  process.setWorkingDirectory(QFileInfo(ionsTprPath).absolutePath());
+  StatusMessageSetter::getInstance()->setMessage(
+    "Executing command " + process.program() + " " + args.join(" "));
 
+  QString command = AppProvider::get("gmx");
   process.start(command, args);
   process.write("SOL");
   process.closeWriteChannel();
