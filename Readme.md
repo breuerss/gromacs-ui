@@ -1,4 +1,4 @@
-![Preview](docs/gromacs-ui-running-and-viewing-simulation.gif)
+![Preview](docs/pipeline-with-port-tooltip.png)
 
 # Overview
 
@@ -36,6 +36,9 @@ equillibration, and production runs in a row.
 
 The generated structures and output files can be viewed inside of the application
 by clicking the respective output ports.
+
+![Molecule View](docs/molecule-view.png)
+![Graph View](docs/graph-view.png)
 
 Postprocessing and analysis tools can be added to the chain to clean up
 the trajectory or extract information from trajrectory or energy files.
