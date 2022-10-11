@@ -13,7 +13,7 @@ ClickableIcon::ClickableIcon(
   bool newGrayScale,
   QGraphicsItem* parent)
   : QObject(nullptr)
-  , QGraphicsPixmapItem(newIcon.pixmap(defaultSize), parent)
+  , QGraphicsItem(parent)
   , icon(newIcon)
   , grayScale(newGrayScale)
 {

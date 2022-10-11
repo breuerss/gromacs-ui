@@ -7,7 +7,7 @@
 
 namespace Pipeline { namespace View {
 
-class ClickableIcon : public QObject, public QGraphicsPixmapItem
+class ClickableIcon : public QObject, public QGraphicsItem
 {
   Q_OBJECT
 public:
