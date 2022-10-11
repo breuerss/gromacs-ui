@@ -76,7 +76,6 @@ void Command::doExecute()
   QStringList args("mdrun");
   args << "-deffnm" << simulationConfig->getTypeAsString();
   args << "-cpt" << "5";
-  args << "-cpnum";
   if (simulationConfig->property("resume").value<bool>())
   {
     args += "-cpi";
