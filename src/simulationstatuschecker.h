@@ -26,9 +26,13 @@ public:
   QList<float> getProgressValues() const;
 
 private:
+  QString getLogPath() const;
+  bool logPathExists() const;
   std::shared_ptr<Model::Project> project;
   const Pipeline::Simulation::Configuration* simulation;
   std::unique_ptr<Pipeline::Simulation::FileNameGenerator> fileNameGenerator;
+
+  static const QString potentialCommand;
 };
 
 #endif // SIMULATIONSTATUSCHECKER_H

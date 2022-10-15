@@ -10,9 +10,16 @@
 #include <QVariant>
 #include <memory>
 
+const QString SimulationStatusChecker::potentialCommand(
+  "awk '/ Potential / "
+  " {for(i=1;i<length;i+=15){ a=substr($0,i,15);"
+  " if (a ~ /Potential/)"
+  " { getline; print substr($0,i,15)}}}' %1"
+  );
+
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
-  const std::shared_ptr<Pipeline::Simulation::Configuration> simulation,
+  const Pipeline::Simulation::Configuration* simulation,
   QObject *parent
   )
   : QObject(parent)
@@ -23,16 +30,29 @@ SimulationStatusChecker::SimulationStatusChecker(
   fileNameGenerator->setConfiguration(simulation);
 }
 
-static const QString potentialCommand("awk '/ Potential / {for(i=1;i<length;i+=15){ a=substr($0,i,15); if (a ~ /Potential/) { getline; print substr($0,i,15)}}}' %1");
+QString SimulationStatusChecker::getLogPath() const
+{
+  return fileNameGenerator->getFileNameFor(Command::FileObject::Type::LOG);
+}
+
+bool SimulationStatusChecker::logPathExists() const
+{
+  return QFile(getLogPath()).exists();
+}
 
 QList<float> SimulationStatusChecker::getProgressValues() const
 {
+  QList<float> values;
+  if (!logPathExists())
+  {
+    return values;
+  }
+
   QProcess check;
   QString command(potentialCommand);
-  QString logPath = fileNameGenerator->getFileNameFor(Command::FileObject::Type::LOG);
+  QString logPath = getLogPath();
   check.start("bash", QStringList() << "-c" << command.arg(logPath));
   check.waitForFinished();
-  QList<float> values;
   while (check.canReadLine())
   {
     QString valueString = check.readLine();
@@ -49,6 +69,11 @@ QList<float> SimulationStatusChecker::getProgressValues() const
 
 float SimulationStatusChecker::getProgress() const
 {
+  if (!logPathExists())
+  {
+    return std::numeric_limits<float>::quiet_NaN();
+  }
+
   QString command = QString("awk '/Step/ { getline; print $1}' %1 | tail -n1");
   if (simulation->isMinimisation())
   {
@@ -56,7 +81,7 @@ float SimulationStatusChecker::getProgress() const
   }
 
   QProcess check;
-  QString logPath = fileNameGenerator->getFileNameFor(Command::FileObject::Type::LOG);
+  QString logPath = getLogPath();
   check.start("bash", QStringList() << "-c" << command.arg(logPath));
 
   check.waitForFinished();
