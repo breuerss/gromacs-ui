@@ -1,3 +1,6 @@
+#ifndef PIPELINE_SIMULATION_FILENAMEGENERATOR_H
+#define PIPELINE_SIMULATION_FILENAMEGENERATOR_H
+
 #include "../../command/filenamegenerator.h"
 
 namespace Pipeline { namespace Simulation {
@@ -11,3 +14,5 @@ public:
 };
 
 } }
+
+#endif
