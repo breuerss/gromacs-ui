@@ -15,38 +15,31 @@ QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
     return fileName;
   }
 
-  QString projectPath = project->getProjectPath();
-  QString simulationType = std::dynamic_pointer_cast<Configuration>(configuration)
-    ->getTypeAsString();
-  fileName = projectPath + "/" + simulationType + "/" + simulationType;
-  switch (type)
+  using Type = Command::FileObject::Type;
+  const static QMap<Type, QString> suffixMap{
+    { Type::LOG, ".log" },
+    { Type::MDP, ".mdp" },
+    { Type::GRO, ".gro" },
+    { Type::XTC, ".xtc" },
+    { Type::TRR, ".trr" },
+    { Type::EDR, ".edr" },
+    { Type::TPR, ".tpr" },
+    { Type::TOP, ".top" },
+  };
+
+  if (suffixMap.contains(type))
   {
-    case Command::FileObject::Type::LOG:
-      fileName += ".log";
-      break;
-    case Command::FileObject::Type::MDP:
-      fileName += ".mdp";
-      break;
-    case Command::FileObject::Type::GRO:
-      fileName += ".gro";
-      break;
-    case Command::FileObject::Type::XTC:
-      fileName += ".xtc";
-      break;
-    case Command::FileObject::Type::TRR:
-      fileName += ".trr";
-      break;
-    case Command::FileObject::Type::EDR:
-      fileName += ".edr";
-      break;
-    case Command::FileObject::Type::TPR:
-      fileName += ".tpr";
-      break;
-    case Command::FileObject::Type::TOP:
-      fileName += ".top";
-      break;
-    default:
-      fileName = "";
+    const QString& projectPath = project->getProjectPath();
+
+    auto conf = dynamic_cast<const Configuration*>(configuration);
+    QString simulationType = conf->getTypeAsString();
+    auto id = conf->property("id").toString();
+    if (!id.isEmpty())
+    {
+      id = "-" + id;
+    }
+    fileName = projectPath + "/" + simulationType + id + "/" + simulationType;
+    fileName += suffixMap[type];
   }
 
   return fileName;
