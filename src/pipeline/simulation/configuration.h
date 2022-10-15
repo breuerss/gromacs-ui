@@ -165,6 +165,8 @@ public:
   Q_PROPERTY(int lincsWarnAngle MEMBER lincsWarnAngle NOTIFY lincsWarnAngleChanged);
   Q_PROPERTY(bool morsePotential MEMBER morsePotential NOTIFY morsePotentialChanged);
 
+  Q_PROPERTY(QString id MEMBER id NOTIFY idChanged);
+
   QString toString() override;
 
 signals:
@@ -223,6 +225,8 @@ signals:
   void lincsIterChanged(int);
   void lincsWarnAngleChanged(int);
   void morsePotentialChanged(bool);
+
+  void idChanged(QString);
 
 public slots:
   const std::vector<std::shared_ptr<TemperatureCouplingGroup>>& getTemperatureCouplingGroups() const;
@@ -287,6 +291,8 @@ private:
   bool morsePotential = false;
 
   bool resume = true;
+
+  QString id;
 };
 
 QVariant simulationAlgorithmFrom(const QString& value);

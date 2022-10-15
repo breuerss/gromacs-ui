@@ -15,6 +15,7 @@
 #include <QStandardPaths>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QRandomGenerator>
 #include <memory>
 
 namespace Model {
@@ -150,6 +151,10 @@ Project::addSimulation(Pipeline::Simulation::Configuration::Type type)
   auto step = addStep<Pipeline::Simulation::Step>();
   step->getConfiguration()
     ->setProperty("simulationType", QVariant::fromValue(type));
+
+  QString randomId = QString::number(QRandomGenerator::global()->bounded(0, 999999), 16)
+    .rightJustified(5, '0');
+  step->getConfiguration()->setProperty("id", randomId);
   return step;
 }
 
