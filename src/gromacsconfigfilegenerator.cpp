@@ -115,7 +115,7 @@ void GromacsConfigFileGenerator::generate(
 
     // PME
     writeLine<float>(writer, "fourierSpacing");
-    writeLine<unsigned int>(writer, "pmd-order");
+    writeLine<unsigned int>(writer, "pme-order");
 
     //  and VdW
     writeLine<Simulation::VdwAlgorithm>(writer, "vdwtype");
