@@ -28,6 +28,7 @@ Step::Step(std::shared_ptr<Model::Project> project)
     },
     {
       FileObject::Type::GRO,
+      FileObject::Type::TOP,
     },
     std::make_shared<Configuration>(),
     std::make_shared<Command>(),

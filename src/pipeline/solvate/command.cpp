@@ -28,12 +28,14 @@ void Command::doExecute()
   auto waterModel = config->property("waterModel")
     .value<CreateGromacsModel::Configuration::WaterModel>();
 
-  QString outputFile = fileNameGenerator->getFileNameFor(
-    ::Command::FileObject::Type::GRO);
+  QString outputFile = fileNameGenerator->getFileNameFor(Type::GRO);
   args << "-cp" << inputFile;
   args << "-o" << outputFile;
   args << "-cs" << getWaterBoxFor(waterModel);
-  args << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
+
+  QString outputTopology = fileNameGenerator->getFileNameFor(Type::TOP);
+  QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).copy(outputTopology);
+  args << "-p" << outputTopology;
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
@@ -46,7 +48,6 @@ bool Command::canExecute() const
 {
   return QFile(getInputFilename()).exists() &&
     QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).exists();
-
 }
 
 QString Command::getInputFilename() const

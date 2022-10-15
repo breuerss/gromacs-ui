@@ -9,13 +9,17 @@ namespace Pipeline { namespace Solvate {
 QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
 {
   QString fileName;
-  if (type == Command::FileObject::Type::GRO && project)
+  if (project)
   {
-    QString inputFileName = fileObjectConsumer->getFileNameFor(type);
+    using Type = Command::FileObject::Type;
+    if (type == Type::GRO || type == Type::TOP)
+    {
+      QString inputFileName = fileObjectConsumer->getFileNameFor(type);
 
-    QFileInfo fileInfo(inputFileName);
-    fileName = fileInfo.absolutePath() + "/" +
-      fileInfo.baseName() + "_solvated.gro";
+      QFileInfo fileInfo(inputFileName);
+      fileName = fileInfo.absolutePath() + "/" +
+        fileInfo.baseName() + "_solvated." + fileInfo.suffix();
+    }
   }
 
   return fileName;
