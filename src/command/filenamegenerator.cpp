@@ -8,7 +8,7 @@ FileNameGenerator::FileNameGenerator(
 {
 }
  
-void FileNameGenerator::setConfiguration(std::shared_ptr<Config::Configuration> newConfig)
+void FileNameGenerator::setConfiguration(const Config::Configuration* newConfig)
 {
   configuration = newConfig;
 }

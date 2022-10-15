@@ -92,16 +92,13 @@ SimulationStatus::SimulationStatus(
 
   auto project = ProjectManager::getInstance()->getCurrentProject();
   SimulationStatusChecker checker(project, configuration);
-  if (checker.hasLog())
+  if (configuration->isMinimisation())
   {
-    if (configuration->isMinimisation())
-    {
-      progressChart->setValues(checker.getProgressValues());
-    }
-    else
-    {
-      ui->simulationProgress->setValue(checker.getProgress());
-    }
+    progressChart->setValues(checker.getProgressValues());
+  }
+  else
+  {
+    ui->simulationProgress->setValue(checker.getProgress());
   }
 }
 

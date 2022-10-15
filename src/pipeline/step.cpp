@@ -54,7 +54,7 @@ Step::Step(
 {
   if (fileNameGenerator)
   {
-    fileNameGenerator->setConfiguration(configuration);
+    fileNameGenerator->setConfiguration(configuration.get());
     fileNameGenerator->setFileObjectConsumer(fileObjectConsumer);
   }
 

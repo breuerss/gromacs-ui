@@ -1,88 +1,26 @@
 #include "simulationstatuschecker.h"
+#include "command/fileobject.h"
 #include "model/project.h"
 #include "pipeline/simulation/configuration.h"
+#include "pipeline/simulation/filenamegenerator.h"
 #include "appprovider.h"
 
 #include <QFile>
 #include <QProcess>
 #include <QVariant>
+#include <memory>
 
 SimulationStatusChecker::SimulationStatusChecker(
   std::shared_ptr<Model::Project> project,
-  const Pipeline::Simulation::Configuration* simulation,
+  const std::shared_ptr<Pipeline::Simulation::Configuration> simulation,
   QObject *parent
   )
   : QObject(parent)
   , project(project)
   , simulation(simulation)
+  , fileNameGenerator(std::make_unique<Pipeline::Simulation::FileNameGenerator>(project))
 {
-}
-
-bool SimulationStatusChecker::hasData() const
-{
-  return hasCoordinates() || hasTrajectory();
-}
-
-bool SimulationStatusChecker::hasTrajectory() const
-{
-  return QFile(getTrajectoryPath()).exists();
-}
-
-bool SimulationStatusChecker::hasCoordinates() const
-{
-  return QFile(getCoordinatesPath()).exists();
-}
-
-bool SimulationStatusChecker::hasLog() const
-{
-  return QFile(getLogPath()).exists();
-}
-
-bool SimulationStatusChecker::hasMdp() const
-{
-  return QFile(getMdpPath()).exists();
-}
-
-bool SimulationStatusChecker::hasTpr() const
-{
-  return QFile(getTprPath()).exists();
-}
-
-QString SimulationStatusChecker::getSmoothTrajectoryPath() const
-{
-  return getBasePath() + "-smooth.xtc";
-}
-
-QString SimulationStatusChecker::getTrajectoryPath() const
-{
-  return getBasePath() + ".xtc";
-}
-
-QString SimulationStatusChecker::getCoordinatesPath() const
-{
-  return getBasePath() + ".gro";
-}
-
-QString SimulationStatusChecker::getLogPath() const
-{
-  return getBasePath() + ".log";
-}
-
-QString SimulationStatusChecker::getMdpPath() const
-{
-  return getBasePath() + ".mdp";
-}
-
-QString SimulationStatusChecker::getTprPath() const
-{
-  return getBasePath() + ".tpr";
-}
-
-QString SimulationStatusChecker::getBasePath() const
-{
-  QString projectPath = project->getProjectPath();
-  QString simulationType = simulation->getTypeAsString();
-  return projectPath + "/" + simulationType + "/" + simulationType;
+  fileNameGenerator->setConfiguration(simulation);
 }
 
 static const QString potentialCommand("awk '/ Potential / {for(i=1;i<length;i+=15){ a=substr($0,i,15); if (a ~ /Potential/) { getline; print substr($0,i,15)}}}' %1");
@@ -91,7 +29,8 @@ QList<float> SimulationStatusChecker::getProgressValues() const
 {
   QProcess check;
   QString command(potentialCommand);
-  check.start("bash", QStringList() << "-c" << command.arg(getLogPath()));
+  QString logPath = fileNameGenerator->getFileNameFor(Command::FileObject::Type::LOG);
+  check.start("bash", QStringList() << "-c" << command.arg(logPath));
   check.waitForFinished();
   QList<float> values;
   while (check.canReadLine())
@@ -117,7 +56,8 @@ float SimulationStatusChecker::getProgress() const
   }
 
   QProcess check;
-  check.start("bash", QStringList() << "-c" << command.arg(getLogPath()));
+  QString logPath = fileNameGenerator->getFileNameFor(Command::FileObject::Type::LOG);
+  check.start("bash", QStringList() << "-c" << command.arg(logPath));
 
   check.waitForFinished();
   QString valueString = check.readAllStandardOutput();
