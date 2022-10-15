@@ -10,7 +10,7 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     , ui(new Ui::TemperatureGroupConfigForm)
 {
     ui->setupUi(this);
-    connect(ui->removeTemperatureGroup, &QToolButton::clicked,
+    conns << connect(ui->removeTemperatureGroup, &QToolButton::clicked,
             this, &TemperatureGroupConfigForm::removeRequested);
 
     using TemperatureCouplingGroup = Pipeline::Simulation::TemperatureCouplingGroup;
@@ -22,17 +22,21 @@ TemperatureGroupConfigForm::TemperatureGroupConfigForm(
     };
     setOptions<CouplingGroup>(
       ui->temperatureCouplingGroup, options);
-    connectToComboBox(
+    conns << connectToComboBox(
       ui->temperatureCouplingGroup, model.get(), "group",
       &TemperatureCouplingGroup::groupChanged
       );
-    connectToSpinBox<QDoubleSpinBox>(
+    conns << connectToSpinBox<QDoubleSpinBox>(
       ui->temperature, model, "temperature", &TemperatureCouplingGroup::temperatureChanged);
-    connectToSpinBox<QDoubleSpinBox>(
+    conns << connectToSpinBox<QDoubleSpinBox>(
       ui->temperatureUpdateInterval, model, "updateInterval", &TemperatureCouplingGroup::updateIntervalChanged);
 }
 
 TemperatureGroupConfigForm::~TemperatureGroupConfigForm()
 {
-    delete ui;
+  for (auto conn: conns)
+  {
+    disconnect(conn);
+  }
+  delete ui;
 }

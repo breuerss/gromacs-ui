@@ -1,9 +1,10 @@
 #ifndef TEMPERATUREGROUPCONFIGFORM_H
 #define TEMPERATUREGROUPCONFIGFORM_H
 
-#include <QWidget>
-#include <memory>
 #include "../src/pipeline/simulation/temperaturecouplinggroup.h"
+#include <memory>
+#include <QWidget>
+#include <QMetaObject>
 
 namespace Model {
 class TemperatureCouplingGroup;
@@ -29,6 +30,7 @@ signals:
 private:
   std::shared_ptr<TemperatureCouplingGroup> model;
   Ui::TemperatureGroupConfigForm *ui;
+  QList<QMetaObject::Connection> conns;
 };
 
 #endif // TEMPERATUREGROUPCONFIGFORM_H
