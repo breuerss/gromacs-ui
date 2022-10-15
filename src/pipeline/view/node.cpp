@@ -60,6 +60,14 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   });
 
   conns << QObject::connect(
+    step->getConfiguration().get(), &Model::Serializable::anyChanged,
+    [this] () {
+      text->setPlainText(step->getName());
+      text->adjustSize();
+      resize();
+    });
+
+  conns << QObject::connect(
     step.get(), &Pipeline::Step::locationChanged,
     [this] (const auto& location) {
       setPos(location);
@@ -137,10 +145,6 @@ void Node::setupRunIcon()
     return;
   }
   runIcon->setZValue(11);
-  auto textDim = text->boundingRect();
-  runIcon->setPos(
-    text->x() + textDim.width() + spacing,
-    rect().center().y() - runIcon->boundingRect().height() / 2);
 
   auto command = step->getCommand().get();
   auto enableRunIcon = [this, command] () {
@@ -192,6 +196,13 @@ void Node::resize()
   width = std::max(minWidth, width);
   background->setSize(QSize(width, height));
   setRect(background->rect());
+  arrangeInputPorts();
+  arrangeOutputPorts();
+
+  auto textDim = text->boundingRect();
+  runIcon->setPos(
+    text->x() + textDim.width() + spacing,
+    rect().center().y() - runIcon->boundingRect().height() / 2);
 }
 
 void Node::setupPorts()
