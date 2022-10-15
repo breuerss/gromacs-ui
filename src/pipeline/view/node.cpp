@@ -30,8 +30,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
   : QGraphicsRectItem(parent)
   , text(new QGraphicsTextItem(newStep->getName(), this))
   , runIcon(new ClickableIcon(
-      QIcon(":/icons/play.svg"),
-      true,
+      QIcon(":/icons/play-fill.svg"),
       this))
   , step(newStep)
 {
@@ -164,14 +163,14 @@ void Node::setupRunIcon()
   });
 
   auto changeIcon = [this] (bool isRunning) {
-    QString file = ":/icons/play.svg";
+    QString file = ":/icons/play-fill.svg";
     if (isRunning)
     {
-      file = ":/icons/pause.svg";
+      file = ":/icons/pause-fill.svg";
     }
 
     const auto icon = QIcon(file);
-    runIcon->setIcon(icon, true);
+    runIcon->setIcon(icon);
   };
 
   conns << QObject::connect(

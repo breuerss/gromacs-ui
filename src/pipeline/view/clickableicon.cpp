@@ -6,7 +6,7 @@
 
 namespace Pipeline { namespace View {
 
-const QSize ClickableIcon::defaultSize = QSize(42, 42);
+const QSize ClickableIcon::defaultSize = QSize(40, 40);
 
 ClickableIcon::ClickableIcon(
   const QIcon& newIcon,
@@ -41,7 +41,7 @@ void ClickableIcon::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QW
 {
   QPixmap pixMap = icon.pixmap(defaultSize);
   painter->setRenderHints(QPainter::SmoothPixmapTransform | QPainter::Antialiasing);
-  painter->setOpacity(enabled ? 0.6 : 0.20);
+  painter->setOpacity(enabled ? 0.7 : 0.20);
   painter->drawPixmap(0, 0, pixMap);
 }
 
