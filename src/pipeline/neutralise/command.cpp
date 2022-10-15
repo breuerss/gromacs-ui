@@ -68,7 +68,7 @@ QPair<std::shared_ptr<QProcess>, QString> Command::getPreparationCommand()
   QStringList createIonsTprs("grompp");
   createIonsTprs << "-f" << ionsMdpPath;
   createIonsTprs << "-c" << solvatedStructure;
-  createIonsTprs << "-p" << "topol.top";
+  createIonsTprs << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
   createIonsTprs << "-o" << ionsTprPath;
 
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + createIonsTprs.join(" "));
@@ -88,7 +88,7 @@ void Command::neutralise(const QString& ionsTprPath)
   args << "-o" << outputFile;
   auto config = dynamic_cast<Configuration*>(configuration);
   args << "-conc" << QString::number(config->property("ionConcentration").value<double>());
-  args << "-p" << "topol.top";
+  args << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
 
   const QString& positiveIon = config->property("positiveIon").value<QString>();
   args << "-pname" << positiveIon;
@@ -118,12 +118,12 @@ void Command::neutralise(const QString& ionsTprPath)
 
 bool Command::canExecute() const
 {
-  return QFile(getInputFilename()).exists();
+  return QFile(getInputFilename()).exists() &&
+    QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).exists();
 }
 
 QString Command::getInputFilename() const
 {
-  using Type = ::Command::FileObject::Type;
   return fileObjectConsumer->getFileNameFor(Type::GRO);
 }
 

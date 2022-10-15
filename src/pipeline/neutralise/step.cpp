@@ -14,16 +14,14 @@ const Registration::Config Registration::config = Registration::registerMethod({
 namespace Neutralise {
 
 using FileObject = ::Command::FileObject;
+using Type = FileObject::Type;
 using InputOutput = ::Command::InputOutput;
 Step::Step(std::shared_ptr<Model::Project> project)
   : FactoryRegistration(
     project,
     {
-      { InputOutput::Category::Coordinates,
-        {
-          FileObject::Type::GRO
-        }
-      }
+      { InputOutput::Category::Coordinates, { Type::GRO } },
+      { InputOutput::Category::Topology, { Type::TOP } }
     },
     {
       FileObject::Type::GRO,

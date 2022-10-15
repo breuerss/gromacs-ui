@@ -14,6 +14,7 @@ public:
   bool canExecute() const override;
 
 private:
+  using Type = ::Command::FileObject::Type;
   QString getInputFilename() const;
   static QString getWaterBoxFor(
     const Pipeline::CreateGromacsModel::Configuration::WaterModel& solvent);

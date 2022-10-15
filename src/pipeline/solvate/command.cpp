@@ -33,7 +33,7 @@ void Command::doExecute()
   args << "-cp" << inputFile;
   args << "-o" << outputFile;
   args << "-cs" << getWaterBoxFor(waterModel);
-  args << "-p" << "topol.top";
+  args << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
 
   QFileInfo fileInfo(inputFile);
   QString inputDirectory = fileInfo.absolutePath();
@@ -44,12 +44,13 @@ void Command::doExecute()
 
 bool Command::canExecute() const
 {
-  return QFile(getInputFilename()).exists();
+  return QFile(getInputFilename()).exists() &&
+    QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).exists();
+
 }
 
 QString Command::getInputFilename() const
 {
-  using Type = ::Command::FileObject::Type;
   return fileObjectConsumer->getFileNameFor(Type::GRO);
 }
 

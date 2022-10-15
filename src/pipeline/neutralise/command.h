@@ -13,6 +13,7 @@ public:
   bool canExecute() const override;
 
 private:
+  using Type = ::Command::FileObject::Type;
   QString getInputFilename() const;
   QPair<std::shared_ptr<QProcess>, QString> getPreparationCommand();
   void neutralise(const QString& ionsTprPath);
