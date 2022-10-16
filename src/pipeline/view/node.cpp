@@ -188,7 +188,8 @@ void Node::setupRunIcon()
 void Node::resize()
 {
   const static double minWidth = 120;
-  double width = text->boundingRect().width();
+  auto currentRect = text->boundingRect();
+  double width = currentRect.width();
   if (runIcon->parentItem())
   {
     width += runIcon->boundingRect().width();
@@ -196,7 +197,8 @@ void Node::resize()
   width += spacing;
   width += 2 * indent;
   width = std::max(minWidth, width);
-  background->setSize(QSize(width, height));
+  auto backGroundHeight = background->rect().height();
+  background->setSize(QSize(width, backGroundHeight));
   setRect(background->rect());
   arrangeInputPorts();
   arrangeOutputPorts();
@@ -204,7 +206,7 @@ void Node::resize()
   auto textDim = text->boundingRect();
   runIcon->setPos(
     text->x() + textDim.width() + spacing,
-    rect().center().y() - runIcon->boundingRect().height() / 2);
+    height / 2 - runIcon->boundingRect().height() / 2);
 }
 
 void Node::setupPorts()
