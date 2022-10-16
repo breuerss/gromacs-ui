@@ -997,7 +997,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="lincsWarningAngle"/>
+         <widget class="QSpinBox" name="lincsWarningAngle">
+          <property name="maximum">
+           <number>360</number>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
