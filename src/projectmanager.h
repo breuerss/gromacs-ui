@@ -28,7 +28,7 @@ public slots:
   void saveAs(const QString& fileName);
 
 private:
-  ProjectManager() = default;
+  ProjectManager();
   std::shared_ptr<Model::Project> currentProject;
   QString fileName;
 };

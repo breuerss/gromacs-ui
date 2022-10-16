@@ -24,6 +24,11 @@ ProjectManager* ProjectManager::getInstance()
   return &instance;
 }
 
+ProjectManager::ProjectManager()
+  : currentProject(std::make_shared<Model::Project>())
+{
+}
+
 std::shared_ptr<Model::Project> ProjectManager::getCurrentProject() const
 {
   return currentProject;
@@ -37,15 +42,11 @@ const QString& ProjectManager::getFileName() const
 void ProjectManager::createNewProject()
 {
   QMessageBox::StandardButton choice = QMessageBox::Yes;
-  if (currentProject)
+  if (currentProject && !UndoRedo::Stack::getInstance()->isClean())
   {
     choice = QMessageBox::question(
       nullptr, tr("New Project"),
       tr("Do you really want to dismiss all changes in your current project?"));
-  }
-  else
-  {
-    currentProject.reset(new Model::Project());
   }
 
   if (choice == QMessageBox::Yes)
