@@ -34,6 +34,11 @@ Viewer::Viewer(QWidget* parent)
 
 Viewer::~Viewer()
 {
+  for (auto conn: conns)
+  {
+    disconnect(conn);
+  }
+  disconnect(sceneConn);
   delete topMenu;
   delete addMenu;
   delete addButton;
@@ -50,22 +55,22 @@ void Viewer::createTopMenu()
     auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
     panel->alignSelectedNodes(alignment);
   };
-  connect(topMenu, &TopMenu::alignBottomClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignBottomClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Bottom);
   });
-  connect(topMenu, &TopMenu::alignTopClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignTopClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Top);
   });
-  connect(topMenu, &TopMenu::alignHCenterClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignHCenterClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Center);
   });
-  connect(topMenu, &TopMenu::alignLeftClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignLeftClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Left);
   });
-  connect(topMenu, &TopMenu::alignRightClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignRightClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Right);
   });
-  connect(topMenu, &TopMenu::alignVCenterClicked, [setAlignment] () {
+  conns << connect(topMenu, &TopMenu::alignVCenterClicked, [setAlignment] () {
     setAlignment(Panel::Alignment::Middle);
   });
 
@@ -73,14 +78,14 @@ void Viewer::createTopMenu()
     auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
     panel->distributeSelectedNodes(direction);
   };
-  connect(topMenu, &TopMenu::distributeHorizontallyClicked, [distribute] () {
+  conns << connect(topMenu, &TopMenu::distributeHorizontallyClicked, [distribute] () {
     distribute(Panel::Distribution::Horizontal);
   });
-  connect(topMenu, &TopMenu::distributeVerticallyClicked, [distribute] () {
+  conns << connect(topMenu, &TopMenu::distributeVerticallyClicked, [distribute] () {
     distribute(Panel::Distribution::Vertical);
   });
 
-  connect(topMenu, &TopMenu::deleteSelectedClicked, [this] () {
+  conns << connect(topMenu, &TopMenu::deleteSelectedClicked, [this] () {
     auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
     panel->deleteSelectedNodes();
   });
@@ -99,7 +104,7 @@ void Viewer::createAddButton()
   addButton->setText("+");
   containerLayout->addWidget(addButton);
   addMenu = new AddMenu(addButton);
-  connect(addButton, &QPushButton::clicked, addMenu, &AddMenu::toggle);
+  conns << connect(addButton, &QPushButton::clicked, addMenu, &AddMenu::toggle);
 }
 
 void Viewer::resizeEvent(QResizeEvent* event)
@@ -137,6 +142,7 @@ void Viewer::wheelEvent(QWheelEvent *event)
 
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
+  QGraphicsView::keyPressEvent(event);
   using Alignment = Panel::Alignment;
   using Distribution = Panel::Distribution;
   auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
@@ -156,7 +162,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
       center();
       break;
     case Qt::Key_A:
-      panel->setAllNodesSelected(panel->getSelectedNodes().size() == 0);
+      panel->setAllNodesSelected(panel->selectedItems().size() == 0);
       break;
     case Qt::Key_X:
       panel->deleteSelectedNodes();
@@ -215,23 +221,17 @@ void Viewer::keyPressEvent(QKeyEvent *event)
           }
         }
       }
-
   }
-
-  QGraphicsView::keyPressEvent(event);
 }
 
 void Viewer::setScene(View::Panel* newScene)
 {
-  auto oldPanel = dynamic_cast<View::Panel*>(scene());
-  if (oldPanel)
-  {
-    disconnect(oldPanel);
-  }
+  disconnect(sceneConn);
 
-  connect(
-    newScene, &View::Panel::selectedNodesChanged,
-    [this] (QList<Node*> selectedNodes) {
+  sceneConn =connect(
+    newScene, &View::Panel::selectionChanged,
+    [this] () {
+      auto selectedNodes = scene()->selectedItems();
       topMenu->setAlignmentButtonsEnabled(selectedNodes.size() > 1);
       topMenu->setDistributionButtonsEnabled(selectedNodes.size() > 2);
       topMenu->setDeleteButtonEnabled(selectedNodes.size() > 0);

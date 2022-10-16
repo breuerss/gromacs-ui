@@ -1,8 +1,9 @@
 #ifndef PIPELINE_VIEW_H
 #define PIPELINE_VIEW_H
 
-#include <QGraphicsView>
 #include "panel.h"
+#include <QGraphicsView>
+#include <QMetaObject>
 
 class TopMenu;
 
@@ -34,6 +35,8 @@ private:
   ActionButton* addButton;
   AddMenu* addMenu;
   TopMenu* topMenu;
+  QList<QMetaObject::Connection> conns;
+  QMetaObject::Connection sceneConn;
 };
 
 } }

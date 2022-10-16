@@ -73,7 +73,6 @@ public:
   OutputPort* getOutputPort(const Command::Data& data);
   void removeConnectorFor(const NodePair& pair);
   Connector* getConnectorFor(Port* port);
-  const QList<Node*>& getSelectedNodes() const;
   void deleteSelectedNodes();
   void alignSelectedNodes(Alignment alignment);
   void distributeSelectedNodes(Distribution alignment);
@@ -105,11 +104,12 @@ private:
   void removeNode(std::shared_ptr<Pipeline::Step> step);
   void addOutputPort(const Command::Data&, OutputPort*);
   QList<Node*> getSortedSelectedNodes() const;
+  QList<Node*> getSelectedNodes() const;
+  Node* firstSelectedNode = nullptr;
 
   QMap<std::shared_ptr<Pipeline::Step>, Node*> nodeMap;
   std::map<Command::Data, OutputPort*> outputPortMap;
   QMap<NodePair, Connector*> connectorMap;
-  QList<Node*> nodeSelection;
   QPointF startingPos;
   Node* movingNode = nullptr;
   QPointF nodePos;

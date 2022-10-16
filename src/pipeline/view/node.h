@@ -38,13 +38,9 @@ public:
   void addInputPort(Command::InputOutput::Category category, const QColor& color);
   void addOutputPort(const Command::Data& fileObject, const QColor& color);
 
-  bool isSelected() const;
-  void setSelected(bool newSelected);
   std::shared_ptr<Pipeline::Step> getStep() const;
   QVariant itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant& value) override;
-
-signals:
-  void selectedChanged();
+  void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
   void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
@@ -91,7 +87,6 @@ private:
   OutputPorts outputPorts;
 
   std::shared_ptr<Pipeline::Step> step;
-  bool selected = false;
   QPointF startingPos;
 
   const double indent = 30;

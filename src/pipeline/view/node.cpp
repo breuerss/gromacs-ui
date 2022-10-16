@@ -21,6 +21,7 @@
 #include <QLayout>
 #include <QDebug>
 #include <QVBoxLayout>
+#include <QStyleOptionGraphicsItem>
 
 namespace Pipeline { namespace View {
 
@@ -36,6 +37,7 @@ Node::Node(std::shared_ptr<Pipeline::Step> newStep, QGraphicsItem* parent)
 {
   setFlag(QGraphicsItem::ItemIsMovable);
   setFlag(QGraphicsItem::ItemSendsGeometryChanges);
+  setFlag(QGraphicsItem::ItemIsSelectable);
   setAcceptHoverEvents(true);
   setHeightAndRadius();
 
@@ -473,6 +475,10 @@ QVariant Node::itemChange(QGraphicsItem::GraphicsItemChange change, const QVaria
   {
     step->setLocation(scenePos());
   }
+  else if (change == QGraphicsItem::ItemSelectedHasChanged)
+  {
+    setColorForSelectionState();
+  }
 
   return QGraphicsItem::itemChange(change, value);
 }
@@ -533,18 +539,22 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     return;
   }
 
-  setSelected(!selected);
-
   auto modifiers = event->modifiers();
   if (!modifiers.testFlag(Qt::ControlModifier) && !modifiers.testFlag(Qt::ControlModifier))
   {
     if (!toggleSettings())
     {
-      step->showUI(selected);
+      step->showUI(isSelected());
     }
-    step->showStatusUI(selected);
+    step->showStatusUI(isSelected());
   }
+}
 
+void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+  QStyleOptionGraphicsItem myoption = (*option);
+  myoption.state.setFlag(QStyle::State_Selected, false);
+  QGraphicsRectItem::paint(painter, &myoption, widget);
 }
 
 bool Node::toggleSettings()
@@ -569,28 +579,10 @@ bool Node::toggleSettings()
   return true;
 }
 
-bool Node::isSelected() const
-{
-  return selected;
-}
-
-void Node::setSelected(bool newSelected)
-{
-  const bool changed = selected != newSelected;
-  selected = newSelected;
-
-  if (changed)
-  {
-    setColorForSelectionState();
-
-    selectedChanged();
-  }
-}
-
 void Node::setColorForSelectionState()
 {
   float opacity = 0.75;
-  if (selected)
+  if (isSelected())
   {
     opacity = 1;
   }

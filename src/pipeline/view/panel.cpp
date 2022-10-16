@@ -19,6 +19,18 @@ Panel::Panel(QObject* parent)
 {
   setBackgroundBrush(QBrush(Colors::DarkGrey));
   setSceneRect(QRect(0, 0, 0, 0) + QMarginsF(1, 1, 1, 1) * 5000);
+
+  connect(this, &QGraphicsScene::selectionChanged, [this] () {
+    auto items = selectedItems();
+    if (items.size() == 1)
+    {
+      firstSelectedNode = dynamic_cast<Node*>(items[0]);
+    }
+    else if (items.size() == 0)
+    {
+      firstSelectedNode = nullptr;
+    }
+  });
 }
 
 Panel::~Panel()
@@ -171,14 +183,13 @@ OutputPort* Panel::getOutputPort(const Command::Data& data)
 void Panel::deleteSelectedNodes()
 {
   UndoRedo::Stack::getInstance()->beginMacro("Delete selected nodes");
-  for (auto node: nodeSelection)
+  for (auto item: selectedItems())
   {
+    auto node = dynamic_cast<Node*>(item);
     project->removeStep(node->getStep());
   }
-  nodeSelection.clear();
+  clearSelection();
   UndoRedo::Stack::getInstance()->endMacro();
-
-  selectedNodesChanged(getSelectedNodes());
 }
 
 void Panel::setAllNodesSelected(bool selected)
@@ -189,9 +200,16 @@ void Panel::setAllNodesSelected(bool selected)
   }
 }
 
-const QList<Node*>& Panel::getSelectedNodes() const
+QList<Node*> Panel::getSelectedNodes() const
 {
-  return nodeSelection;
+  QList<Node*> selectedNodes;
+  auto items = selectedItems();
+  for (auto item : items)
+  {
+    selectedNodes << dynamic_cast<Node*>(item);
+  }
+
+  return selectedNodes;
 }
 
 QList<Node*> Panel::getSortedSelectedNodes() const
@@ -279,7 +297,7 @@ void Panel::distributeSelectedNodes(Distribution alignment)
           sumWidth += sortedNode->rect().width();
         }
         const auto stepSize = (lastNodeRight - firstNodeLeft - sumWidth) /
-          (nodeSelection.size() - 1);
+          (selectedItems().size() - 1);
         newPos.setX(prevNodeInScene.right() + stepSize);
       }
       else
@@ -287,8 +305,8 @@ void Panel::distributeSelectedNodes(Distribution alignment)
         auto firstNodeTop = firstNodeInScene.top();
         auto lastNodeBottom = lastNodeInScene.bottom();
         auto nodeHeight = firstNode->rect().height();
-        const double stepSize = (lastNodeBottom - firstNodeTop - nodeSelection.size() * nodeHeight) /
-          (nodeSelection.size() - 1);
+        const double stepSize = (lastNodeBottom - firstNodeTop - selectedItems().size() * nodeHeight) /
+          (selectedItems().size() - 1);
         newPos.setY(prevNodeInScene.bottom() + stepSize);
       }
       node->setPos(newPos);
@@ -298,19 +316,18 @@ void Panel::distributeSelectedNodes(Distribution alignment)
 void Panel::alignSelectedNodes(Panel::Alignment alignment)
 {
   execOnSelectedNodesGroup([this, alignment] (Node* node, int, QList<Node*>) {
-    auto firstNode = nodeSelection[0];
-    if (node == firstNode)
+    if (node == firstSelectedNode)
     {
       return;
     }
 
-    auto firstNodeInScene = firstNode->mapRectToScene(firstNode->rect()).toRect();
+    auto firstNodeInScene = firstSelectedNode->mapRectToScene(firstSelectedNode->rect()).toRect();
     auto nodeRect = node->rect().toRect();
     auto newPos = node->pos();
     switch(alignment)
     {
       case Alignment::Left:
-        newPos.setX(firstNode->x());
+        newPos.setX(firstNodeInScene.x());
         break;
       case Alignment::Center:
         {
@@ -360,32 +377,16 @@ void Panel::removeNode(std::shared_ptr<Pipeline::Step> step)
     if (node->scene())
     {
       removeItem(node);
-      setNodeSelected(node, false);
+      node->setSelected(false);
     }
     delete node;
   }
-}
-
-void Panel::setNodeSelected(Node* node, bool selected)
-{
-  if (selected)
-  {
-    nodeSelection << node;
-  }
-  else
-  {
-    nodeSelection.removeOne(node);
-  }
-  selectedNodesChanged(getSelectedNodes());
 }
 
 void Panel::addNode(std::shared_ptr<Pipeline::Step> step)
 {
   auto node = new Node(step);
   nodeMap[step] = node;
-  connect(node, &Node::selectedChanged, [this, node] () {
-    setNodeSelected(node, node->isSelected());
-  });
   addItem(node);
   for (const auto& pair : node->getOutputPorts())
   {
@@ -426,21 +427,12 @@ void Panel::mousePressEvent(QGraphicsSceneMouseEvent* event)
 
 void Panel::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
-  if (
-    !event->modifiers().testFlag(Qt::ShiftModifier) &&
-    !event->modifiers().testFlag(Qt::ControlModifier) &&
-    startingPos == event->scenePos()
-    )
-  {
-    setAllNodesSelected(false);
-  }
+  QGraphicsScene::mouseReleaseEvent(event);
 
   if (startingPos != event->scenePos() && movingNode)
   {
     nodeMoved(movingNode, nodePos);
   }
-
-  QGraphicsScene::mouseReleaseEvent(event);
 }
 
 Connector* Panel::getActiveConnector()
