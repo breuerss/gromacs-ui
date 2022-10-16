@@ -143,6 +143,11 @@ void Viewer::wheelEvent(QWheelEvent *event)
 void Viewer::keyPressEvent(QKeyEvent *event)
 {
   QGraphicsView::keyPressEvent(event);
+  if (event->isAccepted())
+  {
+    return;
+  }
+
   using Alignment = Panel::Alignment;
   using Distribution = Panel::Distribution;
   auto panel = dynamic_cast<Pipeline::View::Panel*>(scene());
