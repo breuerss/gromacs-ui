@@ -9,13 +9,17 @@ namespace Pipeline { namespace Neutralise {
 QString FileNameGenerator::getFileNameFor(Command::FileObject::Type type) const
 {
   QString fileName;
-  if (type == Command::FileObject::Type::GRO && project)
+  if (project)
   {
-    QString inputFileName = fileObjectConsumer->getFileNameFor(type);
+    using Type = Command::FileObject::Type;
+    if (type == Type::GRO || type == Type::TOP)
+    {
+      QString inputFileName = fileObjectConsumer->getFileNameFor(type);
 
-    QFileInfo fileInfo(inputFileName);
-    fileName = fileInfo.absolutePath() + "/" +
-      fileInfo.baseName() + "_neutralised.gro";
+      QFileInfo fileInfo(inputFileName);
+      fileName = fileInfo.absolutePath() + "/" +
+        fileInfo.baseName() + "_neutralised." + fileInfo.suffix();
+    }
   }
 
   return fileName;

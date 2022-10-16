@@ -68,7 +68,11 @@ QPair<std::shared_ptr<QProcess>, QString> Command::getPreparationCommand()
   QStringList createIonsTprs("grompp");
   createIonsTprs << "-f" << ionsMdpPath;
   createIonsTprs << "-c" << solvatedStructure;
-  createIonsTprs << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
+
+  QString outputTopology = fileNameGenerator->getFileNameFor(Type::TOP);
+  QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).copy(outputTopology);
+
+  createIonsTprs << "-p" << outputTopology;
   createIonsTprs << "-o" << ionsTprPath;
 
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + createIonsTprs.join(" "));
@@ -88,7 +92,7 @@ void Command::neutralise(const QString& ionsTprPath)
   args << "-o" << outputFile;
   auto config = dynamic_cast<Configuration*>(configuration);
   args << "-conc" << QString::number(config->property("ionConcentration").value<double>());
-  args << "-p" << fileObjectConsumer->getFileNameFor(Type::TOP);
+  args << "-p" << fileNameGenerator->getFileNameFor(Type::TOP);
 
   const QString& positiveIon = config->property("positiveIon").value<QString>();
   args << "-pname" << positiveIon;
