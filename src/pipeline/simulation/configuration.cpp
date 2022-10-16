@@ -63,11 +63,16 @@ QString Configuration::toString()
   QStringList elements;
   elements << createParagraph({tr("Type") + ": " + getName()});
 
-  elements << createParagraph({
+  auto general = QStringList({
     tr("General"),
     keyValue(tr("Algorithm"), algorithm),
     keyValue(tr("Steps"), numberOfSteps),
   });
+  if (!isMinimisation())
+  {
+    general << (keyValue(tr("Step size"), timeStep) + " fs");
+  }
+  elements << createParagraph(general);
 
   if (isMinimisation())
   {
