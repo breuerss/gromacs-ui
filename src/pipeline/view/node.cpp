@@ -385,6 +385,7 @@ void Node::addOutputPort(const Command::Data& data, const QColor& color)
             getCoordinatesPath(),
             fileObject->getFileName());
           break;
+        case Category::Topology:
         case Category::Text:
           UiUpdater::getInstance()->showTextFile(fileObject->getFileName());
           break;
