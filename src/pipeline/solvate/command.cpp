@@ -24,14 +24,10 @@ void Command::doExecute()
   QStringList args("solvate");
   QString inputFile = getInputFilename();
 
-  auto config = dynamic_cast<Configuration*>(configuration);
-  auto waterModel = config->property("waterModel")
-    .value<CreateGromacsModel::Configuration::WaterModel>();
-
   QString outputFile = fileNameGenerator->getFileNameFor(Type::GRO);
   args << "-cp" << inputFile;
   args << "-o" << outputFile;
-  args << "-cs" << getWaterBoxFor(waterModel);
+  args << "-cs" << getWaterBoxFor(getWaterSolventFromTopology());
 
   QString outputTopology = fileNameGenerator->getFileNameFor(Type::TOP);
   QFile(fileObjectConsumer->getFileNameFor(Type::TOP)).copy(outputTopology);
@@ -55,16 +51,40 @@ QString Command::getInputFilename() const
   return fileObjectConsumer->getFileNameFor(Type::GRO);
 }
 
-QString Command::getWaterBoxFor(
-  const Pipeline::CreateGromacsModel::Configuration::WaterModel& solvent)
+QString Command::getWaterSolventFromTopology()
 {
-  using WaterModel = Pipeline::CreateGromacsModel::Configuration::WaterModel;
+  QFile topol(fileObjectConsumer->getFileNameFor(Type::TOP));
+  if (topol.open(QIODevice::ReadOnly))
+  {
+
+    QTextStream in(&topol);
+    while (!in.atEnd())
+    {
+      QString line = in.readLine();
+      if (line.startsWith("#include")) {
+        if (line.contains("tip4p")) {
+          return "tip4p";
+        } else if (line.contains("tip5p")) {
+          return "tip5p";
+        }
+      }
+    }
+    topol.close();
+  }
+
+  // for SPC or TIP3P
+  return "spc";
+}
+
+QString Command::getWaterBoxFor(const QString& solvent)
+{
+  // for SPC or TIP3P
   QString waterBox = "spc216.gro";
-  if (solvent == WaterModel::TIP4P)
+  if (solvent == "tip4p")
   {
     waterBox = "tip4p.gro";
   }
-  else if (solvent == WaterModel::TIP5P)
+  else if (solvent == "tip5p")
   {
     waterBox = "tip5p.gro";
   }

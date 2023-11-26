@@ -2,7 +2,6 @@
 #define PIPELINE_SOLVATE_COMMAND_H
 
 #include "../src/command/executor.h"
-#include "../creategromacsmodel/configuration.h"
 
 namespace Pipeline { namespace Solvate {
 
@@ -16,8 +15,8 @@ public:
 private:
   using Type = ::Command::FileObject::Type;
   QString getInputFilename() const;
-  static QString getWaterBoxFor(
-    const Pipeline::CreateGromacsModel::Configuration::WaterModel& solvent);
+  QString getWaterSolventFromTopology();
+  static QString getWaterBoxFor(const QString& solvent);
 };
 
 } }
