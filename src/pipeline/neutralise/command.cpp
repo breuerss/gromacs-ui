@@ -39,12 +39,14 @@ void Command::doExecute()
       StatusMessageSetter::getInstance()->setMessage(
         "Failed executing " + prepCommand->program() + " " + prepCommand->arguments().join(" "));
 
+      setRunning(false);
       return;
     }
 
     neutralise(ionsTprPath);
   });
 
+  prepCommand->start();
 }
 
 QPair<std::shared_ptr<QProcess>, QString> Command::getPreparationCommand()
@@ -77,7 +79,8 @@ QPair<std::shared_ptr<QProcess>, QString> Command::getPreparationCommand()
 
   StatusMessageSetter::getInstance()->setMessage("Executing command " + command + " " + createIonsTprs.join(" "));
 
-  prepCommand->start(command, createIonsTprs);
+  prepCommand->setProgram(command);
+  prepCommand->setArguments(createIonsTprs);
 
   return { prepCommand, ionsTprPath };
 }
