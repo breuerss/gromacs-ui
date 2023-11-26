@@ -34,7 +34,15 @@ MainWindow::MainWindow(QWidget *parent)
 {
   ui->setupUi(this);
   setGeometry(settings.value(Settings::APP_GEOMETRY, QRect(0, 0, 800, 600)).toRect());
-  restoreState(settings.value(Settings::APP_STATE).toByteArray());
+  auto appState = settings.value(Settings::APP_STATE).toByteArray();
+  if (appState.isEmpty()) {
+    tabifyDockWidget(ui->configurationDock, ui->textViewDock);
+    tabifyDockWidget(ui->configurationDock, ui->logDock);
+    tabifyDockWidget(ui->configurationDock, ui->graphDock);
+    tabifyDockWidget(ui->configurationDock, ui->moleculeDock);
+  } else {
+    restoreState(appState);
+  }
   auto menu = ui->menuView;
   menu->addAction(ui->configurationDock->toggleViewAction());
   menu->addAction(ui->logDock->toggleViewAction());
