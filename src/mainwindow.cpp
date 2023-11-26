@@ -237,6 +237,7 @@ void MainWindow::setTextFile(const QString& fileName)
 {
   QString content;
   QString title = tr("File Content Viewer");
+  QString tooltip = "";
   if (!fileName.isEmpty())
   {
     QFile file(fileName);
@@ -244,11 +245,13 @@ void MainWindow::setTextFile(const QString& fileName)
     content = file.readAll();
     file.close();
     ui->textViewDock->raise();
-    title = fileName;
+    tooltip = fileName;
+    title = QFileInfo(file).fileName();
   }
 
   ui->textView->setText(content);
   ui->textViewDock->setWindowTitle(title);
+  ui->textViewDock->setToolTip(tooltip);
 }
 
 void MainWindow::setGraph(const QString& graphFile)
