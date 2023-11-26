@@ -101,6 +101,7 @@
    <addaction name="actionCreateDefaultSimulationSetup"/>
    <addaction name="separator"/>
    <addaction name="actionRunSimulation"/>
+   <addaction name="actionPreferences"/>
   </widget>
   <widget class="QDockWidget" name="logDock">
    <property name="sizePolicy">
@@ -320,6 +321,10 @@
    </property>
   </action>
   <action name="actionPreferences">
+   <property name="icon">
+    <iconset resource="../share/icons/resource.qrc">
+     <normaloff>:/icons/sliders.svg</normaloff>:/icons/sliders.svg</iconset>
+   </property>
    <property name="text">
     <string>Preferences...</string>
    </property>
