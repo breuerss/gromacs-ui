@@ -375,6 +375,7 @@ void Node::addOutputPort(const Command::Data& data, const QColor& color)
     conns << QObject::connect(outputPort, &OutputPort::clicked, [this, fileObject] () {
       using FileObject = Command::FileObject;
       using Category = Command::InputOutput::Category;
+      // TODO maybe a special getCategoryForViewing is needed
       switch (FileObject::getCategoryFor(fileObject->type))
       {
         case Category::Coordinates:
